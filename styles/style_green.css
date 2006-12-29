@@ -1,0 +1,368 @@
+/* 
+lilina news aggregator
+
+lilina is a simple but powerful news aggregator written in PHP. 
+No database is needed, RSS/ATOM parsing is done by the excellent 
+MagpieRSS library (it is included, no additional installation needed). 
+It features feed auto-discovery and an easy-to-use interface.
+
+View a live demo @ http://lilina.sourceforge.net/ 
+lilina is Open Source Software and is distributed under the GPL license
+Written and developed by Panayotis Vryonis, http://vrypan.net/log/
+
+These styles based off style_default.css
+Adapted to green by Ryan McCue, http://www.cubegames.net/
+*/
+
+
+
+/* Global Elements */
+
+html, body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #ffffff;
+	/* hide from IE5 mac \*/
+ 	height: 100%;
+ 	/* end hack */
+	height: auto;
+	width: 100%;
+	}
+html, body, p, ul, input {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 11px;
+	color: #000000;
+	font-weight: normal;
+	}
+img, a {
+	border: 0;
+	vertical-align: text-bottom;
+	}
+
+#c1 {
+	color: #CCFFCC ;
+	background: #CCFFCC ;
+	display: none;
+}
+#c2 {
+	color: #99FF99 ;
+	background: #99FF99 ;
+	display: none;
+}
+
+/* Topbar */
+#navigation {
+	position: relative;
+	float: top;
+	background: #fff;
+	color: #000;
+	padding: 8px;
+	display: block;
+	font-size: 13px;
+}
+#navigation a {
+  text-decoration:none;
+}
+#navigation ul, #navigation li {
+	margin-left: 2px;
+}
+
+#topbar {
+	position: relative;
+	float: right;
+	display: block;
+	margin: 0px;
+	padding: 0 12px 0 5px;
+	background: #fff;
+	color: #6f6f6f;
+	width: 250px;
+	border: #000 solid 1px ;
+	}
+#topbar, #topbar a {
+	color: #000;
+	font-weight: bold;
+	text-decoration: none;
+	}
+#navigation li {
+	list-style: none;
+	margin-top: 3px;
+	margin-left: 3px;
+	display: inline ;
+	}
+#navigation ul {
+	list-style: none;
+	margin-top: 3px;
+	margin-left: 3px;
+	padding-left: 3px;
+	display: inline ;
+	}
+
+#navigation li.img {
+	margin-top: 2px;
+	}
+#navigation ul li.admin a {
+	color: #990000;
+	margin-left: 3px;
+	}
+
+/*- Time links (24h, 48h, week, all)-- */
+
+    #tabsF {
+      float:none;
+      font-size:93%;
+      line-height:normal;
+	    margin-top:0px;
+	    padding-top: 5px;
+	    z-index: -100;
+      }
+    #tabsF ul {
+	    margin:0;
+	    /*padding:10px 10px 0 50px;*/
+	    list-style:none;
+      }
+    #tabsF li {
+      display:inline;
+      margin:0;
+      padding:0;
+      }
+    #tabsF a {
+      float:left;
+      background:url("../i/tabs/tableftF.gif") no-repeat left top;
+      margin:0;
+      padding:0 0 0 4px;
+      text-decoration:none;
+      }
+    #tabsF a span {
+      float:left;
+      display:block;
+      background:url("../i/tabs/tabrightF.gif") no-repeat right top;
+      padding:5px 15px 4px 6px;
+      color:#666;
+      }
+    /* Commented Backslash Hack hides rule from IE5-Mac \*/
+    #tabsF a span {float:none;}
+    /* End IE5-Mac hack */
+    #tabsF a:hover span {
+      color:#FFF;
+      }
+    #tabsF a:hover {
+      background-position:0% -42px;
+      }
+    #tabsF a:hover span {
+      background-position:100% -42px;
+      }
+/* Feed */
+
+.feed { /* Container for items coming from the same feed */ 
+	/* Add styling if you want consequent items from the same feed to look "grouped" */
+}
+
+h1 { /* Date */
+	margin: 0px 0px 0px 0px;
+	padding: 4px 0 4px 15px;
+	border-top: 1px solid #00005c ;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
+	background: #aaaaaa;
+	background: #33CC33;
+	}
+.item {
+	margin: 0px 0px 0px 0px;
+	font-size: 12px;
+	border-top: 1px solid #aac ;
+	background-color: #CCFFCC;
+	padding-bottom: 2px ;
+	padding-left: 15px;
+	}
+.item img {
+	margin: 2px 10px 0 0;
+	}
+.bmark { /* Bookmark image */
+	
+	}
+.time { /* Time Posted */
+	margin: 0 4px 0 4px;
+	font-style: italic;
+	color: #999999;
+	}
+.title { /* Title */
+	font-weight: bold;
+	color: #555;
+	text-decoration: none;
+	cursor: pointer;
+	}
+.source { /* Direct link to weblog post */
+	}
+.source a {
+	margin: 0 0 0 10px;
+	color: #990000;
+	text-decoration: none;
+	border-bottom: 3px dotted #666666;
+	}
+.source a:visited {
+	border-bottom: 1px dotted;
+	}
+.excerpt { /* Excerpted content from feed */
+	margin: 3px 0 0 60px;
+	font-size: 11px;
+	width: 90%;
+	display: none;
+	}
+
+
+/* Google */
+
+.google {
+	margin: 0 0 0 0 ;
+	padding: 0px;
+	/* background: #ffffff ; */
+
+}
+.google p { 
+	display: block; 
+	margin-bottom: 0 ;
+	margin-top: 0 ;
+	color: #555555 ;
+}
+
+/* del.icio.us */
+.delicious_tags {
+	display: inline ;
+	text-align: right;
+	padding: 0 0 0 10px;
+}
+
+/* Panel */
+
+#panel {
+	position: absolute;
+	top: 20px;
+	right: 2px ;
+	padding: 10px;
+	background: #eeeeee ;
+	color: #6f6f6f;
+	width: 200px;
+	display: block;
+
+}
+/* Sources */
+
+#sources {
+	padding: 4px;
+	color: #6f6f6f;
+	display: block;
+	border-top: 1px #aaa solid;
+	background: #CBDFEB;
+	}
+#sources h3 {
+	display: block;
+	margin: 0 0 10px 0;
+	border-bottom: 1px #CBDFEB dotted;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	width: 98%;
+	}
+#sources ul {
+	list-style-type: square;
+	margin: 10px;
+	padding: 0px;
+	}
+#sources li {
+	display: inline;
+	padding-left: 1em;
+	padding-bottom: 2px;
+	}
+#sources ul li img {
+	display: inline;
+	height: 16px;
+	width: 16px;
+	vertical-align: text-bottom;
+	}
+#sources a {
+	text-decoration: none;
+	border-bottom: 1px dotted ;
+}
+
+
+
+/* Edit */
+
+.item ul {
+	list-style: none;
+	margin: 15px 0 0 0;
+	}
+.item li {
+	font-size: 12px;
+	}
+
+
+
+/* Footer */
+
+#footer {
+	margin: 0px;
+	padding-top: 5px;
+	border-top: 1px #C7D0EB solid;
+	font-size: 10px;
+	text-align: center;
+	width: 100%;
+	}
+
+#main {
+	display: block;
+	margin-right: 0px;
+	border-right: 0px #aaa solid;
+}
+li.feed_list_1 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+}
+
+li.feed_list_0 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+}
+
+li.feed_list_1 span {
+	background: #0079A5;
+	color: #FFFFFF;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+li.feed_list_0 span {
+	background: #FFFFFF;
+	color: #000000;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+@media print{
+  /* Basic Structure */
+  HTML {
+  width:100%
+  }
+  body {
+  background: white;
+  font-size: 12pt;
+  }
+  img {
+  border: 0;
+  }
+  /* Hide Various Elements when printing */
+  .hiddenitem, #hiddensidebar, .morehiddenstuff {
+  display: none;
+  }
+  /* Link Management */
+  a:link, a:visited {
+  color: #FF0000;
+  background: transparent;
+  font-weight: bold;
+  text-decoration: underline;
+  }
+}

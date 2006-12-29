@@ -1,0 +1,204 @@
+<?php
+/******************************************
+		Lilina: Simple PHP Aggregator
+File:		admin.php
+Purpose:	Administration page
+Notes:		Need to move all crud to plugins
+Style:		**EACH TAB IS 4 SPACES**
+Licensed under the GNU General Public License
+See LICENSE.txt to view the license
+******************************************/
+//Start measuring execution time
+   $mtime = microtime();
+   $mtime = explode(" ",$mtime);
+   $mtime = $mtime[1] + $mtime[0];
+   $starttime = $mtime;
+//Stop hacking attempts
+define('LILINA',1) ;
+$settings	= 0;
+$authed		= 0;
+$page		= htmlentities($_GET['page']);
+$action		= htmlentities($_GET['action']);
+$product	= htmlentities($_GET['product']);
+$name		= htmlentities($_GET['url']);
+$url		= urlencode($_GET['name']);
+$data		= file_get_contents($settings['files']['feeds']) ;
+$data		= unserialize( base64_decode($data) ) ;
+function get_feeds() {
+	return $data['feeds'];
+}
+//Require our settings, must be first required file
+require_once('./inc/core/conf.php');
+require_once('./inc/core/lib.php');
+//Insert authentication handling
+$authed = 1;
+if(!$authed == true){
+	display_login();
+	die();
+}
+switch($page) {
+	case 'feeds': 
+		$out_page = 'admin-feeds.php';
+	default:
+		$out_page = 'admin-feeds.php';
+}
+switch($action){
+	case 'flush':
+		//Would have a switch here, but it's unnecessary
+		//and I don't know about having two switches, might
+		//screw up :)
+		if($product == 'magpie'){
+			define('MAGPIE_CACHE_AGE',1) ;			
+		}
+		if($product == 'lilina'){
+			//Once again, from
+			//http://www.ilovejackdaniels.com/php/caching-output-in-php/
+			$cachedir = $settings['cachedir'];
+			if ($handle = @opendir($cachedir)) {
+				while (false !== ($file = @readdir($handle))) {
+					if ($file != '.' and $file != '..') {
+						$result = $file . ' deleted.<br />';
+						@unlink($cachedir . '/' . $file);
+					}
+				}
+				@closedir($handle);
+			}
+		}
+	break;
+	case 'add':
+		/*$data = array(
+						'feeds' => array(
+										array(
+											'feed' => 'http://liberta-project.net/rss.xml',
+											'name' => 'Liberta Project'),
+										array(
+											'feed' => 'http://cubegames.net/wordpress/feed/',
+											'name' => 'Cube Games Blog'),
+										array(
+											'feed' => 'http://lilina.cubegames.net/feed/',
+											'name' => 'Lilina News Aggregator Blog')
+									)
+					);*/
+		$data['feeds'][count($data['feeds'])]['feed']	= $url;
+		$data['feeds'][count($data['feeds'])]['name']	= $name;
+		$data['feeds'][count($data['feeds'])]['cat']	= $category;
+		$sdata	= base64_encode(serialize($data)) ;
+		$fp		= fopen($settings['files']['feeds'],'w') ;
+		fputs($fp,$sdata) ;
+		fclose($fp) ;
+		$result	.= 'Added feed ' . $name . ' with URL as ' . htmlentities($url);
+	break;
+	case 'remove':
+		
+	break;
+	case 'import':
+		import_opml();
+	break;
+}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://gmpg.org/xfn/1">
+<title><?php echo $settings['sitename'];?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<?php
+//Add templates code here
+?>
+<link rel="stylesheet" type="text/css" href="styles/style_default.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="styles/admin.css" media="screen"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="navigation">
+<?php
+if($authed == true) {
+?>
+	<a href="<?php echo $settings['baseurl']; ?>admin.php">
+	<img src="i/logo.jpg" alt="<?php echo $settings['sitename'];?>" title="<?php echo $settings['sitename'];?>" />
+	</a>
+  	&nbsp;&nbsp;
+	<h1>Control Panel</h1>
+	|
+	<div style="float: right;">
+		<ul class="admin_links">
+			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Home</a></li>
+			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds">Feeds</a></li>
+			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Settings</a></li>
+		</ul>
+    </div>
+</div>
+<?php if($result){
+echo '<div>';
+echo $result;
+echo '</div>';
+}
+?>
+<div id="main">
+<?php
+if($out_page){
+	require_once('./inc/pages/'.$out_page);
+}
+else {
+	echo $out;
+}
+?>
+</div>
+<?php
+}
+else{
+?>
+<a href="<?php echo $settings['baseurl']; ?>">
+	<img src="i/logo.jpg" alt="<?php echo $settings['sitename'];?>" title="<?php echo $settings['sitename'];?>" />
+	</a>
+  	<?php if($settings['output']['rss']){?>RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" /></a><?php } ?>
+  	<?php if($settings['output']['atom']){?>Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" /></a><?php } ?>
+	&nbsp;&nbsp;
+	|
+    <a href="javascript:visible_mode(true);">
+    <img src="i/arrow_out.png" alt="Expand" /> expand</a>
+    <a href="javascript:visible_mode(false);">
+    <img src="i/arrow_in.png" alt="Collapse" /> collapse</a>
+	|
+    <a href="cache/opml.xml">OPML</a>
+	|
+    <a href="#sources">SOURCES</a>
+	<div style="float: right;">
+		<ul>
+		<?php
+		for($q=0;$q<count($settings['interface']['times']);$q++){
+			$current_time = $settings['interface']['times'][$q];
+			if(is_int($current_time)){
+				echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
+			}
+			else {
+				switch($current_time) {
+					case 'week':
+						echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
+					break;
+					case 'all':
+						echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
+					break;
+				}
+			}
+		}
+		?>
+		</ul>
+    </div>
+</div>
+<?php
+}
+?>
+  <div id="footer">powered by <a href="http://lilina.sourceforge.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
+    <?php echo $LILINAVERSION; ?><br />
+	<?php   $mtime = microtime();
+   $mtime = explode(" ",$mtime);
+   $mtime = $mtime[1] + $mtime[0];
+   $endtime = $mtime;
+   $totaltime = ($endtime - $starttime);
+   $totaltime = round($totaltime, -2);
+   echo "This page was generated in ".$totaltime." seconds";  ?>
+  </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<?php
+$i18n;
+$i18n['week'] = 'week';
+$i18n['all'] = 'all';
+$i18n['sources'] = 'Sources';
+$i18n['favicon'] = 'Source Favicon';
+$i18n['podcast'] = 'View Podcast';
+$i18n['add_delicious'] = 'add to del.icio.us';
+$i18n['look_delicious'] = 'look up in del.icio.us';
+$i18n['furl'] = 'Add to furl';
+$i18n['powered'] = 'powered by';
+$i18n['aggregator'] = 'news aggregator';
+$i18n['add_feed'] = 'rss/atom URL to add';
+$i18n['delete_feed'] = 'Delete feed';
+$i18n['add_opml'] = 'Import OPML file';
+$i18n['check_error'] = 'Check for errors';
+$i18n['expand'] = 'Expand';
+$i18n['collapse'] = 'Collapse';
+$i18n['silk'] = 'silk icon set by';
+$i18n['admin'] = 'Administration';
+$i18n['diggThis'] = 'digg this';
+$i18n['diggSearch'] = 'Search on Digg';
+$i18n['slashSubmit'] = 'Submit to Slashdot';
+$i18n['blinkAdd'] = 'Add to Blinklist';
+$i18n['spurlThis'] = 'Spurl this';
+$i18n['winLiveAdd'] = 'Add to Windows Live Bookmarks';
+$i18n['technoratiAdd'] = 'Add to Technorati';
+$i18n['redditAdd'] = 'Add to reddit';
+$i18n['newsvineAdd'] = 'Add to newsvine';
+$i18n['viewSource'] = 'View this post at';
+$i18n['viewSummary'] = 'Click to View Summary';
+$i18n['podcastPlay'] = 'Play podcast';
+$i18n['readMore'] = 'Read more...';
+?>

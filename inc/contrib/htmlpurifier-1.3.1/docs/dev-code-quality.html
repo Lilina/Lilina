@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="description" content="Discusses code quality issues and places that need to be refactored in HTML Purifier." />
+<link rel="stylesheet" type="text/css" href="./style.css" />
+
+<title>Code Quality Issues - HTML Purifier</title>
+
+</head><body>
+
+<h1>Code Quality Issues</h1>
+
+<div id="filing">Filed under Development</div>
+<div id="index">Return to the <a href="index.html">index</a>.</div>
+
+<p>Okay, face it.  Programmers can get lazy, cut corners, or make mistakes. They
+also can do quick prototypes, and then forget to rewrite them later.  Well,
+while I can't list mistakes in here, I can list prototype-like segments
+of code that should be aggressively refactored.  This does not list
+optimization issues, that needs to be done after intense profiling.</p>
+
+<pre>
+docs/examples/demo.php - ad hoc HTML/PHP soup to the extreme
+
+AttrDef
+    Class - doesn't support Unicode characters (fringe); uses regular
+        expressions
+    Lang - code duplication; premature optimization
+    Length - easily mistaken for CSSLength
+    URI - multiple regular expressions; missing validation for parts (?)
+    CSS - parser doesn't accept advanced CSS (fringe)
+    Number - constructor interface inconsistent with Integer
+ConfigSchema - redefinition is a mess
+Strategy
+    FixNesting - cannot bubble nodes out of structures, duplicated checks
+        for special-case parent node
+    MakeWellFormed - insufficient automatic closing definitions (check HTML
+        spec for optional end tags, also, closing based on type (block/inline)
+        might be efficient).
+    RemoveForeignElements - should be run in parallel with MakeWellFormed
+URIScheme - needs to have callable generic checks
+    mailto - doesn't validate emails, doesn't validate querystring
+    news - doesn't validate opaque path
+    nntp - doesn't constrain path
+</pre>
+
+<div id="version">$Id: dev-code-quality.html 573 2006-11-23 22:34:41Z Edward $</div>
+
+</body></html>

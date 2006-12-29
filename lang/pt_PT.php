@@ -1,0 +1,34 @@
+<?php
+$i18n;
+$i18n['week'] = 'Semana';
+$i18n['all'] = 'Todos';
+$i18n['sources'] = 'Fontes';
+$i18n['favicon'] = 'Fonte Favicon';
+$i18n['podcast'] = 'Ver Podcast';
+$i18n['add_delicious'] = 'Adicionar a del.icio.us';
+$i18n['look_delicious'] = 'Ver em del.icio.us';
+$i18n['furl'] = 'Adicionar a furl';
+$i18n['powered'] = 'Produzido por';
+$i18n['aggregator'] = 'Cliente de notícias';
+$i18n['add_feed'] = 'Endereço rss/atom a adicionar';
+$i18n['delete_feed'] = 'Eliminar feed';
+$i18n['add_opml'] = 'Importar ficheiro OPML';
+$i18n['check_error'] = 'Verificar erros';
+$i18n['expand'] = 'Expandir';
+$i18n['collapse'] = 'Colapsar';
+$i18n['silk'] = 'Silk Icon desenvolvido por';
+$i18n['admin'] = 'Administração';
+$i18n['diggThis'] = 'Adicionar a Digg ';
+$i18n['diggSearch'] = 'Procurar em Digg';
+$i18n['slashSubmit'] = 'Submeter a Slashdot';
+$i18n['blinkAdd'] = 'Adicionar a Blinklist';
+$i18n['spurlThis'] = 'Adicionar a Spurl';
+$i18n['winLiveAdd'] = 'Adicionar a Windows Live Bookmarks';
+$i18n['technoratiAdd'] = 'Adicionar a Technorati';
+$i18n['redditAdd'] = 'Adicionar a reddit';
+$i18n['newsvineAdd'] = 'Adicionar a newsvine';
+$i18n['viewSource'] = 'Ver esta notícia em';
+$i18n['viewSummary'] = 'Clique para ver o sumário';
+$i18n['podcastPlay'] = 'Reproduzir podcast';
+$i18n['readMore'] = 'Ler mais...';
+?>
