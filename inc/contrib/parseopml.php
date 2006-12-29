@@ -87,9 +87,6 @@ function parse_opml($remote_file) {
 	// Close the XML file
 	fclose($fp);
 
-	echo '<pre>No2:';
-	print_r($opml_parser->parsed_feeds);
-	echo '</pre>';
+	return($opml_parser->parsed_feeds);
 }
-parse_opml('omg');
 ?> 

@@ -27,6 +27,11 @@ $data		= unserialize( base64_decode($data) ) ;
 function get_feeds() {
 	return $data['feeds'];
 }
+function import_opml($opml_file) {
+	require_once('./inc/contrib/parseopml.php');
+	//Caution: $opml_file does nothing yet
+	return parse_opml($opml_file);
+}
 //Require our settings, must be first required file
 require_once('./inc/core/conf.php');
 require_once('./inc/core/lib.php');
@@ -92,7 +97,7 @@ switch($action){
 		
 	break;
 	case 'import':
-		import_opml();
+		import_opml($url);
 	break;
 }
 
