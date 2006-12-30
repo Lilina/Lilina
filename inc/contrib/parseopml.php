@@ -68,9 +68,7 @@ function parse_opml($remote_file) {
 
 
 	// Open the XML file for reading
-	//MUSTFIX: Need to get this working with file_get_contents()
-
-	$fp = fopen('test.opml','r');
+	$fp = fopen($remote_file,'r');
 
 	// Read the XML file 4KB at a time
 	while ($data = fread($fp, 4096))
