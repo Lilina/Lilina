@@ -25,7 +25,7 @@ template_header();
 </head>
 <body onload="visible_mode(showDetails)">
 <div id="navigation">
-  	<a href="<?php template_sitelink();?>">
+  	<a href="<?php template_siteurl();?>">
 	<img src="i/logo.jpg" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
   	<?php template_synd_links(); ?>
