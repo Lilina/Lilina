@@ -64,8 +64,8 @@ function getRSSLocation($html, $location){
     if(!$html or !$location){
         return false;
     }else{
-        #search through the HTML, save all <link> tags
-        # and store each link's attributes in an associative array
+        //search through the HTML, save all <link> tags
+        //and store each link's attributes in an associative array
         preg_match_all('/<link\s+(.*?)\s*\/?>/si', $html, $matches);
         $links = $matches[1];
         $final_links = array();
@@ -81,32 +81,32 @@ function getRSSLocation($html, $location){
             }
             $final_links[$n] = $final_link;
         }
-        #now figure out which one points to the RSS file
+        //now figure out which one points to the RSS file
         for($n=0; $n<$link_count; $n++){
             if(strtolower($final_links[$n]['rel']) == 'alternate'){
                 if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
                     $href = $final_links[$n]['href'];
                 }
                 if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
-                    #kludge to make the first version of this still work
+                    //kludge to make the first version of this still work
                     $href = $final_links[$n]['href'];
                 }
                 if(!$href and strtolower($final_links[$n]['type']) == 'application/atom+xml'){
-                    #kludge to make the first version of this still work
+                    //kludge to make the first version of this still work
                     $href = $final_links[$n]['href'];
                 }
                 if($href){
-                    if(strstr($href, "http://") !== false){ #if it's absolute
+                    if(strstr($href, "http://") !== false){ //if it's absolute
                         $full_url = $href;
                     }else{ #otherwise, 'absolutize' it
                         $url_parts = parse_url($location);
 						// echo "<pre>" ; print_r($url_parts) ; echo "</pre>" ;
-                        #only made it work for http:// links. Any problem with this?
+                        //only made it work for http:// links. Any problem with this?
                         $full_url = "http://$url_parts[host]";
                         if(isset($url_parts['port'])){
                             $full_url .= ":$url_parts[port]";
                         }
-                        if($href{0} != '/'){ #it's a relative link on the domain
+                        if($href{0} != '/'){ //it's a relative link on the domain
                                if (substr($url_parts['path'],-1)!='/') {
                                         $full_url .= dirname($url_parts['path']);
                                 } else {
@@ -179,7 +179,7 @@ function date_cmp($a, $b) {
 function parseHtml($val, $debug=false){
 	if($settings['encoding']!='utf-8'){
 		$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core', 'Encoding', $ENCODING); //replace with your encoding
+		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
 		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
 		$purifier = new HTMLPurifier($config);
 		}
