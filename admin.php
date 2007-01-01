@@ -44,6 +44,8 @@ if(!$authed == true){
 switch($page) {
 	case 'feeds': 
 		$out_page = 'admin-feeds.php';
+	case 'settings':
+		$out_page = 'admin-settings.php';
 	default:
 		$out_page = 'admin-feeds.php';
 }

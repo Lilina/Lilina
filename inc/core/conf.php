@@ -44,6 +44,8 @@ $settings['output']		= array(
 //Timezone offset
 $settings['offset']		= 0;
 $settings['encoding']	= 'utf-8';
+//Debug mode?
+$settings['debug']		= 'false';
 
 //Backup our settings
 $default_settings = $settings;
@@ -54,7 +56,11 @@ if(!file_exists($settings['files']['settings'])) {
 	fclose($settings_file);
 }
 $settings = file_get_contents($settings['files']['settings']) ;
-$settings = unserialize( base64_decode($data) ) ;
+$settings = unserialize( base64_decode($settings) ) ;
+
+if(!$settings) {
+	$settings = $default_settings;
+}
 
 //$new_settings = array_diff($default_settings, $settings);
 

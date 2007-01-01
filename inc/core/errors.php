@@ -48,7 +48,7 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 <p>An error in the script has been detected. Please report this to the site administrator with the following report:</p>
 <pre style="border: 1px #000000 solid; background: #D9FFD9;">
 <?php
-echo $err;
+echo htmlentities($err);
 ?>
 </pre>
 	<?php

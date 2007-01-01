@@ -11,11 +11,12 @@ See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
 define('LILINA',1) ;
+$data		= 'blank string';
 $settings	= 0;
 $out		= 0;
 //Require our settings, must be first required file
 //We need this even for cached pages
-//require_once('./inc/errors.php');
+require_once('./inc/core/errors.php');
 //error_reporting(E_ALL);
 require_once('./inc/core/conf.php');
 require_once('./inc/core/cache.php');

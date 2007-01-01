@@ -1,8 +1,13 @@
 <?php
+define('LILINA',1);
+defined('LILINA') or die('Restricted access');
 $error = 0;
+//Make sure we have the ping code
+require_once('../contrib/ping.php');
 //Register with main server for stats
 if(!$settings['localhost']) {
-	if(!ping('http://lilina.sourceforge.net/ping.php', $settings['baseurl'], 'New Site', 'New Lilina site set up')) {
+	//					Logging site					This site			Title (site name)		Content (site URL)
+	if(!ping('http://lilina.cubegames.net/ping.php',$settings['baseurl'],$settings['sitename'],	$settings['baseurl'])) {
 		$error = 'Unable to register with remote server';
 	}
 }
