@@ -44,14 +44,20 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 	}
 	$err .= "</errorentry>\n\n";
   
-	// for testing
+	?><h1>Error in script!</h1>
+<p>An error in the script has been detected. Please report this to the site administrator with the following report:</p>
+<pre style="border: 1px #000000 solid; background: #D9FFD9;">
+<?php
+echo $err;
+?>
+</pre>
+	<?php
 	//echo $err;
 
 	// save to the error log, and e-mail me if there is a critical user error
 	error_log($err, 3, './error.log');
 	if ($errno == E_USER_ERROR) {
-		//---UFR---
-		//mail($settings['owner']['email'], 'Critical User Error', $err);
+		mail($settings['owner']['email'], 'Critical User Error', $err);
 	}
 }
 

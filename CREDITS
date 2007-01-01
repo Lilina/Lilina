@@ -11,6 +11,11 @@ Lilina 1.0:
 		FeedCreator
 Software used:
 --------------
+cache.php:
+	* Dave Childs
+		Thanks to Dave for the caching method used in cache.php
+		and for all the cheatsheets which I use rigourously :D
+
 HTMLPurifier:
 	* Edward Z. Yang (Ambush Commander)
 	* (From HTMLPurifier credits)
@@ -20,11 +25,6 @@ HTMLPurifier:
 		to RSnake for letting me package his fantastic XSS
 		cheatsheet for a smoketest.
 
-cache.php:
-	* Dave Childs
-		Thanks to Dave for the caching method used in cache.php
-		and for all the cheatsheets which I use rigourously :D
-
 MagpieRSS:
 	* Kellan Elliott-McCrea <kellan@pobox.com>
 		Kellan recently rewrote his popular parser from the ground up.
@@ -33,9 +33,15 @@ MagpieRSS:
 		Without MagpieRSS at the start, Lilina would not exist.
 		ALL HAIL KELLAN!
 
-ParseOPML.php
+parseOPML.php
 	* Sencer Yurdagül
 	* Adapted by Ryan McCue <cubegames@gmail.com> for Lilina
 		http://www.sencer.de/code/showOPML.phps
 		Code believed to be under public domain license. If this
 		is not the case, please email us at lilina-developement@googlegroups.com
+
+ping.php
+	* Ran Aroussi
+	* Adapted by Ryan McCue <cubegames@gmail.com> for Lilina
+		http://phptrackback.sourceforge.net/source.php
+		Adapted from the PHP TrackBack class licensed under the GPL.
