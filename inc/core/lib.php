@@ -1,10 +1,10 @@
 <?php
 /******************************************
 		Lilina: Simple PHP Aggregator
-File:		parseopml.php
-Purpose:	OPML Parser
-Notes:		Adapted from
-	http://www.sencer.de/code/showOPML.phps
+File:		lib.php
+Purpose:	Standard require()s and misc.
+			functions
+Notes:		Move. To. Plugins.
 			CAUTION: HERE BE DRAGONS!
 Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
@@ -32,14 +32,25 @@ require_once('./delicious.php');*/
 
 // NO NEED TO EDIT BELOW THIS LINE!
 
-
-$LILINAVERSION = '1.0' ;
+//Backwards compatibility only
+$LILINAVERSION	= '1.0' ;
+$lilina			= array(
+						'core-sys'		=> array(
+												'version'	=> '1.0'
+												),
+						'plugin-sys'	=> array(
+												'version'	=> '1.0'
+												),
+						'template-sys'	=> array(
+												'version'	=> '1.0'
+												),
+						);
 
 define('MAGPIE_CACHE_ON',1) ;
 define('MAGPIE_CACHE_FRESH_ONLY', true) ;
 define('MAGPIE_DIR', './inc/contrib/');
 define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
-define('MAGPIE_USER_AGENT','lilina'. $LILINAVERSION.'  (+http://lilina.cubegames.net/)') ;
+define('MAGPIE_USER_AGENT','lilina'. $lilina['core-sys']['version'].'  (+http://lilina.cubegames.net/)') ;
 error_reporting(E_ERROR);
 require_once(MAGPIE_DIR.'magpie.php');
 

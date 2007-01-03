@@ -281,7 +281,7 @@ if($settings['output']['atom']){
 <div id="c2">&nbsp;lilina.</div>
 <div id="footer">
   <p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
-	<?php echo $LILINAVERSION; ?><br />
+	<?php echo $lilina['core-sys']['version']; ?><br />
 	This page was last generated on <?php echo date('Y-m-d \a\t g:i a'); ?><br /><?php
 	$mtime = microtime();
 	$mtime = explode(" ",$mtime);
