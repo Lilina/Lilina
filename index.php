@@ -39,7 +39,7 @@ require_once('./inc/core/lib.php');
 
 
 
-$TIMERANGE = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*24 ) ;
+$showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
 $data = file_get_contents($settings['files']['feeds']) ;
 $data = unserialize( base64_decode($data) ) ;
@@ -182,7 +182,7 @@ for($i=0;$i<count($items);$i++) {
 	$out .= "</div>\n" ;
 
  
-	if ( ($settings['interface'][0]>-1) && (time() - $item['date_timestamp'] > $settings['interface'][0]) ) break ;
+	if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) break ;
 }
   if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.
 
