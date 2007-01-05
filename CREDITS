@@ -9,6 +9,7 @@ Lilina 1.0:
 	* Jean-Marc Liotier <jim@liotier.org>
 		Code for RSS output, based on example code from
 		FeedCreator
+
 Software used:
 --------------
 cache.php:
@@ -39,6 +40,11 @@ parseOPML.php
 		http://www.sencer.de/code/showOPML.phps
 		Code believed to be under public domain license. If this
 		is not the case, please email us at lilina-developement@googlegroups.com
+
+PHP-Gettext
+	* Danilo Segan <danilo@kvota.net>
+	* Nico Kaiser <nico@siriux.net> (contributed most changes between 1.0.2 and 1.0.3, bugfix for 1.0.5)
+	* Steven Armstrong <sa@c-area.ch> (gettext.inc, leading to 1.0.6)
 
 ping.php
 	* Ran Aroussi
