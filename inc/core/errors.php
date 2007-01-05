@@ -1,4 +1,13 @@
 <?php
+/******************************************
+		Lilina: Simple PHP Aggregator
+File:		errors.php
+Purpose:	Error handler
+Notes:		Must turn off the non-fatal ones
+Style:		**EACH TAB IS 4 SPACES**
+Licensed under the GNU General Public License
+See LICENSE.txt to view the license
+******************************************/
 defined('LILINA') or die('Restricted access');
 // we will do our own error handling
 error_reporting(0);
