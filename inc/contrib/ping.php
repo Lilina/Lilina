@@ -1,4 +1,14 @@
 <?php
+/******************************************
+		Lilina: Simple PHP Aggregator
+File:		ping.php
+Purpose:	Sends trackbacks
+Notes:		Only used in installation, however
+			plugins may like to use
+Style:		**EACH TAB IS 4 SPACES**
+Licensed under the GNU General Public License
+See LICENSE.txt to view the license
+******************************************/
 function ping($tb, $url, $title = '', $excerpt = '') {
 	$response = '';
 	$reason = '';
