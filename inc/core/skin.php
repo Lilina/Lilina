@@ -1,11 +1,23 @@
 <?php
 /******************************************
 		Lilina: Simple PHP Aggregator
-File:		parseopml.php
-Purpose:	OPML Parser
-Notes:		Adapted from
-	http://www.sencer.de/code/showOPML.phps
-			CAUTION: HERE BE DRAGONS!
+File:		skin.php
+Purpose:	Templating functions
+Notes:		CAUTION: HERE BE DRAGONS!
+			$return_type can be either
+			echo (default) or var for an array
+Functions:	template_sitename( $return_type );
+			template_siteurl( $return_type );
+			template_synd_header( $return_type );
+			template_synd_links( $return_type );
+			template_header( $return_type );
+			template_opml( $return_type );
+			template_output( $return_type );
+			template_source_list( $return_type );
+			template_end_errors( $return_type );
+			template_footer( $return_type );
+			template_path( $return_type );
+			template_times( $return_type );
 Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
@@ -136,6 +148,19 @@ function template_source_list($return='echo'){
 	}
 }
 
+function template_end_errors($return='echo'){
+	if($return == 'echo') {
+		echo $end_errors;
+	}
+	elseif($return == 'var') {
+		return $end_errors;
+	}
+	else {
+		echo 'Error: return type '.$return.' is not valid';
+	}
+}
+
+
 function template_footer($return='echo'){
 	if($return == 'echo') {
 		echo '<p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
@@ -152,4 +177,64 @@ function template_footer($return='echo'){
 		echo 'Error: return type '.$return.' is not valid';
 	}
 }
+
+function template_path($return='echo'){
+	if($return == 'echo') {
+		echo $settings['templates']['path'];
+	}
+	elseif($return == 'var') {
+		return $settings['templates']['path'];
+	}
+	else {
+		echo 'Error: return type '.$return.' is not valid';
+	}
+}
+
+function template_times($return='echo'){
+	$return_me	= array();
+	for($q=0;$q<count($settings['interface']['times']);$q++){
+		$current_time	= $settings['interface']['times'][$q];
+		if(is_int($current_time)){
+			if($return == 'echo') {
+				echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
+			}
+			elseif($return == 'var') {
+				$return_me[] = array(
+									'time'	=> $current_time,
+									'label'	=> $current_time
+									);
+			}
+		}
+		else {
+			switch($current_time) {
+				case 'week':
+					if($return == 'echo') {
+						echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
+					}
+					elseif($return == 'var') {
+						$return_me[] = array(
+											'time'	=> '168',
+											'label'	=> 'week'
+											);
+					}
+				break;
+				case 'all':
+					if($return == 'echo') {
+						echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
+					}
+					elseif($return == 'var') {
+						$return_me[] = array(
+											'time'	=> '-1',
+											'label'	=> 'all'
+											);
+					}
+				break;
+			}
+		}
+	}
+	else {
+		echo 'Error: return type '.$return.' is not valid';
+	}
+}
+
 ?>

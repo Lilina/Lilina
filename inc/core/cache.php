@@ -1,4 +1,15 @@
 <?php
+/******************************************
+		Lilina: Simple PHP Aggregator
+File:		cache.php
+Purpose:	Dynamic page caching
+Notes:		Need to move all crud to plugins
+Style:		**EACH TAB IS 4 SPACES**
+Licensed under the GNU General Public License
+See LICENSE.txt to view the license
+******************************************/
+defined('LILINA') or die('Restricted access');
+
 //STOP RIGHT THERE!
 //Instead of dynamically generating the rest,
 //we'll use a cached version

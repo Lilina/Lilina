@@ -10,57 +10,65 @@ See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
 $settings = 0;
-$settings				= array();
+$settings							= array();
 //Must be in seconds
-$settings['cachetime']	= 600;
+$settings['cachetime']				= 600;
 //Magpie cache time is default
-$settings['magpie']		= array('cachetime' => 3600);
-$settings['baseurl']	= 'http://lilina.cubegames.net/';
+$settings['magpie']					= array('cachetime' => 3600);
+$settings['baseurl']				= 'http://localhost/';
 //No need to change this really
-$settings['path']		= dirname(dirname(dirname(__FILE__)));
-$settings['cachedir']	= $settings['path'] . '/cache/';
-$settings['sitename']	= 'Lilina News Aggregator';
-$settings['auth']		= array('user' => 'username', 'pass' => 'password');
-$settings['owner']		= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
-$settings['lang']		= 'english';
-$settings['files']		= array(
-								'feeds'		=> $settings['path'] . '/feeds.data',
-								'times'		=> $settings['path'] . '/time.data',
-								'settings'	=> $settings['path'] . '/settings.data'
-								);
-$settings['feeds']		= array('items' => '25');
+$settings['path']					= dirname(dirname(dirname(__FILE__)));
+$settings['templates']				= array(
+											'template'	=> 'default'
+											);
+//Need this so that path works
+$settings['templates']['path']		= $settings['baseurl'] . 'templates/' . $settings['templates']['template'];
+$settings['cachedir']				= $settings['path'] . '/cache/';
+$settings['sitename']				= 'Lilina News Aggregator';
+$settings['auth']					= array('user' => 'username', 'pass' => 'password');
+$settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
+$settings['lang']					= 'english';
+$settings['files']					= array(
+											'feeds'		=> $settings['path'] . '/feeds.data',
+											'times'		=> $settings['path'] . '/time.data',
+											'settings'	=> $settings['path'] . '/settings.data',
+											'plugins'	=> $settings['path'] . '/plugins.data'
+											);
+$settings['feeds']					= array('items' => '25');
 //Default time is always the first time
 //Numbers are hours, valid string values are 'week' and 'all'
-$settings['interface']	= array('times' => array(24,48,'week','all'), 'template' => 'default');
+$settings['interface']				= array('times' => array(24,48,'week','all'), 'template' => 'default');
 //Possible values are: (all lowercase)
-//'rss', 'opml', 'html', 'atom', 'raw' (as a PHP array)
-$settings['output']		= array(
-							'rss' => true,
-							'opml' => true,
-							'html' => true,
-							'atom' => true,
-							'raw' => false);
+//'rss', 'opml', 'html', 'atom'
+$settings['output']					= array(
+											'rss' => true,
+											'opml' => true,
+											'html' => true,
+											'atom' => true
+											);
 //Default: 0 hours
 //Timezone offset
-$settings['offset']		= 0;
-$settings['encoding']	= 'utf-8';
+$settings['offset']					= 0;
+$settings['encoding']				= 'utf-8';
 //Debug mode?
-$settings['debug']		= 'false';
+$settings['debug']					= 'false';
 
 //Backup our settings
-$default_settings = $settings;
+$default_settings					= $settings;
 //Import the user's settings
 if(!file_exists($settings['files']['settings'])) {
-	$settings_file = fopen($settings['files']['settings'], 'w');
+	$settings_file					= fopen($settings['files']['settings'], 'w');
 	fwrite($settings_file, serialize($default_settings));
 	fclose($settings_file);
 }
-$settings = file_get_contents($settings['files']['settings']) ;
-$settings = unserialize( base64_decode($settings) ) ;
+$settings							= file_get_contents($settings['files']['settings']) ;
+$settings							= unserialize( base64_decode($settings) ) ;
 
 if(!$settings) {
-	$settings = $default_settings;
+	$settings						= $default_settings;
 }
+
+$plugins							= '';
 
 //$new_settings = array_diff($default_settings, $settings);
 
