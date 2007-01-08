@@ -164,13 +164,18 @@ function template_end_errors($return='echo'){
 function template_footer($return='echo'){
 	if($return == 'echo') {
 		echo '<p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
-	'.$LILINAVERSION.'<br />
+	' . $lilina['core-sys']['version'] . '<br />
 	This page was last generated on '. date('Y-m-d \a\t g:i a').'<br />.
 	This page was generated in '.$totaltime.' seconds
 	?></div>';
 	}
 	elseif($return == 'var') {
-		$return_me = array('<a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a>', $LILINAVERSION, date('Y-m-d \a\t g:i a'), $totaltime);
+		$return_me = array(
+							'<a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a>',
+							$lilina['core-sys']['version'],
+							date('Y-m-d \a\t g:i a'),
+							$totaltime
+							);
 		return $return_me;
 	}
 	else {

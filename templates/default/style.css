@@ -239,8 +239,8 @@ h1 { /* Date */
 /* Edit */
 
 .item ul {
-	list-style: none;
-	margin: 15px 0 0 0;
+/*	list-style: none;
+	margin: 15px 0 0 0;*/
 	}
 .item li {
 	font-size: 12px;
@@ -303,8 +303,11 @@ li.feed_list_0 span {
   border: 0;
   }
   /* Hide Various Elements when printing */
-  .hiddenitem, #hiddensidebar, .morehiddenstuff {
+  .hiddenitem, #navigation, #times {
   display: none;
+  }
+  #navigation img {
+  display: inline;
   }
   /* Link Management */
   a:link, a:visited {

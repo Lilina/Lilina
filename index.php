@@ -28,8 +28,8 @@ require_once('./inc/core/cache.php');
 //Actually check for a cached version:
 checkCached();
 // Do not update cache unless called with parameter force_update=1
-if (isset($_GET['force_update'])&&$_GET['force_update']==1) {
-	define('MAGPIE_CACHE_AGE',1) ;
+if (isset($_GET['force_update']) && $_GET['force_update']==1) {
+	define('MAGPIE_CACHE_AGE', 1) ;
 }
 //Require our standard stuff
 require_once('./inc/core/lib.php');
@@ -63,7 +63,7 @@ for($i = 0; $i < count($data['feeds']); $i++) {
 	if (!$rss) continue;
 	$ico	= channelFavicon( $rss->channel['link'] );
 	$channel_list .= '<li><a href="' . $rss->channel['link'] . '">';
-	$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon"/>&nbsp;';
+	$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon" />&nbsp;';
 	if(!$data['feeds'][$i]['name']){
 		$channel_list .= $rss->channel['title'] . '</a></li>';
 	}
@@ -89,7 +89,7 @@ for($i = 0; $i < count($data['feeds']); $i++) {
 		$items[] = $x ;
 	}
 }
-$channel_list .= "</ul>" ;
+$channel_list .= '</ul>' ;
 usort($items, 'date_cmp');
 for($i=0;$i<count($items);$i++) {
 	//First enclosure listed is the one displayed
@@ -110,8 +110,10 @@ for($i=0;$i<count($items);$i++) {
 	$item_id = md5($href.$channel_url) ;
 	$title = $item['title'];
 	$summary = $item['content'];
-	if(!$summary) $summary = $item['summary'];
-	//hook_before_sanitize();
+	if(!$summary){
+		$summary = $item['summary'];
+	}
+	hook_before_sanitize();
 	//Parse all variables so far
 	parseHtml($title);
 	parseHtml($channel_title);
@@ -119,46 +121,54 @@ for($i=0;$i<count($items);$i++) {
 	parseHtml($ico);
 	parseHtml($href);
 	parseHtml($summary);
+	hook_after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
 		if ($date) {
-			$out .= "</div>" ;
-			$channel_url_old="" ;
+			$out .= '</div>' ;
+			$channel_url_old	= '' ;
 		}
 
 		$date = $this_date ;
+		hook_date();
 		$out .= '<h1>'.$date."</h1>\n" ;
 	}
-	if ($item_id==$_COOKIE['mark']) $markStatus='on' ;
-	else $markStatus="off" ;
+	if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
+	else $markStatus	= 'off';
 
 
 	if ($channel_url_old != $channel_url) {
-		if ($channel_url_old) $out .= "</div>" ;
-		$out .= '<div class="feed">' ;
+		if ($channel_url_old){
+			$out	.= '</div>' ;
+		}
+		$out	.= '<div class="feed">' ;
 	}
-	$out .= '<div class="item" id="IITEM-'.$item_id.'">' ;
+	$out	.= '<div class="item" id="IITEM-'.$item_id.'">' ;
  
-	if ($ico) $out .= '<img src="'.$ico.'" alt="Channel Image" title="'.$i18n['favicon'].'" width="16" height="16" />' ;
-	$out .= '<span class="time">'.$time.'</span>' ;
-	$out .= '<span class="title" id="TITLE'.$i.'">'.$title.'</span>' ;
-	$out .= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" /></a></span>' ;
-	if($enclosure) $out .= 'Podcast or Videocast Available';
-	$out .= '<div class="excerpt" id="ICONT'.$i.'">' ; 
-	$out .= $summary;
-	if($SHOW_SOCIAL==true) {
+	if ($ico){
+		$out	.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
+	}
+	$out	.= '<span class="time">'.$time.'</span>' ;
+	$out	.= '<span class="title" id="TITLE'.$i.'">'.$title.'</span>' ;
+	$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" /></a></span>' ;
+	if($enclosure){
+		$out	.= 'Podcast or Videocast Available';
+	}
+	$out	.= '<div class="excerpt" id="ICONT'.$i.'">' ; 
+	$out	.= $summary;
+	//if($SHOW_SOCIAL==true) {
 	/*$out .= delicious_tags($href) ;
 	   $out .= "<br/><img src=\"i/delicious.gif\" alt=\"".$i18n['add_delicious']."\"/> <a href=\"javascript:deliciousPost('" . addslashes($href) ."','" . addslashes($title) . "');\">add to del.icio.us.</a>" ;
 	   $out .= '&nbsp;<a href="http://del.icio.us/url/' . md5($href) .'">'.$i18n['look_delicious'].'</a>' . delicious_tags($href) ;*/
-	}
+	//}
 
 	//$out .= google_get_res($title,0) ;
 
 	$channel_url_old=$channel_url; 
   
-  if($SHOW_SOCIAL==true) {/*
-	   $out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
+  //if($SHOW_SOCIAL==true) {
+	   /*$out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
      <img src="i/furl.gif" alt="'.$i18n['furl'].'"/></a>' ;
 	   $out .= ' &nbsp; <a href="http://digg.com/submit?phase=2&amp;url='.$href.'&amp;title='.$title.'" target="_blank" title="digg this">
      <img src="i/digg.gif" alt="digg this"/></a>';
@@ -177,7 +187,7 @@ for($i=0;$i<count($items);$i++) {
      <img src="i/reddit.gif" alt="Add to reddit" /></a>';
      $out .= ' &nbsp; <a href="http://www.newsvine.com/_tools/seed&amp;save?u='.$href.'&amp;h='.$title.'" target="_blank" title="Add to newsvine">
      <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';*/
-	}
+	//}
 	$out .= "</div>\n" ;
 	$out .= "</div>\n" ;
 
@@ -186,11 +196,7 @@ for($i=0;$i<count($items);$i++) {
 }
   if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.
 
-// save times
-$ttime = serialize($time_table);
-$fp = fopen($settings['files']['times'],'w') ;
-fputs($fp, $ttime) ;
-fclose($fp) ;
+lilina_save_times($time_table);
 
 $itemCount = $i+1 ;
 
