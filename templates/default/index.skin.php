@@ -1,3 +1,14 @@
+<?php
+/******************************************
+		Lilina: Simple PHP Aggregator
+File:		index.skin.php
+Purpose:	Default Template
+Notes:		
+Style:		**EACH TAB IS 4 SPACES**
+Licensed under the GNU General Public License
+See LICENSE.txt to view the license
+******************************************/
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -7,10 +18,7 @@
 <?php
 template_synd_header();
 ?>
-<?php
-//Add templates code here
-?>
-<link rel="stylesheet" type="text/css" href="styles/style_default.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php template_path(); ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
 	var showDetails = <?php echo ( ($_COOKIE['showDetails']=="true") ? "true" : "false"); ?>;
@@ -57,6 +65,7 @@ template_header();
 
 <div id="sources">
     <?php template_source_list(); ?>
+	<?php template_end_errors(); ?>
 </div>
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>

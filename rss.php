@@ -12,7 +12,6 @@ See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
 define('LILINA',1) ;
-$settings	= 0;
 //Require our settings, must be first required file
 require_once('./inc/core/conf.php');
 

@@ -16,9 +16,9 @@ $settings	= 0;
 $out		= 0;
 //Require our settings, must be first required file
 //We need this even for cached pages
+require_once('./inc/core/conf.php');
 require_once('./inc/core/errors.php');
 //error_reporting(E_ALL);
-require_once('./inc/core/conf.php');
 require_once('./inc/core/cache.php');
 //Start measuring execution time
    $mtime = microtime();
@@ -221,7 +221,7 @@ if($settings['output']['atom']){
 <?php
 //Add templates code here
 ?>
-<link rel="stylesheet" type="text/css" href="styles/style_default.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $settings['templates']['path']; ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
 	var showDetails = <?php echo ( ($_COOKIE['showDetails']=="true") ? "true" : "false"); ?>;
@@ -276,6 +276,7 @@ if($settings['output']['atom']){
 
 <div id="sources">
     <?php echo $channel_list ?>
+	<?php echo $end_errors; ?>
 </div>
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>
