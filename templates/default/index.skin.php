@@ -54,8 +54,7 @@ template_header();
 </div><div style="text-align: right;" id="times">
 		<ul>
 		<?php
-		//Params equal tag each side of link
-		template_times('<li>','</li>');
+		template_times();
 		?>
 		</ul>
     </div>

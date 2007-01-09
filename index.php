@@ -13,20 +13,16 @@ See LICENSE.txt to view the license
 define('LILINA',1) ;
 $data		= 'blank string';
 $settings	= 0;
-$out		= 0;
-//Require our settings, must be first required file
+$out		= '';
+//Timer doesn't need settings so we don't have to wait for them
+require_once('./inc/core/misc-functions.php');
+$timer_start = lilina_timer_start();
+//Require our settings, must be second required file
 //We need this even for cached pages
 require_once('./inc/core/conf.php');
 require_once('./inc/core/errors.php');
-//error_reporting(E_ALL);
 require_once('./inc/core/cache.php');
-//Start measuring execution time
-   $mtime = microtime();
-   $mtime = explode(" ",$mtime);
-   $mtime = $mtime[1] + $mtime[0];
-   $starttime = $mtime;
-//Actually check for a cached version:
-checkCached();
+lilina_cache_start();
 // Do not update cache unless called with parameter force_update=1
 if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 	define('MAGPIE_CACHE_AGE', 1) ;
@@ -41,8 +37,7 @@ require_once('./inc/core/lib.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
-$data = file_get_contents($settings['files']['feeds']) ;
-$data = unserialize( base64_decode($data) ) ;
+$data = lilina_load_feeds($settings['files']['feeds']) ;
 
 $items = array();
 
@@ -92,11 +87,11 @@ for($i = 0; $i < count($data['feeds']); $i++) {
 $channel_list .= '</ul>' ;
 usort($items, 'date_cmp');
 for($i=0;$i<count($items);$i++) {
+	$item = $items[$i] ;
 	//First enclosure listed is the one displayed
 	$enclosure = $item['enclosures'][0]['url'];
 	$enclosuretype = $item['enclosures'][0]['type'];
 	$summary = "" ;
-	$item = $items[$i] ;
 	//echo '<pre>';
 	//print_r($item);
 	//echo '</pre>';
@@ -113,7 +108,7 @@ for($i=0;$i<count($items);$i++) {
 	if(!$summary){
 		$summary = $item['summary'];
 	}
-	hook_before_sanitize();
+	// hook_before_sanitize();
 	//Parse all variables so far
 	parseHtml($title);
 	parseHtml($channel_title);
@@ -121,7 +116,8 @@ for($i=0;$i<count($items);$i++) {
 	parseHtml($ico);
 	parseHtml($href);
 	parseHtml($summary);
-	hook_after_sanitize();
+	// hook_after_sanitize();
+	// hook_after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
@@ -131,7 +127,7 @@ for($i=0;$i<count($items);$i++) {
 		}
 
 		$date = $this_date ;
-		hook_date();
+		// hook_date();
 		$out .= '<h1>'.$date."</h1>\n" ;
 	}
 	if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
@@ -157,18 +153,18 @@ for($i=0;$i<count($items);$i++) {
 	}
 	$out	.= '<div class="excerpt" id="ICONT'.$i.'">' ; 
 	$out	.= $summary;
-	//if($SHOW_SOCIAL==true) {
-	/*$out .= delicious_tags($href) ;
+	/*if($SHOW_SOCIAL==true) {
+	   $out .= delicious_tags($href) ;
 	   $out .= "<br/><img src=\"i/delicious.gif\" alt=\"".$i18n['add_delicious']."\"/> <a href=\"javascript:deliciousPost('" . addslashes($href) ."','" . addslashes($title) . "');\">add to del.icio.us.</a>" ;
-	   $out .= '&nbsp;<a href="http://del.icio.us/url/' . md5($href) .'">'.$i18n['look_delicious'].'</a>' . delicious_tags($href) ;*/
-	//}
+	   $out .= '&nbsp;<a href="http://del.icio.us/url/' . md5($href) .'">'.$i18n['look_delicious'].'</a>' . delicious_tags($href) ;
+	}*/
 
 	//$out .= google_get_res($title,0) ;
 
 	$channel_url_old=$channel_url; 
   
-  //if($SHOW_SOCIAL==true) {
-	   /*$out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
+  /*if($SHOW_SOCIAL==true) {
+	   $out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
      <img src="i/furl.gif" alt="'.$i18n['furl'].'"/></a>' ;
 	   $out .= ' &nbsp; <a href="http://digg.com/submit?phase=2&amp;url='.$href.'&amp;title='.$title.'" target="_blank" title="digg this">
      <img src="i/digg.gif" alt="digg this"/></a>';
@@ -186,8 +182,8 @@ for($i=0;$i<count($items);$i++) {
      $out .= ' &nbsp; <a href="http://reddit.com/submit?url='.$href.'&amp;title='.$title.'" target="_blank" title="Add to reddit">
      <img src="i/reddit.gif" alt="Add to reddit" /></a>';
      $out .= ' &nbsp; <a href="http://www.newsvine.com/_tools/seed&amp;save?u='.$href.'&amp;h='.$title.'" target="_blank" title="Add to newsvine">
-     <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';*/
-	//}
+     <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';
+	}*/
 	$out .= "</div>\n" ;
 	$out .= "</div>\n" ;
 
@@ -199,7 +195,6 @@ for($i=0;$i<count($items);$i++) {
 lilina_save_times($time_table);
 
 $itemCount = $i+1 ;
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -226,8 +221,9 @@ if($settings['output']['atom']){
 ?>
 <?php
 //Add templates code here
+
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo $settings['templates']['path']; ?>/style.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $settings['template_path']; ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
 	var showDetails = <?php echo ( ($_COOKIE['showDetails']=="true") ? "true" : "false"); ?>;
@@ -289,26 +285,14 @@ if($settings['output']['atom']){
 <div id="footer">
   <p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
 	<?php echo $lilina['core-sys']['version']; ?><br />
-	This page was last generated on <?php echo date('Y-m-d \a\t g:i a'); ?><br /><?php
-	$mtime = microtime();
-	$mtime = explode(" ",$mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$endtime = $mtime;
-	$totaltime = ($endtime - $starttime);
-	$totaltime = round($totaltime, 2);
-	echo 'This page was generated in '.$totaltime.' seconds';
-	?></div>
+	This page was last generated on
+	<?php echo date('Y-m-d \a\t g:i a'); ?> and took
+	<?php echo lilina_timer_end($timer_start); ?> seconds</div>
 </body>
 </html>
 <?php
-$cachefile = $settings['cachedir'] . md5('index') . '.html'; // Cache file to either load or create
-// Now the script has run, generate a new cache file
-$fp = fopen($cachefile, 'w');
+/*
+require_once('./inc/core/skin.php');
+require_once('./templates/default/index.skin.php');*/
 
-$pagecontent = ob_get_contents();
-// save the contents of output buffer to the file
-fwrite($fp, $pagecontent);
-fclose($fp);
-
-ob_end_flush();
 ?>

@@ -9,9 +9,8 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
-//Stop hacking attempts
-define('LILINA',1) ;
-global $activated_plugins;
+defined('LILINA') or die('Restricted access');
+global $activated_plugins, $registered_plugins, $hooked_plugins;
 $activated_plugins	= @file_get_contents($settings['files']['plugins']) ;
 $activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
 
@@ -27,10 +26,9 @@ function register_plugin($file, $name, $description = '') {
 										);
 }
 
-function register_plugin_function($function, $hook, $params = '') {
+function register_plugin_function($function, $hook) {
 	$hooked_plugins[$hook][]	= array(
-										'file'	=> $file,
-										'desc'	=> $description
+										'func'	=> $function
 										);
 }
 

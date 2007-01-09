@@ -22,31 +22,34 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
-//Stop hacking attempts
 defined('LILINA') or die('Restricted access');
 
 //Define all the functions for our skins
 function template_sitename($return='echo'){
 	if($return == 'echo') {
 		echo $settings['sitename'];
+		return true;
 	}
 	elseif($return == 'var') {
 		return $settings['sitename'];
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_siteurl($return='echo'){
 	if($return == 'echo') {
 		echo $settings['baseurl'];
+		return true;
 	}
 	elseif($return == 'var') {
 		return $settings['baseurl'];
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
@@ -61,6 +64,7 @@ function template_synd_header($return='echo'){
 		if($settings['output']['atom']){
 			echo '<link rel="alternate" type="application/rss+xml" title="Atom Feed" href="rss.php?output=atom" />';
 		}
+		return true;
 	}
 	elseif($return == 'var') {
 		$return_me = array(0 => false, 1 => false, 2 => false);
@@ -73,9 +77,11 @@ function template_synd_header($return='echo'){
 		if($settings['output']['atom']){
 			$return_me[2] = true;
 		}
+		return $return_me;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
@@ -90,6 +96,7 @@ function template_synd_links($return='echo'){
 		if($settings['output']['atom']){
 			echo '<a title="Atom Feed" href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" />';
 		}
+		return true;
 	}
 	elseif($return == 'var') {
 		$return_me = array(0 => false, 1 => false, 2 => false);
@@ -102,138 +109,162 @@ function template_synd_links($return='echo'){
 		if($settings['output']['atom']){
 			$return_me[2] = true;
 		}
+		return $return_me;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_header($return='echo'){
-//MUSTFIX: NOT YET IMPLEMENTED
+	//MUSTFIX: NOT YET IMPLEMENTED
+	return true;
 }
 
 function template_opml($return='echo'){
-	if($return == 'echo') {
-		echo '<a href="cache/opml.xml">OPML</a>';
-	}
-	elseif($return == 'var') {
-		return 'cache/opml.xml';
+	if($settings['output']['opml']===true) {
+		if($return == 'echo') {
+			echo '<a href="cache/opml.xml">OPML</a>';
+			return true;
+		}
+		elseif($return == 'var') {
+			return 'cache/opml.xml';
+		}
+		else {
+			echo 'Error: return type '.$return.' is not valid';
+			return false;
+		}
 	}
 	else {
-		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_output($return='echo'){
 	if($return == 'echo') {
 		echo $out;
+		return true;
 	}
 	elseif($return == 'var') {
 		return $out;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_source_list($return='echo'){
 	if($return == 'echo') {
 		echo $channel_list;
+		return true;
 	}
 	elseif($return == 'var') {
 		return $channel_list;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_end_errors($return='echo'){
 	if($return == 'echo') {
 		echo $end_errors;
+		return true;
 	}
 	elseif($return == 'var') {
 		return $end_errors;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 
 function template_footer($return='echo'){
 	if($return == 'echo') {
-		echo '<p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
-	' . $lilina['core-sys']['version'] . '<br />
-	This page was last generated on '. date('Y-m-d \a\t g:i a').'<br />.
-	This page was generated in '.$totaltime.' seconds
-	?></div>';
+		echo '<p>Powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v'
+		. $lilina['core-sys']['version']
+		. '<br />This page was last generated on '
+		. date('Y-m-d \a\t g:i a')
+		. ' and took '
+		. lilina_timer_end($timer_start)
+		. ' seconds</div>';
+		return true;
 	}
 	elseif($return == 'var') {
 		$return_me = array(
 							'<a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a>',
 							$lilina['core-sys']['version'],
 							date('Y-m-d \a\t g:i a'),
-							$totaltime
+							lilina_timer_end($timer_start)
 							);
 		return $return_me;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_path($return='echo'){
 	if($return == 'echo') {
-		echo $settings['templates']['path'];
+		echo $settings['template_path'];
+		return true;
 	}
 	elseif($return == 'var') {
-		return $settings['templates']['path'];
+		return $settings['template_path'];
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
+		return false;
 	}
 }
 
 function template_times($return='echo'){
 	$return_me	= array();
-	for($q=0;$q<count($settings['interface']['times']);$q++){
-		$current_time	= $settings['interface']['times'][$q];
-		if(is_int($current_time)){
-			if($return == 'echo') {
-				echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
+	if($return == ('echo'||'var')){
+		for($q=0;$q<count($settings['interface']['times']);$q++){
+			$current_time	= $settings['interface']['times'][$q];
+			if(is_int($current_time)){
+				if($return == 'echo') {
+					echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
+				}
+				elseif($return == 'var') {
+					$return_me[] = array(
+										'time'	=> $current_time,
+										'label'	=> $current_time
+										);
+				}
 			}
-			elseif($return == 'var') {
-				$return_me[] = array(
-									'time'	=> $current_time,
-									'label'	=> $current_time
-									);
-			}
-		}
-		else {
-			switch($current_time) {
-				case 'week':
-					if($return == 'echo') {
-						echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
-					}
-					elseif($return == 'var') {
-						$return_me[] = array(
-											'time'	=> '168',
-											'label'	=> 'week'
-											);
-					}
-				break;
-				case 'all':
-					if($return == 'echo') {
-						echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
-					}
-					elseif($return == 'var') {
-						$return_me[] = array(
-											'time'	=> '-1',
-											'label'	=> 'all'
-											);
-					}
-				break;
+			else {
+				switch($current_time) {
+					case 'week':
+						if($return == 'echo') {
+							echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
+						}
+						elseif($return == 'var') {
+							$return_me[] = array(
+												'time'	=> '168',
+												'label'	=> 'week'
+												);
+						}
+					break;
+					case 'all':
+						if($return == 'echo') {
+							echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
+						}
+						elseif($return == 'var') {
+							$return_me[] = array(
+												'time'	=> '-1',
+												'label'	=> 'all'
+												);
+						}
+					break;
+				}
 			}
 		}
 	}

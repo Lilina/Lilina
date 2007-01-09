@@ -10,6 +10,7 @@ See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
 $settings = 0;
+global $settings;
 $settings							= array();
 //Must be in seconds
 $settings['cachetime']				= 600;
@@ -18,11 +19,8 @@ $settings['magpie']					= array('cachetime' => 3600);
 $settings['baseurl']				= 'http://localhost/';
 //No need to change this really
 $settings['path']					= dirname(dirname(dirname(__FILE__)));
-$settings['templates']				= array(
-											'template'	=> 'default'
-											);
-//Need this so that path works
-$settings['templates']['path']		= $settings['baseurl'] . 'templates/' . $settings['templates']['template'];
+$settings['template']				= 'default';
+$settings['template_path']			= $settings['baseurl'] . 'templates/' . $settings['template'];
 $settings['cachedir']				= $settings['path'] . '/cache/';
 $settings['sitename']				= 'Lilina News Aggregator';
 $settings['auth']					= array('user' => 'username', 'pass' => 'password');
@@ -38,8 +36,6 @@ $settings['feeds']					= array('items' => '25');
 //Default time is always the first time
 //Numbers are hours, valid string values are 'week' and 'all'
 $settings['interface']				= array('times' => array(24,48,'week','all'), 'template' => 'default');
-//Possible values are: (all lowercase)
-//'rss', 'opml', 'html', 'atom'
 $settings['output']					= array(
 											'rss' => true,
 											'opml' => true,

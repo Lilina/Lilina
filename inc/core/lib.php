@@ -350,4 +350,6 @@ function escapeNonASCIICharacters($str) {
     }
     return $out;
 }
+
+
 ?>

@@ -3,7 +3,7 @@
 		Lilina: Simple PHP Aggregator
 File:		l10n.php
 Purpose:	Localisation
-Notes:		Change all code to use this
+Notes:		//MUSTFIX: Change all code to use this
 			Based off example code by
 			Danilo Segan <danilo@kvota.net>
 			and Steven Armstrong <sa@c-area.ch>
@@ -11,7 +11,7 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
-
+defined('LILINA') or die('Restricted access');
 $l10n					= array();
 $l10n['locale_dir']		= $settings['path'] . '/inc/locale';
 $l10n['default_locale']	= 'en_US';
@@ -34,8 +34,7 @@ if (function_exists('bind_textdomain_codeset')) {
 	bind_textdomain_codeset($domain, $encoding);
 }
 textdomain($domain);
-?>
-<?php
+
 print "<p>";
 foreach($supported_locales as $l) {
 	print "[<a href=\"?lang=$l\">$l</a>] ";
@@ -46,10 +45,9 @@ if (!locale_emulation()) {
 	print "<p>locale '$locale' is supported by your system, using native gettext implementation.</p>\n";
 }
 else {
-	print "<p>locale '$locale' is _not_ supported on your system, using the default locale '". DEFAULT_LOCALE ."'.</p>\n";
+	print "<p>locale '$locale' is _not_ supported on your system, using the default locale '". $l10n['default_locale'] ."'.</p>\n";
 }
-?>
-<?php
+
 // using PHP-gettext
 print "<pre>";
 print _("This is how the story goes.\n\n");

@@ -147,7 +147,7 @@ function ItemSetShowHide(id,show) {
 	}
 }
 
-function visible_mode(display) {
+/*function visible_mode(display) {
         var main = document.getElementById('main') ;
         var i ;
         var j ;
@@ -163,9 +163,8 @@ function visible_mode(display) {
                 }
 	}
         showDetails = display ;         SetCookie('showDetails', showDetails) ;
-}
+}*/
 
-/*
 function visible_mode(display) {
         var main = document.getElementById('main') ;
         var i ;
@@ -173,16 +172,15 @@ function visible_mode(display) {
         var items ;
         for (i=0; i<main.childNodes.length; i++) {
                 items = main.childNodes[i] ;
-                for (j=0; j<items.childNodes.length; j++) {
-                        if (items.childNodes[j].id && items.childNodes[j].id.substring(0,5)=='IITEM') {
-                                itemID = items.childNodes[j].id.substring(6,38) ;
+                for (j=0; j<main.childNodes.length; j++) {
+                        if (main.childNodes[j].id && main.childNodes[j].id.substring(0,5)=='IITEM') {
+                                itemID = main.childNodes[j].id.substring(6,38) ;
                                 ItemSetShowHide(itemID,display) ;
                         }
                 }
         }
         showDetails = display ;         SetCookie('showDetails', showDetails) ;
 }
-*/
 
 function toggleStyle(StyleName) {
 	object = document.getElementById(StyleName) ;
