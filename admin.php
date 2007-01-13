@@ -8,13 +8,12 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
-//Start measuring execution time
-   $mtime = microtime();
-   $mtime = explode(" ",$mtime);
-   $mtime = $mtime[1] + $mtime[0];
-   $starttime = $mtime;
 //Stop hacking attempts
 define('LILINA',1) ;
+//Timer doesn't need settings so we don't have to wait for them
+require_once('./inc/core/misc-functions.php');
+$timer_start = lilina_timer_start();
+//Protect from register_globals
 $settings	= 0;
 $authed		= 0;
 $page		= htmlentities($_GET['page']);
@@ -113,26 +112,40 @@ switch($action){
 <?php
 //Add templates code here
 ?>
-<link rel="stylesheet" type="text/css" href="styles/style_default.css" media="screen"/>
-<link rel="stylesheet" type="text/css" href="styles/admin.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
-<div id="navigation">
 <?php
 if($authed == true) {
 ?>
-	<a href="<?php echo $settings['baseurl']; ?>admin.php">
-	<img src="i/logo.jpg" alt="<?php echo $settings['sitename'];?>" title="<?php echo $settings['sitename'];?>" />
-	</a>
-  	&nbsp;&nbsp;
+<div id="pagetitle">
 	<h1>Control Panel</h1>
-	|
-	<div style="float: right;">
-		<ul class="admin_links">
-			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Home</a></li>
-			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds">Feeds</a></li>
-			<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Settings</a></li>
+	<span id="viewsite">
+		<a href="http://cubegames.net/">View site</a>
+	</span>
+</div>
+<div id="navigation">
+	<div id="links_container">
+		<ul class="links">
+			<li>
+				<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
+				if($page=='home'){
+				echo ' class="current"';
+				}?>>Home</a>
+			</li>
+			<li>
+				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"<?php
+				if($page=='feeds'){
+				echo ' class="current"';
+				}?>>Feeds</a>
+			</li>
+			<li>
+				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"<?php
+				if($page=='settings'){
+				echo ' class="current"';
+				}?>>Settings</a>
+			</li>
 		</ul>
     </div>
 </div>
@@ -142,7 +155,7 @@ echo $result;
 echo '</div>';
 }
 ?>
-<div id="main">
+<div id="main" style="float:right;">
 <?php
 if($out_page){
 	require_once('./inc/pages/'.$out_page);
@@ -197,15 +210,11 @@ else{
 <?php
 }
 ?>
-  <div id="footer">powered by <a href="http://lilina.sourceforge.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
-    <?php echo $LILINAVERSION; ?><br />
-	<?php   $mtime = microtime();
-   $mtime = explode(" ",$mtime);
-   $mtime = $mtime[1] + $mtime[0];
-   $endtime = $mtime;
-   $totaltime = ($endtime - $starttime);
-   $totaltime = round($totaltime, -2);
-   echo "This page was generated in ".$totaltime." seconds";  ?>
-  </div>
+	<div id="footer">
+		<a href="http://lilina.cubegames.net/"><img src="i/logo_small.jpg" alt="Lilina News Aggregator" /></a>
+		This page was last generated on
+		<?php echo date('Y-m-d \a\t g:i a'); ?> and took
+		<?php echo lilina_timer_end($timer_start); ?> seconds
+	</div>
 </body>
 </html>

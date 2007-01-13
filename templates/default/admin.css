@@ -1,0 +1,133 @@
+/* Borrowed a lot from WP-Admin Tiger Stylesheets */
+html {
+	background: #e0e2f3;
+}
+body {
+	background: #e0e2f3;
+	font-family: "Lucida Grande", "Tahoma", "Lucida Sans Unicode", Tahoma, Verdana !important;
+	font-size: small;
+}
+#pagetitle {
+	text-align:left;
+	font-size:86%;
+	height:23px;
+	color:#FFF;
+	font-weight:bold;
+	line-height:1;
+	text-shadow: 0px 1px 1px black;
+	margin:0;
+	width:100%;
+	background:#333 url(ol_admin_images/page_white_medal.png) no-repeat 7px 50%;
+	border-bottom:1px solid #000;
+	padding:0;
+	position:fixed;
+	z-index:98;
+	top:0;
+	left:0;
+}
+
+#pagetitle h1 {
+	padding:0 0 0 20px !important;
+	font-family: "Lucida Grande", "Tahoma", "Lucida Sans Unicode", Tahoma, Verdana !important;
+	font-size: 100%;
+	font-weight: bold;
+	text-align:left;
+	color:#FFF;
+	margin:0 7px;
+	padding:0;
+	line-height:23px;
+	position:relative;
+	z-index:2;
+}
+
+#pagetitle #viewsite {
+	position:fixed;
+	right:0;
+	width:100px;
+	height:0px;
+	overflow:hidden;
+	padding-top:23px;
+	z-index:97;
+	font-size:115%;
+}
+
+#wphead #viewsite a {
+	position:fixed;
+	top:0px;
+	line-height:23px;
+	padding:0;
+	margin:0;
+	right:10px;
+	color:#CCC !important;
+	display:block;
+	font-size:86%;
+	font-weight:normal;
+	text-shadow:none;
+	padding:0 0 0 20px;
+	z-index:101;
+}
+#navigation {
+	border-right: #947C41;
+	background: #E5E5E5;
+	display: block;
+	left: 2em;
+	font-size: 86%;
+	line-height: 22px;
+	padding:0pt 10px 0pt 33px;
+}
+.links {
+	list-style-type: none;
+	margin-left: 0;
+	position:fixed;
+	left:10px;
+	top:34px;
+	width:167px;
+	margin:0;
+	padding:0 10px 0 0;
+	background:none;
+	border:none;
+	list-style-type:none;
+}
+.links li {
+	list-style-type: none;
+	/*background-image: url(../../i/admin-bar.png);*/
+	background-repeat: no-repeat;
+	color: #000000;
+	padding-bottom: 0.4em;
+}
+.links li a {
+	color: #000000;
+	text-decoration: none;
+	margin-left: 2em;
+}
+.links li a .current {
+	font-weight: bold;
+}
+.links li a:hover {
+	color:#7F7F7F;
+}
+#main {
+	float: right;
+	background: #C7F5FF;
+	width: 80%;
+	border-left: 1px solid #CCCCCC;
+	border: medium none;
+	padding: 1em;
+}
+#footer {
+	clear: both;
+	text-align: center;
+	position:fixed;
+	z-index: 99;
+	bottom: 0px;
+	line-height:21px;
+	height:22px;
+	border-top:1px solid #CCCCCC;
+	font-size:10px;
+	padding: 0px;
+	width: 100%;
+	background: #EFEFEF;
+}
+#footer a img {
+	border: 0;
+}
