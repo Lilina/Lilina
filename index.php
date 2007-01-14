@@ -20,7 +20,9 @@ $timer_start = lilina_timer_start();
 //Require our settings, must be second required file
 //We need this even for cached pages
 require_once('./inc/core/conf.php');
+//Custom error handler
 require_once('./inc/core/errors.php');
+//Caching to reduce loading times
 require_once('./inc/core/cache.php');
 lilina_cache_start();
 // Do not update cache unless called with parameter force_update=1
@@ -29,17 +31,12 @@ if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 }
 //Require our standard stuff
 require_once('./inc/core/lib.php');
-
-
-
-
-
+//Stuff for parsing Magpie output, etc
+require_once('./inc/core/feed-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
 $data = lilina_load_feeds($settings['files']['feeds']) ;
-
-$items = array();
 
 // load times
 
@@ -49,7 +46,7 @@ if (file_exists($settings['files']['times'])) {
 } else {
 	$time_table = array();
 }
-
+/*
 $channel_list	= '<strong>'. $i18n['sources'] . '</strong>';
 $channel_list	.= '<ul>';
 
@@ -83,9 +80,11 @@ for($i = 0; $i < count($data['feeds']); $i++) {
 		}
 		$items[] = $x ;
 	}
-}
-$channel_list .= '</ul>' ;
+}*/
+//CAUTION: Returns array
+$list = lilina_make_items($data);
 usort($items, 'date_cmp');
+/*
 for($i=0;$i<count($items);$i++) {
 	$item = $items[$i] ;
 	//First enclosure listed is the one displayed
@@ -117,7 +116,6 @@ for($i=0;$i<count($items);$i++) {
 	parseHtml($href);
 	parseHtml($summary);
 	// hook_after_sanitize();
-	// hook_after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
@@ -126,9 +124,21 @@ for($i=0;$i<count($items);$i++) {
 			$channel_url_old	= '' ;
 		}
 
-		$date = $this_date ;
+		$date 	= $this_date ;
 		// hook_date();
-		$out .= '<h1>'.$date."</h1>\n" ;
+		$out	.= '<h1>'.$date;
+		$out	.= '<span style="float: right; margin-top: -1.3em;">';
+		$out	.= '<a href="javascript:void(0);" onclick="toggle_visible(\'date';
+		$out	.= date('dmY', $item['date_timestamp'] );
+		$out	.= '\');toggle_hide_show(\'arrow';
+		$out	.= date('dmY', $item['date_timestamp'] );
+		$out	.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
+		$out	.= date('dmY', $item['date_timestamp'] );
+		$out	.= '" /></a></span>';
+		$out	.= '</h1><div id="date';
+		$out	.= date('dmY', $item['date_timestamp'] );
+		$out	.= '">';
+		$out	.= "\n" ;
 	}
 	if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
 	else $markStatus	= 'off';
@@ -147,23 +157,23 @@ for($i=0;$i<count($items);$i++) {
 	}
 	$out	.= '<span class="time">'.$time.'</span>' ;
 	$out	.= '<span class="title" id="TITLE'.$i.'">'.$title.'</span>' ;
-	$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" /></a></span>' ;
+	$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
 	if($enclosure){
 		$out	.= 'Podcast or Videocast Available';
 	}
 	$out	.= '<div class="excerpt" id="ICONT'.$i.'">' ; 
 	$out	.= $summary;
-	/*if($SHOW_SOCIAL==true) {
+	if($SHOW_SOCIAL==true) {
 	   $out .= delicious_tags($href) ;
 	   $out .= "<br/><img src=\"i/delicious.gif\" alt=\"".$i18n['add_delicious']."\"/> <a href=\"javascript:deliciousPost('" . addslashes($href) ."','" . addslashes($title) . "');\">add to del.icio.us.</a>" ;
 	   $out .= '&nbsp;<a href="http://del.icio.us/url/' . md5($href) .'">'.$i18n['look_delicious'].'</a>' . delicious_tags($href) ;
-	}*/
+	}
 
 	//$out .= google_get_res($title,0) ;
 
 	$channel_url_old=$channel_url; 
   
-  /*if($SHOW_SOCIAL==true) {
+	if($SHOW_SOCIAL==true) {
 	   $out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
      <img src="i/furl.gif" alt="'.$i18n['furl'].'"/></a>' ;
 	   $out .= ' &nbsp; <a href="http://digg.com/submit?phase=2&amp;url='.$href.'&amp;title='.$title.'" target="_blank" title="digg this">
@@ -183,14 +193,16 @@ for($i=0;$i<count($items);$i++) {
      <img src="i/reddit.gif" alt="Add to reddit" /></a>';
      $out .= ' &nbsp; <a href="http://www.newsvine.com/_tools/seed&amp;save?u='.$href.'&amp;h='.$title.'" target="_blank" title="Add to newsvine">
      <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';
-	}*/
+	}
 	$out .= "</div>\n" ;
 	$out .= "</div>\n" ;
 
- 
-	if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) break ;
+	//Only display the feeds from the chosen times
+	if ( ($showtime > -1) && (time() - $item['date_timestamp'] > $showtime) ) break ;
 }
-  if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.
+  if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.*/
+
+$out = lilina_make_output($list[1]);
 
 lilina_save_times($time_table);
 
@@ -242,15 +254,15 @@ if($settings['output']['atom']){
 	&nbsp;&nbsp;
 	|
     <a href="javascript:visible_mode(true);">
-    <img src="i/arrow_out.png" alt="Expand" /> expand</a>
+	<img src="i/arrow_out.png" alt="Show All Items" /> Expand</a>
     <a href="javascript:visible_mode(false);">
-    <img src="i/arrow_in.png" alt="Collapse" /> collapse</a>
+	<img src="i/arrow_in.png" alt="Hide All Items" /> Collapse</a>
 	|
-    <a href="cache/opml.xml">OPML</a>
+    <a href="feeds/opml.xml">OPML</a>
 	|
     <a href="#sources">SOURCES</a>
 	
-</div><div style="text-align: right;" id="times">
+</div><div style="text-align: right; padding-top: 2em; padding-right: 2em;" id="times">
 		<ul>
 		<?php
 		for($q=0;$q<count($settings['interface']['times']);$q++){
@@ -277,22 +289,22 @@ if($settings['output']['atom']){
 </div>
 
 <div id="sources">
-    <?php echo $channel_list ?>
+    <?php echo $list[0]; ?>
 	<?php echo $end_errors; ?>
 </div>
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>
 <div id="footer">
-  <p>powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
+  <p>Powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v
 	<?php echo $lilina['core-sys']['version']; ?><br />
 	This page was last generated on
 	<?php echo date('Y-m-d \a\t g:i a'); ?> and took
-	<?php echo lilina_timer_end($timer_start); ?> seconds</div>
+	<?php echo lilina_timer_end($timer_start); ?> seconds</p></div>
 </body>
 </html>
 <?php
 /*
 require_once('./inc/core/skin.php');
 require_once('./templates/default/index.skin.php');*/
-
+lilina_cache_end();
 ?>

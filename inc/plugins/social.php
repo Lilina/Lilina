@@ -4,31 +4,26 @@ Plugin Name: Google Analytics
 Plugin URI: http://lilina.cubegames.net/plugins/analytics
 Description: Adds the Google Analytics 
 Author: Ryan McCue
-Version: 1.0
-Min
 Author URI: http://cubegames.net
-License: GPL
+Version: 1.0
+Min Version: 1.0
+Init: analytics_init
 */
 if($lilina['plugins-sys']['version'] >= 1.0) {
 	
 }
-function analytics_settings(){
-	get_settings('analytics');
+else {
+	trigger_plugin_error('version', 'This plugin is not compatible with your version of Lilina'
 }
-function analytics_init(){
+
+function social_init(){
 	register_plugin_function(
 							//Function name
-							'hack_wp',
+							'social_insert',
 							//Hook name
-							'hook_before_sanitize'
+							'item_bottom'
 							);
 }
-register_plugin(
-//File
-'hacks.php',
-//Name
-'Wordpress Hacks',
-//Initialization function
-'analytics_init',
-);
+
+function social_insert
 ?> 

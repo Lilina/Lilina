@@ -29,7 +29,7 @@ function lilina_cache_start(){
 }
 
 function lilina_cache_end() {
-	$cachefile = $settings['cachedir'] . md5('index') . '.html'; // Cache file to either load or create
+	$cachefile = $settings['cachedir'] . md5('index') . '.html'; // Cache file to either or create
 	// Now the script has run, generate a new cache file
 	$fp = fopen($cachefile, 'w');
 	$pagecontent = ob_get_contents();

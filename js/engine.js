@@ -147,7 +147,7 @@ function ItemSetShowHide(id,show) {
 	}
 }
 
-/*function visible_mode(display) {
+function visible_mode(display) {
         var main = document.getElementById('main') ;
         var i ;
         var j ;
@@ -163,8 +163,8 @@ function ItemSetShowHide(id,show) {
                 }
 	}
         showDetails = display ;         SetCookie('showDetails', showDetails) ;
-}*/
-
+}
+/*
 function visible_mode(display) {
         var main = document.getElementById('main') ;
         var i ;
@@ -175,12 +175,12 @@ function visible_mode(display) {
                 for (j=0; j<main.childNodes.length; j++) {
                         if (main.childNodes[j].id && main.childNodes[j].id.substring(0,5)=='IITEM') {
                                 itemID = main.childNodes[j].id.substring(6,38) ;
-                                ItemSetShowHide(itemID,display) ;
+    		                    ItemSetShowHide(itemID,display) ;
                         }
                 }
         }
         showDetails = display ;         SetCookie('showDetails', showDetails) ;
-}
+}*/
 
 function toggleStyle(StyleName) {
 	object = document.getElementById(StyleName) ;
@@ -191,3 +191,62 @@ function visible_mode_toggle() {
 	visible_mode(!showDetails) ;
 }
 
+function toggle_visible(object) {
+	if (document.layers)
+	{
+		current = (document.layers[object].display == 'none') ? 'block' : 'none';
+		document.layers[object].display = current;
+	}
+	else if (document.all)
+	{
+		current = (document.all[object].style.display == 'none') ? 'block' : 'none';
+		document.all[object].style.display = current;
+	}
+	else if (document.getElementById)
+	{
+		vista = (document.getElementById(object).style.display == 'none') ? 'block' : 'none';
+		document.getElementById(object).style.display = vista;
+	}
+}
+function toggle_hide_show(object) {
+	if (document.all)
+	{
+		current = (document.all[object].src.indexOf('i/arrow_in.png')) ? 'i/arrow_out.png' : 'i/arrow_in.png';
+		document.all[object].src = current;
+	}
+	else if (document.getElementById)
+	{
+		vista = document.getElementById(object).src.indexOf('i/arrow_in.png');
+		if(vista >= 0) {
+			vista = 'i/arrow_out.png';
+		}
+		else {
+			vista = 'i/arrow_in.png';
+		}
+		document.getElementById(object).src = vista;
+	}
+}
+
+function search_page(query) {
+	var main = document.getElementById('main');
+	var i ;
+	var j ;
+	var items ;
+	for (i=0; i<main.childNodes.length; i++) {
+		items = main.childNodes[i] ;
+        for (j=0; j<main.childNodes.length; j++) {
+			if (main.childNodes[j].id && main.childNodes[j].id.substring(0,5)=='IITEM') {
+				itemID = main.childNodes[j].id.substring(6,38) ;
+				ItemSetShowHide(itemID,display) ;
+			}
+		}
+		var str="Web Enabling Tools is Cool!"
+		var pos=str.IndexOf(query)
+		if (pos>=0) {
+			
+		}
+		else {
+			
+		}
+	}
+}

@@ -19,10 +19,9 @@ function get_hooked($hook) {
 	return $hooked_plugins[$hook];
 }
 
-function register_plugin($file, $name, $description = '') {
+function register_plugin($file, $name) {
 	$registered_plugins[$name]	= array(
-										'file'	=> $file,
-										'desc'	=> $description
+										'file'	=> $file
 										);
 }
 
@@ -41,5 +40,43 @@ function get_plugins() {
 		$plugin_name	= $activated_plugins[$plugin]
 		require_once('./inc/plugins/' . $registered_plugins[$plugin_name]['file']);
 	}
+}
+
+function plugins_meta($plugin_file) {
+	//Thanks to Wordpress, admin-functions.php, lines 1525-1534
+	$plugin_data = implode('', file($plugin_file));
+	preg_match("|Plugin Name:(.*)|i", $plugin_data, $plugin_name);
+	preg_match("|Plugin URI:(.*)|i", $plugin_data, $plugin_uri);
+	preg_match("|Description:(.*)|i", $plugin_data, $description);
+	preg_match("|Author:(.*)|i", $plugin_data, $author_name);
+	preg_match("|Author URI:(.*)|i", $plugin_data, $author_uri);
+	//If the plugin sets the version...
+	if (preg_match("|Version:(.*)|i", $plugin_data, $version)) {
+		//...Let it
+		$version = trim($version[1]); //F1
+	}
+	else {
+		//...Otherwise assume it's 1.0
+		$version = 1.0;
+	}
+	//If the plugin sets the version...
+	if (preg_match("|Min Version:(.*)|i", $plugin_data, $min_version)) {
+		//...Let it
+		$version = trim($min_version[1]); //F1
+	}
+	else {
+		//...Otherwise assume it's the current version of Lilina
+		$version = 1.0;
+	}
+	//Set the $plugin array for returning
+	$plugin					= array();
+	$plugin['name']			= $plugin_name[1]; //F1
+	$plugin['uri']			= $plugin_uri[1]; //F1
+	$plugin['description']	= $description[1]; //F1
+	$plugin['author']		= $author_name[1]; //F1
+	$plugin['author_uri']	= $author_uri[1]; //F1
+	$plugin['version']		= $version[1]; //F1
+	//Footnote 1: 	The 1st item [0] is the item found while the 2nd [1] is the content
+	//				We always want the content, so we use $metadata[1]
 }
 ?>

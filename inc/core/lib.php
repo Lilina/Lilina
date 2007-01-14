@@ -4,7 +4,10 @@
 File:		lib.php
 Purpose:	Standard require()s and misc.
 			functions
-Notes:		Move. To. Plugins.
+Notes:		Move to appropriate files,
+			file-functions.php, misc-functions.php etc.
+			Move defines and lilina versions
+			to seperate files
 			CAUTION: HERE BE DRAGONS!
 Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
@@ -37,13 +40,13 @@ require_once('./delicious.php');*/
 $LILINAVERSION	= '1.0' ;
 $lilina			= array(
 						'core-sys'		=> array(
-												'version'	=> '1.0'
+												'version'	=> 1.0
 												),
 						'plugin-sys'	=> array(
-												'version'	=> '1.0'
+												'version'	=> 1.0
 												),
 						'template-sys'	=> array(
-												'version'	=> '1.0'
+												'version'	=> 1.0
 												),
 						);
 
