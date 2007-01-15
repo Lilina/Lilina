@@ -8,6 +8,7 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
+$sources = template_source_list('echo', $data);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -59,11 +60,11 @@ template_header();
 		</ul>
     </div>
 <div id="main">
-<?php template_output(); ?>
+<?php template_output('echo', $sources[1]); ?>
 </div>
 
 <div id="sources">
-    <?php template_source_list(); ?>
+	<?php echo $sources[0]; ?>
 	<?php template_end_errors(); ?>
 </div>
 <div id="c1">&nbsp;powered by</div>

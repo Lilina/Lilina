@@ -1,14 +1,6 @@
 /* 
-lilina news aggregator
-
-lilina is a simple but powerful news aggregator written in PHP. 
-No database is needed, RSS/ATOM parsing is done by the excellent 
-MagpieRSS library (it is included, no additional installation needed). 
-It features feed auto-discovery and an easy-to-use interface.
-
-View a live demo @ http://lilina.sourceforge.net/ 
-lilina is Open Source Software and is distributed under the GPL license
-Written and developed by Panayotis Vryonis, http://vrypan.net/log/
+Lilina News Aggregator
+Default theme
 */
 
 
@@ -120,6 +112,9 @@ h1 { /* Date */
 	background: #CBDFEB;
 	clear: both;
 	}
+h1 img{
+	padding-right: 1em;
+}
 .item {
 	margin: 0px 0px 0px 0px;
 	font-size: 12px;
