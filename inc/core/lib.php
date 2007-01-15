@@ -202,7 +202,7 @@ function date_cmp($a, $b) {
    return ($a['date_timestamp'] > $b['date_timestamp'] ) ? -1 : 1;
 }
 
-function parseHtml($val, $debug=false){
+function parseHtml($val){
 	if($settings['encoding']!='utf-8'){
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
@@ -211,11 +211,9 @@ function parseHtml($val, $debug=false){
 		}
     else {
 		$purifier = new HTMLPurifier();
-		}
-	if($debug==true) echo 'Before purifying: '.$val;		
+		}		
 	$val = $purifier->purify($val);
-	if($debug==true) echo 'After purifying: '.$val;
-	if($ENCODING!='utf-8') $val = escapeNonASCIICharacters($val);  
+	if($settings['encoding']!='utf-8') $val = escapeNonASCIICharacters($val);  
 	return $val;
 }
 // adapted from utf8ToUnicode by Henri Sivonen and

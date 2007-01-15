@@ -141,13 +141,13 @@ function template_opml($return='echo'){
 	}
 }
 
-function template_output($return='echo'){
+function template_output($return='echo', $feeds){
 	if($return == 'echo') {
-		echo $out;
+		echo lilina_make_output($feeds)
 		return true;
 	}
 	elseif($return == 'var') {
-		return $out;
+		return lilina_make_output($feeds);
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
@@ -155,13 +155,15 @@ function template_output($return='echo'){
 	}
 }
 
-function template_source_list($return='echo'){
+function template_source_list($return='echo', $input){
 	if($return == 'echo') {
-		echo $channel_list;
-		return true;
+		$list = lilina_make_items($input);
+		echo $list[0];
+		return $list[1];
 	}
 	elseif($return == 'var') {
-		return $channel_list;
+		$list = lilina_make_items($input);
+		return $list;
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';

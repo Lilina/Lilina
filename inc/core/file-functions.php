@@ -28,4 +28,24 @@ function lilina_load_feeds($data_file) {
 	$data = unserialize( base64_decode($data) ) ;
 	return $data;
 }
+// feed-functions.php, line 38-43
+function lilina_parse_html($val){
+	if($settings['encoding']!='utf-8'){
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', 'utf-8'); //replace with your encoding
+		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$purifier = new HTMLPurifier($config);
+		}
+    else {
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
+		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$purifier = new HTMLPurifier();
+		}		
+	$val = $purifier->purify($val);
+	if($settings['encoding']!='utf-8') {
+		$val = escapeNonASCIICharacters($val);
+	}
+	return $val;
+}
 ?>

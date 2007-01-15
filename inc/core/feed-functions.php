@@ -12,8 +12,7 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
-
-function lilina_make_item($item) {
+function lilina_make_item($item, $date) {
 	//First enclosure listed is the one displayed
 	$enclosure = $item['enclosures'][0]['url'];
 	$enclosuretype = $item['enclosures'][0]['type'];
@@ -36,17 +35,19 @@ function lilina_make_item($item) {
 	}
 	// hook_before_sanitize();
 	//Parse all variables so far
-	parseHtml($title);
-	parseHtml($channel_title);
-	parseHtml($channel_url);
-	parseHtml($ico);
-	parseHtml($href);
-	parseHtml($summary);
+	lilina_parse_html($title);
+	lilina_parse_html($channel_title);
+	lilina_parse_html($channel_url);
+	lilina_parse_html($ico);
+	lilina_parse_html($href);
+	lilina_parse_html($summary);
 	// hook_after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
+		//If this isn't the first date...
 		if ($date) {
+			//End the last date's div
 			$out .= '</div>' ;
 			$channel_url_old	= '' ;
 		}
@@ -67,6 +68,7 @@ function lilina_make_item($item) {
 		$out	.= '">';
 		$out	.= "\n" ;
 	}
+	global $date;
 	if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
 	else $markStatus	= 'off';
 
@@ -83,12 +85,12 @@ function lilina_make_item($item) {
 		$out	.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
 	}
 	$out	.= '<span class="time">'.$time.'</span>' ;
-	$out	.= '<span class="title" id="TITLE'.$i.'">'.$title.'</span>' ;
+	$out	.= '<span class="title" id="TITLE'.$item_id.'">'.$title.'</span>' ;
 	$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
 	if($enclosure){
 		$out	.= 'Podcast or Videocast Available';
 	}
-	$out	.= '<div class="excerpt" id="ICONT'.$i.'">' ; 
+	$out	.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
 	$out	.= $summary;
 	/*if($SHOW_SOCIAL==true) {
 	   $out .= delicious_tags($href) ;
@@ -123,17 +125,26 @@ function lilina_make_item($item) {
 	}*/
 	$out .= "</div>\n" ;
 	$out .= "</div>\n" ;
-	return $out;
+	return array($out, $date);
 }
 
 function lilina_make_output($items) {
 	usort($items, 'date_cmp');
 	for($i=0;$i<count($items);$i++) {
-		$out = lilina_make_item($items[$i]);
+		$next		= array();
+		//Note: returns array
+		$next		= lilina_make_item($items[$i], $the_date);
+		$out		.= $next[0];
+		$the_date	= $next[1];
 		//Only display the feeds from the chosen times
-		if ( ($showtime>-1) && (time() - $items[$i]['date_timestamp'] > $showtime) ) break ;
-		if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.
+		if ( ($showtime>-1) && (time() - $items[$i]['date_timestamp'] > $showtime) ) {
+			break ;
+		}
+		if(count($items)!=0) {
+			$out	.= '</div>' ;//Close the last "feed" div.
+		}
 	}
+	return $out;
 }
 
 function lilina_get_rss($location) {
@@ -205,8 +216,6 @@ function lilina_get_rss($location) {
 
 function lilina_make_items($input) {
 	$items = array();
-	$channel_list	= '<strong>'. $i18n['sources'] . '</strong>';
-	$channel_list	.= '<ul>';
 	for($i = 0; $i < count($input['feeds']); $i++) {
 		$rss	= fetch_rss( $input['feeds'][$i]['feed'] );
 		if (!$rss){
@@ -240,7 +249,6 @@ function lilina_make_items($input) {
 			$items[] = $x ;
 		}
 	}
-	$channel_list .= '</ul>' ;
 	return array($channel_list, $items);
 }
 ?>
