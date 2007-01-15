@@ -201,7 +201,6 @@ for($i=0;$i<count($items);$i++) {
 	if ( ($showtime > -1) && (time() - $item['date_timestamp'] > $showtime) ) break ;
 }
   if(count($items)!=0) $out .= '</div>' ;//Close the last "feed" div.*/
-
 $out = lilina_make_output($list[1]);
 
 lilina_save_times($time_table);
@@ -289,7 +288,10 @@ if($settings['output']['atom']){
 </div>
 
 <div id="sources">
+	<strong>Sources:</strong>
+	<ul>
     <?php echo $list[0]; ?>
+	</ul>
 	<?php echo $end_errors; ?>
 </div>
 <div id="c1">&nbsp;powered by</div>
