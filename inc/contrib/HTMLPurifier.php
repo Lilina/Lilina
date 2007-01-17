@@ -1,4 +1,6 @@
 <?php
+//Added to keep PHP happy
+set_include_path(get_include_path() . PATH_SEPARATOR . './inc/contrib/HTMLPurifier');
 
 /*!
  * @mainpage
