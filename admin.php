@@ -20,7 +20,7 @@ $page		= htmlentities($_GET['page']);
 $action		= htmlentities($_GET['action']);
 $product	= htmlentities($_GET['product']);
 $name		= htmlentities($_GET['url']);
-$url		= urlencode($_GET['name']);
+$url		= htmlentities(urlencode($_GET['name']));
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
 function get_feeds() {

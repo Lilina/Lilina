@@ -17,7 +17,14 @@ $out		= '';
 //Timer doesn't need settings so we don't have to wait for them
 require_once('./inc/core/misc-functions.php');
 $timer_start = lilina_timer_start();
-//Require our settings, must be second required file
+//Make sure we are actually installed...
+require_once('./inc/core/install-functions.php');
+if(!lilina_check_installed()) {
+	//Display the notice that Lilina is not installed
+	lilina_install_err();
+	die();
+}
+//Require our settings, must be third required file
 //We need this even for cached pages
 require_once('./inc/core/conf.php');
 //Custom error handler
