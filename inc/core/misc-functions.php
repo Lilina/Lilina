@@ -14,11 +14,13 @@ defined('LILINA') or die('Restricted access');
 
 // index.php, line 23
 function lilina_timer_start() {
+	call_hooked('lilina_timer_start', 'start');
 	//Start measuring execution time
    $mtime = microtime();
    $mtime = explode(" ",$mtime);
    $mtime = $mtime[1] + $mtime[0];
    $starttime = $mtime;
+   call_hooked('lilina_timer_start', 'end');
    return $starttime;
 }
 // index.php, line 290

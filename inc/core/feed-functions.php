@@ -33,15 +33,19 @@ function lilina_make_item($item, $date) {
 	if(!$summary){
 		$summary = $item['summary'];
 	}
-	// hook_before_sanitize();
+	// before_sanitize();
 	//Parse all variables so far
-	lilina_parse_html($title);
-	lilina_parse_html($channel_title);
-	lilina_parse_html($channel_url);
-	lilina_parse_html($ico);
-	lilina_parse_html($href);
-	lilina_parse_html($summary);
-	// hook_after_sanitize();
+	lilina_parse_html(
+						array(
+								$title,
+								$channel_title,
+								$channel_url,
+								$ico,
+								$href,
+								$summary
+							)
+					);
+	// after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
@@ -250,5 +254,22 @@ function lilina_make_items($input) {
 		}
 	}
 	return array($channel_list, $items);
+}
+// feed-functions.php, line 38-43
+function lilina_parse_html($val_array){
+	if($settings['encoding']!='utf-8'){
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', 'utf-8'); //replace with your encoding
+		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$purifier = new HTMLPurifier($config);
+		}
+    else {
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
+		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$purifier = new HTMLPurifier();
+		}		
+	$val_array = $purifier->purifyArray($val_array);
+	return $val_array;
 }
 ?>

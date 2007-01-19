@@ -202,7 +202,7 @@ function date_cmp($a, $b) {
    return ($a['date_timestamp'] > $b['date_timestamp'] ) ? -1 : 1;
 }
 
-function parseHtml($val){
+/*function parseHtml($val){
 	if($settings['encoding']!='utf-8'){
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
@@ -215,7 +215,7 @@ function parseHtml($val){
 	$val = $purifier->purify($val);
 	if($settings['encoding']!='utf-8') $val = escapeNonASCIICharacters($val);  
 	return $val;
-}
+}*/
 // adapted from utf8ToUnicode by Henri Sivonen and
 // hsivonen@iki.fi at <http://iki.fi/hsivonen/php-utf8/>
 function escapeNonASCIICharacters($str) {

@@ -13,8 +13,6 @@ global $end_errors;
 $end_errors = '';
 // we will do our own error handling
 error_reporting(0);
-$log = '<?xml version="1.0" encoding="UTF-8"?>
-<errlog generator="Lilina">';
 // user defined error handling function
 function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 	if(!defined('E_STRICT')) {
@@ -101,8 +99,6 @@ substr(strpos($errmsg, '('), strpos($errmsg, ')')) .
 		//mail($settings['owner']['email'], 'Critical User Error', $err);
 	}
 }
-
-$log .= '</errlog>';
 error_log($log, 3, './error.log');
 
 $old_error_handler = set_error_handler("userErrorHandler");
