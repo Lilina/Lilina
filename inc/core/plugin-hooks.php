@@ -24,12 +24,4 @@ function before_sanitize() {
 function after_sanitize() {
 
 }
-function call_hooked($hook, $pos){
-	//Get list of plugins hooked here...
-	$plugins = get_hooked($hook, $pos);
-	for($plugin = 0; $plugin < count($plugins); $plugin++) {
-		$plugin_function = $plugins[$plugin]['func'];
-		$plugin_function();
-	}
-}
 ?>
