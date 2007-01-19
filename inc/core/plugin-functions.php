@@ -19,15 +19,31 @@ function get_hooked($hook) {
 	return $hooked_plugins[$hook];
 }
 
+function call_hooked($hook, $pos, $args){
+	//Get list of plugins hooked here...
+	$plugins = get_hooked($hook);
+	for($plugin = 0; $plugin < count($plugins); $plugin++) {
+		if(isset($pos) && $plugins[$plugin]['pos'] == $pos) {
+			$plugin_function = $plugins[$plugin]['func'];
+			$plugin_function($args);
+		}
+		elseif(!isset($pos)) {
+			$plugin_function = $plugins[$plugin]['func'];
+			$plugin_function($args);
+		}
+	}
+}
+
 function register_plugin($file, $name) {
 	$registered_plugins[$name]	= array(
 										'file'	=> $file
 										);
 }
 
-function register_plugin_function($function, $hook) {
+function register_plugin_function($function, $hook, $position) {
 	$hooked_plugins[$hook][]	= array(
-										'func'	=> $function
+										'func'	=> $function,
+										'pos'	=> $position
 										);
 }
 
