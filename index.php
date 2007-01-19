@@ -21,7 +21,7 @@ $timer_start = lilina_timer_start();
 require_once('./inc/core/install-functions.php');
 if(!lilina_check_installed()) {
 	//Display the notice that Lilina is not installed
-	lilina_install_err();
+	header('Location: install.php?page=0');
 	die();
 }
 //Require our settings, must be third required file
@@ -40,6 +40,8 @@ if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 require_once('./inc/core/lib.php');
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
+//Plugins and misc stuff
+require_once('./inc/core/plugins-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 

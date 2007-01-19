@@ -1,3 +1,68 @@
+* html body #menu {
+/* Only IE6 sees this */
+	margin-bottom: 3em;
+}
 body {
 	background: #FFF5FF;
+	color: #000000;
+}
+#menu {
+	line-height: 1.5em;
+	margin-left: 5em;
+}
+#menu ul li#logo {
+	text-align: right;
+}
+#menu ul li#logo a {
+	border: none;
+	padding-right: 0.8em;
+	background: #FFF5FF url(http://cubegames.net/images/logo-16.png) no-repeat center right;
+	margin-left: 11em;
+}
+#menu ul, #menu ul li {
+	display: inline;
+	list-style-type: none;
+	font-size: 1.2em;
+	float: left;
+}
+#menu ul li a {
+	text-decoration: none;
+	border-right: solid #000000 0.1em;
+	padding-right: 0.3em;
+	padding-left: 0.3em;
+}
+#menu ul li#last a {
+	border: none;
+}
+#content {
+	background: #FFEACA;
+	clear: both;
+	margin-left: auto;
+	margin-right: auto;
+	width: 45em;
+	border: solid #F0C0E0 0.2em;
+	padding: 0.4em;
+}
+#content * {
+}
+#content form div.form_row {
+	clear: both;
+	padding-top: 5px;
+	border-bottom: 1px dotted #333333;
+}
+#content form div.form_row label {
+	float: left;
+	width: 100px;
+	text-align: right;
+}
+#content form div.form_row input {
+	float: right;
+	width: 235px;
+	text-align: left;
+} 
+#footer {
+	margin-left: auto;
+	margin-right: auto;
+	width: 45em;
+	text-align: center;
 }
