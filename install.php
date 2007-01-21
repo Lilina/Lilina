@@ -10,8 +10,18 @@ See LICENSE.txt to view the license
 ******************************************/
 define('LILINA', 1);
 header('Content-Type: text/html; charset=UTF-8');
+error_reporting(E_ALL);
 //Initialize variables
-$page	= htmlentities($page);
+$page					= htmlentities($_GET['page']);
+$from					= htmlentities($_POST['from']);
+$sitename				= htmlentities($_POST['sitename']);
+$sitelink				= htmlentities($_POST['url']);
+$username				= htmlentities($_POST['username']);
+$password				= htmlentities($_POST['password']);
+$error['sitename']		.= (isset($sitename)) ? true : false;
+$error['url']			.= (isset($sitelink)) ? true : false;
+$error['username']		.= (isset($username)) ? true : false;
+$error['password']		.= (isset($password)) ? true : false;
 require_once('./inc/core/install-functions.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -35,21 +45,28 @@ require_once('./inc/core/install-functions.php');
 		</div>
 		<div id="content">
 		<?php
-		if(!lilina_check_installed()) {
-			if(isset($page) && $page) {
-				if(!is_numeric($page)) {
-					lilina_install_err(0,$page);
+		if($error['sitename'] || $error['url'] || $error['username'] || $error['password']) {
+			lilina_install_page($from, $error);
+		}
+		else {
+			if(!lilina_check_installed()) {
+				echo $page;
+				echo isset($page);
+				if(isset($page)) {
+					if(!is_numeric($page)) {
+						lilina_install_err(0,$page);
+					}
+					else {
+						lilina_install_page($page);
+					}
 				}
 				else {
-					lilina_install_page($page);
+					lilina_install_page(1);
 				}
 			}
 			else {
-				lilina_install_page(1);
+				lilina_install_err(1);
 			}
-		}
-		else {
-			lilina_install_err(1);
 		}
 		?>
 		</div>
