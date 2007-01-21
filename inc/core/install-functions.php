@@ -38,7 +38,7 @@ function lilina_install_err($error = 0, $args = '') {
 	}
 }
 
-function lilina_install_page($page) {
+function lilina_install_page($page, $error = array()) {
 	switch($page) {
 		case 0:
 			require_once('./inc/pages/install-not.php');
