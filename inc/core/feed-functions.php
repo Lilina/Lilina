@@ -47,6 +47,7 @@ function lilina_make_item($item, $date) {
 					);
 	// after_sanitize();
 	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
+	echo 'This_date: ' . $this_date . ' End This_date;';
 	$time = date('H:i', $item['date_timestamp'] ) ;
 	if ($this_date!=$date) {
 		//If this isn't the first date...

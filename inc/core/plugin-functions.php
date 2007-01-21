@@ -53,7 +53,7 @@ function activate_plugin($plugin) {
 
 function get_plugins() {
 	for($plugin = 0; $plugin < count($activated_plugins); $plugin++){
-		$plugin_name	= $activated_plugins[$plugin]
+		$plugin_name	= $activated_plugins[$plugin];
 		require_once('./inc/plugins/' . $registered_plugins[$plugin_name]['file']);
 	}
 }

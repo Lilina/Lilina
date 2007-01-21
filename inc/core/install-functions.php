@@ -39,16 +39,17 @@ function lilina_install_err($error = 0, $args = '') {
 }
 
 function lilina_install_page($page, $error = array()) {
+	echo $page;
 	switch($page) {
 		case 0:
-			require_once('./inc/pages/install-not.php');
-			break;
+			//require_once('./inc/pages/install-not.php');
+			//break;
 		case 1:
 			require_once('./inc/pages/install-start.php');
 			break;
 		case 2:
 		default:
-			lilina_install_err(0, $page);
+			//lilina_install_err(0, $page);
 			break;
 	}
 }
