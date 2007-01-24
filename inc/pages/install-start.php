@@ -1,8 +1,8 @@
 <?php
 /******************************************
 		Lilina: Simple PHP Aggregator
-File:		install-finish.php
-Purpose:	Just finish off the install
+File:		install-start.php
+Purpose:	Get settings
 Notes:		Must turn off the non-fatal ones
 Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
