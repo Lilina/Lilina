@@ -47,19 +47,21 @@ body {
 }
 #content form div.form_row {
 	clear: both;
-	padding-top: 5px;
-	border-bottom: 1px dotted #333333;
+	padding-top: 10px;
 }
-#content form div.form_row label {
+#content form h2 {
+	clear: both;
+}
+#content form div.form_row span.label {
 	float: left;
 	width: 100px;
 	text-align: right;
 }
-#content form div.form_row input {
+#content form div.form_row span.formw {
 	float: right;
-	width: 235px;
+	width: 335px;
 	text-align: left;
-} 
+}
 #footer {
 	margin-left: auto;
 	margin-right: auto;

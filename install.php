@@ -10,18 +10,26 @@ See LICENSE.txt to view the license
 ******************************************/
 define('LILINA', 1);
 header('Content-Type: text/html; charset=UTF-8');
-error_reporting(E_ALL);
 //Initialize variables
-$page					= htmlentities($_GET['page']);
+if(!empty($_POST['page'])) {
+	$page				= htmlentities($_POST['page']);
+}
+elseif(!empty($_GET['page'])) {
+	$page				= htmlentities($_GET['page']);
+}
+else {
+	$page				= 1;
+}
+$page					= ((empty($_POST['page'])) ? (empty($_GET['page'])) ? 1 : htmlentities($_GET['page']);
 $from					= htmlentities($_POST['from']);
 $sitename				= htmlentities($_POST['sitename']);
 $sitelink				= htmlentities($_POST['url']);
 $username				= htmlentities($_POST['username']);
 $password				= htmlentities($_POST['password']);
-$error['sitename']		.= (isset($sitename)) ? true : false;
-$error['url']			.= (isset($sitelink)) ? true : false;
-$error['username']		.= (isset($username)) ? true : false;
-$error['password']		.= (isset($password)) ? true : false;
+$error['sitename']		.= (isset($sitename)) ? false : true;
+$error['url']			.= (isset($sitelink)) ? false : true;
+$error['username']		.= (isset($username)) ? false : true;
+$error['password']		.= (isset($password)) ? false : true;
 require_once('./inc/core/install-functions.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -50,8 +58,6 @@ require_once('./inc/core/install-functions.php');
 		}
 		else {
 			if(!lilina_check_installed()) {
-				echo $page;
-				echo isset($page);
 				if(isset($page)) {
 					if(!is_numeric($page)) {
 						lilina_install_err(0,$page);

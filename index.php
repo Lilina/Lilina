@@ -14,6 +14,8 @@ define('LILINA',1) ;
 $data		= 'blank string';
 $settings	= 0;
 $out		= '';
+//Plugins and misc stuff
+require_once('./inc/core/plugin-functions.php');
 //Timer doesn't need settings so we don't have to wait for them
 require_once('./inc/core/misc-functions.php');
 $timer_start = lilina_timer_start();
@@ -24,7 +26,6 @@ if(!lilina_check_installed()) {
 	header('Location: install.php?page=0');
 	die();
 }
-//Require our settings, must be third required file
 //We need this even for cached pages
 require_once('./inc/core/conf.php');
 //Custom error handler
@@ -40,8 +41,6 @@ if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 require_once('./inc/core/lib.php');
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
-//Plugins and misc stuff
-require_once('./inc/core/plugins-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
