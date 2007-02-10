@@ -56,7 +56,7 @@ switch($action){
 		if($product == 'magpie'){
 			define('MAGPIE_CACHE_AGE',1) ;			
 		}
-		if($product == 'lilina'){
+		elseif($product == 'lilina'){
 			//Once again, from
 			//http://www.ilovejackdaniels.com/php/caching-output-in-php/
 			$cachedir = $settings['cachedir'];
