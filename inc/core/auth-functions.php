@@ -53,18 +53,24 @@ function lilina_admin_auth($user = '', $pass = '') {
 		
 	}
 	
-	$logged_in	= auth($user, $pass);
-	if(is_array($logged_in)) {
-		loginform($logged_in);
+	//Are we logged in?
+	$logged_in	= lilina_auth($user, $pass);
+	//And we got back...
+	if(is_string($logged_in)) {
+		//...A string, an error must have been returned
+		lilina_form($logged_in);
 		return false;
 	}
 	elseif($logged_in === true) {
+		//...Boolean true, we are logged in
 		return true;
 	}
 	elseif($logged_in === false) {
+		//...Boolean false, we aren't logged in
 		return false;
 	}
 	else {
+		//...Unknown, just to be sure, we aren't logged in
 		return false;
 	}
 }

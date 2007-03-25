@@ -10,6 +10,12 @@ See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
 define('LILINA',1) ;
+//Check installed
+require_once('./inc/core/install-functions.php');
+if(!lilina_check_installed()) {
+	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
+	die();
+}
 //Timer doesn't need settings so we don't have to wait for them
 require_once('./inc/core/misc-functions.php');
 $timer_start = lilina_timer_start();
@@ -34,10 +40,10 @@ function import_opml($opml_file) {
 //Require our settings, must be first required file
 require_once('./inc/core/conf.php');
 require_once('./inc/core/lib.php');
+require_once('./inc/core/auth-functions.php');
 //Insert authentication handling
-$authed = 1;
-if(!$authed == true){
-	display_login();
+$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
+if($authed !== true){
 	die();
 }
 switch($page) {

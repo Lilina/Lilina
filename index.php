@@ -22,8 +22,7 @@ $timer_start = lilina_timer_start();
 //Make sure we are actually installed...
 require_once('./inc/core/install-functions.php');
 if(!lilina_check_installed()) {
-	//Display the notice that Lilina is not installed
-	header('Location: install.php?page=0');
+	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
 }
 //We need this even for cached pages

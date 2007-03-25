@@ -48,6 +48,8 @@ function lilina_install_page($page, $error = array()) {
 			require_once('./inc/pages/install-start.php');
 			break;
 		case 2:
+			require_once('./inc/pages/install-finish.php');
+			break;
 		default:
 			//lilina_install_err(0, $page);
 			break;
@@ -55,11 +57,35 @@ function lilina_install_page($page, $error = array()) {
 }
 
 function lilina_set_settings($args) {
-	$settings_file = @fopen('./conf/settings.php', 'w+');
+	$new_settings	= array(
+							'sitename'	=> $args[0],
+							'baseurl'	=> $args[1],
+							'auth'		=> array(
+												'user'	=> $args[2],
+												'pass'	=> $args[3]
+												)
+							);
+	$raw_php		= '<?php';
+	foreach($new_settings as $name => $value) {
+		if(is_array($name)) {
+			$raw_php .= "\n\$settings['$name'] = array(";
+			foreach($name as $name2 => $value2) {
+				$raw_php	.= "'$name2' => '$value2',";
+			}
+			$raw_php	.= "'blank' => 'blank');";
+		}
+		else {
+			$raw_php	.= "\n\$settings['$name'] = '$value';";
+		}
+	}
+	$raw_php		.= '?>';
+	$settings_file	= @fopen('./conf/settings.php', 'w+');
 	if(!$settings_file) {
 		lilina_install_err(2, 'settings.php');
-		return;
+		return false;
 	}
-	
+	fputs($settings_file, $raw_php) ;
+	fclose($settings_file) ;
+	return true;
 }
 ?>

@@ -20,12 +20,12 @@ elseif(!empty($_GET['page'])) {
 else {
 	$page				= 1;
 }
-$page					= ((empty($_POST['page'])) ? (empty($_GET['page'])) ? 1 : htmlentities($_GET['page']);
-$from					= htmlentities($_POST['from']);
+$from					= (isset($_POST['from']) ? htmlentities($_POST['from']) : false);
 $sitename				= htmlentities($_POST['sitename']);
 $sitelink				= htmlentities($_POST['url']);
 $username				= htmlentities($_POST['username']);
 $password				= htmlentities($_POST['password']);
+$retrieved_settings		= array($sitename, $sitelink, $username, $password);
 $error['sitename']		.= (isset($sitename)) ? false : true;
 $error['url']			.= (isset($sitelink)) ? false : true;
 $error['username']		.= (isset($username)) ? false : true;
@@ -54,11 +54,31 @@ require_once('./inc/core/install-functions.php');
 		<div id="content">
 		<?php
 		if($error['sitename'] || $error['url'] || $error['username'] || $error['password']) {
+			//Display the error
 			lilina_install_page($from, $error);
 		}
 		else {
+			//Make sure Lilina's not installed
 			if(!lilina_check_installed()) {
-				if(isset($page)) {
+				if(isset($from) && is_numeric($from)) {
+					//We already came from a page, lets display the next
+					if(!is_numeric($from)) {
+						lilina_install_err(0,$from);
+					}
+					else {
+						if($from < 3) {
+							//We add one so it displays the next page
+							lilina_install_page($from+1);
+						}
+						else {
+							//Otherwise, we must be on the last page
+							//We should never get this
+							lilina_install_err(0,$from);
+						}
+					}
+				}
+				else {
+					//Not from a page
 					if(!is_numeric($page)) {
 						lilina_install_err(0,$page);
 					}
@@ -66,11 +86,9 @@ require_once('./inc/core/install-functions.php');
 						lilina_install_page($page);
 					}
 				}
-				else {
-					lilina_install_page(1);
-				}
 			}
 			else {
+				//Woops, we are already installed
 				lilina_install_err(1);
 			}
 		}

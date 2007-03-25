@@ -19,7 +19,7 @@ function get_hooked($hook) {
 	return $hooked_plugins[$hook];
 }
 
-function call_hooked($hook, $pos, $args){
+function call_hooked($hook, $pos, $args = array()){
 	//Get list of plugins hooked here...
 	$plugins = get_hooked($hook);
 	for($plugin = 0; $plugin < count($plugins); $plugin++) {

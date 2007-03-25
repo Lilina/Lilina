@@ -12,7 +12,6 @@ defined('LILINA') or die('Restricted access');
 $settings = 0;
 global $settings;
 $settings							= array();
-$settings							= file('./inc/settings.php');
 //Must be in seconds
 $settings['cachetime']				= 600;
 //Magpie cache time is default
@@ -50,8 +49,7 @@ $settings['encoding']				= 'utf-8';
 //Debug mode?
 $settings['debug']					= 'false';
 
-//Backup our settings
-$default_settings					= $settings;
+require_once('./conf/settings.php') ;
 
 $plugins							= '';
 
