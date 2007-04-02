@@ -27,7 +27,7 @@ defined('LILINA') or die('Restricted access');
 			<span class="label">URL for Lilina</span>
 		</label>
 		<span class="formw">
-			<input type="text" value="e.g. http://cubegames.net/" name="url" id="url" size="40" />
+			<input type="text" value="http://localhost/" name="url" id="url" size="40" />
 		</span>
 	</div>
 	<h2>Security Settings</h2>
@@ -49,7 +49,7 @@ defined('LILINA') or die('Restricted access');
 	</div>	
 	<div class="form_row">
 		<span class="formw">
-			<input type="hidden" value="1" name="from" id="form" />
+			<input type="hidden" value="1" name="from" id="from" />
 			<input type="submit" value="Next &gt;" />
 		</span>
 	</div>

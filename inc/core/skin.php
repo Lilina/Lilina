@@ -26,6 +26,7 @@ defined('LILINA') or die('Restricted access');
 
 //Define all the functions for our skins
 function template_sitename($return='echo'){
+	global $settings;
 	if($return == 'echo') {
 		echo $settings['sitename'];
 		return true;
@@ -40,6 +41,7 @@ function template_sitename($return='echo'){
 }
 
 function template_siteurl($return='echo'){
+	global $settings;
 	if($return == 'echo') {
 		echo $settings['baseurl'];
 		return true;
@@ -54,6 +56,7 @@ function template_siteurl($return='echo'){
 }
 
 function template_synd_header($return='echo'){
+	global $settings;
 	if($return == 'echo') {
 		if($settings['output']['rss']){
 			echo '<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="rss.php" />';
@@ -86,6 +89,7 @@ function template_synd_header($return='echo'){
 }
 
 function template_synd_links($return='echo'){
+	global $settings;
 	if($return == 'echo') {
 		if($settings['output']['rss']){
 			echo '<a title="RSS Feed" href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" />';
@@ -118,11 +122,13 @@ function template_synd_links($return='echo'){
 }
 
 function template_header($return='echo'){
-	//MUSTFIX: NOT YET IMPLEMENTED
+	global $settings;
+	//call_hooked('template_header');
 	return true;
 }
 
 function template_opml($return='echo'){
+	global $settings;
 	if($settings['output']['opml']===true) {
 		if($return == 'echo') {
 			echo '<a href="cache/opml.xml">OPML</a>';
@@ -187,6 +193,8 @@ function template_end_errors($return='echo'){
 
 
 function template_footer($return='echo'){
+	global $timer_start;
+	global $lilina;
 	if($return == 'echo') {
 		echo '<p>Powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v'
 		. $lilina['core-sys']['version']
@@ -213,6 +221,7 @@ function template_footer($return='echo'){
 }
 
 function template_path($return='echo'){
+	global $settings;
 	if($return == 'echo') {
 		echo $settings['template_path'];
 		return true;
@@ -227,10 +236,10 @@ function template_path($return='echo'){
 }
 
 function template_times($return='echo'){
+	global $settings;
 	$return_me	= array();
 	if($return == ('echo'||'var')){
-		for($q=0;$q<count($settings['interface']['times']);$q++){
-			$current_time	= $settings['interface']['times'][$q];
+		foreach($settings['interface']['times'] as $current_time){
 			if(is_int($current_time)){
 				if($return == 'echo') {
 					echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';

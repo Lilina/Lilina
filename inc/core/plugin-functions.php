@@ -16,31 +16,34 @@ $activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
 
 //get_hooked( hook_name );
 function get_hooked($hook) {
+	global $hooked_plugins;
 	return $hooked_plugins[$hook];
 }
 
 function call_hooked($hook, $pos, $args = array()){
 	//Get list of plugins hooked here...
 	$plugins = get_hooked($hook);
-	for($plugin = 0; $plugin < count($plugins); $plugin++) {
-		if(isset($pos) && $plugins[$plugin]['pos'] == $pos) {
-			$plugin_function = $plugins[$plugin]['func'];
+	foreach($plugins as $plugin) {
+		if(isset($pos) && $plugin['pos'] == $pos) {
+			$plugin_function = $plugin['func'];
 			$plugin_function($args);
 		}
 		elseif(!isset($pos)) {
-			$plugin_function = $plugins[$plugin]['func'];
+			$plugin_function = $plugin['func'];
 			$plugin_function($args);
 		}
 	}
 }
 
 function register_plugin($file, $name) {
+	global $registered_plugins;
 	$registered_plugins[$name]	= array(
 										'file'	=> $file
 										);
 }
 
 function register_plugin_function($function, $hook, $position) {
+	global $hooked_plugins;
 	$hooked_plugins[$hook][]	= array(
 										'func'	=> $function,
 										'pos'	=> $position
@@ -48,10 +51,12 @@ function register_plugin_function($function, $hook, $position) {
 }
 
 function activate_plugin($plugin) {
+	global $activated_plugins;
 	$activated_plugins[] 		= $plugin;
 }
 
 function get_plugins() {
+	global $activated_plugins, $registered_plugins;
 	for($plugin = 0; $plugin < count($activated_plugins); $plugin++){
 		$plugin_name	= $activated_plugins[$plugin];
 		require_once('./inc/plugins/' . $registered_plugins[$plugin_name]['file']);
@@ -94,5 +99,6 @@ function plugins_meta($plugin_file) {
 	$plugin['version']		= $version[1]; //F1
 	//Footnote 1: 	The 1st item [0] is the item found while the 2nd [1] is the content
 	//				We always want the content, so we use $metadata[1]
+	return $plugin;
 }
 ?>

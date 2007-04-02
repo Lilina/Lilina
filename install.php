@@ -22,12 +22,12 @@ else {
 }
 $from					= (isset($_POST['from']) ? htmlentities($_POST['from']) : false);
 $sitename				= htmlentities($_POST['sitename']);
-$sitelink				= htmlentities($_POST['url']);
+$url					= htmlentities($_POST['url']);
 $username				= htmlentities($_POST['username']);
 $password				= htmlentities($_POST['password']);
-$retrieved_settings		= array($sitename, $sitelink, $username, $password);
+$retrieved_settings		= array($sitename, $url, $username, $password);
 $error['sitename']		.= (isset($sitename)) ? false : true;
-$error['url']			.= (isset($sitelink)) ? false : true;
+$error['url']			.= (isset($url)) ? false : true;
 $error['username']		.= (isset($username)) ? false : true;
 $error['password']		.= (isset($password)) ? false : true;
 require_once('./inc/core/install-functions.php');
@@ -59,7 +59,7 @@ require_once('./inc/core/install-functions.php');
 		}
 		else {
 			//Make sure Lilina's not installed
-			if(!lilina_check_installed()) {
+			if(!lilina_check_installed()||1==1) {
 				if(isset($from) && is_numeric($from)) {
 					//We already came from a page, lets display the next
 					if(!is_numeric($from)) {
@@ -68,7 +68,8 @@ require_once('./inc/core/install-functions.php');
 					else {
 						if($from < 3) {
 							//We add one so it displays the next page
-							lilina_install_page($from+1);
+							$from++;
+							lilina_install_page($from);
 						}
 						else {
 							//Otherwise, we must be on the last page

@@ -31,7 +31,17 @@ function lilina_install_err($error = 0, $args = '') {
 			break;
 		//2: Failed opening file
 		case 2:
-			echo 'I couldn\'t open ' . $args . ' to write to. Please make sure that the conf directory is writable and that the server can write to it.';
+			echo 'I couldn\'t open ' . $args[0] . ' to write to. Please make sure that the conf directory is writable and that the server can write to it. You can also save the following text as ' . $args[0] . '<br /><pre>';
+			highlight_string($args[1]);
+			echo '</pre>
+			<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">
+			<input type="hidden" name="sitename" value="'.$args[2][0].'" />
+			<input type="hidden" name="url" value="'.$args[2][1].'" />
+			<input type="hidden" name="username" value="'.$args[2][2].'" />
+			<input type="hidden" name="password" value="'.$args[2][3].'" />
+			<input type="hidden" name="from" value="1">
+			<input type="submit" value="Try again" />
+			</form>';
 			break;
 		default:
 			break;
@@ -39,11 +49,8 @@ function lilina_install_err($error = 0, $args = '') {
 }
 
 function lilina_install_page($page, $error = array()) {
-	echo $page;
 	switch($page) {
 		case 0:
-			//require_once('./inc/pages/install-not.php');
-			//break;
 		case 1:
 			require_once('./inc/pages/install-start.php');
 			break;
@@ -51,7 +58,7 @@ function lilina_install_page($page, $error = array()) {
 			require_once('./inc/pages/install-finish.php');
 			break;
 		default:
-			//lilina_install_err(0, $page);
+			lilina_install_err(0, $page);
 			break;
 	}
 }
@@ -67,9 +74,9 @@ function lilina_set_settings($args) {
 							);
 	$raw_php		= '<?php';
 	foreach($new_settings as $name => $value) {
-		if(is_array($name)) {
+		if(is_array($value)) {
 			$raw_php .= "\n\$settings['$name'] = array(";
-			foreach($name as $name2 => $value2) {
+			foreach($value as $name2 => $value2) {
 				$raw_php	.= "'$name2' => '$value2',";
 			}
 			$raw_php	.= "'blank' => 'blank');";
@@ -81,7 +88,7 @@ function lilina_set_settings($args) {
 	$raw_php		.= '?>';
 	$settings_file	= @fopen('./conf/settings.php', 'w+');
 	if(!$settings_file) {
-		lilina_install_err(2, 'settings.php');
+		lilina_install_err(2, array('settings.php',$raw_php,$args));
 		return false;
 	}
 	fputs($settings_file, $raw_php) ;

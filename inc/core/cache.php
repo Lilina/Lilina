@@ -13,6 +13,7 @@ defined('LILINA') or die('Restricted access');
 require_once('./inc/core/conf.php');
 
 function lilina_cache_start(){
+	global $settings;
 	// Cache file to either load or create
 	$cachefile = $settings['cachedir'] . md5('index') . '.html';
 	$cachefile_created = ((@file_exists($cachefile))) ? @filemtime($cachefile) : 0;
@@ -29,6 +30,7 @@ function lilina_cache_start(){
 }
 
 function lilina_cache_end() {
+	global $settings;
 	$cachefile = $settings['cachedir'] . md5('index') . '.html'; // Cache file to either or create
 	// Now the script has run, generate a new cache file
 	$fp = fopen($cachefile, 'w');

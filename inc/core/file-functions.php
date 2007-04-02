@@ -16,6 +16,7 @@ function lilina_load_times($times) {
 }
 // index.php, line 200
 function lilina_save_times($times) {
+	global $settings;
 	// save times
 	$ttime = serialize($times);
 	$fp = fopen($settings['files']['times'],'w') ;

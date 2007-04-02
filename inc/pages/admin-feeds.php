@@ -21,8 +21,7 @@ $list = '<table>
 <th>Remove Feed</th>
 <th>Change Feed</th>
 </tr>';
-for($feed = 0; $feed < count($feeds); $feed++) {
-	$this_feed = $feeds[$feed];
+foreach($feeds as $this_feed) {
 	$list .= '<tr>
 	<td>'.$this_feed['name'].'</td>
 	<td>'.$this_feed['link'].'</td>

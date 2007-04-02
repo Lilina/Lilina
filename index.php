@@ -16,21 +16,30 @@ $settings	= 0;
 $out		= '';
 //Plugins and misc stuff
 require_once('./inc/core/plugin-functions.php');
+
 //Timer doesn't need settings so we don't have to wait for them
 require_once('./inc/core/misc-functions.php');
 $timer_start = lilina_timer_start();
+
 //Make sure we are actually installed...
 require_once('./inc/core/install-functions.php');
 if(!lilina_check_installed()) {
 	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
 }
+
 //We need this even for cached pages
 require_once('./inc/core/conf.php');
+
 //Custom error handler
 require_once('./inc/core/errors.php');
+
 //Caching to reduce loading times
 require_once('./inc/core/cache.php');
+
+//Current Version
+require_once('./inc/core/version.php');
+
 lilina_cache_start();
 // Do not update cache unless called with parameter force_update=1
 if (isset($_GET['force_update']) && $_GET['force_update']==1) {
@@ -38,6 +47,7 @@ if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 }
 //Require our standard stuff
 require_once('./inc/core/lib.php');
+
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
 
@@ -90,7 +100,6 @@ for($i = 0; $i < count($data['feeds']); $i++) {
 }*/
 //CAUTION: Returns array
 $list = lilina_make_items($data);
-usort($items, 'date_cmp');
 /*
 for($i=0;$i<count($items);$i++) {
 	$item = $items[$i] ;

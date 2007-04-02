@@ -135,110 +135,100 @@ function lilina_make_item($item, $date) {
 
 function lilina_make_output($all_items) {
 	usort($all_items, 'date_cmp');
-	foreach($all_items as $feed) {
+	foreach($all_items as $item) {
 	//for($i=0;$i<count($items);$i++) {
 		$next		= array();
-		//Note: returns array
+		////Note: returns array
 		//$next		= lilina_make_item($items[$i], $the_date);
-		foreach($all_items as $item) {
-			//First enclosure listed is the one displayed
-			$enclosure = $item['enclosures'][0]['url'];
-			$enclosuretype = $item['enclosures'][0]['type'];
-			$summary = "" ;
-			//echo '<pre>';
-			//print_r($item);
-			//echo '</pre>';
-			$channel_title = $item['channel_title'];
-			$channel_url = $item['channel_link'];  
-			$ico = $item['favicon'] ;
-			$href = $item['link'];
-			if (!$href) {
-				$href = $item['guid'];
-			}
-			$item_id = md5($href.$channel_url) ;
-			$title = $item['title'];
-			$summary = $item['content'];
-			if(!$summary){
-				$summary = $item['summary'];
-			}
-			// before_sanitize();
-			//Parse all variables so far
-			lilina_parse_html(
-								array(
-										$title,
-										$channel_title,
-										$channel_url,
-										$ico,
-										$href,
-										$summary
-									)
-							);
-			// after_sanitize();
-			$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
-			echo 'This_date: ' . $this_date . ' End This_date;';
-			$time = date('H:i', $item['date_timestamp'] ) ;
-			if ($this_date!=$date) {
-				//If this isn't the first date...
-				if ($date) {
-					//End the last date's div
-					$out .= '</div>' ;
-					$channel_url_old	= '' ;
-				}
-
-				$date 	= $this_date ;
-				// hook_date();
-				$out	.= '<h1>'.$date;
-				$out	.= '<span style="float: right; margin-top: -1.3em;">';
-				$out	.= '<a href="javascript:void(0);" onclick="toggle_visible(\'date';
-				$out	.= date('dmY', $item['date_timestamp'] );
-				$out	.= '\');toggle_hide_show(\'arrow';
-				$out	.= date('dmY', $item['date_timestamp'] );
-				$out	.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
-				$out	.= date('dmY', $item['date_timestamp'] );
-				$out	.= '" /></a></span>';
-				$out	.= '</h1><div id="date';
-				$out	.= date('dmY', $item['date_timestamp'] );
-				$out	.= '">';
-				$out	.= "\n" ;
-			}
-			global $date;
-			if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
-			else $markStatus	= 'off';
-
-
-			if ($channel_url_old != $channel_url) {
-				if ($channel_url_old){
-					$out	.= '</div>' ;
-				}
-				$out	.= '<div class="feed">' ;
-			}
-			$out	.= '<div class="item" id="IITEM-'.$item_id.'">' ;
- 
-			if ($ico){
-				$out	.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
-			}
-			$out	.= '<span class="time">'.$time.'</span>' ;
-			$out	.= '<span class="title" id="TITLE'.$item_id.'">'.$title.'</span>' ;
-			$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
-			if($enclosure){
-				$out	.= 'Podcast or Videocast Available';
-			}
-			$out	.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
-			$out	.= $summary;
-			$channel_url_old=$channel_url;
-			$out .= "</div>\n" ;
-			$out .= "</div>\n" ;
+		//First enclosure listed is the one displayed
+		$enclosure		= $item['enclosures'][0]['url'];
+		$enclosuretype	= $item['enclosures'][0]['type'];
+		$summary		= '' ;
+		echo '<pre>';
+		print_r($item);
+		echo '</pre>';
+		$channel_title	= $item['channel_title'];
+		$channel_url	= $item['channel_link'];  
+		$ico			= $item['favicon'] ;
+		$href			= (empty($item['link'])) ? $href = $item['guid'] : $item['link'];
+		$item_id		= md5($href . $channel_url) ;
+		$title			= $item['title'];
+		$summary		= (empty($item['content'];
+		if(!$summary){
+			$summary	= $item['summary'];
 		}
-		$out		.= $next[0];
-		$the_date	= $next[1];
+		// before_sanitize();
+		//Parse all variables so far
+		/*lilina_parse_html(
+							array(
+									$title,
+									$channel_title,
+									$channel_url,
+									$ico,
+									$href,
+									$summary
+								)
+						);*/
+		// after_sanitize();
+		$this_date		= date('D d F, Y', $item['date_timestamp'] ) ;
+		echo 'This_date: ' . $this_date . ' End This_date;';
+		$time			= date('H:i', $item['date_timestamp'] ) ;
+		if ($this_date != $date) {
+			//If this isn't the first date...
+			if ($date) {
+				//End the last date's div
+				$out	.= '</div>' ;
+				$channel_url_old	= '' ;
+			}
+			$date 	= $this_date ;
+			// call_hooked('date');
+			$out		.= '<h1>'.$date;
+			$out		.= '<span style="float: right; margin-top: -1.3em;">';
+			$out		.= '<a href="javascript:void(0);" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
+			$out		.= '\');toggle_hide_show(\'arrow';
+			$out		.= date('dmY', $item['date_timestamp'] );
+			$out		.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
+			$out		.= date('dmY', $item['date_timestamp'] );
+			$out		.= '" /></a></span>';
+			$out		.= '</h1><div id="date';
+			$out		.= date('dmY', $item['date_timestamp'] );
+			$out		.= '">';
+			$out		.= "\n" ;
+		}
+		//global $date;
+		if ($channel_url_old != $channel_url) {
+			if ($channel_url_old){
+				$out	.= '</div>' ;
+			}
+			$out		.= '<div class="feed">' ;
+		}
+		$out			.= '<div class="item" id="IITEM-'.$item_id.'">' ;
+
+		if ($ico){
+			$out		.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
+		}
+		$out			.= '<span class="time">'.$time.'</span>' ;
+		$out			.= '<span class="title" id="TITLE'.$item_id.'">'.$title.'</span>' ;
+		$out			.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
+		if($enclosure){
+			$out		.= 'Podcast or Videocast Available';
+		}
+		$out			.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
+		$out			.= $summary;
+		$channel_url_old	= $channel_url;
+		$out			.= "</div>\n" ;
+		$out			.= "</div>\n" ;
+		$out			.= $next[0];
+		$the_date		= $next[1];
 		//Only display the feeds from the chosen times
-		if ( ($showtime>-1) && (time() - $feed['date_timestamp'] > $showtime) ) {
-		break ;
-		}
-		if(count($all_items)!=0) {
-			$out	.= '</div>' ;//Close the last "feed" div.
+		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
+			break;
 		}
 	}
+	if(count($all_items)!=0) {
+		$out		.= '</div>' ;//Close the last "feed" div.
+	}
+	lilina_parse_html($out);
 	return $out;
 }
 
@@ -310,6 +300,7 @@ function lilina_get_rss($location) {
 }
 
 function lilina_make_items($input) {
+	global $settings;
 	$items	= array();
 	$feeds	= $input['feeds'];
 	foreach($feeds as $feed) {
@@ -348,6 +339,7 @@ function lilina_make_items($input) {
 }
 // feed-functions.php, line 38-43
 function lilina_parse_html($val_array){
+	global $settings;
 	if($settings['encoding']!='utf-8'){
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', 'utf-8'); //replace with your encoding
@@ -359,8 +351,13 @@ function lilina_parse_html($val_array){
 		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
 		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
 		$purifier = new HTMLPurifier();
-		}		
-	$val_array = $purifier->purifyArray($val_array);
+		}
+	if(is_array($val_array)) {
+		$val_array = $purifier->purifyArray($val_array);
+	}
+	else {
+		$val_array = $purifier->purify($val_array);
+	}
 	return $val_array;
 }
 ?>

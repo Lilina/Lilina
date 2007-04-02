@@ -3,7 +3,7 @@
 	margin-bottom: 3em;
 }
 body {
-	background: #FFF5FF;
+	background: #D9D9D9;
 	color: #000000;
 }
 #menu {
@@ -16,7 +16,7 @@ body {
 #menu ul li#logo a {
 	border: none;
 	padding-right: 0.8em;
-	background: #FFF5FF url(http://cubegames.net/images/logo-16.png) no-repeat center right;
+	background: transparent url(http://cubegames.net/images/logo-16.png) no-repeat center right;
 	margin-left: 11em;
 }
 #menu ul, #menu ul li {
@@ -40,7 +40,7 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	width: 45em;
-	border: solid #F0C0E0 0.2em;
+	border: solid #A3A3A3 0.2em;
 	padding: 0.4em;
 }
 #content * {

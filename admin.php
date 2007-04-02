@@ -16,19 +16,42 @@ if(!lilina_check_installed()) {
 	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
 }
-//Timer doesn't need settings so we don't have to wait for them
-require_once('./inc/core/misc-functions.php');
-$timer_start = lilina_timer_start();
 //Protect from register_globals
 $settings	= 0;
+global $settings;
 $authed		= 0;
 $page		= htmlentities($_GET['page']);
 $action		= htmlentities($_GET['action']);
 $product	= htmlentities($_GET['product']);
-$name		= htmlentities($_GET['url']);
-$url		= htmlentities(urlencode($_GET['name']));
+$name		= htmlentities($_GET['name']);
+$url		= htmlentities(urlencode($_GET['url']));
+//Require our settings, must be before $data
+require_once('./inc/core/conf.php');
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
+//Old functions, not yet migrated
+require_once('./inc/core/lib.php');
+//Our current version
+require_once('./inc/core/version.php');
+
+//Authentication Section
+//Start the session
+session_start();
+//Check if we are logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+	//Not logged in, lets load the authentication script
+	require_once('./inc/core/auth-functions.php');
+	$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
+}
+if($_GET['logout'] == 'logout') {
+	//We already know we are logged in,
+	//so lets unset the variable then reload the page
+    unset($_SESSION['is_logged_in']);
+	header('Location: ' . $_SERVER['PHP_SELF']);
+	die();
+}
+
+//Misc. Functions
 function get_feeds() {
 	return $data['feeds'];
 }
@@ -37,23 +60,21 @@ function import_opml($opml_file) {
 	//Caution: $opml_file does nothing yet
 	return parse_opml($opml_file);
 }
-//Require our settings, must be first required file
-require_once('./inc/core/conf.php');
-require_once('./inc/core/lib.php');
-require_once('./inc/core/auth-functions.php');
-//Insert authentication handling
-$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
-if($authed !== true){
-	die();
-}
+
+//Navigation
 switch($page) {
 	case 'feeds': 
 		$out_page = 'admin-feeds.php';
 	case 'settings':
 		$out_page = 'admin-settings.php';
 	default:
-		$out_page = 'admin-feeds.php';
+		$out_page = 'admin-home.php';
 }
+
+//Actions:	flush cache,
+//			add feed
+//			remove feed
+//			import OPML
 switch($action){
 	case 'flush':
 		//Would have a switch here, but it's unnecessary
@@ -91,6 +112,9 @@ switch($action){
 											'name' => 'Lilina News Aggregator Blog')
 									)
 					);*/
+		if(!(str_pos($url, '.rss') || str_pos($url, '.atom') || str_pos($url, '.xml'))) {
+			lilina_get_rss($url);
+		}
 		$data['feeds'][count($data['feeds'])]['feed']	= $url;
 		$data['feeds'][count($data['feeds'])]['name']	= $name;
 		$data['feeds'][count($data['feeds'])]['cat']	= $category;
@@ -112,115 +136,52 @@ switch($action){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head profile="http://gmpg.org/xfn/1">
-<title><?php echo $settings['sitename'];?></title>
+<head>
+<title>Admin Panel</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<?php
-//Add templates code here
-?>
 <link rel="stylesheet" type="text/css" href="templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
-<?php
-if($authed == true) {
-?>
+<div id="wrap">
 <div id="pagetitle">
-	<h1>Control Panel</h1>
-	<span id="viewsite">
-		<a href="http://cubegames.net/">View site</a>
-	</span>
+	<h1><?php echo $settings['sitename']; ?> - Admin Panel</h1>
 </div>
 <div id="navigation">
-	<div id="links_container">
-		<ul class="links">
-			<li>
-				<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
-				if($page=='home'){
-				echo ' class="current"';
-				}?>>Home</a>
-			</li>
-			<li>
-				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"<?php
-				if($page=='feeds'){
-				echo ' class="current"';
-				}?>>Feeds</a>
-			</li>
-			<li>
-				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"<?php
-				if($page=='settings'){
-				echo ' class="current"';
-				}?>>Settings</a>
-			</li>
-		</ul>
-    </div>
+	<ul class="links">
+		<li>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
+			if($page=='home'){
+			echo ' class="current"';
+			}?>>Home</a>
+		</li>
+		<li>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"<?php
+			if($page=='feeds'){
+			echo ' class="current"';
+			}?>>Feeds</a>
+		</li>
+		<li>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"<?php
+			if($page=='settings'){
+			echo ' class="current"';
+			}?>>Settings</a>
+		</li>
+		<li>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=logout">
+			Logout</a>
+	</ul>
 </div>
-<?php if($result){
-echo '<div>';
-echo $result;
-echo '</div>';
-}
-?>
-<div id="main" style="float:right;">
+<div id="main">
 <?php
 if($out_page){
 	require_once('./inc/pages/'.$out_page);
 }
 else {
-	echo $out;
+	echo 'No page selected';
 }
 ?>
 </div>
-<?php
-}
-else{
-?>
-<a href="<?php echo $settings['baseurl']; ?>">
-	<img src="i/logo.jpg" alt="<?php echo $settings['sitename'];?>" title="<?php echo $settings['sitename'];?>" />
-	</a>
-  	<?php if($settings['output']['rss']){?>RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" /></a><?php } ?>
-  	<?php if($settings['output']['atom']){?>Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" /></a><?php } ?>
-	&nbsp;&nbsp;
-	|
-    <a href="javascript:visible_mode(true);">
-    <img src="i/arrow_out.png" alt="Expand" /> expand</a>
-    <a href="javascript:visible_mode(false);">
-    <img src="i/arrow_in.png" alt="Collapse" /> collapse</a>
-	|
-    <a href="cache/opml.xml">OPML</a>
-	|
-    <a href="#sources">SOURCES</a>
-	<div style="float: right;">
-		<ul>
-		<?php
-		for($q=0;$q<count($settings['interface']['times']);$q++){
-			$current_time = $settings['interface']['times'][$q];
-			if(is_int($current_time)){
-				echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
-			}
-			else {
-				switch($current_time) {
-					case 'week':
-						echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
-					break;
-					case 'all':
-						echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
-					break;
-				}
-			}
-		}
-		?>
-		</ul>
-    </div>
 </div>
-<?php
-}
-?>
-	<div id="footer">
-		<a href="http://lilina.cubegames.net/"><img src="i/logo_small.jpg" alt="Lilina News Aggregator" /></a>
-		This page was last generated on
-		<?php echo date('Y-m-d \a\t g:i a'); ?> and took
-		<?php echo lilina_timer_end($timer_start); ?> seconds
-	</div>
 </body>
 </html>

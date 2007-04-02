@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 
 /**
     MagpieHTTP, an HTTP client thats owes a deep debt of gratitude to Snoopy and HTTP::Request
