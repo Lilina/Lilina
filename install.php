@@ -21,11 +21,12 @@ else {
 	$page				= 1;
 }
 $from					= (isset($_POST['from']) ? htmlentities($_POST['from']) : false);
-$sitename				= htmlentities($_POST['sitename']);
-$url					= htmlentities($_POST['url']);
-$username				= htmlentities($_POST['username']);
-$password				= htmlentities($_POST['password']);
+$sitename				= (isset($_POST['sitename']) ? htmlentities($_POST['sitename']) : false);
+$url					= (isset($_POST['url']) ? htmlentities($_POST['url']) : false);
+$username				= (isset($_POST['username']) ? htmlentities($_POST['username']) : false);
+$password				= (isset($_POST['password']) ? htmlentities($_POST['password']) : false);
 $retrieved_settings		= array($sitename, $url, $username, $password);
+$error					= array('sitename','url','username','password');
 $error['sitename']		.= (isset($sitename)) ? false : true;
 $error['url']			.= (isset($url)) ? false : true;
 $error['username']		.= (isset($username)) ? false : true;

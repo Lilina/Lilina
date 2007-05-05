@@ -13,7 +13,7 @@ global $retrieved_settings;
 if(lilina_set_settings($retrieved_settings)){
 ?>
 <h1>Congratulations!</h1>
-<p>Lilina has been set up on your server and is ready to run. Open <a href="<?php echo $settings['baseurl']; ?>admin.php">your admin panel</a> and add some feeds.<br />
+<p>Lilina has been set up on your server and is ready to run. Open <a href="admin.php">your admin panel</a> and add some feeds.<br />
 Or, you could just open up a bottle of champagne!</p>
 <?php
 }

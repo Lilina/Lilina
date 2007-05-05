@@ -101,4 +101,27 @@ function plugins_meta($plugin_file) {
 	//				We always want the content, so we use $metadata[1]
 	return $plugin;
 }
+
+function lilina_plugins_list($directory){
+	//Make sure we open it correctly
+	if ($handle = opendir($directory)) {
+		//Go through all entries
+		while (false !== ($file = readdir($handle))) {
+			// just skip the reference to current and parent directory
+			if ($file != '.' && $file != '..') {
+				if (is_dir($directory . '/' . $file)) {
+					//Found a directory, don't need to do anything
+				} else {
+					//Only add plugin files
+					if(strpos($file,'.plugin.php') !== FALSE) {
+						$plugin_list[] = $file;
+					}
+				}
+			}
+		}
+		// ALWAYS remember to close what you opened
+		closedir($handle);
+	}
+	return $plugin_list;
+}
 ?>

@@ -18,6 +18,7 @@ defined('LILINA') or die('Restricted access');
 require_once('./inc/core/conf.php');
 require_once('./inc/core/file-functions.php');
 require_once('./inc/contrib/HTMLPurifier.php');
+require_once('./inc/core/version.php');
 
 //Language specific files:
 switch($settings['lang']){
@@ -36,6 +37,7 @@ require_once('./delicious.php');*/
 
 // NO NEED TO EDIT BELOW THIS LINE!
 
+/*
 //Backwards compatibility only
 $LILINAVERSION	= '1.0' ;
 $lilina			= array(
@@ -48,15 +50,15 @@ $lilina			= array(
 						'template-sys'	=> array(
 												'version'	=> 1.0
 												),
-						);
+						);//*/
 
 define('MAGPIE_CACHE_ON',1) ;
 define('MAGPIE_CACHE_FRESH_ONLY', true) ;
-define('MAGPIE_DIR', './inc/contrib/');
-define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
-define('MAGPIE_USER_AGENT','lilina'. $lilina['core-sys']['version'].'  (+http://lilina.cubegames.net/)') ;
+//define('MAGPIE_CACHE_DIR', './cache');
+define('MAGPIE_OUTPUT_ENCODING', $settings['encoding']);
+define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'  (+http://lilina.cubegames.net/)') ;
 error_reporting(E_ERROR);
-require_once(MAGPIE_DIR.'magpie.php');
+require_once('./inc/contrib/magpie.php');
 
 $empty_ico_data = base64_decode(
 'AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABMLAAATCwAAAAAA' .
@@ -82,11 +84,11 @@ $empty_ico_data = base64_decode(
 'AAAAAAAAgAEAAA==');
 
 
-function getRSSLocation($html, $location){
+/*function getRSSLocation($html, $location){
 /*
 	getRSSLocation() was found at 
 	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
-*/
+* /
     if(!$html or !$location){
         return false;
     }else{
@@ -99,7 +101,7 @@ function getRSSLocation($html, $location){
         for($n=0; $n<$link_count; $n++){
             $attributes = preg_split('/\s+/s', $links[$n]);
             foreach($attributes as $attribute){
-                $att = preg_split('/\s*=\s*/s', $attribute, 2);
+				$att = preg_split('/\s*=\s* /s', $attribute, 2);
                 if(isset($att[1])){
                     $att[1] = preg_replace('/([\'"]?)(.*)\1/', '$2', $att[1]);
                     $final_link[strtolower($att[0])] = $att[1];
@@ -147,7 +149,7 @@ function getRSSLocation($html, $location){
         }
         return false;
     }
-}
+}*/
 
 function getFaviconURL($location){
     if(!$location){

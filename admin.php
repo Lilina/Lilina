@@ -20,11 +20,16 @@ if(!lilina_check_installed()) {
 $settings	= 0;
 global $settings;
 $authed		= 0;
-$page		= htmlentities($_GET['page']);
-$action		= htmlentities($_GET['action']);
-$product	= htmlentities($_GET['product']);
-$name		= htmlentities($_GET['name']);
-$url		= htmlentities(urlencode($_GET['url']));
+$page		= (isset($_GET['page'])? $_GET['page'] : '');
+$page		= htmlentities($page);
+$action		= (isset($_GET['action'])? $_GET['action'] : '');
+$action		= htmlentities($action);
+$product	= (isset($_GET['product'])? $_GET['product'] : '');
+$product	= htmlentities($product);
+$name		= (isset($_GET['name'])? $_GET['name'] : '');
+$name		= htmlentities($name);
+$url		= (isset($_GET['url'])? $_GET['url'] : '');
+$url		= htmlentities(urlencode($url));
 //Require our settings, must be before $data
 require_once('./inc/core/conf.php');
 $data		= file_get_contents($settings['files']['feeds']) ;
@@ -53,11 +58,11 @@ if($_GET['logout'] == 'logout') {
 
 //Misc. Functions
 function get_feeds() {
+	global $data;
 	return $data['feeds'];
 }
 function import_opml($opml_file) {
 	require_once('./inc/contrib/parseopml.php');
-	//Caution: $opml_file does nothing yet
 	return parse_opml($opml_file);
 }
 
@@ -65,16 +70,19 @@ function import_opml($opml_file) {
 switch($page) {
 	case 'feeds': 
 		$out_page = 'admin-feeds.php';
+	break;
 	case 'settings':
 		$out_page = 'admin-settings.php';
+	break;
 	default:
 		$out_page = 'admin-home.php';
+	break;
 }
 
-//Actions:	flush cache,
-//			add feed
-//			remove feed
-//			import OPML
+//Actions:	flush (cache),
+//			add (feed)
+//			remove (feed)
+//			import (OPML)
 switch($action){
 	case 'flush':
 		//Would have a switch here, but it's unnecessary
@@ -102,14 +110,17 @@ switch($action){
 		/*$data = array(
 						'feeds' => array(
 										array(
-											'feed' => 'http://liberta-project.net/rss.xml',
-											'name' => 'Liberta Project'),
+											'feed'	=> 'http://liberta-project.net/rss.xml',
+											'name'	=> 'Liberta Project',
+											'cat'	=> 'default'),
 										array(
-											'feed' => 'http://cubegames.net/wordpress/feed/',
-											'name' => 'Cube Games Blog'),
+											'feed'	=> 'http://cubegames.net/wordpress/feed/',
+											'name'	=> 'Cube Games Blog',
+											'cat'	=> 'default'),
 										array(
-											'feed' => 'http://lilina.cubegames.net/feed/',
-											'name' => 'Lilina News Aggregator Blog')
+											'feed'	=> 'http://lilina.cubegames.net/feed/',
+											'name'	=> 'Lilina News Aggregator Blog',
+											'cat'	=> 'default')
 									)
 					);*/
 		if(!(str_pos($url, '.rss') || str_pos($url, '.atom') || str_pos($url, '.xml'))) {
@@ -125,7 +136,7 @@ switch($action){
 		$result	.= 'Added feed ' . $name . ' with URL as ' . htmlentities($url);
 	break;
 	case 'remove':
-		
+		//$data['feeds'][
 	break;
 	case 'import':
 		import_opml($url);

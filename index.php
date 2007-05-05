@@ -32,15 +32,15 @@ if(!lilina_check_installed()) {
 require_once('./inc/core/conf.php');
 
 //Custom error handler
-require_once('./inc/core/errors.php');
+//require_once('./inc/core/errors.php');
 
 //Caching to reduce loading times
-require_once('./inc/core/cache.php');
+//require_once('./inc/core/cache.php');
 
 //Current Version
 require_once('./inc/core/version.php');
 
-lilina_cache_start();
+//lilina_cache_start();
 // Do not update cache unless called with parameter force_update=1
 if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 	define('MAGPIE_CACHE_AGE', 1) ;
@@ -324,5 +324,5 @@ if($settings['output']['atom']){
 /*
 require_once('./inc/core/skin.php');
 require_once('./templates/default/index.skin.php');*/
-lilina_cache_end();
+//lilina_cache_end();
 ?>

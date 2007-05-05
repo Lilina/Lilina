@@ -13,34 +13,43 @@ defined('LILINA') or die('Restricted access');
 <h1>Feeds</h1>
 <?php
 //Defined in admin panel
-$feeds = get_feeds();
-$list = '<table>
-<tr>
-<th>Feed Name</th>
-<th>URL</th>
-<th>Remove Feed</th>
-<th>Change Feed</th>
+$feeds			= get_feeds();
+$list			= '<table id="feeds_list">
+<tr class="row_header row">
+<th class="col_odd col">Feed Name</th>
+<th class="col_even col">URL</th>
+<th class="col_odd col">Remove Feed</th>
+<th class="col_even col">Change Feed</th>
 </tr>';
+$num			= 'odd';
 foreach($feeds as $this_feed) {
-	$list .= '<tr>
-	<td>'.$this_feed['name'].'</td>
-	<td>'.$this_feed['link'].'</td>
-	<td><input type="checkbox" name="remove-'.$this_feed['id'].'" /></td>
-	<td><input type="checkbox" name="change-'.$this_feed['id'].'" /></td>
+	$list		.= '<tr class="row_' . $num . ' row">
+	<td class="col_odd col">'.$this_feed['name'].'</td>
+	<td class="col_even col">'.$this_feed['feed'].'</td>
+	<td class="col_odd col"><input type="checkbox" name="remove-'.$this_feed['id'].'" /></td>
+	<td class="col_even col"><input type="checkbox" name="change-'.$this_feed['id'].'" /></td>
 	</tr>';
+	if($num=='odd'){
+		$num	= 'even';
+	}
+	else {
+		$num	= 'odd';
+	}
 }
 $list .= '</table>';
 ?>
 <h2>Current Feeds</h2>
-<form method="post">
+<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <?php
 echo $list;
 ?>
-<input type="submit" label="Submit Changes" />
+<input type="hidden" name="page" value="feeds" />
+<input type="submit" value="Submit Changes" />
 </form>
 <h2>Add Feeds</h2>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET">
-Display Name: <input type="text" name="name" style="width: 14em;" />
-URL to Feed: <input type="text" name="url" style="width: 14em;" />
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
+<label for="name">Display Name:</label> <input type="text" name="name" id="url" style="width: 14em;" />
+<label for="url">URL to Feed:</label> <input type="text" name="url" id="url" style="width: 14em;" />
+<input type="hidden" name="page" value="feeds" />
 <input type="submit" value="Add Feed" />
 </form>

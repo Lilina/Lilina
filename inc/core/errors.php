@@ -15,6 +15,8 @@ $end_errors = '';
 error_reporting(0);
 // user defined error handling function
 function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
+	global $end_errors;
+	global $settings;
 	if(!defined('E_STRICT')) {
 		//Hack for PHP 4
 		define('E_STRICT', 2048);

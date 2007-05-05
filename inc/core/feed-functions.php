@@ -150,13 +150,10 @@ function lilina_make_output($all_items) {
 		$channel_title	= $item['channel_title'];
 		$channel_url	= $item['channel_link'];  
 		$ico			= $item['favicon'] ;
-		$href			= (empty($item['link'])) ? $href = $item['guid'] : $item['link'];
+		$href			= (empty($item['link'])) ? $item['guid'] : $item['link'];
 		$item_id		= md5($href . $channel_url) ;
 		$title			= $item['title'];
-		$summary		= (empty($item['content'];
-		if(!$summary){
-			$summary	= $item['summary'];
-		}
+		$summary		= (empty($item['content'])) ? $item['summary'] : $item['content'];
 		// before_sanitize();
 		//Parse all variables so far
 		/*lilina_parse_html(
@@ -322,7 +319,7 @@ function lilina_make_items($input) {
 				$item['channel_title']	.= $rss->channel['title'];
 			}
 			else {
-				$item['channel_title']	.= $input['feeds'][$i]['name'];
+				$item['channel_title']	.= $feed['name'];
 			}
 			$item['channel_url']		= $rss->channel['link'] ;
 			$item['favicon']			= $ico ;

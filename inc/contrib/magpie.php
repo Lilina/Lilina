@@ -120,7 +120,7 @@ class Magpie {
             $p = $this->parser($options);
             $status = $p->parse($http->body);
             if (!$status) {
-                $this->error($p->error[msg]);
+                $this->error($p->error['msg']);
                 return false;
             }
             $feed = new Magpie_Feed();

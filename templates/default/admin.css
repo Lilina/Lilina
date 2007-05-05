@@ -70,6 +70,26 @@ body, html {
 	color: #000000;
 }*/
 
+/* IE Only */
 * html #navigation {
 	margin-top: 0em;
+}
+
+#feeds_list .col {
+	padding-right: 2em;
+	font-size: 0.7em;
+}
+
+#feeds_list .row_even {
+	background: #ACE6BA;
+	outline-color:#ACE6BA;
+	outline-style:solid;
+	outline-width:thin;
+}
+
+#feeds_list .row_odd {
+	background: #00DEF4;
+	outline-color:#00DEF4;
+	outline-style:solid;
+	outline-width:thin;
 }
