@@ -8,7 +8,6 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
-$sources = template_source_list('echo', $data);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -41,18 +40,19 @@ template_header();
 	&nbsp;&nbsp;
 	|
     <a href="javascript:visible_mode(true);">
-    <img src="i/arrow_out.png" alt="Expand" /> expand</a>
+	<img src="i/arrow_out.png" alt="Show All Items" /> Expand</a>
     <a href="javascript:visible_mode(false);">
-    <img src="i/arrow_in.png" alt="Collapse" /> collapse</a>
+	<img src="i/arrow_in.png" alt="Hide All Items" /> Collapse</a>
 	|
     <?php
 	if(template_opml()){
-		echo '|';
+		echo ' |';
 	}
 	?>
     <a href="#sources">SOURCES</a>
 	
-</div><div style="text-align: right;" id="times">
+</div>
+<div style="text-align: right; padding-top: 2em; padding-right: 2em;" id="times">
 		<ul>
 		<?php
 		template_times();
@@ -60,11 +60,14 @@ template_header();
 		</ul>
     </div>
 <div id="main">
-<?php template_output('echo', $sources[1]); ?>
+<?php global $out; echo $out; ?>
 </div>
 
 <div id="sources">
-	<?php echo $sources[0]; ?>
+	<strong>Sources:</strong>
+	<ul>
+		<?php template_source_list('echo', $data); ?>
+	</ul>
 	<?php template_end_errors(); ?>
 </div>
 <div id="c1">&nbsp;powered by</div>

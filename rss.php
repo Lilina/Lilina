@@ -40,35 +40,28 @@ if (file_exists($settings['files']['times'])) {
 }
 
 
-for($i = 0; $i < count($data['feeds']); $i++) {
-	$rss	= fetch_rss( $data['feeds'][$i]['feed'] );
-	if (!$rss) continue;
+foreach($data['feeds'] as $feed) {
+	$rss	= fetch_rss( $feed['feed'] );
+	if (!$rss){
+		continue;
+	}
 	$ico	= channelFavicon( $rss->channel['link'] );
-	$channel_list .= '<li><a href="' . $rss->channel['link'] . '">';
-	$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon"/>';
-	if(!$data['feeds'][$i]['name']){
-		$channel_list .= $rss->channel['title'] . '</a></li>';
-	}
-	else {
-		$channel_list .= $data['feeds'][$i]['name'] . '</a></li>';
-	}
-	for ( $j=0; $j < count($rss->items); $j++) {
-		$x = $rss->items[$j] ;
-		if(!$data['feeds'][$i]['name']){
-			$x['channel_title'] .= $rss->channel['title'];
+	foreach($rss->items as $item){
+		if(!$feed['name']){
+			$item['channel_title']	.= $rss->channel['title'];
 		}
 		else {
-			$x['channel_title'] .= $data['feeds'][$i]['name'];
+			$item['channel_title']	.= $feed['name'];
 		}
-		$x['channel_url'] = $rss->channel['link'] ;
-		$x['favicon'] = $ico ;
-		if ($x['date_timestamp'] == '') {
-			$x['date_timestamp'] = create_time($x['title'] . $x['link']);
+		$item['channel_url']		= $rss->channel['link'] ;
+		$item['favicon']			= $ico ;
+		if ($item['date_timestamp'] == '') {
+			$item['date_timestamp']	= create_time($item['title'] . $item['link']);
 		}
 		else {
-			$x['date_timestamp'] .= $settings['offset'] * 60 * 60;
+			$item['date_timestamp']	.= $settings['offset'] * 60 * 60;
 		}
-		$items[] = $x ;
+		$items[] = $item ;
 	}
 }
 

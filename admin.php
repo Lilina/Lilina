@@ -126,9 +126,10 @@ switch($action){
 		if(!(str_pos($url, '.rss') || str_pos($url, '.atom') || str_pos($url, '.xml'))) {
 			lilina_get_rss($url);
 		}
-		$data['feeds'][count($data['feeds'])]['feed']	= $url;
-		$data['feeds'][count($data['feeds'])]['name']	= $name;
-		$data['feeds'][count($data['feeds'])]['cat']	= $category;
+		$feed_num	= count($data['feeds']);
+		$data['feeds'][$feed_num]['feed']	= $url;
+		$data['feeds'][$feed_num]['name']	= $name;
+		$data['feeds'][$feed_num)]['cat']	= $category;
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		fputs($fp,$sdata) ;

@@ -277,7 +277,8 @@ if($settings['output']['atom']){
 	|
     <a href="#sources">SOURCES</a>
 	
-</div><div style="text-align: right; padding-top: 2em; padding-right: 2em;" id="times">
+</div><div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
+<p style="font-size: 0.8em;">Show posts from the last:</p>
 		<ul>
 		<?php
 		for($q=0;$q<count($settings['interface']['times']);$q++){

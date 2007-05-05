@@ -134,6 +134,7 @@ function lilina_make_item($item, $date) {
 }
 
 function lilina_make_output($all_items) {
+	global $showtime, $settings;
 	usort($all_items, 'date_cmp');
 	foreach($all_items as $item) {
 	//for($i=0;$i<count($items);$i++) {
@@ -141,12 +142,14 @@ function lilina_make_output($all_items) {
 		////Note: returns array
 		//$next		= lilina_make_item($items[$i], $the_date);
 		//First enclosure listed is the one displayed
-		$enclosure		= $item['enclosures'][0]['url'];
-		$enclosuretype	= $item['enclosures'][0]['type'];
+		if(is_array($item['enclosures'])){
+			$enclosure		= $item['enclosures'][0]['url'];
+			$enclosuretype	= $item['enclosures'][0]['type'];
+		}
 		$summary		= '' ;
-		echo '<pre>';
-		print_r($item);
-		echo '</pre>';
+		//echo '<pre>';
+		//print_r($item);
+		//echo '</pre>';
 		$channel_title	= $item['channel_title'];
 		$channel_url	= $item['channel_link'];  
 		$ico			= $item['favicon'] ;
@@ -168,7 +171,7 @@ function lilina_make_output($all_items) {
 						);*/
 		// after_sanitize();
 		$this_date		= date('D d F, Y', $item['date_timestamp'] ) ;
-		echo 'This_date: ' . $this_date . ' End This_date;';
+		//echo 'This_date: ' . $this_date . ' End This_date;';
 		$time			= date('H:i', $item['date_timestamp'] ) ;
 		if ($this_date != $date) {
 			//If this isn't the first date...
@@ -303,6 +306,7 @@ function lilina_make_items($input) {
 	foreach($feeds as $feed) {
 		$rss	= fetch_rss( $feed['feed'] );
 		if (!$rss){
+			//$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
 			continue;
 		}
 		$ico	= channelFavicon( $rss->channel['link'] );
@@ -323,8 +327,20 @@ function lilina_make_items($input) {
 			}
 			$item['channel_url']		= $rss->channel['link'] ;
 			$item['favicon']			= $ico ;
-			if ($x['date_timestamp'] == '') {
-				$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+			if ($item['date_timestamp'] == '') {
+				//No date set
+				if($item['pubdate']) {
+					//It's set in a different way by the feed, lets use it
+					$item['date_timestamp'] = strtotime($item['pubdate']);
+					if(!$item['date_timestamp']){
+						//OK, we lied, that doesn't work either
+						$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+					}
+				}
+				else {
+					//This feed doesn't like us
+					$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+				}
 			}
 			else {
 				$item['date_timestamp']	.= $settings['offset'] * 60 * 60;

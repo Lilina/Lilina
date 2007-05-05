@@ -92,13 +92,10 @@ function template_synd_links($return='echo'){
 	global $settings;
 	if($return == 'echo') {
 		if($settings['output']['rss']){
-			echo '<a title="RSS Feed" href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" />';
-		}
-		if($settings['output']['opml']){
-			echo '<a title="OPML Feed" href="rss.php?output=opml"><img src="i/feed.png" alt="OPML feed" title="OPML feed" />';
+			echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" /></a> ';
 		}
 		if($settings['output']['atom']){
-			echo '<a title="Atom Feed" href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" />';
+			echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" /></a>';
 		}
 		return true;
 	}
@@ -149,7 +146,7 @@ function template_opml($return='echo'){
 
 function template_output($return='echo', $feeds){
 	if($return == 'echo') {
-		echo lilina_make_output($feeds)
+		echo lilina_make_output($feeds);
 		return true;
 	}
 	elseif($return == 'var') {
@@ -178,6 +175,7 @@ function template_source_list($return='echo', $input){
 }
 
 function template_end_errors($return='echo'){
+	global $end_errors;
 	if($return == 'echo') {
 		echo $end_errors;
 		return true;

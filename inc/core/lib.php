@@ -57,7 +57,6 @@ define('MAGPIE_CACHE_FRESH_ONLY', true) ;
 //define('MAGPIE_CACHE_DIR', './cache');
 define('MAGPIE_OUTPUT_ENCODING', $settings['encoding']);
 define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'  (+http://lilina.cubegames.net/)') ;
-error_reporting(E_ERROR);
 require_once('./inc/contrib/magpie.php');
 
 $empty_ico_data = base64_decode(

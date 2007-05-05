@@ -56,7 +56,6 @@ img, a {
 #times ul, #times li {
 	margin-left: 2px;
 }
-
 #topbar {
 	position: relative;
 	float: right;
@@ -78,7 +77,12 @@ img, a {
 	margin-top: 3px;
 	margin-left: 3px;
 	display: inline ;
+	border-right:1px solid #AAAAAA;
+	padding-right:3px;
 	}
+#times li.last {
+	border-right: none;
+}
 #times ul {
 	list-style: none;
 	margin-top: 3px;
