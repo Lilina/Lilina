@@ -19,6 +19,7 @@ $settings['magpie']					= array('cachetime' => 3600);
 $settings['baseurl']				= 'http://localhost/';
 //No need to change this really
 $settings['path']					= dirname(dirname(dirname(__FILE__)));
+//Name of template
 $settings['template']				= 'default';
 $settings['template_path']			= $settings['baseurl'] . 'templates/' . $settings['template'];
 $settings['cachedir']				= $settings['path'] . '/cache/';
@@ -32,10 +33,12 @@ $settings['files']					= array(
 											'settings'	=> $settings['path'] . '/conf/settings.php',
 											'plugins'	=> $settings['path'] . '/conf/plugins.data'
 											);
+//Maximum number of items from each feed, 0 is unlimited
 $settings['feeds']					= array('items' => '25');
 //Default time is always the first time
 //Numbers are hours, valid string values are 'week' and 'all'
-$settings['interface']				= array('times' => array(24,48,'week','all'), 'template' => 'default');
+$settings['interface']				= array('times' => array(24,48,'week','all'));
+//Output types
 $settings['output']					= array(
 											'rss' => true,
 											'opml' => true,

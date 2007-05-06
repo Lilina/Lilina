@@ -12,20 +12,24 @@ See LICENSE.txt to view the license
 defined('LILINA') or die('Restricted access');
 require_once('./inc/core/conf.php');
 
-function lilina_cache_start(){
+function lilina_cache_check(){
 	global $settings;
 	// Cache file to either load or create
 	$cachefile = $settings['cachedir'] . md5('index') . '.html';
-	$cachefile_created = ((@file_exists($cachefile))) ? @filemtime($cachefile) : 0;
+	$cachefile_created = (@file_exists($cachefile)) ? @filemtime($cachefile) : 0;
 	clearstatcache();
 	// Show file from cache if still valid
 	if (time() - $settings['cachetime'] < $cachefile_created) {
+		echo '<!--Retreived from cache-->' . "\n";
 		//ob_start('ob_gzhandler');
 		readfile($cachefile);
 		//ob_end_flush();
 		exit();
 	}
-	// If we're still here, we need to generate a cache file
+}
+function lilina_cache_start(){
+	global $settings;
+	echo '<!--Generated fresh-->' . "\n";
 	ob_start();
 }
 

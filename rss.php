@@ -115,13 +115,13 @@ for($i=0;$i<count($items);$i++) {
 // valid format strings are: RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
 // MBOX, OPML, ATOM, ATOM0.3, HTML, JS
 if($settings['output']['atom'] == true) {
-	echo $rss_out->saveFeed("ATOM", "feeds/atom.xml");
+	echo $rss_out->saveFeed('ATOM', 'cache/atom.xml');
 }
 if($settings['output']['opml'] == true) {
-	echo $rss_out->saveFeed("OPML", "feeds/opml.xml");
+	echo $rss_out->saveFeed('OPML', 'feeds/opml.xml');
 }
 if($settings['output']['rss'] == true) {
-	echo $rss_out->saveFeed("RSS2.0", "feeds/feed.xml");
+	echo $rss_out->saveFeed('RSS2.0', 'feeds/feed.xml');
 }
 
 // save times

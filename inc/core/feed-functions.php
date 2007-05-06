@@ -184,7 +184,7 @@ function lilina_make_output($all_items) {
 			// call_hooked('date');
 			$out		.= '<h1>'.$date;
 			$out		.= '<span style="float: right; margin-top: -1.3em;">';
-			$out		.= '<a href="javascript:void(0);" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
+			$out		.= '<a href="javascript:void(0);" title="Click to expand/collapse date" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
 			$out		.= '\');toggle_hide_show(\'arrow';
 			$out		.= date('dmY', $item['date_timestamp'] );
 			$out		.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
@@ -208,7 +208,7 @@ function lilina_make_output($all_items) {
 			$out		.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
 		}
 		$out			.= '<span class="time">'.$time.'</span>' ;
-		$out			.= '<span class="title" id="TITLE'.$item_id.'">'.$title.'</span>' ;
+		$out			.= '<span class="title" id="TITLE'.$item_id.'" title="Click to expand/collapse item">'.$title.'</span>' ;
 		$out			.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
 		if($enclosure){
 			$out		.= 'Podcast or Videocast Available';
@@ -309,16 +309,28 @@ function lilina_make_items($input) {
 			//$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
 			continue;
 		}
-		$ico	= channelFavicon( $rss->channel['link'] );
+		//Get the icon to display
+		$ico	= channel_favicon( $rss->channel['link'] );
+		//Add it to the list
 		$channel_list .= '<li><a href="' . $rss->channel['link'] . '">';
 		$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon" />&nbsp;';
 		if(!$feed['name']){
+			//User hasn't specified name, get it ourselves
 			$channel_list .= $rss->channel['title'] . '</a></li>';
 		}
 		else {
+			//Use supplied name
 			$channel_list .= $feed['name'] . '</a></li>';
 		}
-		foreach($rss->items as $item){
+		if($settings['feeds']['items']) {
+			//User has specified limit, limit the items
+			$limited_items = array_slice($rss->items, 0, $settings['feeds']['items']);			
+		}
+		else {
+			//No limit, don't bother slicing
+			$limited_items	= $rss->items
+		}
+		foreach($limited_items as $item){
 			if(!$feed['name']){
 				$item['channel_title']	.= $rss->channel['title'];
 			}

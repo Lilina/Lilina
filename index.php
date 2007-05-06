@@ -35,12 +35,12 @@ require_once('./inc/core/conf.php');
 //require_once('./inc/core/errors.php');
 
 //Caching to reduce loading times
-//require_once('./inc/core/cache.php');
+require_once('./inc/core/cache.php');
 
 //Current Version
 require_once('./inc/core/version.php');
 
-//lilina_cache_start();
+lilina_cache_check();
 // Do not update cache unless called with parameter force_update=1
 if (isset($_GET['force_update']) && $_GET['force_update']==1) {
 	define('MAGPIE_CACHE_AGE', 1) ;
@@ -222,6 +222,7 @@ $out = lilina_make_output($list[1]);
 lilina_save_times($time_table);
 
 $itemCount = $i+1 ;
+lilina_cache_start();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -325,5 +326,5 @@ if($settings['output']['atom']){
 /*
 require_once('./inc/core/skin.php');
 require_once('./templates/default/index.skin.php');*/
-//lilina_cache_end();
+lilina_cache_end();
 ?>
