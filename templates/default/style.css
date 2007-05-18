@@ -118,6 +118,7 @@ h1 { /* Date */
 	}
 h1 img{
 	padding-right: 1em;
+	margin-top:0.05em;
 }
 .item {
 	margin: 0px 0px 0px 0px;

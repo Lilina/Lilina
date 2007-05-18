@@ -177,7 +177,7 @@ function channel_favicon($location) {
 	if(!$ico_url) {
 		return false ;
 	}
-    	 echo "<br> $ico_url , $cached_ico " ;
+    	// echo "<br> $ico_url , $cached_ico " ;
 	if (!$data = @file_get_contents($ico_url)) {
 		$data			= $empty_ico_data;
 	}

@@ -11,8 +11,16 @@ See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
 
-function lilina_load_times($times) {
-
+function lilina_load_times() {
+	global $settings;
+	if (file_exists($settings['files']['times'])) {
+		$time_table = file_get_contents($settings['files']['times']) ;
+		$time_table = unserialize($time_table) ;
+	}
+	else {
+		$time_table = array();
+	}
+	return $time_table;
 }
 // index.php, line 200
 function lilina_save_times($times) {

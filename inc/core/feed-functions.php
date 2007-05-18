@@ -328,7 +328,7 @@ function lilina_make_items($input) {
 		}
 		else {
 			//No limit, don't bother slicing
-			$limited_items	= $rss->items
+			$limited_items	= $rss->items;
 		}
 		foreach($limited_items as $item){
 			if(!$feed['name']){

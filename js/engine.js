@@ -250,3 +250,51 @@ function search_page(query) {
 		}
 	}
 }
+function showChange( whichId, whichName, whichUrl ) {
+	var elem;
+	if( document.getElementById ) {// this is the way the standards work
+		elem = document.getElementById('changer');
+		document.getElementById('change_id').value = whichId;
+		document.getElementById('change_name').value = whichName;
+		document.getElementById('change_url').value = whichUrl;
+	}
+	else if( document.all ) {// this is the way old msie versions work
+		elem = document.all['changer'];
+		document.all['change_id'].value = whichId;
+		document.all['change_name'].value = whichName;
+		document.all['change_url'].value = whichUrl;
+	}
+	else if( document.layers ) {// this is the way nn4 works
+		elem = document.layers['changer'];
+		document.layers['change_id'].value = whichId;
+		document.layers['change_name'].value = whichName;
+		document.layers['change_url'].value = whichUrl;
+	}
+	elem.style.display = 'block';
+	Fat.fade_element('changer',null,null,'#E67373','#FFFFFF');
+	return false;
+}
+function hideChanger() {
+	var elem;
+	if( document.getElementById ) {// this is the way the standards work
+		elem = document.getElementById('changer');
+		elem2 = document.getElementById('changer_id');
+	}
+	else if( document.all ) {// this is the way old msie versions work
+		elem = document.all['changer'];
+		elem2 = document.all['changer_id'];
+	}
+	else if( document.layers ) {// this is the way nn4 works
+		elem = document.layers['changer'];
+		elem2 = document.layers['changer_id'];
+	}
+	elem.style.display = 'none';
+	elem2.style.display = 'none';
+}
+function adminLoader(page) {
+	switch(page) {
+		case 'feeds':
+			hideChanger();
+			break;
+	}
+}

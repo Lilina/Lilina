@@ -9,7 +9,7 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
-define('LILINA',1) ;
+define('LILINA',1);
 //Check installed
 require_once('./inc/core/install-functions.php');
 if(!lilina_check_installed()) {
@@ -48,7 +48,7 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 	require_once('./inc/core/auth-functions.php');
 	$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
 }
-if($_GET['logout'] == 'logout') {
+if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 	//We already know we are logged in,
 	//so lets unset the variable then reload the page
     unset($_SESSION['is_logged_in']);
@@ -82,29 +82,31 @@ switch($page) {
 //Actions:	flush (cache),
 //			add (feed)
 //			remove (feed)
+//			change (feed)
 //			import (OPML)
 switch($action){
 	case 'flush':
-		//Would have a switch here, but it's unnecessary
-		//and I don't know about having two switches, might
-		//screw up :)
-		if($product == 'magpie'){
-			define('MAGPIE_CACHE_AGE',1) ;			
-		}
-		elseif($product == 'lilina'){
-			//Once again, from
-			//http://www.ilovejackdaniels.com/php/caching-output-in-php/
-			$cachedir = $settings['cachedir'];
-			if ($handle = @opendir($cachedir)) {
-				while (false !== ($file = @readdir($handle))) {
-					if ($file != '.' and $file != '..') {
-						$result = $file . ' deleted.<br />';
-						@unlink($cachedir . '/' . $file);
-					}
+		//Must delete Magpie and Lilina caches at the same time
+		//Lilina cache clear from
+		//http://www.ilovejackdaniels.com/php/caching-output-in-php/
+		$cachedir = $settings['cachedir'];
+		if ($handle = @opendir($cachedir)) {
+			while (false !== ($file = @readdir($handle))) {
+				if ($file != '.' and $file != '..') {
+					//$result .= $file . ' deleted.<br />';
+					@unlink($cachedir . '/' . $file);
 				}
-				@closedir($handle);
 			}
+			@closedir($handle);
 		}
+		else {
+			$result		.= 'Error deleting files in ' . $settings['cachedir'] . ' - Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.<br />';
+		}
+		if($times_file = @fopen($settings['files']['times'], 'w')) fclose($times_file);
+		else {
+			$result		.= 'Error clearing times from ' . $settings['files']['times'] . ' - Make sure the file is writable and PHP/Apache has the correct permissions to modify it.<br />';
+		}
+		$result			.= 'Successfully cleared cache!<br />';
 	break;
 	case 'add':
 		/*$data = array(
@@ -129,12 +131,12 @@ switch($action){
 		$feed_num	= count($data['feeds']);
 		$data['feeds'][$feed_num]['feed']	= $url;
 		$data['feeds'][$feed_num]['name']	= $name;
-		$data['feeds'][$feed_num)]['cat']	= $category;
+		$data['feeds'][$feed_num]['cat']	= $category;
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= 'Added feed ' . $name . ' with URL as ' . htmlentities($url);
+		$result	.= 'Added feed ' . $name . ' with URL as ' . htmlentities($url) . '<br />';
 	break;
 	case 'remove':
 		//$data['feeds'][
@@ -153,8 +155,10 @@ switch($action){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/fat.js"></script>
 </head>
-<body>
+<body onload="javascript:adminLoader('<?php echo $page; ?>');">
 <div id="wrap">
 <div id="pagetitle">
 	<h1><?php echo $settings['sitename']; ?> - Admin Panel</h1>

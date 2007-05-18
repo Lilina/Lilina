@@ -84,7 +84,3 @@ var Fat = {
 		return c;
 	}
 }
-
-addLoadEvent(function ()  {
-	Fat.fade_all();
-});

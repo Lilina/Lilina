@@ -1,4 +1,5 @@
 <?php
+// $Id$
 /******************************************
 		Lilina: Simple PHP Aggregator
 File:		index.php
@@ -40,10 +41,12 @@ require_once('./inc/core/cache.php');
 //Current Version
 require_once('./inc/core/version.php');
 
-lilina_cache_check();
 // Do not update cache unless called with parameter force_update=1
 if (isset($_GET['force_update']) && $_GET['force_update']==1) {
-	define('MAGPIE_CACHE_AGE', 1) ;
+	define('MAGPIE_CACHE_AGE', 1);
+}
+else {
+	lilina_cache_check();
 }
 //Require our standard stuff
 require_once('./inc/core/lib.php');
@@ -56,14 +59,14 @@ $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settin
 $data = lilina_load_feeds($settings['files']['feeds']) ;
 
 // load times
-
-if (file_exists($settings['files']['times'])) {
+$time_table	= lilina_load_times();
+/*if (file_exists($settings['files']['times'])) {
 	$time_table = file_get_contents($settings['files']['times']) ;
 	$time_table = unserialize($time_table) ;
 } else {
 	$time_table = array();
 }
-/*
+
 $channel_list	= '<strong>'. $i18n['sources'] . '</strong>';
 $channel_list	.= '<ul>';
 
@@ -228,7 +231,7 @@ lilina_cache_start();
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head profile="http://gmpg.org/xfn/1">
-<title><?php echo $settings['sitename'];?></title>
+<title><?php echo ($showtime=='-3600'? 'All Items | ' : 'Latest ' . $showtime/3600 . ' hours | '); echo $settings['sitename'];?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <?php
 if($settings['output']['rss']){
@@ -284,16 +287,22 @@ if($settings['output']['atom']){
 		<?php
 		for($q=0;$q<count($settings['interface']['times']);$q++){
 			$current_time = $settings['interface']['times'][$q];
+			if($q == count($settings['interface']['times'])) {
+				echo '<li class="last">';
+			}
+			else {
+				echo '<li>';
+			}
 			if(is_int($current_time)){
-				echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
+				echo '<a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
 			}
 			else {
 				switch($current_time) {
 					case 'week':
-						echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
+						echo '<a href="index.php?hours=168"><span>week</span></a></li>';
 					break;
 					case 'all':
-						echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
+						echo '<a href="index.php?hours=-1"><span>all</span></a></li>';
 					break;
 				}
 			}

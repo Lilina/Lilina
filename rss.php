@@ -18,15 +18,17 @@ require_once('./inc/core/conf.php');
 //Require our standard stuff
 require_once('./inc/core/lib.php');
 
+//Stuff for parsing Magpie output, etc
+require_once('./inc/core/feed-functions.php');
 
+//Get the feed creator loaded
+require_once('./inc/contrib/feedcreator.class.php');
 
+$display	= (isset($_GET['output'])) ? strtolower($_GET['output']) : 'rss';
+//echo '<!--Display: ' . $display . ' - 1 -->';
+$showtime	= (isset($_REQUEST['hours'])) ? $_REQUEST['hours'] * 3600 : 3600 * $settings['interface']['times'][0] ;
 
-
-
-$TIMERANGE = ( $_REQUEST['hours'] ? $_REQUEST['hours']*3600 : 3600*24 ) ;
-
-$data = file_get_contents($settings['files']['feeds']) ;
-$data = unserialize( base64_decode($data) ) ;
+$data = lilina_load_feeds($settings['files']['feeds']) ;
 
 $items = array();
 
@@ -40,35 +42,23 @@ if (file_exists($settings['files']['times'])) {
 }
 
 
-foreach($data['feeds'] as $feed) {
-	$rss	= fetch_rss( $feed['feed'] );
-	if (!$rss){
-		continue;
-	}
-	$ico	= channelFavicon( $rss->channel['link'] );
-	foreach($rss->items as $item){
-		if(!$feed['name']){
-			$item['channel_title']	.= $rss->channel['title'];
-		}
-		else {
-			$item['channel_title']	.= $feed['name'];
-		}
-		$item['channel_url']		= $rss->channel['link'] ;
-		$item['favicon']			= $ico ;
-		if ($item['date_timestamp'] == '') {
-			$item['date_timestamp']	= create_time($item['title'] . $item['link']);
-		}
-		else {
-			$item['date_timestamp']	.= $settings['offset'] * 60 * 60;
-		}
-		$items[] = $item ;
-	}
-}
 
-include("./inc/contrib/feedcreator.class.php");
+$items = lilina_make_items($data);
+$items = $items[1];
 
 $rss_out = new UniversalFeedCreator();
-$rss_out->useCached(); // use cached version if age<1 hour
+switch($display) {
+	case 'opml':
+		$rss_out->useCached('OPML', $settings['cachedir'] . 'opml.xml', $settings['cachetime']);
+		break;
+	case 'atom':
+		$rss_out->useCached('ATOM', $settings['cachedir'] . 'atom.xml', $settings['cachetime']);
+		break;
+	case 'rss':
+	default:
+		$rss_out->useCached('RSS2.0', $settings['cachedir'] . 'feed.xml', $settings['cachetime']);
+		break;
+}
 $rss_out->title = $settings['sitename'];
 $rss_out->description = $settings['baseurl'];
 
@@ -77,13 +67,13 @@ $rss_out->descriptionTruncSize = 500;
 $rss_out->descriptionHtmlSyndicated = true;
 
 $rss_out->link = $settings['baseurl'];
-$rss_out->syndicationURL = $settings['baseurl'].$_SERVER["PHP_SELF"];
+$rss_out->syndicationURL = $settings['baseurl'] . $_SERVER['PHP_SELF'];
 
 //$image = new FeedImage();
 //$image->title = $settings['sitename'];
 //$image->url = $settings['baseurl'].'/i/logo.jpg";
-//$image->link = "$BASEURL";
-//$image->description = "$SITETITLE";
+//$image->link = $settings['baseurl'];
+//$image->description = $settings['sitename'];
 
 //optional
 //$image->descriptionTruncSize = 500;
@@ -92,9 +82,7 @@ $rss_out->syndicationURL = $settings['baseurl'].$_SERVER["PHP_SELF"];
 //$rss_out->image = $image;
 
 usort($items, 'date_cmp');
-for($i=0;$i<count($items);$i++) {
-
-   $item = $items[$i] ;
+foreach($items as $item) {
 
    $item_out = new FeedItem();
    
@@ -112,21 +100,31 @@ for($i=0;$i<count($items);$i++) {
    $rss_out->addItem($item_out);
 }
 
+//echo 'Display: ' . $display;
 // valid format strings are: RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
 // MBOX, OPML, ATOM, ATOM0.3, HTML, JS
 if($settings['output']['atom'] == true) {
-	echo $rss_out->saveFeed('ATOM', 'cache/atom.xml');
+	$rss_out->saveFeed('ATOM', $settings['cachedir'] . 'atom.xml', false);
 }
 if($settings['output']['opml'] == true) {
-	echo $rss_out->saveFeed('OPML', 'feeds/opml.xml');
+	$rss_out->saveFeed('OPML', $settings['cachedir'] . 'opml.xml', false);
 }
 if($settings['output']['rss'] == true) {
-	echo $rss_out->saveFeed('RSS2.0', 'feeds/feed.xml');
+	$rss_out->saveFeed('RSS2.0', $settings['cachedir'] . 'feed.xml', false);
+}
+//echo 'Display: ' . $display;
+switch($display) {
+	case 'opml':
+		echo $rss_out->createFeed('OPML');
+		break;
+	case 'atom':
+		echo $rss_out->createFeed('ATOM');
+		break;
+	case 'rss':
+	default:
+		echo $rss_out->createFeed('RSS2.0');
+		break;
 }
 
-// save times
-$ttime = serialize($time_table);
-$fp = fopen($settings['files']['times'],'w') ;
-fputs($fp, $ttime) ;
-fclose($fp) ;
+lilina_save_times($time_table);
 ?>
