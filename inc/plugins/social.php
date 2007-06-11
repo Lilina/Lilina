@@ -7,7 +7,6 @@ Author: Ryan McCue
 Author URI: http://cubegames.net
 Version: 1.0
 Min Version: 1.0
-Init: analytics_init
 */
 if($lilina['plugins-sys']['version'] >= 1.0) {
 	

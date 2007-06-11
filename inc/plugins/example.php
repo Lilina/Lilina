@@ -5,7 +5,7 @@ Plugin URI: http://lilina.cubegames.net/plugins/analytics
 Description: Adds the Google Analytics 
 Author: Ryan McCue
 Version: 1.0
-Min
+Min Version: 1.0
 Author URI: http://cubegames.net
 License: GPL
 */

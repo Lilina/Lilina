@@ -3,7 +3,10 @@ body, html {
 	font-family: Verdana, sans-serif;
 	font-size: 0.9em;
 }
-
+#alert {
+	border:1px solid #e7dc2b;
+	background: #fff888;
+}
 #wrap {
 	background: #FFFFFF;
 	border: 0.1em solid #AAAAAA;

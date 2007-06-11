@@ -53,11 +53,11 @@ function lilina_admin_auth($user, $pass) {
 		if($error) {
 			switch($error) {
 				case 'pw':
-					$error_message = 'Your password is incorrect. Please make sure you have spelt it correctly.<br />';
+					$error_message = _r('Your password') . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 					$highlight_pw	= 'color:#FF615A;';
 				break;
 				case 'un':
-					$error_message = 'Your username is incorrect. Please make sure you have spelt it correctly.<br />';
+					$error_message = _r('Your username') . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 					$higlight_un	= 'color:#FF615A;';
 				break;
 			}
@@ -65,16 +65,16 @@ function lilina_admin_auth($user, $pass) {
 		$content = '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
 		<table>
 			<tr style="' . $highlight_un . '">
-				<td><label for="user">Username</label></td>
+				<td><label for="user">'._r('Username').':</label></td>
 				<td><input type="text" name="user" id="user" /></td>
 			</tr>
 			<tr style="' . $higlight_pw . '">
-				<td><label for="pass">Password:</label></td>
+				<td><label for="pass">'._r('Password').':</label></td>
 				<td><input type="password" name="pass" id="pass" /></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="text-align: center;">
-					<input type="submit" value="Login" />
+					<input type="submit" value="'._r('Login').'" />
 				</td>
 			</tr>
 		</table>

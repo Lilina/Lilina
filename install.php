@@ -20,17 +20,17 @@ elseif(!empty($_GET['page'])) {
 else {
 	$page				= 1;
 }
-$from					= (isset($_POST['from']) ? htmlentities($_POST['from']) : false);
-$sitename				= (isset($_POST['sitename']) ? htmlentities($_POST['sitename']) : false);
-$url					= (isset($_POST['url']) ? htmlentities($_POST['url']) : false);
-$username				= (isset($_POST['username']) ? htmlentities($_POST['username']) : false);
-$password				= (isset($_POST['password']) ? htmlentities($_POST['password']) : false);
+$from					= (isset($_POST['from'])) ? htmlentities($_POST['from']) : false;
+$sitename				= (isset($_POST['sitename'])) ? htmlentities($_POST['sitename']) : false;
+$url					= (isset($_POST['url'])) ? htmlentities($_POST['url']) : false;
+$username				= (isset($_POST['username'])) ? htmlentities($_POST['username']) : false;
+$password				= (isset($_POST['password'])) ? htmlentities($_POST['password']) : false;
 $retrieved_settings		= array($sitename, $url, $username, $password);
 $error					= array('sitename','url','username','password');
-$error['sitename']		.= (isset($sitename)) ? false : true;
-$error['url']			.= (isset($url)) ? false : true;
-$error['username']		.= (isset($username)) ? false : true;
-$error['password']		.= (isset($password)) ? false : true;
+$error['sitename']		= ($sitename) ? false : true;
+$error['url']			= ($url) ? false : true;
+$error['username']		= ($username) ? false : true;
+$error['password']		= ($password) ? false : true;
 require_once('./inc/core/install-functions.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"

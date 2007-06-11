@@ -49,18 +49,18 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 
 	// define an assoc array of error string
 	$errortype = array (
-				E_ERROR              => 'Error',
-				E_WARNING            => 'Warning',
-				E_PARSE              => 'Parsing Error',
-				E_NOTICE            => 'Notice',
-				E_CORE_ERROR        => 'Core Error',
-				E_CORE_WARNING      => 'Core Warning',
-				E_COMPILE_ERROR      => 'Compile Error',
-				E_COMPILE_WARNING    => 'Compile Warning',
-				E_USER_ERROR        => 'User Error',
-				E_USER_WARNING      => 'User Warning',
-				E_USER_NOTICE        => 'User Notice',
-				E_STRICT            => 'Runtime Notice'
+				E_ERROR				=> _r('Error'),
+				E_WARNING			=> _r('Warning'),
+				E_PARSE				=> _r('Parsing Error'),
+				E_NOTICE			=> _r('Notice'),
+				E_CORE_ERROR		=> _r('Core Error'),
+				E_CORE_WARNING		=> _r('Core Warning'),
+				E_COMPILE_ERROR		=> _r('Compile Error'),
+				E_COMPILE_WARNING	=> _r('Compile Warning'),
+				E_USER_ERROR		=> _r('User Error'),
+				E_USER_WARNING		=> _r('User Warning'),
+				E_USER_NOTICE		=> _r('User Notice'),
+				E_STRICT			=> _r('Runtime Notice')
 				);
 	// set of errors for which a var trace will be saved
 	$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
@@ -76,33 +76,19 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 	}
 	$err .= "</errorentry>\n\n";
 	if(strpos($errmsg, 'Magpie')===false){
-	?><h1>Error in script!</h1>
-<p>An error in the script has been detected. Please report this to the site administrator with the following report:</p>
-<pre style="border: 1px #000000 solid; background: #D9FFD9;">
-<?php
-		echo htmlentities($err);
-?>
-</pre>
-	<?php
+		if($settings['debug'] === true) {
+			echo '<div style="border:1px solid #e7dc2b;background: #fff888;"><h1>Error in script!</h1><pre>'
+			. htmlentities($err) . '</pre>';
+		}
 	}
 	else {
-		$end_errors .= '
-<h1>Feed error</h1>
+		$end_errors .= '<div style="border:1px solid #e7dc2b;background: #fff888;">
 <p>There was an error fetching feed ' .
 substr(strpos($errmsg, 'Failed to fetch:'),strpos($errmsg, '(')) .
 '<br />Error returned was ' .
 substr(strpos($errmsg, '('), strpos($errmsg, ')')) .
-'</p>';
-	}
-	//echo $err;
-	// save to the error log, and e-mail me if there is a critical user error
-	$log .= $err;
-	if ($errno == E_USER_ERROR) {
-		//mail($settings['owner']['email'], 'Critical User Error', $err);
+'</p></div>';
 	}
 }
-error_log($log, 3, './error.log');
-
-$old_error_handler = set_error_handler("userErrorHandler");
-
+$old_error_handler = set_error_handler('userErrorHandler');
 ?> 

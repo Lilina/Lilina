@@ -59,13 +59,13 @@ function template_synd_header($return='echo'){
 	global $settings;
 	if($return == 'echo') {
 		if($settings['output']['rss']){
-			echo '<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="rss.php" />';
+			echo '<link rel="alternate" type="application/rss+xml" title="RSS ' . _r('Feed') . '" href="rss.php" />';
 		}
 		if($settings['output']['opml']){
-			echo '<link rel="alternate" type="application/rss+xml" title="OPML Feed" href="rss.php?output=opml" />';
+			echo '<link rel="alternate" type="application/rss+xml" title="OPML ' . _r('Feed') . '" href="rss.php?output=opml" />';
 		}
 		if($settings['output']['atom']){
-			echo '<link rel="alternate" type="application/rss+xml" title="Atom Feed" href="rss.php?output=atom" />';
+			echo '<link rel="alternate" type="application/rss+xml" title="Atom ' . _r('Feed') . '" href="rss.php?output=atom" />';
 		}
 		return true;
 	}
@@ -92,10 +92,10 @@ function template_synd_links($return='echo'){
 	global $settings;
 	if($return == 'echo') {
 		if($settings['output']['rss']){
-			echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS feed" title="RSS feed" /></a> ';
+			echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
 		}
 		if($settings['output']['atom']){
-			echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom feed" title="Atom feed" /></a>';
+			echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
 		}
 		return true;
 	}
@@ -194,13 +194,13 @@ function template_footer($return='echo'){
 	global $timer_start;
 	global $lilina;
 	if($return == 'echo') {
-		echo '<p>Powered by <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="lilina news aggregator" title="lilina news aggregator" /></a> v'
+		echo '<p>' . _r('Powered by') . ' <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a> v'
 		. $lilina['core-sys']['version']
-		. '<br />This page was last generated on '
+		. '<br />' . _r('This page was last generated on') . ' '
 		. date('Y-m-d \a\t g:i a')
-		. ' and took '
+		. ' ' . _r('and took') . ' '
 		. lilina_timer_end($timer_start)
-		. ' seconds</div>';
+		. ' ' . _r('seconds') . '</div>';
 		return true;
 	}
 	elseif($return == 'var') {
@@ -253,7 +253,7 @@ function template_times($return='echo'){
 				switch($current_time) {
 					case 'week':
 						if($return == 'echo') {
-							echo '<li><a href="index.php?hours=168"><span>week</span></a></li>';
+							echo '<li><a href="index.php?hours=168"><span>' . _r('week') . '</span></a></li>';
 						}
 						elseif($return == 'var') {
 							$return_me[] = array(
@@ -264,12 +264,12 @@ function template_times($return='echo'){
 					break;
 					case 'all':
 						if($return == 'echo') {
-							echo '<li><a href="index.php?hours=-1"><span>all</span></a></li>';
+							echo '<li><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>';
 						}
 						elseif($return == 'var') {
 							$return_me[] = array(
 												'time'	=> '-1',
-												'label'	=> 'all'
+												'label'	=> _r('all')
 												);
 						}
 					break;
@@ -282,4 +282,33 @@ function template_times($return='echo'){
 	}
 }
 
+//template_load is a replacable function, check for it
+if(!function_exists('template_load')) {
+	/**
+	*
+	*/
+	function template_load($type='default') {
+		global $settings;
+		$templates	= array();
+		$templates['default']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php';
+		$templates['rss']		= LILINA_INCPATH . '/templates/' . $settings['template'] . '/rss.php';
+		switch($type) {
+			case 'rss':
+				if(file_exists($templates['rss']) {
+					require_once($templates['rss']);
+				}
+				else {
+					require_once(LILINA_INCPATH . '/templates/default/rss.php');
+				}
+			break;
+			default:
+				if(file_exists($templates['default']) {
+					require_once($templates['default']);
+				}
+				else {
+					require_once(LILINA_INCPATH . '/templates/default/index.php');
+				}
+		}
+	}
+}
 ?>

@@ -10,8 +10,10 @@ See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
 define('LILINA',1);
+define('LILINA_PATH',dirname(__FILE__));
+define('LILINA_INCPATH',dirname(__FILE__) . '/inc');
 //Check installed
-require_once('./inc/core/install-functions.php');
+require_once(LILINA_INCPATH . '/core/install-functions.php');
 if(!lilina_check_installed()) {
 	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
@@ -31,13 +33,17 @@ $name		= htmlentities($name);
 $url		= (isset($_GET['url'])? $_GET['url'] : '');
 $url		= htmlentities(urlencode($url));
 //Require our settings, must be before $data
-require_once('./inc/core/conf.php');
+require_once(LILINA_INCPATH . '/core/conf.php');
+
+//Localisation
+require_once(LILINA_INCPATH . '/core/l10n.php');
+
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
 //Old functions, not yet migrated
-require_once('./inc/core/lib.php');
+require_once(LILINA_INCPATH . '/core/lib.php');
 //Our current version
-require_once('./inc/core/version.php');
+require_once(LILINA_INCPATH . '/core/version.php');
 
 //Authentication Section
 //Start the session
@@ -45,8 +51,13 @@ session_start();
 //Check if we are logged in
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 	//Not logged in, lets load the authentication script
-	require_once('./inc/core/auth-functions.php');
-	$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
+	require_once(LILINA_INCPATH . '/core/auth-functions.php');
+	if(isset($_POST['user']) && isset($_POST['pass'])) {
+		$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
+	}
+	else {
+		$authed = lilina_admin_auth('', '');
+	}
 }
 if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 	//We already know we are logged in,
@@ -62,7 +73,7 @@ function get_feeds() {
 	return $data['feeds'];
 }
 function import_opml($opml_file) {
-	require_once('./inc/contrib/parseopml.php');
+	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
 	return parse_opml($opml_file);
 }
 
@@ -100,13 +111,13 @@ switch($action){
 			@closedir($handle);
 		}
 		else {
-			$result		.= 'Error deleting files in ' . $settings['cachedir'] . ' - Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.<br />';
+			$result		.= _r('Error deleting files in ') . $settings['cachedir'] . ' - ' . _r('Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.') . '<br />';
 		}
 		if($times_file = @fopen($settings['files']['times'], 'w')) fclose($times_file);
 		else {
-			$result		.= 'Error clearing times from ' . $settings['files']['times'] . ' - Make sure the file is writable and PHP/Apache has the correct permissions to modify it.<br />';
+			$result		.= _r('Error clearing times from ') . $settings['files']['times'] . ' - ' . _r('Make sure the file is writable and PHP/Apache has the correct permissions to modify it.') . '<br />';
 		}
-		$result			.= 'Successfully cleared cache!<br />';
+		$result			.= _r('Successfully cleared cache!') . '<br />';
 	break;
 	case 'add':
 		/*$data = array(
@@ -128,6 +139,16 @@ switch($action){
 		if(!(str_pos($url, '.rss') || str_pos($url, '.atom') || str_pos($url, '.xml'))) {
 			lilina_get_rss($url);
 		}
+		if(empty($category)) {
+			$category	= 'default';
+		}
+		if(empty($name)) {
+			//We don't care, we'll get it from the feed
+		}
+		if(empty($url)) {
+			//Now this we do care about
+			
+		}
 		$feed_num	= count($data['feeds']);
 		$data['feeds'][$feed_num]['feed']	= $url;
 		$data['feeds'][$feed_num]['name']	= $name;
@@ -136,7 +157,7 @@ switch($action){
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= 'Added feed ' . $name . ' with URL as ' . htmlentities($url) . '<br />';
+		$result	.= _r('Added feed ') . $name . _r(' with URL as ') . htmlentities($url) . '<br />';
 	break;
 	case 'remove':
 		//$data['feeds'][
@@ -153,7 +174,7 @@ switch($action){
 <head>
 <title>Admin Panel</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="templates/default/admin.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/fat.js"></script>
@@ -169,29 +190,29 @@ switch($action){
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
 			if($page=='home'){
 			echo ' class="current"';
-			}?>>Home</a>
+			}?>><?php _e('Home'); ?></a>
 		</li>
 		<li>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"<?php
 			if($page=='feeds'){
 			echo ' class="current"';
-			}?>>Feeds</a>
+			}?>><?php _e('Feeds'); ?></a>
 		</li>
 		<li>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"<?php
 			if($page=='settings'){
 			echo ' class="current"';
-			}?>>Settings</a>
+			}?>><?php _e('Settings');?></a>
 		</li>
 		<li>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=logout">
-			Logout</a>
+			<?php _e('Logout'); ?></a>
 	</ul>
 </div>
 <div id="main">
 <?php
 if($out_page){
-	require_once('./inc/pages/'.$out_page);
+	require_once(LILINA_INCPATH . '/pages/'.$out_page);
 }
 else {
 	echo 'No page selected';

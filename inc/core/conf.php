@@ -8,6 +8,12 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
+/*-------------
+DO NOT MAKE CHANGES IN THIS FILE, AS THEY
+WILL BE OVERRIDDEN WHEN YOU UPDATE
+Instead, make changes in /conf/settings.php and copy
+needed settings over.
+-------------*/
 defined('LILINA') or die('Restricted access');
 $settings = 0;
 global $settings;
@@ -21,7 +27,7 @@ $settings['baseurl']				= 'http://localhost/';
 $settings['path']					= dirname(dirname(dirname(__FILE__)));
 //Name of template
 $settings['template']				= 'default';
-$settings['template_path']			= $settings['baseurl'] . 'templates/' . $settings['template'];
+$settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];
 $settings['cachedir']				= $settings['path'] . '/cache/';
 $settings['sitename']				= 'Lilina News Aggregator';
 $settings['auth']					= array('user' => 'username', 'pass' => 'password');

@@ -20,38 +20,6 @@ require_once('./inc/core/file-functions.php');
 require_once('./inc/contrib/HTMLPurifier.php');
 require_once('./inc/core/version.php');
 
-//Language specific files:
-/*switch($settings['lang']){
-	case 'portugese':
-		require_once('./lang/pt_PT.php');
-	break;
-	case 'english':
-	default:
-		require_once('./lang/en_EN.php');
-	break;
-}*/
-
-/*require_once('./chkenv.php');
-require_once('./google.php');
-require_once('./delicious.php');*/
-
-// NO NEED TO EDIT BELOW THIS LINE!
-
-/*
-//Backwards compatibility only
-$LILINAVERSION	= '1.0' ;
-$lilina			= array(
-						'core-sys'		=> array(
-												'version'	=> 1.0
-												),
-						'plugin-sys'	=> array(
-												'version'	=> 1.0
-												),
-						'template-sys'	=> array(
-												'version'	=> 1.0
-												),
-						);//*/
-
 define('MAGPIE_CACHE_ON',1) ;
 define('MAGPIE_CACHE_FRESH_ONLY', true) ;
 //define('MAGPIE_CACHE_DIR', './cache');
@@ -82,73 +50,6 @@ $empty_ico_data = base64_decode(
 'XcwQgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' .
 'AAAAAAAAgAEAAA==');
 
-
-/*function getRSSLocation($html, $location){
-/*
-	getRSSLocation() was found at 
-	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
-* /
-    if(!$html or !$location){
-        return false;
-    }else{
-        //search through the HTML, save all <link> tags
-        //and store each link's attributes in an associative array
-        preg_match_all('/<link\s+(.*?)\s*\/?>/si', $html, $matches);
-        $links = $matches[1];
-        $final_links = array();
-        $link_count = count($links);
-        for($n=0; $n<$link_count; $n++){
-            $attributes = preg_split('/\s+/s', $links[$n]);
-            foreach($attributes as $attribute){
-				$att = preg_split('/\s*=\s* /s', $attribute, 2);
-                if(isset($att[1])){
-                    $att[1] = preg_replace('/([\'"]?)(.*)\1/', '$2', $att[1]);
-                    $final_link[strtolower($att[0])] = $att[1];
-                }
-            }
-            $final_links[$n] = $final_link;
-        }
-        //now figure out which one points to the RSS file
-        for($n=0; $n<$link_count; $n++){
-            if(strtolower($final_links[$n]['rel']) == 'alternate'){
-                if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
-                    $href = $final_links[$n]['href'];
-                }
-                if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
-                    //kludge to make the first version of this still work
-                    $href = $final_links[$n]['href'];
-                }
-                if(!$href and strtolower($final_links[$n]['type']) == 'application/atom+xml'){
-                    //kludge to make the first version of this still work
-                    $href = $final_links[$n]['href'];
-                }
-                if($href){
-                    if(strstr($href, "http://") !== false){ //if it's absolute
-                        $full_url = $href;
-                    }else{ #otherwise, 'absolutize' it
-                        $url_parts = parse_url($location);
-						// echo "<pre>" ; print_r($url_parts) ; echo "</pre>" ;
-                        //only made it work for http:// links. Any problem with this?
-                        $full_url = "http://$url_parts[host]";
-                        if(isset($url_parts['port'])){
-                            $full_url .= ":$url_parts[port]";
-                        }
-                        if($href{0} != '/'){ //it's a relative link on the domain
-                               if (substr($url_parts['path'],-1)!='/') {
-                                        $full_url .= dirname($url_parts['path']);
-                                } else {
-                                        $full_url .= $url_parts['path'] ;
-                                }
-                        }
-                        $full_url .= $href;
-                    }
-                    return $full_url;
-                }
-            }
-        }
-        return false;
-    }
-}*/
 
 function get_favicon_url($location){
 	if(!$location) {

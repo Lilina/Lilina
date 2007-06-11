@@ -36,7 +36,7 @@ defined('LILINA') or die('Restricted access');
 			<span class="label">Admin Username</span>
 		</label>
 		<span class="formw">
-			<input type="text" value="Username" name="username" id="username" size="40" />
+			<input type="text" value="username" name="username" id="username" size="40" />
 		</span>
 	</div>
 	<div class="form_row">
@@ -44,7 +44,7 @@ defined('LILINA') or die('Restricted access');
 			<span class="label">Admin Password</span>
 		</label>
 		<span class="formw">
-			<input type="text" value="Password" name="password" id="password" size="40" />
+			<input type="text" value="password" name="password" id="password" size="40" />
 		</span>
 	</div>	
 	<div class="form_row">

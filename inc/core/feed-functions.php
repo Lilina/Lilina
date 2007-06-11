@@ -12,7 +12,7 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
-function lilina_make_item($item, $date) {
+/*function lilina_make_item($item, $date) {
 	//First enclosure listed is the one displayed
 	$enclosure = $item['enclosures'][0]['url'];
 	$enclosuretype = $item['enclosures'][0]['type'];
@@ -105,7 +105,7 @@ function lilina_make_item($item, $date) {
 
 	//$out .= google_get_res($title,0) ;
 
-	$channel_url_old=$channel_url; 
+	// $channel_url_old=$channel_url; 
   
   /*if($SHOW_SOCIAL==true) {
 	   $out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
@@ -127,11 +127,11 @@ function lilina_make_item($item, $date) {
      <img src="i/reddit.gif" alt="Add to reddit" /></a>';
      $out .= ' &nbsp; <a href="http://www.newsvine.com/_tools/seed&amp;save?u='.$href.'&amp;h='.$title.'" target="_blank" title="Add to newsvine">
      <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';
-	}*/
+	}*-/
 	$out .= "</div>\n" ;
 	$out .= "</div>\n" ;
 	return array($out, $date);
-}
+}*/
 
 function lilina_make_output($all_items) {
 	global $showtime, $settings;
@@ -184,10 +184,13 @@ function lilina_make_output($all_items) {
 			// call_hooked('date');
 			$out		.= '<h1>'.$date;
 			$out		.= '<span style="float: right; margin-top: -1.3em;">';
-			$out		.= '<a href="javascript:void(0);" title="Click to expand/collapse date" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
+			$out		.= '<a href="javascript:void(0);" title="';
+			$out		.= _r('Click to expand/collapse date');
+			$out		.= '" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
 			$out		.= '\');toggle_hide_show(\'arrow';
 			$out		.= date('dmY', $item['date_timestamp'] );
-			$out		.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
+			$out		.= '\'); return false;"><img src="i/arrow_in.png" alt="';
+			$out		.= _r('Hide Items from this date') . '" id="arrow';
 			$out		.= date('dmY', $item['date_timestamp'] );
 			$out		.= '" /></a></span>';
 			$out		.= '</h1><div id="date';
@@ -205,13 +208,14 @@ function lilina_make_output($all_items) {
 		$out			.= '<div class="item" id="IITEM-'.$item_id.'">' ;
 
 		if ($ico){
-			$out		.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
+			$out		.= '<img src="'.$ico.'" alt="'._r('Favicon').'" title="'._r('Favicon').'" style="width:16px; height:16px;" />' ;
 		}
-		$out			.= '<span class="time">'.$time.'</span>' ;
-		$out			.= '<span class="title" id="TITLE'.$item_id.'" title="Click to expand/collapse item">'.$title.'</span>' ;
-		$out			.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
+		$out			.= '
+<span class="time">'.$time.'</span>
+<span class="title" id="TITLE'.$item_id.'" title="'._r('Click to expand/collapse item').'">'.$title.'</span>
+<span class="source"><a href="'.$href.'">&#187; '. _r('Post from') . ' ';$channel_title.' <img src="i/application_double.png" alt="'. _r('Visit off-site link') .'" /></a></span>' ;
 		if($enclosure){
-			$out		.= 'Podcast or Videocast Available';
+			$out		.=  _r('Podcast or Videocast Available');
 		}
 		$out			.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
 		$out			.= $summary;
@@ -236,67 +240,74 @@ function lilina_get_rss($location) {
 /*
 	lilina_get_rss() was found at 
 	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
+	Includes improvements by "Cristian"
+	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
 */
-    if(!$html or !$location){
-        return false;
-    }else{
-        //search through the HTML, save all <link> tags
-        //and store each link's attributes in an associative array
-        preg_match_all('/<link\s+(.*?)\s*\/?>/si', $html, $matches);
-        $links = $matches[1];
-        $final_links = array();
-        $link_count = count($links);
-        for($n=0; $n<$link_count; $n++){
-            $attributes = preg_split('/\s+/s', $links[$n]);
-            foreach($attributes as $attribute){
-                $att = preg_split('/\s*=\s*/s', $attribute, 2);
-                if(isset($att[1])){
-                    $att[1] = preg_replace('/([\'"]?)(.*)\1/', '$2', $att[1]);
-                    $final_link[strtolower($att[0])] = $att[1];
-                }
-            }
-            $final_links[$n] = $final_link;
-        }
-        //now figure out which one points to the RSS file
-        for($n=0; $n<$link_count; $n++){
-            if(strtolower($final_links[$n]['rel']) == 'alternate'){
-                if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
-                    $href = $final_links[$n]['href'];
-                }
-                if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
-                    //kludge to make the first version of this still work
-                    $href = $final_links[$n]['href'];
-                }
-                if(!$href and strtolower($final_links[$n]['type']) == 'application/atom+xml'){
-                    //kludge to make the first version of this still work
-                    $href = $final_links[$n]['href'];
-                }
-                if($href){
-                    if(strstr($href, "http://") !== false){ //if it's absolute
-                        $full_url = $href;
-                    }else{ #otherwise, 'absolutize' it
-                        $url_parts = parse_url($location);
-						// echo "<pre>" ; print_r($url_parts) ; echo "</pre>" ;
-                        //only made it work for http:// links. Any problem with this?
-                        $full_url = "http://$url_parts[host]";
-                        if(isset($url_parts['port'])){
-                            $full_url .= ":$url_parts[port]";
-                        }
-                        if($href{0} != '/'){ //it's a relative link on the domain
-                               if (substr($url_parts['path'],-1)!='/') {
-                                        $full_url .= dirname($url_parts['path']);
-                                } else {
-                                        $full_url .= $url_parts['path'] ;
-                                }
-                        }
-                        $full_url .= $href;
-                    }
-                    return $full_url;
-                }
-            }
-        }
+    if(!$location) {
         return false;
     }
+	$html = file_get_contents($location);
+	if(!$html) {
+		return false;
+	}
+	//search through the HTML, save all <link> tags
+	// and store each link's attributes in an associative array
+	preg_match_all('/<link\s+(.*?)\s*\/?>/si', $html, $matches);
+	$links = $matches[1];
+	$final_links = array();
+	$link_count = count($links);
+	for($n=0; $n<$link_count; $n++){
+		$attributes = preg_split('/\s+/s', $links[$n]);
+		foreach($attributes as $attribute){
+			$att = preg_split('/\s*=\s*/s', $attribute, 2);
+			if(isset($att[1])){
+				$att[1] = preg_replace('/([\'"]?)(.*)\1/', '$2', $att[1]);
+				$final_link[strtolower($att[0])] = $att[1];
+			}
+		}
+		$final_links[$n] = $final_link;
+	}
+	//now figure out which one points to the RSS file
+	for($n=0; $n<$link_count; $n++){
+		if(strtolower($final_links[$n]['rel']) == 'alternate'){
+			if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
+				$href = $final_links[$n]['href'];
+			}
+			if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
+				//kludge to make the first version of this still work
+				$href = $final_links[$n]['href'];
+			}
+			if($href){
+				if(strstr($href, "http://") !== false) { //if it's absolute
+					$full_url[] = $href;
+				}
+				else {
+					//otherwise, 'absolutize' it
+					$url_parts = parse_url($location);
+					//only made it work for http:// links. Any problem with this?
+					$full_url[] = "http://$url_parts[host]";
+					if(isset($url_parts['port'])){
+						$full_url[count($full_url)-1] .= ":$url_parts[port]";
+					}
+					if($href[0] != '/'){ //it's a relative link on the domain
+						$full_url[count($full_url)-1] .= dirname($url_parts['path']);
+						if(substr($full_url[count($full_url)-1], -1) != '/'){
+							//if the last character isn't a '/', add it
+							$full_url[count($full_url)-1] .= '/';
+						}
+					}
+					$full_url[count($full_url)-1] .= $href;
+				}
+				//return $full_url;
+			}
+		}
+	}
+	if (isset($full_url)) {
+		return $full_url;
+	}
+	else {
+		return false;
+	}
 }
 
 function lilina_make_items($input) {
