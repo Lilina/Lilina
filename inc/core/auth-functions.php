@@ -25,7 +25,7 @@ defined('LILINA') or die('Restricted access');
 function lilina_admin_auth($user, $pass) {
 	function lilina_auth($un, $pw) {
 		global $settings;
-		if(isset($un) && isset($pw)) {
+		if(!empty($un) && !empty($pw)) {
 			//Check the username and password
 			if ($un === $settings['auth']['user']) {
 				if($pw === $settings['auth']['pass']) {
@@ -53,11 +53,11 @@ function lilina_admin_auth($user, $pass) {
 		if($error) {
 			switch($error) {
 				case 'pw':
-					$error_message = _r('Your password') . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+					$error_message = _r('Your password') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 					$highlight_pw	= 'color:#FF615A;';
 				break;
 				case 'un':
-					$error_message = _r('Your username') . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+					$error_message = _r('Your username') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 					$higlight_un	= 'color:#FF615A;';
 				break;
 			}
@@ -68,7 +68,7 @@ function lilina_admin_auth($user, $pass) {
 				<td><label for="user">'._r('Username').':</label></td>
 				<td><input type="text" name="user" id="user" /></td>
 			</tr>
-			<tr style="' . $higlight_pw . '">
+			<tr style="' . $highlight_pw . '">
 				<td><label for="pass">'._r('Password').':</label></td>
 				<td><input type="password" name="pass" id="pass" /></td>
 			</tr>

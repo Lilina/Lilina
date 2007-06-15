@@ -71,10 +71,7 @@ $time_table	= lilina_load_times();
 //CAUTION: Returns array
 $list = lilina_make_items($data);
 $out = lilina_make_output($list[1]);
-
 lilina_save_times($time_table);
-
-$itemCount = $i+1 ;
 lilina_cache_start();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -169,7 +166,7 @@ if($settings['output']['atom']){
 	<ul>
     <?php echo $list[0]; ?>
 	</ul>
-	<?php echo $end_errors; ?>
+	<?php if(isset($end_errors)) echo $end_errors; ?>
 </div>
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>
@@ -179,6 +176,7 @@ if($settings['output']['atom']){
 	This page was last generated on
 	<?php echo date('Y-m-d \a\t g:i a'); ?> and took
 	<?php echo lilina_timer_end($timer_start); ?> seconds</p></div>
+<img src="inc/templates/default/magpie.png" alt="Uses MagpieRSS" /><img src="inc/templates/default/oss.png" alt="Licensed under the GNU General Public License" /><img src="inc/templates/default/php.png" alt="Powered by PHP: Hypertext Processor" />
 </body>
 </html>
 <?php

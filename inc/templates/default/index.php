@@ -73,7 +73,8 @@ template_header();
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>
 <div id="footer">
-<?php template_footer(); ?>
+<?php template_footer(); ?><br />
+<img src="<?php template_path(); ?>/magpie.png" alt="Uses MagpieRSS" /><img src="<?php template_path(); ?>/oss.png" alt="Licensed under the GNU General Public License" /><img src="<?php template_path(); ?>/php.png" alt="Powered by PHP: Hypertext Processor" />
 </div>
 </body>
 </html>

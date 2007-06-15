@@ -31,8 +31,8 @@ for($j = 0; $j < count($feeds); $j++) {
 	<td class="col_even col">'.$j.'</td>
 	<td class="col_odd col">'.$this_feed['name'].'</td>
 	<td class="col_even col">'.$this_feed['feed'].'</td>
-	<td class="col_odd col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '">Remove</a></td>
-	<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'" onclick="javascript:return showChange(\''.$j.'\', \''.$this_feed['name'].'\', \''.$this_feed['feed'].'\');">Change</a></td>
+	<td class="col_odd col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
+	<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" onclick="javascript:return showChange(\''.$j.'\', \''.$this_feed['name'].'\', \''.$this_feed['feed'].'\');">Change</a></td>
 	</tr>';
 	if($num=='odd'){
 		$num	= 'even';
@@ -68,5 +68,6 @@ echo $list;
 <label for="name">Display Name:</label> <input type="text" name="add_name" id="add_name" style="width: 14em;" />
 <label for="url">URL to Feed:</label> <input type="text" name="add_url" id="add_url" style="width: 14em;" />
 <input type="hidden" name="page" value="feeds" />
+<input type="hidden" name="action" value="add" />
 <input type="submit" value="Add Feed" />
 </form>

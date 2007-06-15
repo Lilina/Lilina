@@ -19,7 +19,7 @@ defined('LILINA') or die('Restricted access');
 <body>
 <div id="login">
 <?php
-if ($error_message != '') {
+if(isset($error_message) && !empty($error_message)) {
 	echo '<p style="font-weight:bold; color:#E60000;">' . $error_message . '</p>';
 }
 echo $content;

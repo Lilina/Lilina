@@ -22,7 +22,9 @@ if(!defined('LC_ALL')) {
 	define('LC_MESSAGES', 5);
 	define('LC_ALL', 6);
 }
-
+elseif(!defined('LC_MESSAGES')) {
+	define('LC_MESSAGES', 5);
+}
 //Get the drop-in PHP-gettext, probably need to combine the two files
 require_once('./inc/contrib/gettext.inc');
 global $l10n;
@@ -46,13 +48,13 @@ if($settings['lang']) {
 }
 
 // gettext setup
-_setlocale(LC_MESSAGES, $locale);
+_setlocale(LC_ALL, $l10n['locale']);
 // Set the text domain as 'messages'
 $domain = 'messages';
 _bindtextdomain($domain, $l10n['locale_dir']);
 // bind_textdomain_codeset is supported only in PHP 4.2.0+
 if (function_exists('bind_textdomain_codeset')) {
-	bind_textdomain_codeset($domain, $encoding);
+	bind_textdomain_codeset($domain, $l10n['encoding']);
 }
 _textdomain($domain);
 

@@ -51,8 +51,8 @@ $settings['output']					= array(
 											'html' => true,
 											'atom' => true
 											);
-//Default: 0 hours
 //Timezone offset
+//Note: difference between your time and your server's time
 $settings['offset']					= 0;
 $settings['encoding']				= 'utf-8';
 //Debug mode?

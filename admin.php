@@ -22,6 +22,7 @@ if(!lilina_check_installed()) {
 $settings	= 0;
 global $settings;
 $authed		= 0;
+$result		= 0;
 $page		= (isset($_GET['page'])? $_GET['page'] : '');
 $page		= htmlentities($page);
 $action		= (isset($_GET['action'])? $_GET['action'] : '');
@@ -32,6 +33,8 @@ $name		= (isset($_GET['name'])? $_GET['name'] : '');
 $name		= htmlentities($name);
 $url		= (isset($_GET['url'])? $_GET['url'] : '');
 $url		= htmlentities(urlencode($url));
+$add_url	= (isset($_GET['add_url'])? $_GET['add_url'] : '');
+$add_url	= htmlentities($add_url);
 //Require our settings, must be before $data
 require_once(LILINA_INCPATH . '/core/conf.php');
 
@@ -45,6 +48,9 @@ require_once(LILINA_INCPATH . '/core/lib.php');
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
 
+//For the RSS auto discovery
+require_once(LILINA_INCPATH . '/core/feed-functions.php');
+
 //Authentication Section
 //Start the session
 session_start();
@@ -52,6 +58,7 @@ session_start();
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 	//Not logged in, lets load the authentication script
 	require_once(LILINA_INCPATH . '/core/auth-functions.php');
+	print_r($_POST);
 	if(isset($_POST['user']) && isset($_POST['pass'])) {
 		$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
 	}
@@ -136,8 +143,38 @@ switch($action){
 											'cat'	=> 'default')
 									)
 					);*/
-		if(!(str_pos($url, '.rss') || str_pos($url, '.atom') || str_pos($url, '.xml'))) {
-			lilina_get_rss($url);
+		if(strpos($add_url, 'feed://') === 0) {
+			$add_url	= str_replace('feed://', 'http://', $add_url);
+		}
+		elseif(strpos($add_url, 'feed:') === 0) {
+			$add_url	= str_replace('feed:', '', $add_url);
+		}
+		else {
+			$file	= fopen($add_url, 'r');
+			if(!$file) {
+				$result	.= _r('Could not retrieve feed. Check that this server can connect to the remote server');
+				break;
+			}
+			else {
+				$meta	= stream_get_meta_data($file);
+				foreach($meta as $the_meta) {
+					$content_type	= eregi('Content-Type: [^;]', $the_meta);
+					if($content_type) {
+						//Insert RSS or Atom types here
+						switch($content_type) {
+							case 'text/xml':
+							case 'application/xml':
+							case 'application/rss+xml':
+							case 'application/atom+xml':
+								break;
+							default:
+								$add_url = lilina_get_rss($add_url);
+								break;
+						}
+					}
+				}
+			}
+			fclose($file);
 		}
 		if(empty($category)) {
 			$category	= 'default';
@@ -150,11 +187,12 @@ switch($action){
 			
 		}
 		$feed_num	= count($data['feeds']);
-		$data['feeds'][$feed_num]['feed']	= $url;
+		$data['feeds'][$feed_num]['feed']	= $add_url;
 		$data['feeds'][$feed_num]['name']	= $name;
 		$data['feeds'][$feed_num]['cat']	= $category;
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
+		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
 		$result	.= _r('Added feed ') . $name . _r(' with URL as ') . htmlentities($url) . '<br />';
@@ -180,6 +218,11 @@ switch($action){
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/fat.js"></script>
 </head>
 <body onload="javascript:adminLoader('<?php echo $page; ?>');">
+<?php
+if(isset($result) && !empty($result)) {
+	echo '<div id="alert">' . $result . '</div>';
+}
+?>
 <div id="wrap">
 <div id="pagetitle">
 	<h1><?php echo $settings['sitename']; ?> - Admin Panel</h1>

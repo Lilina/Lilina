@@ -135,53 +135,44 @@ defined('LILINA') or die('Restricted access');
 
 function lilina_make_output($all_items) {
 	global $showtime, $settings;
+	$out	= '';
+	$date	= '';
 	usort($all_items, 'date_cmp');
 	foreach($all_items as $item) {
-	//for($i=0;$i<count($items);$i++) {
-		$next		= array();
-		////Note: returns array
-		//$next		= lilina_make_item($items[$i], $the_date);
 		//First enclosure listed is the one displayed
-		if(is_array($item['enclosures'])){
+		if(isset($item['enclosures']) && is_array($item['enclosures'])){
 			$enclosure		= $item['enclosures'][0]['url'];
 			$enclosuretype	= $item['enclosures'][0]['type'];
 		}
 		$summary		= '' ;
-		//echo '<pre>';
-		//print_r($item);
-		//echo '</pre>';
 		$channel_title	= $item['channel_title'];
-		$channel_url	= $item['channel_link'];  
+		$channel_url	= $item['channel_url']; 
 		$ico			= $item['favicon'] ;
 		$href			= (empty($item['link'])) ? $item['guid'] : $item['link'];
 		$item_id		= md5($href . $channel_url) ;
 		$title			= $item['title'];
-		$summary		= (empty($item['content'])) ? $item['summary'] : $item['content'];
-		// before_sanitize();
-		//Parse all variables so far
-		/*lilina_parse_html(
-							array(
-									$title,
-									$channel_title,
-									$channel_url,
-									$ico,
-									$href,
-									$summary
-								)
-						);*/
-		// after_sanitize();
+		if(isset($item['content']) && !empty($item['content'])) {
+			$summary	= $item['content'];
+		}
+		elseif(isset($item['summary']) && !empty($item['summary'])) {
+			$summary	= $item['summary'];
+		}
+		elseif(isset($item['description']) && !empty($item['description'])) {
+			$summary	= $item['description'];
+		}
+		else {
+			$summary	= _r('No summary specified');
+		}
 		$this_date		= date('D d F, Y', $item['date_timestamp'] ) ;
-		//echo 'This_date: ' . $this_date . ' End This_date;';
 		$time			= date('H:i', $item['date_timestamp'] ) ;
 		if ($this_date != $date) {
 			//If this isn't the first date...
-			if ($date) {
+			if (isset($date)) {
 				//End the last date's div
 				$out	.= '</div>' ;
 				$channel_url_old	= '' ;
 			}
 			$date 	= $this_date ;
-			// call_hooked('date');
 			$out		.= '<h1>'.$date;
 			$out		.= '<span style="float: right; margin-top: -1.3em;">';
 			$out		.= '<a href="javascript:void(0);" title="';
@@ -198,9 +189,8 @@ function lilina_make_output($all_items) {
 			$out		.= '">';
 			$out		.= "\n" ;
 		}
-		//global $date;
-		if ($channel_url_old != $channel_url) {
-			if ($channel_url_old){
+		if (!isset($channel_url_old) || $channel_url_old != $channel_url) {
+			if (isset($channel_url_old)) {
 				$out	.= '</div>' ;
 			}
 			$out		.= '<div class="feed">' ;
@@ -213,8 +203,8 @@ function lilina_make_output($all_items) {
 		$out			.= '
 <span class="time">'.$time.'</span>
 <span class="title" id="TITLE'.$item_id.'" title="'._r('Click to expand/collapse item').'">'.$title.'</span>
-<span class="source"><a href="'.$href.'">&#187; '. _r('Post from') . ' ';$channel_title.' <img src="i/application_double.png" alt="'. _r('Visit off-site link') .'" /></a></span>' ;
-		if($enclosure){
+<span class="source"><a href="'.$href.'">&#187; '. _r('Post from') . ' ' . $channel_title.' <img src="i/application_double.png" alt="'. _r('Visit off-site link') .'" /></a></span>' ;
+		if(isset($enclosure) && !empty($enclosure)){
 			$out		.=  _r('Podcast or Videocast Available');
 		}
 		$out			.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
@@ -222,8 +212,6 @@ function lilina_make_output($all_items) {
 		$channel_url_old	= $channel_url;
 		$out			.= "</div>\n" ;
 		$out			.= "</div>\n" ;
-		$out			.= $next[0];
-		$the_date		= $next[1];
 		//Only display the feeds from the chosen times
 		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
 			break;
@@ -231,6 +219,9 @@ function lilina_make_output($all_items) {
 	}
 	if(count($all_items)!=0) {
 		$out		.= '</div>' ;//Close the last "feed" div.
+	}
+	else {
+		$out		.= '<div style="border:1px solid #e7dc2b;background: #fff888;">You haven\'t added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>';
 	}
 	lilina_parse_html($out);
 	return $out;
@@ -311,13 +302,14 @@ function lilina_get_rss($location) {
 }
 
 function lilina_make_items($input) {
-	global $settings;
+	global $settings, $end_errors;
 	$items	= array();
+	$channel_list	= '';
 	$feeds	= $input['feeds'];
 	foreach($feeds as $feed) {
 		$rss	= fetch_rss( $feed['feed'] );
 		if (!$rss){
-			//$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
+			$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
 			continue;
 		}
 		//Get the icon to display
@@ -327,11 +319,11 @@ function lilina_make_items($input) {
 		$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon" />&nbsp;';
 		if(!$feed['name']){
 			//User hasn't specified name, get it ourselves
-			$channel_list .= $rss->channel['title'] . '</a></li>';
+			$channel_list .= $rss->channel['title'] . '</a> <a href="' . $feed['feed'] . '">[Feed]</a></li>';
 		}
 		else {
 			//Use supplied name
-			$channel_list .= $feed['name'] . '</a></li>';
+			$channel_list .= $feed['name'] . '</a> <a href="' . $feed['feed'] . '">[Feed]</a></li>';
 		}
 		if($settings['feeds']['items']) {
 			//User has specified limit, limit the items
@@ -342,15 +334,15 @@ function lilina_make_items($input) {
 			$limited_items	= $rss->items;
 		}
 		foreach($limited_items as $item){
-			if(!$feed['name']){
-				$item['channel_title']	.= $rss->channel['title'];
+			if(isset($feed['name']) && !empty($feed['name'])){
+				$item['channel_title']	= $feed['name'];
 			}
 			else {
-				$item['channel_title']	.= $feed['name'];
+				$item['channel_title']	= $rss->channel['title'];
 			}
 			$item['channel_url']		= $rss->channel['link'] ;
 			$item['favicon']			= $ico ;
-			if ($item['date_timestamp'] == '') {
+			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
 				//No date set
 				if($item['pubdate']) {
 					//It's set in a different way by the feed, lets use it
@@ -360,14 +352,16 @@ function lilina_make_items($input) {
 						$item['date_timestamp']	= create_time($item['title'] . $item['link']);
 					}
 				}
+				elseif($the_item['dc']['date']) {
+					//Support for Dublin Core
+					$the_item['date_timestamp']	= parse_w3cdtf($the_item['dc']['date']);
+				}
 				else {
 					//This feed doesn't like us
 					$item['date_timestamp']	= create_time($item['title'] . $item['link']);
 				}
 			}
-			else {
-				$item['date_timestamp']	.= $settings['offset'] * 60 * 60;
-			}
+			$item['date_timestamp']	+= $settings['offset'] * 60 * 60;
 			$items[] = $item ;
 		}
 	}
