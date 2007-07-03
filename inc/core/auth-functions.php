@@ -1,52 +1,48 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		auth-functions.php
-Purpose:	Functions that handle authentication
-			for the administration section
-Notes:		lilina_auth() and lilina_form()
-			are only to be called from
-			lilina_admin_auth()
-Functions:	lilina_admin_auth(	$username_from_user,
-								$password_from_user,
-								$settings_array
-								);
-			lilina_auth(		$username_from_user,
-								$password_from_user,
-								$settings_array
-								);
-			lilina_form( $error_code );
-			
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+* Authentication functions for the administration panel
+*
+* @author Ryan McCue <cubegames@gmail.com>
+* @package Lilina
+* @version 1.0
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*/
+
 defined('LILINA') or die('Restricted access');
-function lilina_admin_auth($user, $pass) {
-	function lilina_auth($un, $pw) {
-		global $settings;
-		if(!empty($un) && !empty($pw)) {
-			//Check the username and password
-			if ($un === $settings['auth']['user']) {
-				if($pw === md5($settings['auth']['pass'])) {
-					//All details good to go, lets
-					//indicate we are logged in
-					$_SESSION['is_logged_in'] = true;
-					return true;
-				}
-				else {
-					//Error, 
-					return 'pw';
-				}
+
+function lilina_auth($un, $pw) {
+	global $settings;
+	if(!empty($un) && !empty($pw)) {
+		//Check the username and password
+		if ($un === $settings['auth']['user']) {
+			if($pw === md5($settings['auth']['pass'])) {
+				//All details good to go, lets
+				//indicate we are logged in
+				$_SESSION['is_logged_in'] = true;
+				return true;
 			}
 			else {
-				return 'un';
+				//Error, 
+				return 'pw';
 			}
 		}
 		else {
-			return false;
+			return 'un';
 		}
 	}
+	else {
+		return false;
+	}
+}
+
+/**
+* Function to authenticate user
+*
+* @param string $user Supplied username
+* @param string $pass Supplied password
+* @return boolean True if logged in, false if not, however should never return false, since it should die()
+*/
+function lilina_admin_auth($user, $pass) {
 	function lilina_form($error = false) {
 		$highlight_pw	= '';
 		$highlight_un	= '';
