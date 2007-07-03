@@ -1,19 +1,17 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		conf.php
-Purpose:	Default Configuration
-Notes:		Need to move all crud to plugins
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
-/*-------------
-DO NOT MAKE CHANGES IN THIS FILE, AS THEY
-WILL BE OVERRIDDEN WHEN YOU UPDATE
-Instead, make changes in /conf/settings.php and copy
-needed settings over.
--------------*/
+/**
+* Default configuration
+*
+* Default settings stored in the global $settings variable
+* DO NOT MAKE CHANGES IN THIS FILE, AS THEY WILL BE OVERRIDDEN WHEN YOU UPDATE
+* Instead, make changes in /conf/settings.php and copy needed settings over.
+*
+* @author Ryan McCue <cubegames@gmail.com>
+* @package Lilina
+* @version 1.0
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*/
+
 defined('LILINA') or die('Restricted access');
 $settings = 0;
 global $settings;

@@ -1,6 +1,4 @@
 <?php
-//Added to keep PHP happy
-set_include_path(get_include_path() . PATH_SEPARATOR . './inc/contrib');
 
 /*!
  * @mainpage
@@ -24,7 +22,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . './inc/contrib');
  */
 
 /*
-    HTML Purifier 1.3.2 - Standards Compliant HTML Filtering
+    HTML Purifier 2.0.0 - Standards Compliant HTML Filtering
     Copyright (C) 2006 Edward Z. Yang
 
     This library is free software; you can redistribute it and/or
@@ -44,7 +42,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . './inc/contrib');
 
 // almost every class has an undocumented dependency to these, so make sure
 // they get included
-require_once 'HTMLPurifier/ConfigSchema.php';
+require_once 'HTMLPurifier/ConfigSchema.php'; // important
 require_once 'HTMLPurifier/Config.php';
 require_once 'HTMLPurifier/Context.php';
 
@@ -52,6 +50,23 @@ require_once 'HTMLPurifier/Lexer.php';
 require_once 'HTMLPurifier/Generator.php';
 require_once 'HTMLPurifier/Strategy/Core.php';
 require_once 'HTMLPurifier/Encoder.php';
+
+require_once 'HTMLPurifier/LanguageFactory.php';
+
+HTMLPurifier_ConfigSchema::define(
+    'Core', 'Language', 'en', 'string', '
+ISO 639 language code for localizable things in HTML Purifier to use,
+which is mainly error reporting. There is currently only an English (en)
+translation, so this directive is currently useless.
+This directive has been available since 2.0.0.
+');
+
+HTMLPurifier_ConfigSchema::define(
+    'Core', 'CollectErrors', false, 'bool', '
+Whether or not to collect errors found while filtering the document. This
+is a useful way to give feedback to your users. CURRENTLY NOT IMPLEMENTED.
+This directive has been available since 2.0.0.
+');
 
 /**
  * Main library execution class.
@@ -66,11 +81,12 @@ require_once 'HTMLPurifier/Encoder.php';
 class HTMLPurifier
 {
     
-    var $version = '1.3.2';
+    var $version = '2.0.0';
     
     var $config;
+    var $filters;
     
-    var $lexer, $strategy, $generator;
+    var $strategy, $generator;
     
     /**
      * Final HTMLPurifier_Context of last run purification. Might be an array.
@@ -90,11 +106,17 @@ class HTMLPurifier
         
         $this->config = HTMLPurifier_Config::create($config);
         
-        $this->lexer        = HTMLPurifier_Lexer::create();
         $this->strategy     = new HTMLPurifier_Strategy_Core();
         $this->generator    = new HTMLPurifier_Generator();
-        $this->encoder      = new HTMLPurifier_Encoder();
         
+    }
+    
+    /**
+     * Adds a filter to process the output. First come first serve
+     * @param $filter HTMLPurifier_Filter object
+     */
+    function addFilter($filter) {
+        $this->filters[] = $filter;
     }
     
     /**
@@ -111,8 +133,28 @@ class HTMLPurifier
         
         $config = $config ? HTMLPurifier_Config::create($config) : $this->config;
         
-        $context =& new HTMLPurifier_Context();
-        $html = $this->encoder->convertToUTF8($html, $config, $context);
+        // implementation is partially environment dependant, partially
+        // configuration dependant
+        $lexer = HTMLPurifier_Lexer::create($config);
+        
+        $context = new HTMLPurifier_Context();
+        
+        // set up global context variables
+        if ($config->get('Core', 'CollectErrors')) {
+            // may get moved out if other facilities use it
+            $language_factory = HTMLPurifier_LanguageFactory::instance();
+            $language = $language_factory->create($config->get('Core', 'Language'));
+            $context->register('Locale', $language);
+            
+            $error_collector = new HTMLPurifier_ErrorCollector();
+            $context->register('ErrorCollector', $language);
+        }
+        
+        $html = HTMLPurifier_Encoder::convertToUTF8($html, $config, $context);
+        
+        for ($i = 0, $size = count($this->filters); $i < $size; $i++) {
+            $html = $this->filters[$i]->preFilter($html, $config, $context);
+        }
         
         // purified HTML
         $html = 
@@ -120,7 +162,7 @@ class HTMLPurifier
                 // list of tokens
                 $this->strategy->execute(
                     // list of un-purified tokens
-                    $this->lexer->tokenizeHTML(
+                    $lexer->tokenizeHTML(
                         // un-purified HTML
                         $html, $config, $context
                     ),
@@ -129,7 +171,11 @@ class HTMLPurifier
                 $config, $context
             );
         
-        $html = $this->encoder->convertFromUTF8($html, $config, $context);
+        for ($i = $size - 1; $i >= 0; $i--) {
+            $html = $this->filters[$i]->postFilter($html, $config, $context);
+        }
+        
+        $html = HTMLPurifier_Encoder::convertFromUTF8($html, $config, $context);
         $this->context =& $context;
         return $html;
     }
@@ -148,6 +194,23 @@ class HTMLPurifier
         }
         $this->context = $context_array;
         return $array_of_html;
+    }
+    
+    /**
+     * Singleton for enforcing just one HTML Purifier in your system
+     */
+    function &getInstance($prototype = null) {
+        static $htmlpurifier;
+        if (!$htmlpurifier || $prototype) {
+            if (is_a($prototype, 'HTMLPurifier')) {
+                $htmlpurifier = $prototype;
+            } elseif ($prototype) {
+                $htmlpurifier = new HTMLPurifier(HTMLPurifier_Config::create($prototype));
+            } else {
+                $htmlpurifier = new HTMLPurifier();
+            }
+        }
+        return $htmlpurifier;
     }
     
     

@@ -3,7 +3,7 @@
 require_once 'HTMLPurifier/AttrDef.php';
 require_once 'HTMLPurifier/URIScheme.php';
 require_once 'HTMLPurifier/URISchemeRegistry.php';
-require_once 'HTMLPurifier/AttrDef/Host.php';
+require_once 'HTMLPurifier/AttrDef/URI/Host.php';
 require_once 'HTMLPurifier/PercentEncoder.php';
 
 HTMLPurifier_ConfigSchema::define(
@@ -77,6 +77,14 @@ HTMLPurifier_ConfigSchema::define(
     'This directive has been available since 1.3.0.'
 );
 
+HTMLPurifier_ConfigSchema::define(
+    'URI', 'Disable', false, 'bool',
+    'Disables all URIs in all forms. Not sure why you\'d want to do that '.
+    '(after all, the Internet\'s founded on the notion of a hyperlink). '.
+    'This directive has been available since 1.3.0.'
+);
+HTMLPurifier_ConfigSchema::defineAlias('Attr', 'DisableURI', 'URI', 'Disable');
+
 /**
  * Validates a URI as defined by RFC 3986.
  * @note Scheme-specific mechanics deferred to HTMLPurifier_URIScheme
@@ -85,28 +93,31 @@ class HTMLPurifier_AttrDef_URI extends HTMLPurifier_AttrDef
 {
     
     var $host;
-    var $PercentEncoder;
     var $embeds_resource;
     
     /**
      * @param $embeds_resource_resource Does the URI here result in an extra HTTP request?
      */
     function HTMLPurifier_AttrDef_URI($embeds_resource = false) {
-        $this->host = new HTMLPurifier_AttrDef_Host();
-        $this->PercentEncoder = new HTMLPurifier_PercentEncoder();
+        $this->host = new HTMLPurifier_AttrDef_URI_Host();
         $this->embeds_resource = (bool) $embeds_resource;
     }
     
     function validate($uri, $config, &$context) {
         
+        static $PercentEncoder = null;
+        if ($PercentEncoder === null) $PercentEncoder = new HTMLPurifier_PercentEncoder();
+        
         // We'll write stack-based parsers later, for now, use regexps to
         // get things working as fast as possible (irony)
+        
+        if ($config->get('URI', 'Disable')) return false;
         
         // parse as CDATA
         $uri = $this->parseCDATA($uri);
         
         // fix up percent-encoding
-        $uri = $this->PercentEncoder->normalize($uri);
+        $uri = $PercentEncoder->normalize($uri);
         
         // while it would be nice to use parse_url(), that's specifically
         // for HTTP and thus won't work for our generic URI parsing
@@ -139,14 +150,22 @@ class HTMLPurifier_AttrDef_URI extends HTMLPurifier_AttrDef
             // no need to validate the scheme's fmt since we do that when we
             // retrieve the specific scheme object from the registry
             $scheme = ctype_lower($scheme) ? $scheme : strtolower($scheme);
-            $scheme_obj =& $registry->getScheme($scheme, $config, $context);
+            $scheme_obj = $registry->getScheme($scheme, $config, $context);
             if (!$scheme_obj) return false; // invalid scheme, clean it out
         } else {
-            $scheme_obj =& $registry->getScheme(
+            $scheme_obj = $registry->getScheme(
                 $config->get('URI', 'DefaultScheme'), $config, $context
             );
         }
         
+        // something funky weird happened in the registry, abort!
+        if (!$scheme_obj) {
+            trigger_error(
+                'Default scheme object "' . $config->get('URI', 'DefaultScheme') . '" was not readable',
+                E_USER_WARNING
+            );
+            return false;
+        }
         
         // the URI we're processing embeds_resource a resource in the page, but the URI
         // it references cannot be located

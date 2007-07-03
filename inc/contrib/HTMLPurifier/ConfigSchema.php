@@ -1,9 +1,14 @@
 <?php
 
 require_once 'HTMLPurifier/Error.php';
+require_once 'HTMLPurifier/ConfigDef.php';
+require_once 'HTMLPurifier/ConfigDef/Namespace.php';
+require_once 'HTMLPurifier/ConfigDef/Directive.php';
+require_once 'HTMLPurifier/ConfigDef/DirectiveAlias.php';
 
 /**
  * Configuration definition, defines directives and their defaults.
+ * @note If you update this, please update Printer_ConfigForm
  * @todo The ability to define things multiple times is confusing and should
  *       be factored out to its own function named registerDependency() or 
  *       addNote(), where only the namespace.name and an extra descriptions
@@ -62,11 +67,14 @@ class HTMLPurifier_ConfigSchema {
         $this->defineNamespace('URI', 'Features regarding Uniform Resource Identifiers.');
         $this->defineNamespace('HTML', 'Configuration regarding allowed HTML.');
         $this->defineNamespace('CSS', 'Configuration regarding allowed CSS.');
+        $this->defineNamespace('Output', 'Configuration relating to the generation of (X)HTML.');
+        $this->defineNamespace('Cache', 'Configuration for DefinitionCache and related subclasses.');
         $this->defineNamespace('Test', 'Developer testing configuration for our unit tests.');
     }
     
     /**
      * Retrieves an instance of the application-wide configuration definition.
+     * @static
      */
     function &instance($prototype = null) {
         static $instance;
@@ -81,6 +89,7 @@ class HTMLPurifier_ConfigSchema {
     
     /**
      * Defines a directive for configuration
+     * @static
      * @warning Will fail of directive's namespace is defined
      * @param $namespace Namespace the directive is in
      * @param $name Key of directive
@@ -101,6 +110,11 @@ class HTMLPurifier_ConfigSchema {
         }
         if (!ctype_alnum($name)) {
             trigger_error('Directive name must be alphanumeric',
+                E_USER_ERROR);
+            return;
+        }
+        if (empty($description)) {
+            trigger_error('Description must be non-empty',
                 E_USER_ERROR);
             return;
         }
@@ -131,7 +145,7 @@ class HTMLPurifier_ConfigSchema {
                 return;
             }
             $def->info[$namespace][$name] =
-                new HTMLPurifier_ConfigEntity_Directive();
+                new HTMLPurifier_ConfigDef_Directive();
             $def->info[$namespace][$name]->type = $type;
             $def->info[$namespace][$name]->allow_null = $allow_null;
             $def->defaults[$namespace][$name]   = $default;
@@ -144,6 +158,7 @@ class HTMLPurifier_ConfigSchema {
     
     /**
      * Defines a namespace for directives to be put into.
+     * @static
      * @param $namespace Namespace's name
      * @param $description Description of the namespace
      */
@@ -158,8 +173,13 @@ class HTMLPurifier_ConfigSchema {
                 E_USER_ERROR);
             return;
         }
+        if (empty($description)) {
+            trigger_error('Description must be non-empty',
+                E_USER_ERROR);
+            return;
+        }
         $def->info[$namespace] = array();
-        $def->info_namespace[$namespace] = new HTMLPurifier_ConfigEntity_Namespace();
+        $def->info_namespace[$namespace] = new HTMLPurifier_ConfigDef_Namespace();
         $def->info_namespace[$namespace]->description = $description;
         $def->defaults[$namespace] = array();
     }
@@ -169,6 +189,7 @@ class HTMLPurifier_ConfigSchema {
      * 
      * Directive value aliases are convenient for developers because it lets
      * them set a directive to several values and get the same result.
+     * @static
      * @param $namespace Directive's namespace
      * @param $name Name of Directive
      * @param $alias Name of aliased value
@@ -200,6 +221,7 @@ class HTMLPurifier_ConfigSchema {
     
     /**
      * Defines a set of allowed values for a directive.
+     * @static
      * @param $namespace Namespace of directive
      * @param $name Name of directive
      * @param $allowed_values Arraylist of allowed values
@@ -211,12 +233,66 @@ class HTMLPurifier_ConfigSchema {
                 E_USER_ERROR);
             return;
         }
-        if ($def->info[$namespace][$name]->allowed === true) {
-            $def->info[$namespace][$name]->allowed = array();
+        $directive =& $def->info[$namespace][$name];
+        $type = $directive->type;
+        if ($type != 'string' && $type != 'istring') {
+            trigger_error('Cannot define allowed values for directive whose type is not string',
+                E_USER_ERROR);
+            return;
+        }
+        if ($directive->allowed === true) {
+            $directive->allowed = array();
         }
         foreach ($allowed_values as $value) {
-            $def->info[$namespace][$name]->allowed[$value] = true;
+            $directive->allowed[$value] = true;
         }
+        if ($def->defaults[$namespace][$name] !== null &&
+            !isset($directive->allowed[$def->defaults[$namespace][$name]])) {
+            trigger_error('Default value must be in allowed range of variables',
+                E_USER_ERROR);
+            $directive->allowed = true; // undo undo!
+            return;
+        }
+    }
+    
+    /**
+     * Defines a directive alias for backwards compatibility
+     * @static
+     * @param $namespace
+     * @param $name Directive that will be aliased
+     * @param $new_namespace
+     * @param $new_name Directive that the alias will be to
+     */
+    function defineAlias($namespace, $name, $new_namespace, $new_name) {
+        $def =& HTMLPurifier_ConfigSchema::instance();
+        if (!isset($def->info[$namespace])) {
+            trigger_error('Cannot define directive alias in undefined namespace',
+                E_USER_ERROR);
+            return;
+        }
+        if (!ctype_alnum($name)) {
+            trigger_error('Directive name must be alphanumeric',
+                E_USER_ERROR);
+            return;
+        }
+        if (isset($def->info[$namespace][$name])) {
+            trigger_error('Cannot define alias over directive',
+                E_USER_ERROR);
+            return;
+        }
+        if (!isset($def->info[$new_namespace][$new_name])) {
+            trigger_error('Cannot define alias to undefined directive',
+                E_USER_ERROR);
+            return;
+        }
+        if ($def->info[$new_namespace][$new_name]->class == 'alias') {
+            trigger_error('Cannot define alias to alias',
+                E_USER_ERROR);
+            return;
+        }
+        $def->info[$namespace][$name] =
+            new HTMLPurifier_ConfigDef_DirectiveAlias(
+                $new_namespace, $new_name);
     }
     
     /**
@@ -230,6 +306,7 @@ class HTMLPurifier_ConfigSchema {
         if ($allow_null && $var === null) return null;
         switch ($type) {
             case 'mixed':
+                //if (is_string($var)) $var = unserialize($var);
                 return $var;
             case 'istring':
             case 'string':
@@ -261,11 +338,25 @@ class HTMLPurifier_ConfigSchema {
             case 'hash':
             case 'lookup':
                 if (is_string($var)) {
+                    // special case: technically, this is an array with
+                    // a single empty string item, but having an empty
+                    // array is more intuitive
+                    if ($var == '') return array();
                     // simplistic string to array method that only works
                     // for simple lists of tag names or alphanumeric characters
                     $var = explode(',',$var);
                     // remove spaces
                     foreach ($var as $i => $j) $var[$i] = trim($j);
+                    if ($type === 'hash') {
+                        // key:value,key2:value2
+                        $nvar = array();
+                        foreach ($var as $keypair) {
+                            $c = explode(':', $keypair, 2);
+                            if (!isset($c[1])) continue;
+                            $nvar[$c[0]] = $c[1];
+                        }
+                        $var = $nvar;
+                    }
                 }
                 if (!is_array($var)) break;
                 $keys = array_keys($var);
@@ -308,76 +399,6 @@ class HTMLPurifier_ConfigSchema {
         if (!is_a($var, 'HTMLPurifier_Error')) return false;
         return true;
     }
-}
-
-/**
- * Base class for configuration entity
- */
-class HTMLPurifier_ConfigEntity {}
-
-/**
- * Structure object describing of a namespace
- */
-class HTMLPurifier_ConfigEntity_Namespace extends HTMLPurifier_ConfigEntity {
-    
-    /**
-     * String description of what kinds of directives go in this namespace.
-     */
-    var $description;
-    
-}
-
-/**
- * Structure object containing definition of a directive.
- * @note This structure does not contain default values
- */
-class HTMLPurifier_ConfigEntity_Directive extends HTMLPurifier_ConfigEntity
-{
-    
-    /**
-     * Hash of value aliases, i.e. values that are equivalent.
-     */
-    var $aliases = array();
-    
-    /**
-     * Lookup table of allowed values of the element, bool true if all allowed.
-     */
-    var $allowed = true;
-    
-    /**
-     * Allowed type of the directive. Values are:
-     *      - string
-     *      - istring (case insensitive string)
-     *      - int
-     *      - float
-     *      - bool
-     *      - lookup (array of value => true)
-     *      - list (regular numbered index array)
-     *      - hash (array of key => value)
-     *      - mixed (anything goes)
-     */
-    var $type = 'mixed';
-    
-    /**
-     * Is null allowed? Has no affect for mixed type.
-     * @bool
-     */
-    var $allow_null = false;
-    
-    /**
-     * Plaintext descriptions of the configuration entity is. Organized by
-     * file and line number, so multiple descriptions are allowed.
-     */
-    var $descriptions = array();
-    
-    /**
-     * Adds a description to the array
-     */
-    function addDescription($file, $line, $description) {
-        if (!isset($this->descriptions[$file])) $this->descriptions[$file] = array();
-        $this->descriptions[$file][$line] = $description;
-    }
-    
 }
 
 ?>

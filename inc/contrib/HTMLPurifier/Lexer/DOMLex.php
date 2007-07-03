@@ -21,7 +21,7 @@ require_once 'HTMLPurifier/TokenFactory.php';
  * 
  * @warning DOM tends to drop whitespace, which may wreak havoc on indenting.
  *          If this is a huge problem, due to the fact that HTML is hand
- *          edited and youa re unable to get a parser cache that caches the
+ *          edited and you are unable to get a parser cache that caches the
  *          the output of HTML Purifier while keeping the original HTML lying
  *          around, you may want to run Tidy on the resulting output or use
  *          HTMLPurifier_DirectLex
@@ -53,14 +53,17 @@ class HTMLPurifier_Lexer_DOMLex extends HTMLPurifier_Lexer
             '</head><body><div>'.$string.'</div></body></html>';
         
         $doc = new DOMDocument();
-        $doc->encoding = 'UTF-8'; // technically does nothing, but whatever
-        @$doc->loadHTML($string); // mute all errors, handle it transparently
+        $doc->encoding = 'UTF-8'; // theoretically, the above has this covered
+        
+        set_error_handler(array($this, 'muteErrorHandler'));
+        $doc->loadHTML($string);
+        restore_error_handler();
         
         $tokens = array();
         $this->tokenizeDOM(
-            $doc->getElementsByTagName('html')->item(0)-> // html
-                  getElementsByTagName('body')->item(0)-> // body
-                  getElementsByTagName('div')->item(0) // div
+            $doc->getElementsByTagName('html')->item(0)-> // <html>
+                  getElementsByTagName('body')->item(0)-> //   <body>
+                  getElementsByTagName('div')->item(0)    //     <div>
             , $tokens);
         return $tokens;
     }
@@ -76,7 +79,6 @@ class HTMLPurifier_Lexer_DOMLex extends HTMLPurifier_Lexer
      * @returns Tokens of node appended to previously passed tokens.
      */
     protected function tokenizeDOM($node, &$tokens, $collect = false) {
-        // recursive goodness!
         
         // intercept non element nodes. WE MUST catch all of them,
         // but we're not getting the character reference nodes because
@@ -87,6 +89,11 @@ class HTMLPurifier_Lexer_DOMLex extends HTMLPurifier_Lexer
             return;
         } elseif ($node->nodeType === XML_COMMENT_NODE) {
             $tokens[] = $this->factory->createComment($node->data);
+            return;
+        } elseif (
+            // not-well tested: there may be other nodes we have to grab
+            $node->nodeType !== XML_ELEMENT_NODE
+        ) {
             return;
         }
         
@@ -135,6 +142,11 @@ class HTMLPurifier_Lexer_DOMLex extends HTMLPurifier_Lexer
         }
         return $array;
     }
+    
+    /**
+     * An error handler that mutes all errors
+     */
+    public function muteErrorHandler($errno, $errstr) {}
     
 }
 

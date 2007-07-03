@@ -33,7 +33,8 @@ class Magpie {
     var $cache;
     var $source;
     
-    var $trigger_errors = true;
+	//Changed by Lilina Development Team to avoid silent failure
+    var $trigger_errors = false;
     var $_magpie_error  = '';
     
     function Magpie() {

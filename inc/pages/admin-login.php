@@ -17,7 +17,7 @@ defined('LILINA') or die('Restricted access');
 	<title>Administration - Login</title>
 </head>
 <body>
-<div id="login">
+<div id="login" style="border:1px solid #777; background: #ddd; margin-top:1em;padding:1em;padding-bottom:0em;">
 <?php
 if(isset($error_message) && !empty($error_message)) {
 	echo '<p style="font-weight:bold; color:#E60000;">' . $error_message . '</p>';

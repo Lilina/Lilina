@@ -8,6 +8,8 @@ Style:		**EACH TAB IS 4 SPACES**
 Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
+header('Content-Type: text/html; charset=utf-8');
+global $settings; //Just in case ;)
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -28,7 +30,7 @@ template_synd_header();
 <script language="JavaScript" type="text/javascript" src="js/engine.js"></script>
 <?php
 //Just extra stuff that a plugin may have added
-template_header();
+call_hooked('template_header');
 ?>
 </head>
 <body onload="visible_mode(showDetails)">
@@ -36,17 +38,15 @@ template_header();
   	<a href="<?php template_siteurl();?>">
 	<img src="i/logo.jpg" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
-  	<?php template_synd_links(); ?>
-	&nbsp;&nbsp;
-	|
+	<?php if(template_synd_links()) { echo '&nbsp;&nbsp; |'; } ?>
     <a href="javascript:visible_mode(true);">
-	<img src="i/arrow_out.png" alt="Show All Items" /> Expand</a>
+	<img src="<?php template_path(); ?>/arrow_out.png" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a>
     <a href="javascript:visible_mode(false);">
-	<img src="i/arrow_in.png" alt="Hide All Items" /> Collapse</a>
+	<img src="<?php template_path(); ?>/arrow_in.png" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
 	|
     <?php
-	if(template_opml()){
-		echo ' |';
+	if($settings['output']['opml'] === true){
+		echo '<a href="cache/opml.xml">OPML</a> |';
 	}
 	?>
     <a href="#sources">SOURCES</a>
@@ -59,17 +59,80 @@ template_header();
 		?>
 		</ul>
     </div>
-<div id="main">
-<?php global $out; echo $out; ?>
+<div id="main"><?php
+if(has_items()) {
+	foreach(get_items() as $item) {
+		if($item['date'] != $item['old_date']) {
+			if($item['old_date'] === '') {
+				//Close both feed and date
+				echo '		</div>';
+				echo '	</div>';
+			}
+	?>
+	<h1><?php echo $date;
+	?><span style="float: right; margin-top: -1.3em;"><a href="javascript:void(0);" title="<?php _e('Click to expand/collapse date');
+	?>" onclick="toggle_visible('date<?php echo date('dmY', $item['date_timestamp'] );
+	?>');toggle_hide_show('arrow<?php echo date('dmY', $item['date_timestamp'] );
+	?>'); return false;"><img src="i/arrow_in.png" alt="<?php _e('Hide Items from this date');
+	?>" id="arrow<?php echo date('dmY', $item['date_timestamp'] );
+	?>" /></a></span></h1>
+	<div id="date<?php echo date('dmY', $item['date_timestamp'] );?>">
+		<div class="feed" id="feed<?php echo md5($item['channel_link']);?>"><?php
+		}
+		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
+			if(isset($item['old_channel'])) {
+				echo '		</div>';
+			}
+			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '>';
+		}
+		?>
+			<div class="item" id="IITEM-'<?php echo $item['id'];?>"><img src="'.$ico.'" alt="'._r('Favicon').'" title="'._r('Favicon').'" style="width:16px; height:16px;" />
+				<span class="time"><?php echo $item['time'];?></span>
+				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
+				<span class="source"><a href="'<?php echo $item['link'];?>'">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="i/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<?php
+				if(!empty($item['enclosures'])){
+					_e('Podcast or Videocast Available');
+				}
+				?>
+				<div class="excerpt" id="ICONT<?php echo $item['id'];?>">
+					<?php echo $item['summary'];?>
+				</div>
+			</div><?php
+		//Feed closed above
+	//Date closed above
+	}
+}
+else {
+?>
+	<div style="border:1px solid #e7dc2b;background: #fff888;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
+<?php
+}
+?>
+	</div>
 </div>
 
 <div id="sources">
 	<strong>Sources:</strong>
-	<ul>
-		<?php template_source_list('echo', $data); ?>
-	</ul>
-	<?php template_end_errors(); ?>
-</div>
+	<ul><?php
+		if(has_feeds()) {
+			foreach(get_feeds() as $feed) { ?>
+		<li><a href="<?php echo $feed['link']; ?>"><img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />&nbsp; <?php echo $feed['name']; ?></a> <a href="<?php echo $feed['feed']; ?>">[Feed]</a></li><?php
+			}
+		}
+		else {
+			//Already handled above; if there are no feeds, then there should be no items...
+		}
+		?>
+	</ul><?php
+	$the_errors	= template_end_errors('var');
+	if(!empty($the_errors)) { ?>
+	<div id="end_errors">
+	Errors occured while getting feeds:<?php echo $the_errors; ?>
+	</div>
+	<?php
+	}
+	?></div>
 <div id="c1">&nbsp;powered by</div>
 <div id="c2">&nbsp;lilina.</div>
 <div id="footer">

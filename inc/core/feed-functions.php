@@ -167,7 +167,7 @@ function lilina_make_output($all_items) {
 		$time			= date('H:i', $item['date_timestamp'] ) ;
 		if ($this_date != $date) {
 			//If this isn't the first date...
-			if (isset($date)) {
+			if (empty($date)) {
 				//End the last date's div
 				$out	.= '</div>' ;
 				$channel_url_old	= '' ;
@@ -227,13 +227,67 @@ function lilina_make_output($all_items) {
 	return $out;
 }
 
-function lilina_get_rss($location) {
-/*
-	lilina_get_rss() was found at 
-	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
-	Includes improvements by "Cristian"
-	http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
+function lilina_return_output($all_items) {
+	global $showtime, $settings;
+	$out	= array();
+	$index	= 0;
+	usort($all_items, 'date_cmp');
+	foreach($all_items as $item) {
+		if(isset($item['content']) && !empty($item['content'])) {
+			$out[$index]['summary']	= $item['content'];
+		}
+		elseif(isset($item['summary']) && !empty($item['summary'])) {
+			$out[$index]['summary']	= $item['summary'];
+		}
+		elseif(isset($item['description']) && !empty($item['description'])) {
+			$out[$index]['summary']	= $item['description'];
+		}
+		else {
+			$out[$index]['summary']	= _r('No summary specified');
+		}
+		$out[$index]['date']		= date('D d F, Y', $item['date_timestamp'] );
+		$out[$index]['old_date']	= ($index != 0) ? $out[$index-1]['date'] : '';
+		$out[$index]['time']		= date('H:i', $item['date_timestamp'] ) ;
+		$out[$index]['timestamp']	= $item['date_timestamp'];
+		$out[$index]['channel_link']= $item['channel_url']; 
+		$out[$index]['old_channel']	= (isset($channel_url_old)) ? $channel_url_old : '' ;
+		$out[$index]['id']			= md5($href . $channel_url);
+		$out[$index]['icon']		= (isset($item['favicon'])) ? $item['favicon'] : '' ;
+		$out[$index]['title']		= $item['title'];
+		$out[$index]['link']		= (!isset($item['link']) || empty($item['link'])) ? $item['guid'] : $item['link'];
+		$out[$index]['channel_title']	= $item['channel_title'];
+		//First enclosure listed is the one displayed
+		if(isset($item['enclosures'])){
+			if(is_array($item['enclosures'])) {
+				$out[$index]['enclosures']	= $item['enclosures'];
+			}
+			elseif(!empty($item['enclosures'])) {
+				//There, but empty... What should we do?
+				$out[$index]['enclosures']	= '';
+			}
+			else {
+				$out[$index]['enclosures']	= '';
+			}
+		}
+		$channel_url_old	= $channel_url;
+		//Only display the feeds from the chosen times
+		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
+			break;
+		}
+		$index++;
+	}
+	return lilina_parse_html($out);
+}
+
+/**
+* Retrieve available feeds for a given page
+*
+* Originally by Keith Devens; includes improvements by "Cristian"
+*
+* @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
+* @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
 */
+function lilina_get_rss($location) {
     if(!$location) {
         return false;
     }
@@ -301,6 +355,16 @@ function lilina_get_rss($location) {
 	}
 }
 
+/**
+* Takes an array of feeds and makes a HTML list of feeds and an array of all items
+*
+* Takes an input array and parses it using the Magpie library. Makes an HTML unordered list
+* consisting of the feed's favicon, the name and the link. Takes the items returned by Magpie
+* and adds the favicon, fixes the timestamp and adds the channel information. Deprecated in
+* favour of lilina_return_items
+*
+* @deprecated
+*/
 function lilina_make_items($input) {
 	global $settings, $end_errors;
 	$items	= array();
@@ -367,21 +431,95 @@ function lilina_make_items($input) {
 	}
 	return array($channel_list, $items);
 }
-// feed-functions.php, line 38-43
+
+/**
+* Takes an array of feeds and returns all channels and all items from them
+*
+* Takes an input array and parses it using the Magpie library. Returns channel info such as
+* the name, link, icon and feed url. Takes the items returned by Magpie
+* and adds the icon, fixes the timestamp and adds the channel information.
+*
+* @param array $input Input array of user specified feeds
+* @return array All channels and all items
+*/
+function lilina_return_items($input) {
+	global $settings, $end_errors;
+	$items		= array();
+	$channels	= '';
+	$index		= 0;
+	$feeds	= $input['feeds'];
+	foreach($feeds as $feed) {
+		$rss	= fetch_rss( $feed['feed'] );
+		if (!$rss){
+			$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
+			continue;
+		}
+		//Get the icon to display
+		$channels[$index]['icon']	= channel_favicon( $rss->channel['link'] );
+		$channels[$index]['link']	= $rss->channel['link'];
+		$channels[$index]['name']	= (empty($feed['name'])) ? $rss->channel['title'] :  $feed['name'];
+		$channels[$index]['feed']	= $feed['feed'];
+		}
+		if($settings['feeds']['items']) {
+			//User has specified limit, limit the items
+			$limited_items = array_slice($rss->items, 0, $settings['feeds']['items']);			
+		}
+		else {
+			//No limit, don't bother slicing
+			$limited_items	= $rss->items;
+		}
+		foreach($limited_items as $item){
+			if(isset($feed['name']) && !empty($feed['name'])){
+				$item['channel_title']	= $feed['name'];
+			}
+			else {
+				$item['channel_title']	= $rss->channel['title'];
+			}
+			$item['channel_url']		= $rss->channel['link'] ;
+			$item['favicon']			= $ico ;
+			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
+				//No date set
+				if($item['pubdate']) {
+					//It's set in a different way by the feed, lets use it
+					$item['date_timestamp'] = strtotime($item['pubdate']);
+					if(!$item['date_timestamp']){
+						//OK, we lied, that doesn't work either
+						$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+					}
+				}
+				elseif($the_item['dc']['date']) {
+					//Support for Dublin Core
+					$the_item['date_timestamp']	= parse_w3cdtf($the_item['dc']['date']);
+				}
+				else {
+					//This feed doesn't like us
+					$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+				}
+			}
+			$item['date_timestamp']	+= $settings['offset'] * 60 * 60;
+			$items[] = $item ;
+		}
+		$index++;
+	}
+	return array($channels, $items);
+}
+
+/**
+* Parses HTML with HTML Purifier
+*
+* Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
+* both arrays and strings
+*
+* @param mixed $val_array Array or string to parse/purify
+* @return mixed Array or string of purified HTML
+*/
 function lilina_parse_html($val_array){
 	global $settings;
-	if($settings['encoding']!='utf-8'){
-		$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core', 'Encoding', 'utf-8'); //replace with your encoding
-		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
-		$purifier = new HTMLPurifier($config);
-		}
-    else {
-		$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
-		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
-		$purifier = new HTMLPurifier();
-		}
+	$config = HTMLPurifier_Config::createDefault();
+	$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
+	$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+	$config->set('Cache', 'SerializerPath', $settings['cachedir']);
+	$purifier = new HTMLPurifier($config);
 	if(is_array($val_array)) {
 		$val_array = $purifier->purifyArray($val_array);
 	}

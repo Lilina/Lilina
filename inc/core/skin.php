@@ -88,9 +88,8 @@ function template_synd_header($return='echo'){
 	}
 }
 
-function template_synd_links($return='echo'){
+function template_synd_links(){
 	global $settings;
-	if($return == 'echo') {
 		if($settings['output']['rss']){
 			echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
 		}
@@ -98,24 +97,6 @@ function template_synd_links($return='echo'){
 			echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
 		}
 		return true;
-	}
-	elseif($return == 'var') {
-		$return_me = array(0 => false, 1 => false, 2 => false);
-		if($settings['output']['rss']){
-			$return_me[0] = true;
-		}
-		if($settings['output']['opml']){
-			$return_me[1] = true;
-		}
-		if($settings['output']['atom']){
-			$return_me[2] = true;
-		}
-		return $return_me;
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
 }
 
 function template_header($return='echo'){
@@ -124,7 +105,7 @@ function template_header($return='echo'){
 	return true;
 }
 
-function template_opml($return='echo'){
+/*function template_opml($return='echo'){
 	global $settings;
 	if($settings['output']['opml']===true) {
 		if($return == 'echo') {
@@ -142,37 +123,37 @@ function template_opml($return='echo'){
 	else {
 		return false;
 	}
-}
+}*/
 
-function template_output($return='echo', $feeds){
-	if($return == 'echo') {
-		echo lilina_make_output($feeds);
-		return true;
-	}
-	elseif($return == 'var') {
-		return lilina_make_output($feeds);
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
-}
+// function template_output($return='echo', $feeds){
+	// if($return == 'echo') {
+		// echo lilina_make_output($feeds);
+		// return true;
+	// }
+	// elseif($return == 'var') {
+		// return lilina_make_output($feeds);
+	// }
+	// else {
+		// echo 'Error: return type '.$return.' is not valid';
+		// return false;
+	// }
+// }
 
-function template_source_list($return='echo', $input){
-	if($return == 'echo') {
-		$list = lilina_make_items($input);
-		echo $list[0];
-		return $list[1];
-	}
-	elseif($return == 'var') {
-		$list = lilina_make_items($input);
-		return $list;
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
-}
+// function template_source_list($return='echo', $input){
+	// if($return == 'echo') {
+		// $list = lilina_make_items($input);
+		// echo $list[0];
+		// return $list[1];
+	// }
+	// elseif($return == 'var') {
+		// $list = lilina_make_items($input);
+		// return $list;
+	// }
+	// else {
+		// echo 'Error: return type '.$return.' is not valid';
+		// return false;
+	// }
+// }
 
 function template_end_errors($return='echo'){
 	global $end_errors;
@@ -190,10 +171,9 @@ function template_end_errors($return='echo'){
 }
 
 
-function template_footer($return='echo'){
+function template_footer(){
 	global $timer_start;
 	global $lilina;
-	if($return == 'echo') {
 		echo '<p>' . _r('Powered by') . ' <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a> v'
 		. $lilina['core-sys']['version']
 		. '<br />' . _r('This page was last generated on') . ' '
@@ -202,113 +182,146 @@ function template_footer($return='echo'){
 		. lilina_timer_end($timer_start)
 		. ' ' . _r('seconds') . '</div>';
 		return true;
-	}
-	elseif($return == 'var') {
-		$return_me = array(
-							'<a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a>',
-							$lilina['core-sys']['version'],
-							date('Y-m-d \a\t g:i a'),
-							lilina_timer_end($timer_start)
-							);
-		return $return_me;
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
 }
 
-function template_path($return='echo'){
-	global $settings;
-	if($return == 'echo') {
+function template_path($ret=false){
+	if(!$ret) {
 		echo $settings['template_path'];
 		return true;
 	}
-	elseif($return == 'var') {
 		return $settings['template_path'];
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
 }
 
-function template_times($return='echo'){
+function template_times(){
 	global $settings;
-	$return_me	= array();
-	if($return == ('echo'||'var')){
 		foreach($settings['interface']['times'] as $current_time){
 			if(is_int($current_time)){
-				if($return == 'echo') {
-					echo '<li><a href="index.php?hours='.$current_time.'"><span>'.$current_time.'h</span></a></li>';
-				}
-				elseif($return == 'var') {
-					$return_me[] = array(
-										'time'	=> $current_time,
-										'label'	=> $current_time
-										);
-				}
-			}
-			else {
 				switch($current_time) {
 					case 'week':
-						if($return == 'echo') {
-							echo '<li><a href="index.php?hours=168"><span>' . _r('week') . '</span></a></li>';
-						}
-						elseif($return == 'var') {
-							$return_me[] = array(
-												'time'	=> '168',
-												'label'	=> 'week'
-												);
-						}
+					$echo[]	= '<li><a href="index.php?hours=168">' . _r('week') . '</a></li>' . "\n";
 					break;
 					case 'all':
-						if($return == 'echo') {
-							echo '<li><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>';
+					$echo[] = '<li><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>' . "\n";
+				break;
+				default:
+					$echo[] = '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
 						}
-						elseif($return == 'var') {
-							$return_me[] = array(
-												'time'	=> '-1',
-												'label'	=> _r('all')
-												);
 						}
-					break;
 				}
+	echo str_replace('<li>', '<li class="last">', $echo[count($echo)-1]);
+}
+
+/**
+* Items available for parsing with {@link get_items}
+*
+* @return boolean Are items available?
+*/
+function has_items() {
+	global $data, $list, $items;
+	if(!isset($data)) {
+		$data = lilina_load_feeds($settings['files']['feeds']);
 			}
+	if(!isset($list)) {
+		$list	= lilina_return_items($data);
 		}
+	if(!isset($items)) {
+		$items	= lilina_return_output($data[1]);
 	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
+	return (count($items) > 0) ? true : false;
+}
+
+/**
+* Gets all items from all feeds and returns as an array
+*
+* @return array List of items and associated data
+*/
+function get_items() {
+	global $data, $list, $items;
+	if(!isset($data)) {
+		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
+	if(!isset($list)) {
+		$list	= lilina_return_items($data);
+	}
+	if(!isset($items)) {
+		$items	= lilina_return_output($data[1]);
+	}
+	return $list;
+}
+
+/**
+* Feeds available for parsing with {@link get_feeds}
+*
+* @return boolean Are feeds available?
+*/
+function has_feeds() {
+	global $data, $list;
+	if(!isset($data)) {
+		$data = lilina_load_feeds($settings['files']['feeds']);
+	}
+	if(!isset($list)) {
+		$list	= lilina_return_items($data);
+	}
+	return (count($list[0]) > 0) ? true : false;
+}
+
+/**
+* Gets all feeds and returns as an array
+*
+* @return array List of feeds and associated data
+*/
+function get_feeds() {
+	global $data, $list;
+	if(!isset($data)) {
+		$data = lilina_load_feeds($settings['files']['feeds']);
+	}
+	if(!isset($list)) {
+		$list	= lilina_return_items($data);
+	}
+	return $list[0];
 }
 
 //template_load is a replacable function, check for it
 if(!function_exists('template_load')) {
 	/**
+	* Load the current template
 	*
+	* @param string $type Type of template; rss, default, mobile
 	*/
 	function template_load($type='default') {
 		global $settings;
 		$templates	= array();
 		$templates['default']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php';
 		$templates['rss']		= LILINA_INCPATH . '/templates/' . $settings['template'] . '/rss.php';
-		switch($type) {
-			case 'rss':
-				if(file_exists($templates['rss']) {
-					require_once($templates['rss']);
+		$templates['mobile']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/mobile.php';
+		if(file_exists($templates[$type]) {
+			require_once($templates[$type]);
 				}
 				else {
-					require_once(LILINA_INCPATH . '/templates/default/rss.php');
-				}
-			break;
-			default:
-				if(file_exists($templates['default']) {
-					require_once($templates['default']);
+			if($type == 'default') {
+				require_once(LILINA_INCPATH . '/templates/default/index.php');
 				}
 				else {
-					require_once(LILINA_INCPATH . '/templates/default/index.php');
+				require_once(LILINA_INCPATH . '/templates/default/' . $type . '.php');
 				}
 		}
+		// switch($type) {
+			// case 'rss':
+				// if(file_exists($templates['rss']) {
+					// require_once($templates['rss']);
+				// }
+				// else {
+					// require_once(LILINA_INCPATH . '/templates/default/rss.php');
+				// }
+			// break;
+			// default:
+				// if(file_exists($templates['default']) {
+					// require_once($templates['default']);
+				// }
+				// else {
+					// require_once(LILINA_INCPATH . '/templates/default/index.php');
+				// }
+		// }
 	}
 }
 ?>

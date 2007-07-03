@@ -82,6 +82,9 @@ function lilina_set_settings($args) {
 			$raw_php	.= "'blank' => 'blank');";
 		}
 		else {
+			if($name == 'password') {
+				$value	= md5($value);
+			}
 			$raw_php	.= "\n\$settings['$name'] = '$value';";
 		}
 	}

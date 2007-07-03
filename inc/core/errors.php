@@ -1,13 +1,15 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		errors.php
-Purpose:	Error handler
-Notes:		Must turn off the non-fatal ones
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+* Error handler
+*
+* Error handler for Magpie and all other errors
+*
+* @author Ryan McCue <cubegames@gmail.com>
+* @package Lilina
+* @version 1.0
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*/
+
 defined('LILINA') or die('Restricted access');
 global $end_errors;
 $end_errors = '';

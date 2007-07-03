@@ -47,7 +47,7 @@ require_once(LILINA_INCPATH . '/core/cache.php');
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
 // Do not update cache unless called with parameter force_update=1
-if (isset($_GET['force_update']) && $_GET['force_update']==1) {
+if (isset($_GET['force_update']) && $_GET['force_update'] == 1) {
 	define('MAGPIE_CACHE_AGE', 1);
 }
 else {
@@ -64,13 +64,13 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
-$data = lilina_load_feeds($settings['files']['feeds']) ;
+/*$data = lilina_load_feeds($settings['files']['feeds']);
 
-// load times
+// load times*/
 $time_table	= lilina_load_times();
-//CAUTION: Returns array
+/*//CAUTION: Returns array
 $list = lilina_make_items($data);
-$out = lilina_make_output($list[1]);
+$out = lilina_make_output($list[1]);/*/
 lilina_save_times($time_table);
 lilina_cache_start();
 ?>
