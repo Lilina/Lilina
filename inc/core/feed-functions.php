@@ -459,7 +459,7 @@ function lilina_return_items($input) {
 		$channels[$index]['link']	= $rss->channel['link'];
 		$channels[$index]['name']	= (empty($feed['name'])) ? $rss->channel['title'] :  $feed['name'];
 		$channels[$index]['feed']	= $feed['feed'];
-		}
+		
 		if($settings['feeds']['items']) {
 			//User has specified limit, limit the items
 			$limited_items = array_slice($rss->items, 0, $settings['feeds']['items']);			
