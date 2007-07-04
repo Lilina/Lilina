@@ -55,10 +55,11 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 //Start the session
 session_start();
 //Check if we are logged in
+
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 	//Not logged in, lets load the authentication script
 	require_once(LILINA_INCPATH . '/core/auth-functions.php');
-	print_r($_POST);
+		
 	if(isset($_POST['user']) && isset($_POST['pass'])) {
 		$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
 	}
