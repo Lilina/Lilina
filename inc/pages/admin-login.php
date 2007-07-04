@@ -22,8 +22,23 @@ defined('LILINA') or die('Restricted access');
 if(isset($error_message) && !empty($error_message)) {
 	echo '<p style="font-weight:bold; color:#E60000;">' . $error_message . '</p>';
 }
-echo $content;
-?>
+?>	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<table>
+			<tr style="<?php echo $highlight_un; ?>">
+				<td><label for="user"><?php _e('Username'); ?>:</label></td>
+				<td><input type="text" name="user" id="user" /></td>
+			</tr>
+			<tr style="<?php echo $highlight_pw; ?>">
+				<td><label for="pass"><?php _e('Password'); ?>:</label></td>
+				<td><input type="password" name="pass" id="pass" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align: center;">
+					<input type="submit" value="<?php _e('Login'); ?>" />
+				</td>
+			</tr>
+		</table>
+	</form>
 </div>
 </body>
 </html>

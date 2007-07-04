@@ -58,23 +58,6 @@ function lilina_admin_auth($user, $pass) {
 				break;
 			}
 		}
-		$content = '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-		<table>
-			<tr style="' . $highlight_un . '">
-				<td><label for="user">'._r('Username').':</label></td>
-				<td><input type="text" name="user" id="user" /></td>
-			</tr>
-			<tr style="' . $highlight_pw . '">
-				<td><label for="pass">'._r('Password').':</label></td>
-				<td><input type="password" name="pass" id="pass" /></td>
-			</tr>
-			<tr>
-				<td colspan="2" style="text-align: center;">
-					<input type="submit" value="'._r('Login').'" />
-				</td>
-			</tr>
-		</table>
-		</form>';
 		require_once('./inc/pages/admin-login.php');
 		die();
 	}
