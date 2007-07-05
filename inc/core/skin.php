@@ -185,6 +185,7 @@ function template_footer(){
 }
 
 function template_path($ret=false){
+	global $settings;
 	if(!$ret) {
 		echo $settings['template_path'];
 		return true;
@@ -194,20 +195,20 @@ function template_path($ret=false){
 
 function template_times(){
 	global $settings;
-		foreach($settings['interface']['times'] as $current_time){
-			if(is_int($current_time)){
-				switch($current_time) {
-					case 'week':
+	foreach($settings['interface']['times'] as $current_time){
+		if(is_int($current_time)){
+			switch($current_time) {
+				case 'week':
 					$echo[]	= '<li><a href="index.php?hours=168">' . _r('week') . '</a></li>' . "\n";
 					break;
-					case 'all':
+				case 'all':
 					$echo[] = '<li><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>' . "\n";
-				break;
-				default:
-					$echo[] = '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
-						}
-						}
-				}
+					break;
+			default:
+				$echo[] = '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
+			}
+		}
+	}
 	echo str_replace('<li>', '<li class="last">', $echo[count($echo)-1]);
 }
 
@@ -217,15 +218,16 @@ function template_times(){
 * @return boolean Are items available?
 */
 function has_items() {
-	global $data, $list, $items;
-	if(!isset($data)) {
+	global $data, $list, $items, $settings;
+	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
-			}
-	if(!isset($list)) {
+	}
+	print_r($data);
+	if(empty($list)) {
 		$list	= lilina_return_items($data);
-		}
-	if(!isset($items)) {
-		$items	= lilina_return_output($data[1]);
+	}
+	if(empty($items)) {
+		$items	= lilina_return_output($list[1]);
 	}
 	return (count($items) > 0) ? true : false;
 }
@@ -236,15 +238,15 @@ function has_items() {
 * @return array List of items and associated data
 */
 function get_items() {
-	global $data, $list, $items;
-	if(!isset($data)) {
+	global $data, $list, $items, $settings;
+	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
-	if(!isset($list)) {
+	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
-	if(!isset($items)) {
-		$items	= lilina_return_output($data[1]);
+	if(empty($items)) {
+		$items	= lilina_return_output($list[1]);
 	}
 	return $list;
 }
@@ -255,11 +257,11 @@ function get_items() {
 * @return boolean Are feeds available?
 */
 function has_feeds() {
-	global $data, $list;
-	if(!isset($data)) {
+	global $data, $list, $settings;
+	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
-	if(!isset($list)) {
+	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
 	return (count($list[0]) > 0) ? true : false;
@@ -271,11 +273,11 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
-	global $data, $list;
-	if(!isset($data)) {
+	global $data, $list, $settings;
+	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
-	if(!isset($list)) {
+	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
 	return $list[0];
@@ -294,16 +296,16 @@ if(!function_exists('template_load')) {
 		$templates['default']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php';
 		$templates['rss']		= LILINA_INCPATH . '/templates/' . $settings['template'] . '/rss.php';
 		$templates['mobile']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/mobile.php';
-		if(file_exists($templates[$type]) {
+		if(file_exists($templates[$type])) {
 			require_once($templates[$type]);
-				}
-				else {
+		}
+		else {
 			if($type == 'default') {
 				require_once(LILINA_INCPATH . '/templates/default/index.php');
-				}
-				else {
+			}
+			else {
 				require_once(LILINA_INCPATH . '/templates/default/' . $type . '.php');
-				}
+			}
 		}
 		// switch($type) {
 			// case 'rss':

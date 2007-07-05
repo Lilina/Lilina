@@ -14,7 +14,6 @@ See LICENSE.txt to view the license
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
-$data		= 'blank string';
 $settings	= 0;
 $out		= '';
 //Current Version
@@ -59,8 +58,8 @@ require_once(LILINA_INCPATH . '/core/lib.php');
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
-
-
+//Stuff for parsing Magpie output, etc
+require_once('./inc/core/file-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
@@ -73,6 +72,7 @@ $list = lilina_make_items($data);
 $out = lilina_make_output($list[1]);/*/
 lilina_save_times($time_table);
 lilina_cache_start();
+/*
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -96,10 +96,7 @@ if($settings['output']['atom']){
 <link rel="alternate" type="application/rss+xml" title="Atom Feed" href="rss.php?output=atom" />
 <?php
 }
-?>
-<?php
 //Add templates code here
-
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $settings['template_path']; ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -180,10 +177,10 @@ if($settings['output']['atom']){
 </body>
 </html>
 <?php
-/*
+*/
 require_once(LILINA_INCPATH . '/core/skin.php');
 //require_once(LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php');
 template_load();
-*/
+
 lilina_cache_end();
 ?>

@@ -23,8 +23,8 @@ template_synd_header();
 <link rel="stylesheet" type="text/css" href="<?php template_path(); ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
-	var showDetails = <?php echo ( ($_COOKIE['showDetails']=="true") ? "true" : "false"); ?>;
-	var markID = '<?php echo $_COOKIE['mark']; ?>' ;
+	var showDetails = <?php echo (isset($_COOKIE['showDetails']) && ($_COOKIE['showDetails'] == 'true')) ? 'true' : 'false'; ?>;
+	//var markID = '<?php //echo $_COOKIE['mark']; ?>' ;
 //-->
 </script>
 <script language="JavaScript" type="text/javascript" src="js/engine.js"></script>
@@ -86,10 +86,10 @@ if(has_items()) {
 			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '>';
 		}
 		?>
-			<div class="item" id="IITEM-'<?php echo $item['id'];?>"><img src="'.$ico.'" alt="'._r('Favicon').'" title="'._r('Favicon').'" style="width:16px; height:16px;" />
+			<div class="item" id="IITEM-'<?php echo $item['id'];?>"><img src="<?php echo $item['favicon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="'<?php echo $item['link'];?>'">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="i/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="source"><a href="'<?php echo $item['link'];?>'">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<?php
 				if(!empty($item['enclosures'])){
 					_e('Podcast or Videocast Available');
@@ -105,7 +105,7 @@ if(has_items()) {
 }
 else {
 ?>
-	<div style="border:1px solid #e7dc2b;background: #fff888;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
 <?php
 }
 ?>

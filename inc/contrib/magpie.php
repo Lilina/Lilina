@@ -332,7 +332,7 @@ class Magpie_Feed {
     }
     
     function last_modified() {
-        $this->__last_modified;
+        $this->_last_modified;
     }
 }
 

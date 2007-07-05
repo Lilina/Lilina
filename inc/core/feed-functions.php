@@ -250,11 +250,11 @@ function lilina_return_output($all_items) {
 		$out[$index]['time']		= date('H:i', $item['date_timestamp'] ) ;
 		$out[$index]['timestamp']	= $item['date_timestamp'];
 		$out[$index]['channel_link']= $item['channel_url']; 
+		$out[$index]['link']		= (!isset($item['link']) || empty($item['link'])) ? $item['guid'] : $item['link'];
 		$out[$index]['old_channel']	= (isset($channel_url_old)) ? $channel_url_old : '' ;
-		$out[$index]['id']			= md5($href . $channel_url);
+		$out[$index]['id']			= md5($out[$index]['link'] . $out[$index]['channel_link']);
 		$out[$index]['icon']		= (isset($item['favicon'])) ? $item['favicon'] : '' ;
 		$out[$index]['title']		= $item['title'];
-		$out[$index]['link']		= (!isset($item['link']) || empty($item['link'])) ? $item['guid'] : $item['link'];
 		$out[$index]['channel_title']	= $item['channel_title'];
 		//First enclosure listed is the one displayed
 		if(isset($item['enclosures'])){
@@ -269,7 +269,7 @@ function lilina_return_output($all_items) {
 				$out[$index]['enclosures']	= '';
 			}
 		}
-		$channel_url_old	= $channel_url;
+		$channel_url_old	= $out[$index]['channel_link'];
 		//Only display the feeds from the chosen times
 		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
 			break;
@@ -472,10 +472,10 @@ function lilina_return_items($input) {
 				$item['channel_title']	= $feed['name'];
 			}
 			else {
-				$item['channel_title']	= $rss->channel['title'];
+				$item['channel_title']	= $channels[$index]['name'];
 			}
-			$item['channel_url']		= $rss->channel['link'] ;
-			$item['favicon']			= $ico ;
+			$item['channel_url']		= $channels[$index]['link'];
+			$item['favicon']			= $channels[$index]['icon'];
 			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
 				//No date set
 				if($item['pubdate']) {

@@ -261,6 +261,7 @@ h1 img{
 
 #main {
 	display: block;
+	clear: both;
 	margin-right: 0px;
 	border-right: 0px #aaa solid;
 }

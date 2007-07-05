@@ -56,7 +56,7 @@ $settings['encoding']				= 'utf-8';
 //Debug mode?
 $settings['debug']					= 'false';
 
-require_once('./conf/settings.php') ;
+require_once(LILINA_PATH . '/conf/settings.php') ;
 
 $plugins							= '';
 
