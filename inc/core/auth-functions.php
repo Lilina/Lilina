@@ -24,7 +24,7 @@ function lilina_auth($un, $pw) {
 	if(!empty($un) && !empty($pw)) {
 		//Check the username and password
 		if ($un === $settings['auth']['user']) {
-			if($pw === md5($settings['auth']['pass'])) {
+			if(md5($pw) === $settings['auth']['pass']) {
 				//All details good to go, lets
 				//indicate we are logged in
 				$_SESSION['is_logged_in'] = true;

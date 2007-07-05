@@ -78,7 +78,7 @@ function lilina_set_settings($args) {
 			$raw_php .= "\n\$settings['$name'] = array(";
 			foreach($value as $name2 => $value2) {
 				if($name2 == 'pass') {
-					$value	= md5($value2);
+					$value2	= md5($value2);
 				}
 				$raw_php	.= "'$name2' => '$value2',";
 			}
