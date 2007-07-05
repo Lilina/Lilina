@@ -10,6 +10,15 @@
 
 defined('LILINA') or die('Restricted access');
 
+/**
+* Check actual authentication supplied
+*
+* Checks the supplied username and password to the username and password stored in
+* settings.php; Takes a MD5 hash of the password as of rev 66
+* @param string $un Supplied username
+* @param string $pw Supplied password
+* @return mixed True if logged in, "pw" if password error, "un" if username error, false otherwise
+*/
 function lilina_auth($un, $pw) {
 	global $settings;
 	if(!empty($un) && !empty($pw)) {
@@ -36,6 +45,32 @@ function lilina_auth($un, $pw) {
 }
 
 /**
+* Generates a form for use with the authentication system
+*
+* @param mixed $error Either "pw" for a password error, "un" for a username error or false
+* @return bool Never returns
+* @todo Move admin-login.php into here
+*/
+function lilina_form($error = false) {
+	$highlight_pw	= '';
+	$highlight_un	= '';
+	if($error) {
+		switch($error) {
+			case 'pw':
+				$error_message = _r('Your password') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+				$highlight_pw	= 'color:#FF615A;';
+			break;
+			case 'un':
+				$error_message = _r('Your username') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+				$higlight_un	= 'color:#FF615A;';
+			break;
+		}
+	}
+	require_once('./inc/pages/admin-login.php');
+	die();
+}
+
+/**
 * Function to authenticate user
 *
 * @param string $user Supplied username
@@ -43,25 +78,6 @@ function lilina_auth($un, $pw) {
 * @return boolean True if logged in, false if not, however should never return false, since it should die()
 */
 function lilina_admin_auth($user, $pass) {
-	function lilina_form($error = false) {
-		$highlight_pw	= '';
-		$highlight_un	= '';
-		if($error) {
-			switch($error) {
-				case 'pw':
-					$error_message = _r('Your password') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
-					$highlight_pw	= 'color:#FF615A;';
-				break;
-				case 'un':
-					$error_message = _r('Your username') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
-					$higlight_un	= 'color:#FF615A;';
-				break;
-			}
-		}
-		require_once('./inc/pages/admin-login.php');
-		die();
-	}
-	
 	//Are we logged in?
 	$logged_in	= lilina_auth($user, $pass);
 	//And we got back...

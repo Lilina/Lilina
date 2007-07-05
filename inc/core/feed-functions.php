@@ -283,7 +283,6 @@ function lilina_return_output($all_items) {
 * Retrieve available feeds for a given page
 *
 * Originally by Keith Devens; includes improvements by "Cristian"
-*
 * @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
 * @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
 */
@@ -362,8 +361,9 @@ function lilina_get_rss($location) {
 * consisting of the feed's favicon, the name and the link. Takes the items returned by Magpie
 * and adds the favicon, fixes the timestamp and adds the channel information. Deprecated in
 * favour of lilina_return_items
-*
 * @deprecated
+* @param array $input See lilina_return_items
+* @return array See lilina_return_items
 */
 function lilina_make_items($input) {
 	global $settings, $end_errors;
@@ -438,7 +438,6 @@ function lilina_make_items($input) {
 * Takes an input array and parses it using the Magpie library. Returns channel info such as
 * the name, link, icon and feed url. Takes the items returned by Magpie
 * and adds the icon, fixes the timestamp and adds the channel information.
-*
 * @param array $input Input array of user specified feeds
 * @return array All channels and all items
 */
@@ -509,7 +508,6 @@ function lilina_return_items($input) {
 *
 * Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
 * both arrays and strings
-*
 * @param mixed $val_array Array or string to parse/purify
 * @return mixed Array or string of purified HTML
 */
