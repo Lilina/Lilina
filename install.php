@@ -97,7 +97,7 @@ require_once('./inc/core/install-functions.php');
 		?>
 		</div>
 		<div id="footer">
-			<p>Powered by Lilina 1.0 | Copyright Cube Games and Ryan McCue</p>
+			<p>Powered by Lilina 1.0 | Copyright Lilina Development Team</p>
 		</div>
 	</body>
 </html>
