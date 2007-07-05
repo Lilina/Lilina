@@ -21,20 +21,33 @@ if(!lilina_check_installed()) {
 //Protect from register_globals
 $settings	= 0;
 global $settings;
-$authed		= 0;
-$result		= 0;
+$authed		= false;
+$result		= '';
 $page		= (isset($_GET['page'])? $_GET['page'] : '');
 $page		= htmlentities($page);
 $action		= (isset($_GET['action'])? $_GET['action'] : '');
 $action		= htmlentities($action);
 $product	= (isset($_GET['product'])? $_GET['product'] : '');
 $product	= htmlentities($product);
-$name		= (isset($_GET['name'])? $_GET['name'] : '');
-$name		= htmlentities($name);
-$url		= (isset($_GET['url'])? $_GET['url'] : '');
-$url		= htmlentities(urlencode($url));
+
+//Add variables
+$add_name	= (isset($_GET['add_name'])? $_GET['add_name'] : '');
+$add_name	= htmlentities($add_name);
 $add_url	= (isset($_GET['add_url'])? $_GET['add_url'] : '');
 $add_url	= htmlentities($add_url);
+
+//Change variables
+$change_name	= (isset($_GET['change_name']))? $_GET['change_name'] : '';
+$change_name	= htmlentities($change_name);
+$change_url	= (isset($_GET['change_url']))? $_GET['change_url'] : '';
+$change_url	= htmlentities($change_url);
+$change_id	= (isset($_GET['change_id']))? $_GET['change_id'] : '';
+$change_id	= htmlentities($change_id);
+
+//Remove variables
+$remove_id	= (isset($_GET['remove']))? $_GET['remove'] : '';
+$remove_id	= htmlentities($remove_id);
+
 //Require our settings, must be before $data
 require_once(LILINA_INCPATH . '/core/conf.php');
 
@@ -158,7 +171,8 @@ switch($action){
 			}
 			else {
 				$meta	= stream_get_meta_data($file);
-				foreach($meta as $the_meta) {
+				foreach($meta['wrapper_data'] as $the_meta) {
+					print_r($the_meta);
 					$content_type	= eregi('Content-Type: [^;]', $the_meta);
 					if($content_type) {
 						//Insert RSS or Atom types here
@@ -189,20 +203,36 @@ switch($action){
 		}
 		$feed_num	= count($data['feeds']);
 		$data['feeds'][$feed_num]['feed']	= $add_url;
-		$data['feeds'][$feed_num]['name']	= $name;
-		$data['feeds'][$feed_num]['cat']	= $category;
+		$data['feeds'][$feed_num]['name']	= $add_name;
+		$data['feeds'][$feed_num]['cat']	= 'default'; //$add_category;
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= _r('Added feed ') . $name . _r(' with URL as ') . htmlentities($url) . '<br />';
+		$result	.= _r('Added feed ') . $add_name . _r(' with URL as ') . htmlentities($add_url) . '<br />';
 	break;
 	case 'remove':
-		//$data['feeds'][
+		array_splice($data['feeds'], $remove_id, 1);
+		$sdata	= base64_encode(serialize($data)) ;
+		$fp		= fopen($settings['files']['feeds'],'w') ;
+		if(!$fp) { echo 'Error';}
+		fputs($fp,$sdata) ;
+		fclose($fp) ;
+		$result	.= _r('Removed feed') . '<br />';
+	break;
+	case 'change':
+		$data['feeds'][$change_id]['feed'] = $change_url;
+		$data['feeds'][$change_id]['name'] = $change_name;
+		$sdata	= base64_encode(serialize($data)) ;
+		$fp		= fopen($settings['files']['feeds'],'w') ;
+		if(!$fp) { echo 'Error';}
+		fputs($fp,$sdata) ;
+		fclose($fp) ;
+		$result	.= _r('Changed feed #') . $change_id . _r(' with URL as ') . htmlentities($change_url) . '<br />';
 	break;
 	case 'import':
-		import_opml($url);
+		//import_opml($url);
 	break;
 }
 

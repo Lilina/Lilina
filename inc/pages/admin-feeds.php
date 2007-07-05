@@ -65,8 +65,8 @@ echo $list;
 </div>
 <h2>Add Feeds</h2>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
-<label for="name">Display Name:</label> <input type="text" name="add_name" id="add_name" style="width: 14em;" />
-<label for="url">URL to Feed:</label> <input type="text" name="add_url" id="add_url" style="width: 14em;" />
+<label for="add_name">Display Name:</label> <input type="text" name="add_name" id="add_name" style="width: 14em;" />
+<label for="add_url">URL to Feed:</label> <input type="text" name="add_url" id="add_url" style="width: 14em;" />
 <input type="hidden" name="page" value="feeds" />
 <input type="hidden" name="action" value="add" />
 <input type="submit" value="Add Feed" />
