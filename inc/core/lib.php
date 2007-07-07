@@ -13,8 +13,8 @@
 
 //Stop hacking attempts
 defined('LILINA') or die('Restricted access');
-require_once('./inc/core/conf.php');
-require_once('./inc/core/file-functions.php');
+//require_once('./inc/core/conf.php');
+//require_once('./inc/core/file-functions.php');
 require_once('./inc/contrib/HTMLPurifier.auto.php');
 require_once('./inc/core/version.php');
 

@@ -57,7 +57,7 @@ require_once(LILINA_INCPATH . '/core/l10n.php');
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
 //Old functions, not yet migrated
-require_once(LILINA_INCPATH . '/core/lib.php');
+//require_once(LILINA_INCPATH . '/core/lib.php');
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
 
@@ -172,8 +172,7 @@ switch($action){
 			else {
 				$meta	= stream_get_meta_data($file);
 				foreach($meta['wrapper_data'] as $the_meta) {
-					print_r($the_meta);
-					$content_type	= eregi('Content-Type: [^;]', $the_meta);
+					$content_type	= eregi('^Content-Type: [^;];', $the_meta);
 					if($content_type) {
 						//Insert RSS or Atom types here
 						switch($content_type) {

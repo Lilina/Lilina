@@ -78,21 +78,30 @@ body, html {
 	margin-top: 0em;
 }
 
+#feeds_list {
+	border-collapse: collapse;
+	border-spacing: 1px;
+}
+
+#feeds_list td, #feeds_list th {
+	padding:6px 6px;
+	border-bottom:solid 1px #eee;
+	vertical-align:top;
+}
+
 #feeds_list .col {
 	padding-right: 2em;
 	font-size: 0.7em;
 }
 
-#feeds_list .row_even {
-	background: #ACE6BA;
-	outline-color:#ACE6BA;
-	outline-style:solid;
-	outline-width:thin;
+#feeds_list .row_odd {
+	background:#edf3fe;
 }
 
-#feeds_list .row_odd {
-	background: #00DEF4;
-	outline-color:#00DEF4;
-	outline-style:solid;
-	outline-width:thin;
+#feeds_list tr:hover a {
+	color: #ffffff;
+}
+#feeds_list tr:hover, #feeds_list tr.row_odd:hover {
+	background-color: #3d80df;
+	color: #ffffff;
 }

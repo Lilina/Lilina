@@ -519,11 +519,13 @@ function lilina_parse_html($val_array){
 	$config->set('Cache', 'SerializerPath', $settings['cachedir']);
 	$purifier = new HTMLPurifier($config);
 	if(is_array($val_array)) {
-		$val_array = $purifier->purifyArray($val_array);
+		foreach($val_array as $this_array) {
+			$purified_array[] = $purifier->purifyArray($this_array);
+		}
 	}
 	else {
-		$val_array = $purifier->purify($val_array);
+		$purified_array = $purifier->purify($val_array);
 	}
-	return $val_array;
+	return $purified_array;
 }
 ?>

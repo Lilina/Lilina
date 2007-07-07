@@ -69,14 +69,14 @@ if(has_items()) {
 				echo '	</div>';
 			}
 	?>
-	<h1><?php echo $date;
+	<h1><?php echo $item['date'];
 	?><span style="float: right; margin-top: -1.3em;"><a href="javascript:void(0);" title="<?php _e('Click to expand/collapse date');
-	?>" onclick="toggle_visible('date<?php echo date('dmY', $item['date_timestamp'] );
-	?>');toggle_hide_show('arrow<?php echo date('dmY', $item['date_timestamp'] );
+	?>" onclick="toggle_visible('date<?php echo date('dmY', $item['timestamp'] );
+	?>');toggle_hide_show('arrow<?php echo date('dmY', $item['timestamp'] );
 	?>'); return false;"><img src="i/arrow_in.png" alt="<?php _e('Hide Items from this date');
-	?>" id="arrow<?php echo date('dmY', $item['date_timestamp'] );
+	?>" id="arrow<?php echo date('dmY', $item['timestamp'] );
 	?>" /></a></span></h1>
-	<div id="date<?php echo date('dmY', $item['date_timestamp'] );?>">
+	<div id="date<?php echo date('dmY', $item['timestamp'] );?>">
 		<div class="feed" id="feed<?php echo md5($item['channel_link']);?>"><?php
 		}
 		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
@@ -86,7 +86,7 @@ if(has_items()) {
 			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '>';
 		}
 		?>
-			<div class="item" id="IITEM-'<?php echo $item['id'];?>"><img src="<?php echo $item['favicon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
+			<div class="item" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
 				<span class="source"><a href="'<?php echo $item['link'];?>'">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>

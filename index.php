@@ -59,7 +59,7 @@ require_once(LILINA_INCPATH . '/core/lib.php');
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 //Stuff for parsing Magpie output, etc
-require_once('./inc/core/file-functions.php');
+require_once(LILINA_INCPATH . '/core/file-functions.php');
 
 $showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 

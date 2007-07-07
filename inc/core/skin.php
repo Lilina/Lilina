@@ -222,7 +222,6 @@ function has_items() {
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
-	print_r($data);
 	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
@@ -248,7 +247,7 @@ function get_items() {
 	if(empty($items)) {
 		$items	= lilina_return_output($list[1]);
 	}
-	return $list;
+	return $items;
 }
 
 /**
