@@ -112,7 +112,7 @@ function create_time($s) {
 	global $time_table, $settings;
 
 	$md5 = md5($s);
-	if ($time_table[$md5] <= 0) {
+	if (!isset($time_table[$md5]) || $time_table[$md5] <= 0) {
 		$time_table[$md5] = time() + ($settings['offset'] * 60 * 60);
 	}
 	return $time_table[$md5];

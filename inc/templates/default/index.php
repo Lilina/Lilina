@@ -77,19 +77,20 @@ if(has_items()) {
 	?>" id="arrow<?php echo date('dmY', $item['timestamp'] );
 	?>" /></a></span></h1>
 	<div id="date<?php echo date('dmY', $item['timestamp'] );?>">
-		<div class="feed" id="feed<?php echo md5($item['channel_link']);?>"><?php
+		<div class="feed" id="feed<?php echo md5($item['channel_link']);?>">
+		<?php
 		}
 		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
 			if(isset($item['old_channel'])) {
 				echo '		</div>';
 			}
-			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '>';
+			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '">';
 		}
 		?>
 			<div class="item" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="'<?php echo $item['link'];?>'">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="source"><a href="'<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<?php
 				if(!empty($item['enclosures'])){
 					_e('Podcast or Videocast Available');

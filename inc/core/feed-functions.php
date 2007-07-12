@@ -408,12 +408,20 @@ function lilina_make_items($input) {
 			$item['favicon']			= $ico ;
 			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
 				//No date set
-				if($item['pubdate']) {
+				if(isset($item['pubdate']) && !empty($item['pubdate'])) {
 					//It's set in a different way by the feed, lets use it
 					$item['date_timestamp'] = strtotime($item['pubdate']);
 					if(!$item['date_timestamp']){
 						//OK, we lied, that doesn't work either
-						$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+						if(isset($item['published']) && !empty($item['published'])) {
+							$item['date_timestamp'] = strtotime($item['published']);
+						}
+						elseif(isset($item['updated']) && !empty($item['updated'])) {
+							$item['date_timestamp'] = strtotime($item['updated']);
+						}
+						else {						
+							$item['date_timestamp']	= create_time($item['title'] . $item['link']);
+						}
 					}
 				}
 				elseif($the_item['dc']['date']) {
@@ -476,20 +484,27 @@ function lilina_return_items($input) {
 			}
 			$item['channel_url']		= $channels[$index]['link'];
 			$item['favicon']			= $channels[$index]['icon'];
-			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
+			if (!isset($item['date_timestamp']) || empty($item['date_timestamp'])) {
 				//No date set
-				if($item['pubdate']) {
+				if(isset($item['pubdate']) && !empty($item['pubdate'])) {
 					//It's set in a different way by the feed, lets use it
 					$item['date_timestamp'] = strtotime($item['pubdate']);
-					if(!$item['date_timestamp']){
-						//OK, we lied, that doesn't work either
+					echo $item['title'] . $item['date_timestamp'];
+					if(!isset($item['date_timestamp']) || empty($item['date_timestamp']) || $item['date_timestamp'] <= 0){
+						//OK, we lied, that doesn't work either				
 						$item['date_timestamp']	= create_time($item['title'] . $item['link']);
 					}
 				}
-				elseif($the_item['dc']['date']) {
+				elseif(isset($item['dc']['date']) && !empty($item['dc']['date'])) {
 					//Support for Dublin Core
-					$the_item['date_timestamp']	= parse_w3cdtf($the_item['dc']['date']);
+					$item['date_timestamp']	= parse_w3cdtf($item['dc']['date']);
 				}
+				elseif(isset($item['published']) && !empty($item['published'])) {
+					$item['date_timestamp'] = strtotime($item['published']);
+				}
+				elseif(isset($item['updated']) && !empty($item['updated'])) {
+					$item['date_timestamp'] = strtotime($item['updated']);
+				}	
 				else {
 					//This feed doesn't like us
 					$item['date_timestamp']	= create_time($item['title'] . $item['link']);

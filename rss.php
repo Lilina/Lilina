@@ -12,6 +12,8 @@ See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
 define('LILINA',1) ;
+define('LILINA_PATH', dirname(__FILE__));
+define('LILINA_INCPATH', LILINA_PATH . '/inc');
 //Require our settings, must be first required file
 require_once('./inc/core/conf.php');
 
@@ -20,6 +22,9 @@ require_once('./inc/core/lib.php');
 
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
+
+//File input and output
+require_once('./inc/core/file-functions.php');
 
 //Get the feed creator loaded
 require_once('./inc/contrib/feedcreator.class.php');
@@ -43,7 +48,7 @@ if (file_exists($settings['files']['times'])) {
 
 
 
-$items = lilina_make_items($data);
+$items = lilina_return_items($data);
 $items = $items[1];
 
 $rss_out = new UniversalFeedCreator();
@@ -81,14 +86,14 @@ $rss_out->syndicationURL = $settings['baseurl'] . $_SERVER['PHP_SELF'];
 
 //$rss_out->image = $image;
 
+$items = lilina_return_output($items);
 usort($items, 'date_cmp');
 foreach($items as $item) {
-
    $item_out = new FeedItem();
    
    $item_out->title = $item['title'];
    $item_out->link = $item['link'];
-   $item_out->source = $items->channel_title;
+   $item_out->source = $item['channel_title'];
    $item_out->description = $item['content'];
    if(!$item_out->description) $item_out->description = $item['summary'];
    if(!$item_out->description) $item_out->description = $item['description'];
@@ -100,7 +105,7 @@ foreach($items as $item) {
    $rss_out->addItem($item_out);
 }
 
-//echo 'Display: ' . $display;
+
 // valid format strings are: RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
 // MBOX, OPML, ATOM, ATOM0.3, HTML, JS
 if($settings['output']['atom'] == true) {
@@ -112,7 +117,7 @@ if($settings['output']['opml'] == true) {
 if($settings['output']['rss'] == true) {
 	$rss_out->saveFeed('RSS2.0', $settings['cachedir'] . 'feed.xml', false);
 }
-//echo 'Display: ' . $display;
+
 switch($display) {
 	case 'opml':
 		echo $rss_out->createFeed('OPML');
