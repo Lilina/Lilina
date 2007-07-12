@@ -58,6 +58,16 @@ $settings['debug']					= 'false';
 
 require_once(LILINA_PATH . '/conf/settings.php') ;
 
+//Settings that use other settings variables, can not be overriden
+$settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];
+$settings['cachedir']				= $settings['path'] . '/cache/';
+$settings['files']					= array(
+											'feeds'		=> $settings['path'] . '/conf/feeds.data',
+											'times'		=> $settings['path'] . '/conf/time.data',
+											'settings'	=> $settings['path'] . '/conf/settings.php',
+											'plugins'	=> $settings['path'] . '/conf/plugins.data'
+											);
+
 $plugins							= '';
 
 //$new_settings = array_diff($default_settings, $settings);
