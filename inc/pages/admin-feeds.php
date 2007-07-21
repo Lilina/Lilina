@@ -71,3 +71,4 @@ echo $list;
 <input type="hidden" name="action" value="add" />
 <input type="submit" value="Add Feed" />
 </form>
+<p>If no name is specified, it will be taken from the feed</p>

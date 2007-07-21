@@ -46,7 +46,6 @@ $settings['interface']				= array('times' => array(24,48,'week'));
 //Output types
 $settings['output']					= array(
 											'rss' => true,
-											'opml' => true,
 											'html' => true,
 											'atom' => true
 											);

@@ -57,46 +57,24 @@ function template_siteurl($return='echo'){
 
 function template_synd_header($return='echo'){
 	global $settings;
-	if($return == 'echo') {
-		if($settings['output']['rss']){
-			echo '<link rel="alternate" type="application/rss+xml" title="RSS ' . _r('Feed') . '" href="rss.php" />';
-		}
-		if($settings['output']['opml']){
-			echo '<link rel="alternate" type="application/rss+xml" title="OPML ' . _r('Feed') . '" href="rss.php?output=opml" />';
-		}
-		if($settings['output']['atom']){
-			echo '<link rel="alternate" type="application/rss+xml" title="Atom ' . _r('Feed') . '" href="rss.php?output=atom" />';
-		}
-		return true;
+	if($settings['output']['rss']){
+		echo '<link rel="alternate" type="application/rss+xml" title="RSS ' . _r('Feed') . '" href="rss.php" />';
 	}
-	elseif($return == 'var') {
-		$return_me = array(0 => false, 1 => false, 2 => false);
-		if($settings['output']['rss']){
-			$return_me[0] = true;
-		}
-		if($settings['output']['opml']){
-			$return_me[1] = true;
-		}
-		if($settings['output']['atom']){
-			$return_me[2] = true;
-		}
-		return $return_me;
+	if($settings['output']['atom']){
+		echo '<link rel="alternate" type="application/rss+xml" title="Atom ' . _r('Feed') . '" href="rss.php?output=atom" />';
 	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
+	return true;
 }
 
 function template_synd_links(){
 	global $settings;
-		if($settings['output']['rss']){
-			echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
-		}
-		if($settings['output']['atom']){
-			echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
-		}
-		return true;
+	if($settings['output']['rss']){
+		echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
+	}
+	if($settings['output']['atom']){
+		echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
+	}
+	return true;
 }
 
 function template_header($return='echo'){

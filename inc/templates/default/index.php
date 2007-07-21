@@ -39,34 +39,34 @@ call_hooked('template_header');
 	<img src="i/logo.jpg" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
 	<?php if(template_synd_links()) { echo '&nbsp;&nbsp; |'; } ?>
-    <a href="javascript:visible_mode(true);">
+	<a href="javascript:visible_mode(true);">
 	<img src="<?php template_path(); ?>/arrow_out.png" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a>
-    <a href="javascript:visible_mode(false);">
+	<a href="javascript:visible_mode(false);">
 	<img src="<?php template_path(); ?>/arrow_in.png" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
 	|
-    <?php
-	if($settings['output']['opml'] === true){
-		echo '<a href="cache/opml.xml">OPML</a> |';
-	}
+	<a href="opml.php">OPML</a>
+	|
+	<a href="#sources">List of sources</a>
+</div>
+
+<div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
+	<p style="font-size: 0.8em;">Show posts from the last:</p>
+	<ul>
+	<?php
+	template_times();
 	?>
-    <a href="#sources">SOURCES</a>
-	
-</div><div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
-<p style="font-size: 0.8em;">Show posts from the last:</p>
-		<ul>
-		<?php
-		template_times();
-		?>
-		</ul>
-    </div>
+	</ul>
+</div>
+
 <div id="main"><?php
+$notfirst = false;
 if(has_items()) {
 	foreach(get_items() as $item) {
 		if($item['date'] != $item['old_date']) {
-			if($item['old_date'] === '') {
+			if($item['old_date'] === '' && $notfirst) {
 				//Close both feed and date
 				echo '		</div>';
-				echo '	</div>';
+				echo '	</div>' . "\n";
 			}
 	?>
 	<h1><?php echo $item['date'];
@@ -102,6 +102,7 @@ if(has_items()) {
 			</div><?php
 		//Feed closed above
 	//Date closed above
+	$notfirst = false;
 	}
 }
 else {

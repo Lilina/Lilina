@@ -94,10 +94,10 @@ foreach($items as $item) {
    $item_out->title = $item['title'];
    $item_out->link = $item['link'];
    $item_out->source = $item['channel_title'];
-   $item_out->description = $item['content'];
+   $item_out->description = $item['summary'];
    if(!$item_out->description) $item_out->description = $item['summary'];
    if(!$item_out->description) $item_out->description = $item['description'];
-	$item_out->date = date('D d F, Y', $item['date_timestamp'] ) ;
+	$item_out->date = date('D d F, Y', $item['timestamp'] ) ;
 
    //item->descriptionTruncSize = 500;
    $item_out->descriptionHtmlSyndicated = true;
@@ -111,17 +111,11 @@ foreach($items as $item) {
 if($settings['output']['atom'] == true) {
 	$rss_out->saveFeed('ATOM', $settings['cachedir'] . 'atom.xml', false);
 }
-if($settings['output']['opml'] == true) {
-	$rss_out->saveFeed('OPML', $settings['cachedir'] . 'opml.xml', false);
-}
 if($settings['output']['rss'] == true) {
 	$rss_out->saveFeed('RSS2.0', $settings['cachedir'] . 'feed.xml', false);
 }
 
 switch($display) {
-	case 'opml':
-		echo $rss_out->createFeed('OPML');
-		break;
 	case 'atom':
 		echo $rss_out->createFeed('ATOM');
 		break;
