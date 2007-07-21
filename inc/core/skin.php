@@ -197,19 +197,17 @@ function template_times(){
 	global $settings;
 	foreach($settings['interface']['times'] as $current_time){
 		if(is_int($current_time)){
+			echo '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
+		}
+		else {
 			switch($current_time) {
 				case 'week':
-					$echo[]	= '<li><a href="index.php?hours=168">' . _r('week') . '</a></li>' . "\n";
+					echo '<li><a href="index.php?hours=168">' . _r('week') . '</a></li>' . "\n";
 					break;
-				case 'all':
-					$echo[] = '<li><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>' . "\n";
-					break;
-			default:
-				$echo[] = '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
 			}
 		}
 	}
-	echo str_replace('<li>', '<li class="last">', $echo[count($echo)-1]);
+	echo '<li class="last"><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>' . "\n";
 }
 
 /**

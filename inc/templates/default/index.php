@@ -51,8 +51,8 @@ call_hooked('template_header');
 	?>
     <a href="#sources">SOURCES</a>
 	
-</div>
-<div style="text-align: right; padding-top: 2em; padding-right: 2em;" id="times">
+</div><div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
+<p style="font-size: 0.8em;">Show posts from the last:</p>
 		<ul>
 		<?php
 		template_times();
@@ -90,7 +90,7 @@ if(has_items()) {
 			<div class="item" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="'<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<?php
 				if(!empty($item['enclosures'])){
 					_e('Podcast or Videocast Available');

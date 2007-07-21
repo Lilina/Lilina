@@ -1,16 +1,14 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		cache.php
-Purpose:	Dynamic page caching
-Notes:		Believed to be Public Domain. Taken from
-http://www.ilovejackdaniels.com/php/caching-output-in-php/
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+* Caching functions, taken from http://www.ilovejackdaniels.com/php/caching-output-in-php/
+*
+* @author Ryan McCue <cubegames@gmail.com>
+* @package Lilina
+* @version 1.0
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*/
 defined('LILINA') or die('Restricted access');
-require_once('./inc/core/conf.php');
+require_once(LILINA_INCPATH . '/core/conf.php');
 
 function lilina_cache_check(){
 	global $settings, $showtime;
@@ -20,7 +18,7 @@ function lilina_cache_check(){
 	clearstatcache();
 	// Show file from cache if still valid
 	if (time() - $settings['cachetime'] < $cachefile_created) {
-		echo '<!--Retrieved from cache-->' . "\n";
+		//echo '<!--Retrieved from cache-->' . "\n";
 		//ob_start('ob_gzhandler');
 		readfile($cachefile);
 		//ob_end_flush();
@@ -29,7 +27,7 @@ function lilina_cache_check(){
 }
 function lilina_cache_start(){
 	global $settings;
-	echo '<!--Generated fresh-->' . "\n";
+	//echo '<!--Generated fresh-->' . "\n";
 	ob_start();
 }
 

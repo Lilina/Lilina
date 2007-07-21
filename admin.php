@@ -9,9 +9,9 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 //Stop hacking attempts
-define('LILINA',1);
-define('LILINA_PATH',dirname(__FILE__));
-define('LILINA_INCPATH',dirname(__FILE__) . '/inc');
+define('LILINA',1) ;
+define('LILINA_PATH', dirname(__FILE__));
+define('LILINA_INCPATH', LILINA_PATH . '/inc');
 //Check installed
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 if(!lilina_check_installed()) {

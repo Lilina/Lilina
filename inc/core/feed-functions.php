@@ -233,6 +233,10 @@ function lilina_return_output($all_items) {
 	$index	= 0;
 	usort($all_items, 'date_cmp');
 	foreach($all_items as $item) {
+		//Only display the feeds from the chosen times
+		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
+			break;
+		}
 		if(isset($item['content']) && !empty($item['content'])) {
 			$out[$index]['summary']	= $item['content'];
 		}
@@ -270,10 +274,6 @@ function lilina_return_output($all_items) {
 			}
 		}
 		$channel_url_old	= $out[$index]['channel_link'];
-		//Only display the feeds from the chosen times
-		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
-			break;
-		}
 		$index++;
 	}
 	return lilina_parse_html($out);
@@ -489,7 +489,6 @@ function lilina_return_items($input) {
 				if(isset($item['pubdate']) && !empty($item['pubdate'])) {
 					//It's set in a different way by the feed, lets use it
 					$item['date_timestamp'] = strtotime($item['pubdate']);
-					echo $item['title'] . $item['date_timestamp'];
 					if(!isset($item['date_timestamp']) || empty($item['date_timestamp']) || $item['date_timestamp'] <= 0){
 						//OK, we lied, that doesn't work either				
 						$item['date_timestamp']	= create_time($item['title'] . $item['link']);

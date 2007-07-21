@@ -40,8 +40,9 @@ $settings['files']					= array(
 //Maximum number of items from each feed, 0 is unlimited
 $settings['feeds']					= array('items' => '25');
 //Default time is always the first time
-//Numbers are hours, valid string values are 'week' and 'all'
-$settings['interface']				= array('times' => array(24,48,'week','all'));
+//Numbers for hours or 'week' for a week
+//'all' is automatically added
+$settings['interface']				= array('times' => array(24,48,'week'));
 //Output types
 $settings['output']					= array(
 											'rss' => true,
