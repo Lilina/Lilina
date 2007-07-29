@@ -9,7 +9,7 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 header('Content-Type: text/html; charset=utf-8');
-global $settings; //Just in case ;)
+global $settings, $showtime; //Just in case ;)
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -105,9 +105,14 @@ if(has_items()) {
 	$notfirst = false;
 	}
 }
-else {
+elseif(!has_feeds()) {
 ?>
 	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
+<?php
+}
+else {
+?>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo ($showtime/3600); ?> hour(s). Try <a href="index.php?hours=-1">viewing all items</a></div>
 <?php
 }
 ?>
