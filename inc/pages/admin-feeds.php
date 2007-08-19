@@ -25,8 +25,8 @@ $list			= '<table id="feeds_list">
 $num			= 'odd';
 //Uses a for loop instead of a foreach, so we can
 //get the current id
-for($j = 0; $j < count($feeds); $j++) {
-	$this_feed	= $feeds[$j];
+$j	= 0;
+foreach($feeds as $this_feed) {
 	$list		.= '<tr class="row_' . $num . ' row">
 	<td class="col_even col">'.$j.'</td>
 	<td class="col_odd col">'.$this_feed['name'].'</td>
@@ -40,6 +40,7 @@ for($j = 0; $j < count($feeds); $j++) {
 	else {
 		$num	= 'odd';
 	}
+	++$j;
 }
 $list .= '</table>';
 ?>

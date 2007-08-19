@@ -14,12 +14,12 @@ function lil_check(){
 
 	if(preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone)/i',
 		strtolower($_SERVER['HTTP_USER_AGENT']))) {
-		$mobile_browser++;
+		++$mobile_browser;
 	}
 
 	if((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml')>0) or 
 		((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {
-		$mobile_browser++;
+		++$mobile_browser;
 	}
 
 	$mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,4));
@@ -35,10 +35,10 @@ function lil_check(){
 		'wapr','webc','winw','winw','xda','xda-');
 
 	if(in_array($mobile_ua,$mobile_agents)) {
-		$mobile_browser++;
+		++$mobile_browser;
 	}
 	if (strpos(strtolower($_SERVER['ALL_HTTP']),'OperaMini')>0) {
-		$mobile_browser++;
+		++$mobile_browser;
 	}
 	if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'windows')>0) {
 		$mobile_browser=0;

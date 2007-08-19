@@ -16,19 +16,17 @@ define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
 $out		= '';
-//Current Version
-require_once(LILINA_INCPATH . '/core/version.php');
-
 //Timer doesn't need settings so we don't have to wait for them
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 $timer_start = lilina_timer_start();
 
-//Make sure we are actually installed...
-require_once(LILINA_INCPATH . '/core/install-functions.php');
-if(!lilina_check_installed()) {
+if(!@file_exists('./conf/settings.php')) {
 	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
 }
+
+//Current Version
+require_once(LILINA_INCPATH . '/core/version.php');
 
 //Plugins and misc stuff
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
@@ -71,7 +69,9 @@ $time_table	= lilina_load_times();
 $list = lilina_make_items($data);
 $out = lilina_make_output($list[1]);/*/
 lilina_save_times($time_table);
-lilina_cache_start();
+global $settings;
+//echo '<!--Generated fresh-->' . "\n";
+ob_start();
 /*
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -182,5 +182,14 @@ require_once(LILINA_INCPATH . '/core/skin.php');
 //require_once(LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php');
 template_load();
 
-lilina_cache_end();
+//Cache the output
+global $showtime;
+$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html'; // Cache file to either or create
+// Now the script has run, generate a new cache file
+$fp = fopen($cachefile, 'w');
+$pagecontent = ob_get_contents();
+// save the contents of output buffer to the file
+fwrite($fp, $pagecontent);
+fclose($fp);
+ob_end_flush();
 ?>

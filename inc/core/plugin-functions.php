@@ -1,15 +1,15 @@
 <?php
 /**
-* Functions for plugins
-*
-* Everything that handles plugins. Loads, adds, removes,
-* recalculates lists, etc
-*
-* @author Ryan McCue <cubegames@gmail.com>
-* @package Lilina
-* @version 1.0
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ * Functions for plugins
+ *
+ * Everything that handles plugins. Loads, adds, removes,
+ * recalculates lists, etc
+ *
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 defined('LILINA') or die('Restricted access');
 /**
@@ -101,8 +101,8 @@ function activate_plugin($plugin) {
 */
 function get_plugins() {
 	global $activated_plugins, $registered_plugins;
-	for($plugin = 0; $plugin < count($activated_plugins); $plugin++){
-		$plugin_name	= $activated_plugins[$plugin];
+	
+	foreach($activated_plugins as $plugin_name) {
 		require_once(LILINA_INCPATH . '/plugins/' . $registered_plugins[$plugin_name]['file']);
 	}
 }

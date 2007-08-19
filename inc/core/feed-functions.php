@@ -274,7 +274,7 @@ function lilina_return_output($all_items) {
 			}
 		}
 		$channel_url_old	= $out[$index]['channel_link'];
-		$index++;
+		++$index;
 	}
 	return lilina_parse_html($out);
 }
@@ -512,7 +512,7 @@ function lilina_return_items($input) {
 			$item['date_timestamp']	+= $settings['offset'] * 60 * 60;
 			$items[] = $item ;
 		}
-		$index++;
+		++$index;
 	}
 	return array($channels, $items);
 }
