@@ -1,15 +1,11 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		parseopml.php
-Purpose:	OPML Parser
-Notes:		Adapted from
-	http://www.sencer.de/code/showOPML.phps
-			CAUTION: HERE BE DRAGONS!
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * OPML Parser
+ * Adapted from http://www.sencer.de/code/showOPML.phps
+ * @author Sencer Yurdagül
+ * @package Miscellaneous Contributions
+ */
+
 error_reporting(E_ALL);
 class OPMLParser {
 	var $depth			= 0;

@@ -1,11 +1,11 @@
 <?php
 
 /**
-    Magpie, a simple RSS/Atom parser, and feed integration tool for PHP.
-    
-    @copyright Kellan Elliott-McCrea <kellan@pobox.com>
-    @license   dual licensed GPL/BSD
-        
+ * Magpie, a simple RSS/Atom parser, and feed integration tool for PHP.
+ *
+ * @copyright Kellan Elliott-McCrea <kellan@pobox.com>
+ * @license   dual licensed GPL/BSD
+ * @package Magpie
 */
 
 
