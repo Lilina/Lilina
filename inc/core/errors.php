@@ -15,7 +15,9 @@ global $end_errors;
 $end_errors = '';
 // we will do our own error handling
 error_reporting(0);
-// user defined error handling function
+/**
+ * Our error handler. Not exactly the best, but good enough
+ */
 function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 	global $end_errors;
 	global $settings;

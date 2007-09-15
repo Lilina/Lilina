@@ -1,0 +1,102 @@
+﻿<?php
+/**
+ * Installation of Lilina
+ *
+ * Installation functions including
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
+/**
+ * Stops hacking later on
+ */
+define('LILINA', 1);
+header('Content-Type: text/html; charset=UTF-8');
+
+/**
+ * Generates a random password for the user
+ *
+ * Thanks goes to Jon Haworth for this function
+ * @author Jon Haworth <jon@laughing-buddha.net>
+ * @param int $length Length of generated password
+ * @return string
+ */
+function generate_password ($length = 8) {
+	// start with a blank password
+	$password = '';
+	// define possible characters
+	$possible = '0123456789bcdfghjkmnpqrstvwxyz';
+	// set up a counter
+	$i = 0;
+	// add random characters to $password until $length is reached
+	while ($i < $length) { 
+		// pick a random character from the possible ones
+		$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+		// we don't want this character if it's already in the password
+		if (!strstr($password, $char)) { 
+			$password .= $char;
+			++$i;
+		}
+	}
+	// done!
+	return $password;
+}
+//Initialize variables
+if(!empty($_POST['page'])) {
+	$page				= htmlentities($_POST['page']);
+}
+elseif(!empty($_GET['page'])) {
+	$page				= htmlentities($_GET['page']);
+}
+else {
+	$page				= false;
+}
+$from					= (isset($_POST['from'])) ? htmlentities($_POST['from']) : false;
+$sitename				= (isset($_POST['sitename'])) ? htmlentities($_POST['sitename']) : false;
+$url					= (isset($_POST['url'])) ? htmlentities($_POST['url']) : false;
+$username				= (isset($_POST['username'])) ? htmlentities($_POST['username']) : false;
+$password				= (isset($_POST['password'])) ? htmlentities($_POST['password']) : false;
+$error					= ((!$sitename || !$url || !$username || !$password) && $page && $page != 1) ? true : false;
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Installation - Lilina News Aggregator</title>
+		<style type="text/css">
+			@import "install.css";
+		</style>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<img src="i/logo.jpg" alt="Lilina Logo" />
+				<h1>Lilina News Aggregator</h1>
+				<h2>Readme</h2>
+			</div>
+			<div id="menu">
+				<ul>
+					<li><a href="http://lilina.cubegames.net/">Lilina Website</a></li>
+					<li><a href="http://lilina.cubegames.net/wordpress/vanilla/">Forums</a></li>
+					<li><a href="http://lilina.cubegames.net/support/">Support</a></li>
+				</ul>
+			</div>
+			<div id="content">
+				<h3><a id="welcome"></a>Welcome</h3>
+					<p>Welcome and thanks for downloading Lilina! This file is designed to give you a guide into the installation and use of the Lilina News Aggregator software.</p>
+				<h3><a id="requirements"></a>Requirements</h3>
+					<ul><li>A webserver, like Apache or IIS</li>
+					<li>PHP 4.0.2+</li></ul>
+					<p>That's it. No database required or anything else. Lilina is completely self-contained and there are no libraries required.</p>
+				<h3><a id="installation"></a>Installation</h3>
+					<p>Simply open up install.php</p>
+			</div>
+		</div>
+		<div id="footer">
+			<p>Powered by Lilina 1.0 | Copyright Lilina Development Team</p>
+		</div>
+	</body>
+</html>

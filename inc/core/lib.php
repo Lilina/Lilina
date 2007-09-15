@@ -1,29 +1,28 @@
 <?php
 /**
-* Miscellaneous functions
-*
-* Any and all functions that don't fit anywhere else
-*
-* @todo Need to move functions to appropriate files
-* @author Ryan McCue <cubegames@gmail.com>
-* @package Lilina
-* @version 1.0
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ * Miscellaneous functions
+ *
+ * Any and all functions that don't fit anywhere else
+ *
+ * @todo Need to move functions to appropriate files
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 //Stop hacking attempts
 defined('LILINA') or die('Restricted access');
-//require_once('./inc/core/conf.php');
 //require_once('./inc/core/file-functions.php');
-require_once('./inc/contrib/HTMLPurifier.auto.php');
-require_once('./inc/core/version.php');
+require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
+require_once(LILINA_INCPATH . '/core/version.php');
 
 define('MAGPIE_CACHE_ON',1) ;
 define('MAGPIE_CACHE_FRESH_ONLY', true) ;
 //define('MAGPIE_CACHE_DIR', './cache');
 define('MAGPIE_OUTPUT_ENCODING', $settings['encoding']);
 define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'  (+http://lilina.cubegames.net/)') ;
-require_once('./inc/contrib/magpie.php');
+require_once(LILINA_INCPATH . '/contrib/magpie.php');
 
 $empty_ico_data = base64_decode(
 'AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABMLAAATCwAAAAAA' .
@@ -49,12 +48,12 @@ $empty_ico_data = base64_decode(
 'AAAAAAAAgAEAAA==');
 
 /**
-* Gets the URL for a favicon for a given URL
-*
-* @see channel_favicon
-* @param string $location Web site to look for favicon at
-* @return string
-*/
+ * Gets the URL for a favicon for a given URL
+ *
+ * @see channel_favicon
+ * @param string $location Web site to look for favicon at
+ * @return string
+ */
 function get_favicon_url($location){
 	if(!$location) {
 		return false;
@@ -71,11 +70,11 @@ function get_favicon_url($location){
 }
 
 /**
-* Gets the favicon for a feed and caches it
-*
-* @param string $location Web site location
-* @return string
-*/
+ * Gets the favicon for a feed and caches it
+ *
+ * @param string $location Web site location
+ * @return string
+ */
 function channel_favicon($location) {
 	global $empty_ico_data, $settings ;
 	$cached_ico			= $settings['cachedir'] . md5($location) . '.ico' ;
@@ -102,11 +101,11 @@ function channel_favicon($location) {
 }
 
 /**
-* Creates a timestamp via time() and saves it in the $time_table variable
-*
-* @param string $s Name of item, must be unique
-* @return int
-*/
+ * Creates a timestamp via time() and saves it in the $time_table variable
+ *
+ * @param string $s Name of item, must be unique
+ * @return int
+ */
 
 function create_time($s) {
 	global $time_table, $settings;
@@ -119,12 +118,12 @@ function create_time($s) {
 }
 
 /**
-* Function used to sort rss items in chronological order
-*
-* @param array $a First feed item
-* @param array $b Second feed item
-* @return int
-*/
+ * Function used to sort rss items in chronological order
+ *
+ * @param array $a First feed item
+ * @param array $b Second feed item
+ * @return int
+ */
 function date_cmp($a, $b) {
    if ($a['date_timestamp'] == $b['date_timestamp'] ) {
 		#descending order
@@ -135,39 +134,38 @@ function date_cmp($a, $b) {
 
 if(!function_exists('parse_w3cdtf')) {
 	/**
-	* From MagpieRSS' rss_utils.inc - Converts a -- date formatted string to
-	* time from epoch in seconds
-	*
-	* @param string $date_str -- formatted date
-	* @return int
-	*/
+	 * From MagpieRSS' rss_utils.inc - Converts a -- date formatted string to
+	 * time from epoch in seconds
+	 *
+	 * @param string $date_str -- formatted date
+	 * @return int
+	 */
 	function parse_w3cdtf ( $date_str ) {
-	    # regex to match wc3dtf
+	    // regex to match wc3dtf
 	    $pat = "/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(:(\d{2}))?(?:([-+])(\d{2}):?(\d{2})|(Z))?/";
 	    
 	    if ( preg_match( $pat, $date_str, $match ) ) {
 	        list( $year, $month, $day, $hours, $minutes, $seconds) = 
 	            array( $match[1], $match[2], $match[3], $match[4], $match[5], $match[6]);
 	        
-	        # calc epoch for current date assuming GMT
+	        // calc epoch for current date assuming GMT
 	        $epoch = gmmktime( $hours, $minutes, $seconds, $month, $day, $year);
 	        
 	        $offset = 0;
 	        if ( $match[10] == 'Z' ) {
-	            # zulu time, aka GMT
+	            // zulu time, aka GMT
 	        }
 	        else {
 	            list( $tz_mod, $tz_hour, $tz_min ) =
 	                array( $match[8], $match[9], $match[10]);
 	            
-	            # zero out the variables
+	            // zero out the variables
 	            if ( ! $tz_hour ) { $tz_hour = 0; }
 	            if ( ! $tz_min ) { $tz_min = 0; }
 	        
 	            $offset_secs = (($tz_hour*60)+$tz_min)*60;
 	            
-	            # is timezone ahead of GMT?  then subtract offset
-	            #
+	            // is timezone ahead of GMT?  then subtract offset
 	            if ( $tz_mod == '+' ) {
 	                $offset_secs = $offset_secs * -1;
 	            }

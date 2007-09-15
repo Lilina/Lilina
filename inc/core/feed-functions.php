@@ -1,137 +1,13 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		feed-functions.php
-Purpose:	Functions that work with feeds
-			and Magpie
-Notes:		
-Functions:	lilina_time_start();
-			lilina_time_end( $timer_start_time );
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Feed handling functions
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 defined('LILINA') or die('Restricted access');
-/*function lilina_make_item($item, $date) {
-	//First enclosure listed is the one displayed
-	$enclosure = $item['enclosures'][0]['url'];
-	$enclosuretype = $item['enclosures'][0]['type'];
-	$summary = "" ;
-	//echo '<pre>';
-	//print_r($item);
-	//echo '</pre>';
-	$channel_title = $item['channel_title'];
-	$channel_url = $item['channel_link'];  
-	$ico = $item['favicon'] ;
-	$href = $item['link'];
-	if (!$href) {
-		$href = $item['guid'];
-	}
-	$item_id = md5($href.$channel_url) ;
-	$title = $item['title'];
-	$summary = $item['content'];
-	if(!$summary){
-		$summary = $item['summary'];
-	}
-	// before_sanitize();
-	//Parse all variables so far
-	lilina_parse_html(
-						array(
-								$title,
-								$channel_title,
-								$channel_url,
-								$ico,
-								$href,
-								$summary
-							)
-					);
-	// after_sanitize();
-	$this_date = date('D d F, Y', $item['date_timestamp'] ) ;
-	echo 'This_date: ' . $this_date . ' End This_date;';
-	$time = date('H:i', $item['date_timestamp'] ) ;
-	if ($this_date!=$date) {
-		//If this isn't the first date...
-		if ($date) {
-			//End the last date's div
-			$out .= '</div>' ;
-			$channel_url_old	= '' ;
-		}
-
-		$date 	= $this_date ;
-		// hook_date();
-		$out	.= '<h1>'.$date;
-		$out	.= '<span style="float: right; margin-top: -1.3em;">';
-		$out	.= '<a href="javascript:void(0);" onclick="toggle_visible(\'date';
-		$out	.= date('dmY', $item['date_timestamp'] );
-		$out	.= '\');toggle_hide_show(\'arrow';
-		$out	.= date('dmY', $item['date_timestamp'] );
-		$out	.= '\'); return false;"><img src="i/arrow_in.png" alt="Hide Items from this date" id="arrow';
-		$out	.= date('dmY', $item['date_timestamp'] );
-		$out	.= '" /></a></span>';
-		$out	.= '</h1><div id="date';
-		$out	.= date('dmY', $item['date_timestamp'] );
-		$out	.= '">';
-		$out	.= "\n" ;
-	}
-	global $date;
-	if ($item_id==$_COOKIE['mark']) $markStatus	= 'on' ;
-	else $markStatus	= 'off';
-
-
-	if ($channel_url_old != $channel_url) {
-		if ($channel_url_old){
-			$out	.= '</div>' ;
-		}
-		$out	.= '<div class="feed">' ;
-	}
-	$out	.= '<div class="item" id="IITEM-'.$item_id.'">' ;
- 
-	if ($ico){
-		$out	.= '<img src="'.$ico.'" alt="Favicon" title="'.$i18n['favicon'].'" style="width:16px; height:16px;" />' ;
-	}
-	$out	.= '<span class="time">'.$time.'</span>' ;
-	$out	.= '<span class="title" id="TITLE'.$item_id.'">'.$title.'</span>' ;
-	$out	.= '<span class="source"><a href="'.$href.'">&#187; Post from '.$channel_title.' <img src="i/application_double.png" alt="Visit off-site link" /></a></span>' ;
-	if($enclosure){
-		$out	.= 'Podcast or Videocast Available';
-	}
-	$out	.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
-	$out	.= $summary;
-	/*if($SHOW_SOCIAL==true) {
-	   $out .= delicious_tags($href) ;
-	   $out .= "<br/><img src=\"i/delicious.gif\" alt=\"".$i18n['add_delicious']."\"/> <a href=\"javascript:deliciousPost('" . addslashes($href) ."','" . addslashes($title) . "');\">add to del.icio.us.</a>" ;
-	   $out .= '&nbsp;<a href="http://del.icio.us/url/' . md5($href) .'">'.$i18n['look_delicious'].'</a>' . delicious_tags($href) ;
-	}*/
-
-	//$out .= google_get_res($title,0) ;
-
-	// $channel_url_old=$channel_url; 
-  
-  /*if($SHOW_SOCIAL==true) {
-	   $out .= ' &nbsp; <a href="javascript:furlPost(\''.$href.'\',\''.$title.'\');" title="'.$i18n['furl'].'">
-     <img src="i/furl.gif" alt="'.$i18n['furl'].'"/></a>' ;
-	   $out .= ' &nbsp; <a href="http://digg.com/submit?phase=2&amp;url='.$href.'&amp;title='.$title.'" target="_blank" title="digg this">
-     <img src="i/digg.gif" alt="digg this"/></a>';
-	   $out .= ' &nbsp; <a href="javascript:slashdotPost(\''.$href.'\',\''.$title.'\');" title="Submit to Slashdot">
-     <img src="i/slashdot.gif" alt="Submit to Slashdot" /></a>';
-	   $out .= ' &nbsp; <a href="http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Quick=true&amp;Url='.$href.'&amp;Title='.$title.'" target="_blank" title="Add to Blinklist">
-     <img src="i/blinklist.gif" alt="add to blinklist" /></a>';
-     $out .= ' &nbsp; <a href="javascript:spurlPost(\''.$href.'\',\''.$title.'\');" title="Spurl this">
-     <img src="i/spurl.gif" alt="Spurl this" /></a>';
-     $out .= ' &nbsp; <a href="https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;url='
-     . $href . '&amp;title=' . $title .'&amp;top=1" target="_blank" title="Add to Windows Live Bookmarks">
-     <img src="i/winlive.gif" alt="Add to Windows Live Bookmarks" /></a>';
-     $out .= ' &nbsp; <a href="http://technorati.com/cosmos/search.html?url=' .$href.'" target="_blank" title="Add to Technorati">
-     <img src="i/technorati.gif" alt="Add to Technorati" /></a>';
-     $out .= ' &nbsp; <a href="http://reddit.com/submit?url='.$href.'&amp;title='.$title.'" target="_blank" title="Add to reddit">
-     <img src="i/reddit.gif" alt="Add to reddit" /></a>';
-     $out .= ' &nbsp; <a href="http://www.newsvine.com/_tools/seed&amp;save?u='.$href.'&amp;h='.$title.'" target="_blank" title="Add to newsvine">
-     <img src="i/newsvine.gif" alt="Add to newsvine" /></a>';
-	}*-/
-	$out .= "</div>\n" ;
-	$out .= "</div>\n" ;
-	return array($out, $date);
-}*/
 
 function lilina_make_output($all_items) {
 	global $showtime, $settings;
@@ -280,12 +156,13 @@ function lilina_return_output($all_items) {
 }
 
 /**
-* Retrieve available feeds for a given page
-*
-* Originally by Keith Devens; includes improvements by "Cristian"
-* @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
-* @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
-*/
+ * Retrieve available feeds for a given page
+ *
+ * Originally by Keith Devens; includes improvements by "Cristian"
+ * @author Keith Devens
+ * @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP
+ * @link http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP#comment9695
+ */
 function lilina_get_rss($location) {
     if(!$location) {
         return false;
@@ -355,16 +232,16 @@ function lilina_get_rss($location) {
 }
 
 /**
-* Takes an array of feeds and makes a HTML list of feeds and an array of all items
-*
-* Takes an input array and parses it using the Magpie library. Makes an HTML unordered list
-* consisting of the feed's favicon, the name and the link. Takes the items returned by Magpie
-* and adds the favicon, fixes the timestamp and adds the channel information. Deprecated in
-* favour of lilina_return_items
-* @deprecated
-* @param array $input See lilina_return_items
-* @return array See lilina_return_items
-*/
+ * Takes an array of feeds and makes a HTML list of feeds and an array of all items
+ *
+ * Takes an input array and parses it using the Magpie library. Makes an HTML unordered list
+ * consisting of the feed's favicon, the name and the link. Takes the items returned by Magpie
+ * and adds the favicon, fixes the timestamp and adds the channel information. Deprecated in
+ * favour of lilina_return_items
+ * @deprecated Use lilina_return items instead
+ * @param array $input See lilina_return_items
+ * @return array See lilina_return_items
+ */
 function lilina_make_items($input) {
 	global $settings, $end_errors;
 	$items	= array();
@@ -441,14 +318,14 @@ function lilina_make_items($input) {
 }
 
 /**
-* Takes an array of feeds and returns all channels and all items from them
-*
-* Takes an input array and parses it using the Magpie library. Returns channel info such as
-* the name, link, icon and feed url. Takes the items returned by Magpie
-* and adds the icon, fixes the timestamp and adds the channel information.
-* @param array $input Input array of user specified feeds
-* @return array All channels and all items
-*/
+ * Takes an array of feeds and returns all channels and all items from them
+ *
+ * Takes an input array and parses it using the Magpie library. Returns channel info such as
+ * the name, link, icon and feed url. Takes the items returned by Magpie
+ * and adds the icon, fixes the timestamp and adds the channel information.
+ * @param array $input Input array of user specified feeds
+ * @return array All channels and all items
+ */
 function lilina_return_items($input) {
 	global $settings, $end_errors;
 	$items		= array();
@@ -518,18 +395,19 @@ function lilina_return_items($input) {
 }
 
 /**
-* Parses HTML with HTML Purifier
-*
-* Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
-* both arrays and strings
-* @param mixed $val_array Array or string to parse/purify
-* @return mixed Array or string of purified HTML
-*/
+ * Parses HTML with HTML Purifier
+ *
+ * Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
+ * both arrays and strings
+ * @param mixed $val_array Array or string to parse/purify
+ * @return mixed Array or string of purified HTML
+ */
 function lilina_parse_html($val_array){
 	global $settings;
 	$config = HTMLPurifier_Config::createDefault();
 	$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
 	$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+	$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
 	$config->set('Cache', 'SerializerPath', $settings['cachedir']);
 	$purifier = new HTMLPurifier($config);
 	if(is_array($val_array)) {

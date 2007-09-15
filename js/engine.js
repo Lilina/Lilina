@@ -131,7 +131,8 @@ function SourcesSetShowHide(show) {
 
 
 function ItemSetShowHide(id,show) {
-	var item = document.getElementById('IITEM-'+id) ;
+	//var item = document.getElementById('IITEM-'+id) ;
+	var item = id;
 	var i ;
 	for (i=0; i<item.childNodes.length; i++)
 	if (item.childNodes[i].id && item.childNodes[i].id.substring(0,5)=='ICONT') {
@@ -148,21 +149,26 @@ function ItemSetShowHide(id,show) {
 }
 
 function visible_mode(display) {
-        var main = document.getElementById('main') ;
-        var i ;
-        var j ;
-        var items ;
+	var main = document.getElementById('main') ;
+	var i ;
+	var j ;
+	var items ;
 	var feed ;
-        for (i=0; i<main.childNodes.length; i++) {
+	for (i=0; i<main.childNodes.length; i++) {
 		feed = main.childNodes[i] ;
-                for (j=0; j<feed.childNodes.length; j++) {
-                        if (feed.childNodes[j].id && feed.childNodes[j].id.substring(0,5)=='IITEM') {
-                                itemID = feed.childNodes[j].id.substring(6,38) ;
-                                ItemSetShowHide(itemID,display) ;
-                        }
-                }
+		for (j=0; j<feed.childNodes.length; j++) {
+			date = feed.childNodes[j];
+			for (k=0; k<date.childNodes.length; k++) {
+				if (date.childNodes[k].id && date.childNodes[k].id.substring(0,5)=='IITEM') {
+						//itemID = date.childNodes[k].id.substring(6,38) ;
+						//ItemSetShowHide(itemID,display) ;
+						ItemSetShowHide(date.childNodes[k],display) ;
+				}
+			}
+		}
 	}
-        showDetails = display ;         SetCookie('showDetails', showDetails) ;
+	showDetails = display ;
+	SetCookie('showDetails', showDetails) ;
 }
 /*
 function visible_mode(display) {

@@ -1,19 +1,19 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		l10n.php
-Purpose:	Localisation
-Notes:		//MUSTFIX: Change all code to use this
-			Based off example code by
-			Danilo Segan <danilo@kvota.net>
-			and Steven Armstrong <sa@c-area.ch>
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Localisation based on gettext example
+ * @author Danilo Segan <danilo@kvota.net>
+ * @author Steven Armstrong <sa@c-area.ch>
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 defined('LILINA') or die('Restricted access');
 if(!defined('LC_ALL')) {
-	//Gettext needs these constants
+	/**
+	 * Gettext needs these constants
+	 */
 	define('LC_CTYPE', 0);
 	define('LC_NUMERIC', 1);
 	define('LC_TIME', 2);

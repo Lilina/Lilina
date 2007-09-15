@@ -3,11 +3,14 @@
  * Installation of Lilina
  *
  * Installation functions including
- * @todo Move to actual files
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
+/**
+ * Stops hacking later on
  */
 define('LILINA', 1);
 header('Content-Type: text/html; charset=UTF-8');
@@ -132,12 +135,13 @@ switch($page) {
 ?>
 <p>Now saving settings to conf/settings.php - Stand by...</p>
 <?php
+		flush();
 		$raw_php		= "<?php
 \$settings['sitename'] = '$sitename';
 \$settings['baseurl'] = '$url';
-\$settings['$name'] = array(
+\$settings['auth'] = array(
 							'user' => '$username',
-							'pass' => '$password'
+							'pass' => '" . md5($password) . "'
 							);
 ?>";
 		$settings_file	= @fopen('./conf/settings.php', 'w+');
@@ -145,14 +149,14 @@ switch($page) {
 			fputs($settings_file, $raw_php) ;
 			fclose($settings_file) ;
 ?>
-<p>Lilina has been set up on your server and is ready to run. Open <a href="admin.php">your admin panel</a> and add some feeds.
+<p>Lilina has been set up on your server and is ready to run. Open <a href="admin.php">your admin panel</a> and add some feeds.</p>
 <dl>
 	<dt>Username</dt>
 	<dd><?php echo $username;?></dd>
 	<dt>Password</dt>
 	<dd><?php echo $password;?></dd>
 </dl>
-Were you expecting more steps? Sorry to disappoint. All done! :)</p>
+<p>Were you expecting more steps? Sorry to disappoint. All done! :)</p>
 <?php
 		}
 		else {

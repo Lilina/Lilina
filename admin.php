@@ -1,13 +1,11 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		admin.php
-Purpose:	Administration page
-Notes:		Need to move all crud to plugins
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Administration page
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 //Stop hacking attempts
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
@@ -284,7 +282,48 @@ if(isset($result) && !empty($result)) {
 </div>
 <div id="main">
 <?php
-if($out_page){
+if($action == 'diagnostic') {
+	echo 'Now starting diagnostic test...';
+	flush();
+	if(!isset($settings['auth']) || !is_array($settings['auth']) ||
+		!isset($settings['auth']['user']) || !isset($settings['auth']['pass'])) {
+		echo '<br />Error with authentication settings';
+		flush();
+	}
+	echo '<br />Current path to Lilina: ', LILINA_PATH;
+	echo '<br />Current path to includes folder: ', LILINA_INCPATH;
+	echo '<br />Current URL: ', $settings['baseurl'];
+	flush();
+	echo '<br />Now attempting to include all files: ';
+	flush();
+	require_once(LILINA_INCPATH . '/core/auth-functions.php');
+	require_once(LILINA_INCPATH . '/core/cache.php');
+	require_once(LILINA_INCPATH . '/core/conf.php');
+	require_once(LILINA_INCPATH . '/core/errors.php');
+	require_once(LILINA_INCPATH . '/core/feed-functions.php');
+	require_once(LILINA_INCPATH . '/core/file-functions.php');
+	require_once(LILINA_INCPATH . '/core/install-functions.php');
+	require_once(LILINA_INCPATH . '/core/l10n.php');
+	require_once(LILINA_INCPATH . '/core/lib.php');
+	require_once(LILINA_INCPATH . '/core/misc-functions.php');
+	require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+	require_once(LILINA_INCPATH . '/core/skin.php');
+	require_once(LILINA_INCPATH . '/core/version.php');
+	require_once(LILINA_INCPATH . '/contrib/feedcreator.class.php');
+	require_once(LILINA_INCPATH . '/contrib/gettext.php');
+	require_once(LILINA_INCPATH . '/contrib/magpie.php');
+	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
+	require_once(LILINA_INCPATH . '/contrib/streams.php');
+	flush();
+	echo '<br />All files successfully included';
+	echo '<br />Settings dump:<pre>';
+	flush();
+	var_dump($settings);
+	flush();
+	echo '</pre>Diagnostic finished';
+	flush();
+}
+elseif($out_page){
 	require_once(LILINA_INCPATH . '/pages/'.$out_page);
 }
 else {

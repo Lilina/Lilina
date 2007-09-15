@@ -1,14 +1,12 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		file-functions.php
-Purpose:	Functions which involve file access
-Notes:		
-Functions:
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Functions that work with serialized files
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 defined('LILINA') or die('Restricted access');
 
 function lilina_load_times() {

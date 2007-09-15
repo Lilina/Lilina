@@ -158,7 +158,7 @@ function template_footer(){
 		. date('Y-m-d \a\t g:i a')
 		. ' ' . _r('and took') . ' '
 		. lilina_timer_end($timer_start)
-		. ' ' . _r('seconds') . '</div>';
+		. ' ' . _r('seconds') . '</p>';
 		return true;
 }
 

@@ -63,28 +63,29 @@ $notfirst = false;
 if(has_items()) {
 	foreach(get_items() as $item) {
 		if($item['date'] != $item['old_date']) {
-			if($item['old_date'] === '' && $notfirst) {
+			if($notfirst) {
 				//Close both feed and date
 				echo '		</div>';
-				echo '	</div>' . "\n";
+				echo '	</div>', "\n";
 			}
+			$current_date = date('dmY', $item['timestamp'] );
 	?>
 	<h1><?php echo $item['date'];
 	?><span style="float: right; margin-top: -1.3em;"><a href="javascript:void(0);" title="<?php _e('Click to expand/collapse date');
-	?>" onclick="toggle_visible('date<?php echo date('dmY', $item['timestamp'] );
-	?>');toggle_hide_show('arrow<?php echo date('dmY', $item['timestamp'] );
+	?>" onclick="toggle_visible('date<?php echo $current_date;
+	?>');toggle_hide_show('arrow<?php echo $current_date;
 	?>'); return false;"><img src="i/arrow_in.png" alt="<?php _e('Hide Items from this date');
-	?>" id="arrow<?php echo date('dmY', $item['timestamp'] );
+	?>" id="arrow<?php echo $current_date;
 	?>" /></a></span></h1>
-	<div id="date<?php echo date('dmY', $item['timestamp'] );?>">
-		<div class="feed" id="feed<?php echo md5($item['channel_link']);?>">
+	<div id="date<?php echo $current_date;?>">
+		<div class="feed" id="feed<?php echo md5($item['channel_link']), $current_date;?>">
 		<?php
 		}
 		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
 			if(isset($item['old_channel'])) {
 				echo '		</div>';
 			}
-			echo '		<div class="feed" id="feed' . md5($item['channel_link']) . '">';
+			echo '		<div class="feed" id="feed', md5($item['channel_link']), $current_date, '">';
 		}
 		?>
 			<div class="item" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
@@ -102,7 +103,7 @@ if(has_items()) {
 			</div><?php
 		//Feed closed above
 	//Date closed above
-	$notfirst = false;
+	$notfirst = true;
 	}
 }
 elseif(!has_feeds()) {

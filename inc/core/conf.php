@@ -1,42 +1,46 @@
 <?php
 /**
-* Default configuration
-*
-* Default settings stored in the global $settings variable
-* DO NOT MAKE CHANGES IN THIS FILE, AS THEY WILL BE OVERRIDDEN WHEN YOU UPDATE
-* Instead, make changes in /conf/settings.php and copy needed settings over.
-*
-* @author Ryan McCue <cubegames@gmail.com>
-* @package Lilina
-* @version 1.0
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ * Default configuration
+ *
+ * Default settings stored in the global $settings variable
+ * DO NOT MAKE CHANGES IN THIS FILE, AS THEY WILL BE OVERRIDDEN WHEN YOU UPDATE
+ * Instead, make changes in /conf/settings.php and copy needed settings over.
+ *
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 defined('LILINA') or die('Restricted access');
 $settings = 0;
 global $settings;
 $settings							= array();
+
 //Must be in seconds
 $settings['cachetime']				= 600;
+
+/**
+ * GZip output
+ *
+ * Make sure this is disabled if your PHP version is less than
+ * 4.0.5 or if you have zlib.output_compression enabled in your
+ * php.ini
+ */
+$settings['gzip']					= false;
 //Magpie cache time is default
 $settings['magpie']					= array('cachetime' => 3600);
+
 $settings['baseurl']				= 'http://localhost/';
 //No need to change this really
 $settings['path']					= dirname(dirname(dirname(__FILE__)));
 //Name of template
 $settings['template']				= 'default';
 $settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];
-$settings['cachedir']				= $settings['path'] . '/cache/';
 $settings['sitename']				= 'Lilina News Aggregator';
 $settings['auth']					= array('user' => 'username', 'pass' => 'password');
 $settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
 $settings['lang']					= 'english';
-$settings['files']					= array(
-											'feeds'		=> $settings['path'] . '/conf/feeds.data',
-											'times'		=> $settings['path'] . '/conf/time.data',
-											'settings'	=> $settings['path'] . '/conf/settings.php',
-											'plugins'	=> $settings['path'] . '/conf/plugins.data'
-											);
 //Maximum number of items from each feed, 0 is unlimited
 $settings['feeds']					= array('items' => '25');
 //Default time is always the first time

@@ -1,15 +1,12 @@
 <?php
 // $Id$
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		index.php
-Purpose:	Main page
-Notes:		Need to move all crud to plugins
-			Maybe have only includes ALA WP.
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Initialization page
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 //Stop hacking attempts
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
