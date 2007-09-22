@@ -231,6 +231,10 @@ switch($action){
 	case 'import':
 		//import_opml($url);
 	break;
+	case 'reset':
+		unlink(LILINA_PATH . '/conf/settings.php');
+		die('settings.php successfully removed. <a href="' . $_SERVER['PHP_SELF'] . '">Reinstall</a>');
+	break;
 }
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -284,17 +288,31 @@ if(isset($result) && !empty($result)) {
 <?php
 if($action == 'diagnostic') {
 	echo 'Now starting diagnostic test...';
+	echo '<pre>';
+	echo '
+PHP Version: '.phpversion()."\n";
+	echo '
+Display Errors: '.(ini_get('display_errors') == '1' ? 'On' : 'Off');
+	echo '
+Error Level: '.(ini_get('error_reporting') == '2047' ? 'E_ALL' : 'Not E_ALL');
+	echo '
+Register Globals: '.(ini_get('register_globals') == '' ? 'Off' : 'On');
 	flush();
 	if(!isset($settings['auth']) || !is_array($settings['auth']) ||
 		!isset($settings['auth']['user']) || !isset($settings['auth']['pass'])) {
-		echo '<br />Error with authentication settings';
+		echo '
+Error with authentication settings';
 		flush();
 	}
-	echo '<br />Current path to Lilina: ', LILINA_PATH;
-	echo '<br />Current path to includes folder: ', LILINA_INCPATH;
-	echo '<br />Current URL: ', $settings['baseurl'];
+	echo '
+Current path to Lilina: ', LILINA_PATH;
+	echo '
+Current path to includes folder: ', LILINA_INCPATH;
+	echo '
+Current URL: ', $settings['baseurl'];
 	flush();
-	echo '<br />Now attempting to include all files: ';
+	echo '
+Now attempting to include all files: ';
 	flush();
 	require_once(LILINA_INCPATH . '/core/auth-functions.php');
 	require_once(LILINA_INCPATH . '/core/cache.php');
@@ -315,12 +333,15 @@ if($action == 'diagnostic') {
 	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
 	require_once(LILINA_INCPATH . '/contrib/streams.php');
 	flush();
-	echo '<br />All files successfully included';
-	echo '<br />Settings dump:<pre>';
+	echo '
+All files successfully included';
+	echo '
+Settings dump:';
 	flush();
 	var_dump($settings);
 	flush();
-	echo '</pre>Diagnostic finished';
+	echo '
+Diagnostic finished</pre>'; 
 	flush();
 }
 elseif($out_page){

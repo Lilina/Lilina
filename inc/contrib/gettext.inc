@@ -99,6 +99,12 @@ function _get_codeset($domain=null) {
  * Convert the given string to the encoding set by bind_textdomain_codeset.
  */
 function _encode($text) {
+	/**
+	 * Hack for systems that don't have the multibyte extension enabled
+	 */
+	if(!function_exists('mb_detect_encoding')) {
+		return $text;
+	}
 	$source_encoding = mb_detect_encoding($text);
 	$target_encoding = _get_codeset();
 	if ($source_encoding != $target_encoding) {

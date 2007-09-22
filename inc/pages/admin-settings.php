@@ -38,9 +38,11 @@ foreach($settings as $key => $value) {
 }
 $list .= '</table>';
 ?>
-<h2>Current Feeds</h2>
+<h2>Current Settings</h2>
 <?php
 echo $list;
 ?>
 <h2>Troubleshooting</h2>
 <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings&amp;action=diagnostic">Run diagnostic test</a>
+<h2>Reset</h2>
+<p>This will delete your settings.php and you will need to run install.php again. <a href="<?php echo $_SERVER['PHP_SELF'];?>?page=settings&amp;action=reset">Proceed?</a></p>

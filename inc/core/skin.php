@@ -162,13 +162,9 @@ function template_footer(){
 		return true;
 }
 
-function template_path($ret=false){
+function template_path(){
 	global $settings;
-	if(!$ret) {
-		echo $settings['template_path'];
-		return true;
-	}
-		return $settings['template_path'];
+	return $settings['template_path'];
 }
 
 function template_times(){
@@ -258,7 +254,10 @@ function get_feeds() {
 	return $list[0];
 }
 
-//template_load is a replacable function, check for it
+/**
+ * Replacable functions from here on
+ */
+
 if(!function_exists('template_load')) {
 	/**
 	* Load the current template
@@ -282,23 +281,14 @@ if(!function_exists('template_load')) {
 				require_once(LILINA_INCPATH . '/templates/default/' . $type . '.php');
 			}
 		}
-		// switch($type) {
-			// case 'rss':
-				// if(file_exists($templates['rss']) {
-					// require_once($templates['rss']);
-				// }
-				// else {
-					// require_once(LILINA_INCPATH . '/templates/default/rss.php');
-				// }
-			// break;
-			// default:
-				// if(file_exists($templates['default']) {
-					// require_once($templates['default']);
-				// }
-				// else {
-					// require_once(LILINA_INCPATH . '/templates/default/index.php');
-				// }
-		// }
+	}
+}
+if(!function_exists('stylesheet_load')) {
+	/**
+	 * Returns the URL for a specified stylesheet
+	 */
+	function stylesheet_load($file) {
+		return $settings['template_path'] . '/templates/' . $settings['template'] . '/' . $file;
 	}
 }
 ?>

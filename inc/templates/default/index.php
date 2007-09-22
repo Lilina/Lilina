@@ -20,7 +20,7 @@ global $settings, $showtime; //Just in case ;)
 <?php
 template_synd_header();
 ?>
-<link rel="stylesheet" type="text/css" href="<?php template_path(); ?>/style.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php stylesheet_load('style.css'); ?>" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
 	var showDetails = <?php echo (isset($_COOKIE['showDetails']) && ($_COOKIE['showDetails'] == 'true')) ? 'true' : 'false'; ?>;
@@ -34,6 +34,9 @@ call_hooked('template_header');
 ?>
 </head>
 <body onload="visible_mode(showDetails)">
+<?php
+call_hooked('body_top');
+?>
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
 	<img src="i/logo.jpg" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />

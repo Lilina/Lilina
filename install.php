@@ -107,7 +107,7 @@ switch($page) {
 			<td class="formw"><input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" size="40" /></td>
 		</tr>
 		<tr<?php if(!$url) echo ' class="highlight"';?>>
-			<td class="label"><label for="url"><span class="label">URL for Lilina</span></label></td>
+			<td class="label"><label for="url"><span class="label">URL for Lilina (with trailing slash)</span></label></td>
 			<td class="formw"><input type="text" value="<?php echo (!$url) ? 'http://localhost/' : $url;?>" name="url" id="url" size="40" /></td>
 		</tr>
 		<tr><td colspan="2"><h2>Security Settings</h2></td></tr>
@@ -179,7 +179,7 @@ switch($page) {
 	case false:
 	default:
 ?>
-<p>Welcome to Lilina installation. We're now going to start installing. Make sure that the conf folder exists and is <a href="readme.html#permissions">writable</a>.</p>
+<p>Welcome to Lilina installation. We're now going to start installing. Make sure that both the <code>conf/</code> and <code>cache/</code> directories exist and are <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
 <input type="submit" value="Install &raquo;" />

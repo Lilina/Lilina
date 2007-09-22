@@ -1,70 +1,8 @@
-﻿<?php
-/**
- * Installation of Lilina
- *
- * Installation functions including
- * @author Ryan McCue <cubegames@gmail.com>
- * @package Lilina
- * @version 1.0
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- */
-
-/**
- * Stops hacking later on
- */
-define('LILINA', 1);
-header('Content-Type: text/html; charset=UTF-8');
-
-/**
- * Generates a random password for the user
- *
- * Thanks goes to Jon Haworth for this function
- * @author Jon Haworth <jon@laughing-buddha.net>
- * @param int $length Length of generated password
- * @return string
- */
-function generate_password ($length = 8) {
-	// start with a blank password
-	$password = '';
-	// define possible characters
-	$possible = '0123456789bcdfghjkmnpqrstvwxyz';
-	// set up a counter
-	$i = 0;
-	// add random characters to $password until $length is reached
-	while ($i < $length) { 
-		// pick a random character from the possible ones
-		$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-		// we don't want this character if it's already in the password
-		if (!strstr($password, $char)) { 
-			$password .= $char;
-			++$i;
-		}
-	}
-	// done!
-	return $password;
-}
-//Initialize variables
-if(!empty($_POST['page'])) {
-	$page				= htmlentities($_POST['page']);
-}
-elseif(!empty($_GET['page'])) {
-	$page				= htmlentities($_GET['page']);
-}
-else {
-	$page				= false;
-}
-$from					= (isset($_POST['from'])) ? htmlentities($_POST['from']) : false;
-$sitename				= (isset($_POST['sitename'])) ? htmlentities($_POST['sitename']) : false;
-$url					= (isset($_POST['url'])) ? htmlentities($_POST['url']) : false;
-$username				= (isset($_POST['username'])) ? htmlentities($_POST['username']) : false;
-$password				= (isset($_POST['password'])) ? htmlentities($_POST['password']) : false;
-$error					= ((!$sitename || !$url || !$username || !$password) && $page && $page != 1) ? true : false;
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Installation - Lilina News Aggregator</title>
+		<title>Documentation - Lilina News Aggregator</title>
 		<style type="text/css">
 			@import "install.css";
 		</style>
@@ -93,6 +31,14 @@ $error					= ((!$sitename || !$url || !$username || !$password) && $page && $pag
 					<p>That's it. No database required or anything else. Lilina is completely self-contained and there are no libraries required.</p>
 				<h3><a id="installation"></a>Installation</h3>
 					<p>Simply open up install.php</p>
+				<h3><a id="permissions"></a>Permissions</h3>
+					<p>To use Lilina, you will need to make sure that both your <code>cache/</code> and <code>conf/</code> directories are writable. You can set the proper permissions using:</p>
+					<pre>chmod -R 0755 cache conf conf/times.data conf/feeds.data</pre>
+					<p>If that does not work, you will need to give the folder world writable permissions. This is not recommended as it is then possible for anyone to edit your files. You can set it by executing:</p>
+					<pre>chmod -R 0777 cache conf conf/times.data conf/feeds.data</pre>
+					<p>If you use a graphical FTP client, you can also set it on each file using the number 755 or 777, or giving read and execute permissions to all and the write permission to the owner only</p>
+				<h3><a id="support"></a>Support</h3>
+					<p>Support is available from the <a href="http://lilina.cubegames.net/support">Lilina support page</a>, via email, the forums or on the wiki</p>
 			</div>
 		</div>
 		<div id="footer">
