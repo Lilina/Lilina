@@ -73,3 +73,10 @@ echo $list;
 <input type="submit" value="Add Feed" />
 </form>
 <p>If no name is specified, it will be taken from the feed</p>
+<h2>Import Feeds</h2>
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
+<label for="import_url">URL to Feed:</label> <input type="text" name="add_url" id="import_url" style="width: 14em;" />
+<input type="hidden" name="page" value="feeds" />
+<input type="hidden" name="action" value="import" />
+<input type="submit" value="Add Feed" />
+</form>

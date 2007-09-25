@@ -62,6 +62,9 @@ require_once(LILINA_INCPATH . '/core/version.php');
 //For the RSS auto discovery
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
+//Parse OPML files
+require_once(LILINA_INCPATH . '/contrib/parseopml.php');
+
 //Authentication Section
 //Start the session
 session_start();
@@ -90,10 +93,6 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 function get_feeds() {
 	global $data;
 	return $data['feeds'];
-}
-function import_opml($opml_file) {
-	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
-	return parse_opml($opml_file);
 }
 
 //Navigation
@@ -130,11 +129,11 @@ switch($action){
 			@closedir($handle);
 		}
 		else {
-			$result		.= _r('Error deleting files in ') . $settings['cachedir'] . ' - ' . _r('Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.') . '<br />';
+			$result		.= sprintf(_r('Error deleting files in %s - Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.'), $settings['cachedir']) . '<br />';
 		}
 		if($times_file = @fopen($settings['files']['times'], 'w')) fclose($times_file);
 		else {
-			$result		.= _r('Error clearing times from ') . $settings['files']['times'] . ' - ' . _r('Make sure the file is writable and PHP/Apache has the correct permissions to modify it.') . '<br />';
+			$result		.= sprintf(_r('Error clearing times from %s - Make sure the file is writable and PHP/Apache has the correct permissions to modify it.'), $settings['files']['times']) . '<br />';
 		}
 		$result			.= _r('Successfully cleared cache!') . '<br />';
 	break;
@@ -196,7 +195,7 @@ switch($action){
 		}
 		if(empty($url)) {
 			//Now this we do care about
-			
+			$result .= _r('Couldn\'t add feed: No feed URL supplied');
 		}
 		$feed_num	= count($data['feeds']);
 		$data['feeds'][$feed_num]['feed']	= $add_url;
@@ -207,7 +206,7 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= _r('Added feed ') . $add_name . _r(' with URL as ') . htmlentities($add_url) . '<br />';
+		$result	.= sprintf(_r('Added feed %s with URL as %s'), $add_name, htmlentities($add_url)) . '<br />';
 	break;
 	case 'remove':
 		array_splice($data['feeds'], $remove_id, 1);
@@ -226,14 +225,17 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= _r('Changed feed #') . $change_id . _r(' with URL as ') . htmlentities($change_url) . '<br />';
+		$result	.= sprintf(_r('Changed feed #%d with URL as %s'), $change_id, htmlentities($change_url) .) . '<br />';
 	break;
 	case 'import':
-		//import_opml($url);
+		$imported_feeds = parse_opml($add_url);
+		foreach($imported_feeds as $imported_feed) {
+			
+		}
 	break;
 	case 'reset':
 		unlink(LILINA_PATH . '/conf/settings.php');
-		die('settings.php successfully removed. <a href="' . $_SERVER['PHP_SELF'] . '">Reinstall</a>');
+		printf(_r('settings.php successfully removed. <a href="%s">Reinstall</a>'), $_SERVER['PHP_SELF']);
 	break;
 }
 header('Content-Type: text/html; charset=utf-8');

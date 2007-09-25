@@ -13,38 +13,26 @@ class OPMLParser {
 	function startElement($parser, $tagName, $attrs) {
 		$this -> depth++;
 		if ($tagName !== 'OUTLINE') return;
-		extract($attrs);
-		//print_r($attrs);
-		$this -> parsed_feeds[]	= $attrs;
-		/*if (!isset($URL)) {
-		echo str_repeat(' ',$this->depth).'<li>'.$TITLE."<ul>\r\n";
+		if(!isset($attrs['XMLURL']) || $attrs['XMLURL'] == '') {
+			return;
 		}
-		else {
-			echo str_repeat(' ',$this->depth).'<li><a href="'.($URL).'">'.utf8_encode($TITLE).'</a>';
-			if (isset($XMLURL) and $XMLURL != '')
-				echo ' [<a href="'.htmlentities($XMLURL).'">xml</a>]';
-			echo "</li>\r\n";
-		}*/
+		$this -> parsed_feeds[]	= $attrs;
 	}
     
 	function endElement($parser, $tagName) {
-		$this -> depth--;
+		$this->depth--;
 		if ($tagName !== 'OUTLINE') return;
 		static $lastdepth;
 		if (!isset($lastdepth)) $lastdepth = 0;
 		if ($this->depth == $lastdepth) return;
-		if ($this->depth > $lastdepth)
-		{
+		if ($this->depth > $lastdepth) {
 			$lastdepth = $this->depth;
 		}
-		else
-		{
-			echo str_repeat(' ',$this->depth)."</ul></li>\r\n";
+		else {
 			$lastdepth--;
 		}
 	}
-	function characterData($parser, $data)
-	{
+	function characterData($parser, $data) {
     
 	}
 }
@@ -83,4 +71,4 @@ function parse_opml($remote_file) {
 
 	return($opml_parser->parsed_feeds);
 }
-?> 
+?>
