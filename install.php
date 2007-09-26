@@ -73,7 +73,7 @@ $error					= ((!$sitename || !$url || !$username || !$password) && $page && $pag
 	<body>
 		<div id="container">
 			<div id="header">
-				<img src="i/logo.jpg" alt="Lilina Logo" />
+				<img src="inc/templates/default/logo.jpg" alt="Lilina Logo" />
 				<h1>Lilina News Aggregator</h1>
 				<h2>Installation Step <?php echo $page;?></h2>
 			</div>

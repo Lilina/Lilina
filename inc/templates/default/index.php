@@ -51,10 +51,9 @@ call_hooked('body_top');
 	}
 	echo '&nbsp;&nbsp; |';
 	?>
-	<a href="javascript:visible_mode(true);">
-	<img src="<?php echo template_file_load('arrow_out.png');?>" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a>
-	<a href="javascript:visible_mode(false);">
-	<img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
+	<a id="expandall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_out.png');?>" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a> |
+	<a id="collapseall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a> |
+	<a id="removedates" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Remove dates'); ?>" /> <?php _e('Remove date markers'); ?></a>
 	|
 	<a href="opml.php">OPML</a>
 	|
@@ -82,13 +81,7 @@ if(has_items()) {
 			}
 			$current_date = date('dmY', $item['timestamp'] );
 	?>
-	<h1><?php echo $item['date'];
-	?><span style="float: right; margin-top: -1.3em;"><a href="javascript:void(0);" title="<?php _e('Click to expand/collapse date');
-	?>" onclick="toggle_visible('date<?php echo $current_date;
-	?>');toggle_hide_show('arrow<?php echo $current_date;
-	?>'); return false;"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide Items from this date');
-	?>" id="arrow<?php echo $current_date;
-	?>" /></a></span></h1>
+	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php echo $item['date'];?></h1>
 	<div id="date<?php echo $current_date;?>">
 		<div class="feed" id="feed<?php echo md5($item['channel_link']), $current_date;?>">
 		<?php
@@ -125,11 +118,13 @@ elseif(!has_feeds()) {
 }
 else {
 ?>
-	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo ($showtime/3600); ?> hour(s). Try <a href="index.php?hours=-1">viewing all items</a></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo ($showtime/3600); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php echo template_file_load('loading.gif'); ?>" alt="Loading..." /></div>
 <?php
 }
 ?>
 	</div>
+</div>
 </div>
 
 <div id="sources">

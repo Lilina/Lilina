@@ -9,100 +9,6 @@
 
 defined('LILINA') or die('Restricted access');
 
-function lilina_make_output($all_items) {
-	global $showtime, $settings;
-	$out	= '';
-	$date	= '';
-	usort($all_items, 'date_cmp');
-	foreach($all_items as $item) {
-		//First enclosure listed is the one displayed
-		if(isset($item['enclosures']) && is_array($item['enclosures'])){
-			$enclosure		= $item['enclosures'][0]['url'];
-			$enclosuretype	= $item['enclosures'][0]['type'];
-		}
-		$summary		= '' ;
-		$channel_title	= $item['channel_title'];
-		$channel_url	= $item['channel_url']; 
-		$ico			= $item['favicon'] ;
-		$href			= (empty($item['link'])) ? $item['guid'] : $item['link'];
-		$item_id		= md5($href . $channel_url) ;
-		$title			= $item['title'];
-		if(isset($item['content']) && !empty($item['content'])) {
-			$summary	= $item['content'];
-		}
-		elseif(isset($item['summary']) && !empty($item['summary'])) {
-			$summary	= $item['summary'];
-		}
-		elseif(isset($item['description']) && !empty($item['description'])) {
-			$summary	= $item['description'];
-		}
-		else {
-			$summary	= _r('No summary specified');
-		}
-		$this_date		= date('D d F, Y', $item['date_timestamp'] ) ;
-		$time			= date('H:i', $item['date_timestamp'] ) ;
-		if ($this_date != $date) {
-			//If this isn't the first date...
-			if (empty($date)) {
-				//End the last date's div
-				$out	.= '</div>' ;
-				$channel_url_old	= '' ;
-			}
-			$date 	= $this_date ;
-			$out		.= '<h1>'.$date;
-			$out		.= '<span style="float: right; margin-top: -1.3em;">';
-			$out		.= '<a href="javascript:void(0);" title="';
-			$out		.= _r('Click to expand/collapse date');
-			$out		.= '" onclick="toggle_visible(\'date' . date('dmY', $item['date_timestamp'] );
-			$out		.= '\');toggle_hide_show(\'arrow';
-			$out		.= date('dmY', $item['date_timestamp'] );
-			$out		.= '\'); return false;"><img src="i/arrow_in.png" alt="';
-			$out		.= _r('Hide Items from this date') . '" id="arrow';
-			$out		.= date('dmY', $item['date_timestamp'] );
-			$out		.= '" /></a></span>';
-			$out		.= '</h1><div id="date';
-			$out		.= date('dmY', $item['date_timestamp'] );
-			$out		.= '">';
-			$out		.= "\n" ;
-		}
-		if (!isset($channel_url_old) || $channel_url_old != $channel_url) {
-			if (isset($channel_url_old)) {
-				$out	.= '</div>' ;
-			}
-			$out		.= '<div class="feed">' ;
-		}
-		$out			.= '<div class="item" id="IITEM-'.$item_id.'">' ;
-
-		if ($ico){
-			$out		.= '<img src="'.$ico.'" alt="'._r('Favicon').'" title="'._r('Favicon').'" style="width:16px; height:16px;" />' ;
-		}
-		$out			.= '
-<span class="time">'.$time.'</span>
-<span class="title" id="TITLE'.$item_id.'" title="'._r('Click to expand/collapse item').'">'.$title.'</span>
-<span class="source"><a href="'.$href.'">&#187; '. _r('Post from') . ' ' . $channel_title.' <img src="i/application_double.png" alt="'. _r('Visit off-site link') .'" /></a></span>' ;
-		if(isset($enclosure) && !empty($enclosure)){
-			$out		.=  _r('Podcast or Videocast Available');
-		}
-		$out			.= '<div class="excerpt" id="ICONT'.$item_id.'">' ; 
-		$out			.= $summary;
-		$channel_url_old	= $channel_url;
-		$out			.= "</div>\n" ;
-		$out			.= "</div>\n" ;
-		//Only display the feeds from the chosen times
-		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
-			break;
-		}
-	}
-	if(count($all_items)!=0) {
-		$out		.= '</div>' ;//Close the last "feed" div.
-	}
-	else {
-		$out		.= '<div style="border:1px solid #e7dc2b;background: #fff888;">You haven\'t added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>';
-	}
-	lilina_parse_html($out);
-	return $out;
-}
-
 function lilina_return_output($all_items) {
 	global $showtime, $settings;
 	$out	= array();
@@ -125,7 +31,7 @@ function lilina_return_output($all_items) {
 		else {
 			$out[$index]['summary']	= _r('No summary specified');
 		}
-		$out[$index]['date']		= date('D d F, Y', $item['date_timestamp'] );
+		$out[$index]['date']		= date('l d F, Y', $item['date_timestamp'] );
 		$out[$index]['old_date']	= ($index != 0) ? $out[$index-1]['date'] : '';
 		$out[$index]['time']		= date('H:i', $item['date_timestamp'] ) ;
 		$out[$index]['timestamp']	= $item['date_timestamp'];
@@ -229,92 +135,6 @@ function lilina_get_rss($location) {
 	else {
 		return false;
 	}
-}
-
-/**
- * Takes an array of feeds and makes a HTML list of feeds and an array of all items
- *
- * Takes an input array and parses it using the Magpie library. Makes an HTML unordered list
- * consisting of the feed's favicon, the name and the link. Takes the items returned by Magpie
- * and adds the favicon, fixes the timestamp and adds the channel information. Deprecated in
- * favour of lilina_return_items
- * @deprecated Use lilina_return items instead
- * @param array $input See lilina_return_items
- * @return array See lilina_return_items
- */
-function lilina_make_items($input) {
-	global $settings, $end_errors;
-	$items	= array();
-	$channel_list	= '';
-	$feeds	= $input['feeds'];
-	foreach($feeds as $feed) {
-		$rss	= fetch_rss( $feed['feed'] );
-		if (!$rss){
-			$end_errors	.= '<br />Could not fetch feed: ' . $feed['feed'] . '<br /> Magpie returned: ' . magpie_error();
-			continue;
-		}
-		//Get the icon to display
-		$ico	= channel_favicon( $rss->channel['link'] );
-		//Add it to the list
-		$channel_list .= '<li><a href="' . $rss->channel['link'] . '">';
-		$channel_list .= '<img src="'.$ico.'" style="height:16px" alt="icon" />&nbsp;';
-		if(!$feed['name']){
-			//User hasn't specified name, get it ourselves
-			$channel_list .= $rss->channel['title'] . '</a> <a href="' . $feed['feed'] . '">[Feed]</a></li>';
-		}
-		else {
-			//Use supplied name
-			$channel_list .= $feed['name'] . '</a> <a href="' . $feed['feed'] . '">[Feed]</a></li>';
-		}
-		if($settings['feeds']['items']) {
-			//User has specified limit, limit the items
-			$limited_items = array_slice($rss->items, 0, $settings['feeds']['items']);			
-		}
-		else {
-			//No limit, don't bother slicing
-			$limited_items	= $rss->items;
-		}
-		foreach($limited_items as $item){
-			if(isset($feed['name']) && !empty($feed['name'])){
-				$item['channel_title']	= $feed['name'];
-			}
-			else {
-				$item['channel_title']	= $rss->channel['title'];
-			}
-			$item['channel_url']		= $rss->channel['link'] ;
-			$item['favicon']			= $ico ;
-			if (empty($item['date_timestamp']) || !isset($item['date_timestamp'])) {
-				//No date set
-				if(isset($item['pubdate']) && !empty($item['pubdate'])) {
-					//It's set in a different way by the feed, lets use it
-					$item['date_timestamp'] = strtotime($item['pubdate']);
-					if(!$item['date_timestamp']){
-						//OK, we lied, that doesn't work either
-						if(isset($item['published']) && !empty($item['published'])) {
-							$item['date_timestamp'] = strtotime($item['published']);
-						}
-						elseif(isset($item['updated']) && !empty($item['updated'])) {
-							$item['date_timestamp'] = strtotime($item['updated']);
-						}
-						else {						
-							$item['date_timestamp']	= create_time($item['title'] . $item['link']);
-						}
-					}
-				}
-				elseif($the_item['dc']['date']) {
-					//Support for Dublin Core
-					$the_item['date_timestamp']	= parse_w3cdtf($the_item['dc']['date']);
-				}
-				else {
-					//This feed doesn't like us
-					$item['date_timestamp']	= create_time($item['title'] . $item['link']);
-				}
-			}
-			$item['date_timestamp']	+= $settings['offset'] * 60 * 60;
-			$items[] = $item ;
-		}
-	}
-	return array($channel_list, $items);
 }
 
 /**

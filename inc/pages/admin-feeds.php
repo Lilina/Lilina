@@ -32,7 +32,7 @@ foreach($feeds as $this_feed) {
 	<td class="col_odd col">'.$this_feed['name'].'</td>
 	<td class="col_even col">'.$this_feed['feed'].'</td>
 	<td class="col_odd col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
-	<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" onclick="javascript:return showChange(\''.$j.'\', \''.$this_feed['name'].'\', \''.$this_feed['feed'].'\');">Change</a></td>
+	<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" class="change_link">Change</a></td>
 	</tr>';
 	if($num=='odd'){
 		$num	= 'even';

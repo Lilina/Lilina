@@ -108,14 +108,10 @@ h1 { /* Date */
 	font-size: 12px;
 	font-weight: bold;
 	color: #fff;
-	background: #aaaaaa;
+	/*background: #9E9488;*/
 	background: #CBDFEB;
 	clear: both;
 	}
-h1 img{
-	padding-right: 1em;
-	margin-top:0.05em;
-}
 .item {
 	margin: 0px 0px 0px 0px;
 	font-size: 12px;

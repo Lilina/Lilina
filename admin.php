@@ -210,7 +210,8 @@ switch($action){
 		$result	.= sprintf(_r('Added feed %s with URL as %s'), $add_name, htmlentities($add_url)) . '<br />';
 	break;
 	case 'remove':
-		array_splice($data['feeds'], $remove_id, 1);
+		unset($data['feeds'][$remove_id]);
+		$data['feeds'] = array_values($data['feeds']);
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		if(!$fp) { echo 'Error';}
@@ -249,10 +250,12 @@ header('Content-Type: text/html; charset=utf-8');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/jquery-1.2.1.pack.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/admin.js"></script>
 </head>
-<body onload="javascript:adminLoader('<?php echo $page; ?>');">
+<body>
 <?php
 if(isset($result) && !empty($result)) {
 	echo '<div id="alert">' . $result . '</div>';

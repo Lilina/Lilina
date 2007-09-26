@@ -63,10 +63,10 @@ function template_synd_header($return='echo'){
 function template_synd_links(){
 	global $settings;
 	if($settings['output']['rss']){
-		echo 'RSS: <a href="rss.php"><img src="i/feed.png" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
+		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
 	}
 	if($settings['output']['atom']){
-		echo 'Atom: <a href="rss.php?output=atom"><img src="i/feed.png" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
+		echo 'Atom: <a href="rss.php?output=atom"><img src="', template_file_load('feed.png'), '" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
 	}
 	return true;
 }
@@ -146,7 +146,7 @@ function template_end_errors($return='echo'){
 function template_footer(){
 	global $timer_start;
 	global $lilina;
-		echo '<p>' . _r('Powered by') . ' <a href="http://lilina.cubegames.net/"><img src="i/logo.jpg" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a> v'
+		echo '<p>' . _r('Powered by') . ' <a href="http://lilina.cubegames.net/"><img src="', template_file_load('logo.jpg'), '" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a> v'
 		. $lilina['core-sys']['version']
 		. '<br />' . _r('This page was last generated on') . ' '
 		. date('Y-m-d \a\t g:i a')
