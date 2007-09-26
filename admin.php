@@ -90,7 +90,7 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 }
 
 //Misc. Functions
-function get_feeds() {
+function get_feed_list() {
 	global $data;
 	return $data['feeds'];
 }
@@ -187,15 +187,16 @@ switch($action){
 			}
 			fclose($file);
 		}
-		if(empty($category)) {
+		if(empty($add_category)) {
 			$category	= 'default';
 		}
-		if(empty($name)) {
+		if(empty($add_name)) {
 			//We don't care, we'll get it from the feed
 		}
-		if(empty($url)) {
+		if(empty($add_url)) {
 			//Now this we do care about
 			$result .= _r('Couldn\'t add feed: No feed URL supplied');
+			break;
 		}
 		$feed_num	= count($data['feeds']);
 		$data['feeds'][$feed_num]['feed']	= $add_url;
@@ -225,7 +226,7 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= sprintf(_r('Changed feed #%d with URL as %s'), $change_id, htmlentities($change_url) .) . '<br />';
+		$result	.= sprintf(_r('Changed feed #%d with URL as %s'), $change_id, htmlentities($change_url)) . '<br />';
 	break;
 	case 'import':
 		$imported_feeds = parse_opml($add_url);
@@ -249,7 +250,7 @@ header('Content-Type: text/html; charset=utf-8');
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/fat.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
 </head>
 <body onload="javascript:adminLoader('<?php echo $page; ?>');">
 <?php
@@ -291,12 +292,14 @@ if(isset($result) && !empty($result)) {
 if($action == 'diagnostic') {
 	echo 'Now starting diagnostic test...';
 	echo '<pre>';
-	echo '
-PHP Version: '.phpversion()."\n";
-	echo '
-Display Errors: '.(ini_get('display_errors') == '1' ? 'On' : 'Off');
-	echo '
-Error Level: '.(ini_get('error_reporting') == '2047' ? 'E_ALL' : 'Not E_ALL');
+	echo 'PHP Version: '.phpversion();
+	echo "\nDisplay Errors: ".(ini_get('display_errors') == '1' ? 'On' : 'Off');
+	$error_reporting_level = (ini_get('error_reporting') == '2047' ? 'E_ALL' : 'Not E_ALL');
+	echo "\nError Level: $error_reporting_level";
+	if($error_reporting_level == 'Not E_ALL') {
+		echo "\nSetting error reporting level to E_ALL";
+		
+	}
 	echo '
 Register Globals: '.(ini_get('register_globals') == '' ? 'Off' : 'On');
 	flush();
@@ -319,7 +322,7 @@ Now attempting to include all files: ';
 	require_once(LILINA_INCPATH . '/core/auth-functions.php');
 	require_once(LILINA_INCPATH . '/core/cache.php');
 	require_once(LILINA_INCPATH . '/core/conf.php');
-	require_once(LILINA_INCPATH . '/core/errors.php');
+	//require_once(LILINA_INCPATH . '/core/errors.php');
 	require_once(LILINA_INCPATH . '/core/feed-functions.php');
 	require_once(LILINA_INCPATH . '/core/file-functions.php');
 	require_once(LILINA_INCPATH . '/core/install-functions.php');

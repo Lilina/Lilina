@@ -13,7 +13,7 @@ defined('LILINA') or die('Restricted access');
 <h1>Feeds</h1>
 <?php
 //Defined in admin panel
-$feeds			= get_feeds();
+$feeds			= get_feed_list();
 $list			= '<table id="feeds_list">
 <tr class="row_header row">
 <th class="col_even col">Feed ID</th>

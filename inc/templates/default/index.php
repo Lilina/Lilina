@@ -20,32 +20,41 @@ global $settings, $showtime; //Just in case ;)
 <?php
 template_synd_header();
 ?>
-<link rel="stylesheet" type="text/css" href="<?php stylesheet_load('style.css'); ?>" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php echo template_file_load('style.css'); ?>" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript"><!--
-	var showDetails = <?php echo (isset($_COOKIE['showDetails']) && ($_COOKIE['showDetails'] == 'true')) ? 'true' : 'false'; ?>;
-	//var markID = '<?php //echo $_COOKIE['mark']; ?>' ;
+	/* var showDetails = <?php echo (isset($_COOKIE['showDetails']) && ($_COOKIE['showDetails'] == 'true')) ? 'true' : 'false'; ?>;
+	//var markID = '<?php //echo $_COOKIE['mark']; ?>' ; */
 //-->
 </script>
-<script language="JavaScript" type="text/javascript" src="js/engine.js"></script>
+<script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
+<script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>js/engine.js"></script>
 <?php
 //Just extra stuff that a plugin may have added
 call_hooked('template_header');
 ?>
 </head>
-<body onload="visible_mode(showDetails)">
+<body>
 <?php
 call_hooked('body_top');
 ?>
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
-	<img src="i/logo.jpg" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
+	<img src="<?php echo template_file_load('logo.jpg');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
-	<?php if(template_synd_links()) { echo '&nbsp;&nbsp; |'; } ?>
+	<?php 
+	if($settings['output']['rss']){
+		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png') . '" alt="', _r('RSS Feed'), '" title="', _r('RSS Feed'), '" /></a> ';
+	}
+	if($settings['output']['atom']){
+		echo 'Atom: <a href="rss.php?output=atom"><img src="', template_file_load('feed.png') . '" alt="' . _r('Atom Feed') . '" title="' . _r('Atom Feed') . '" /></a>';
+	}
+	echo '&nbsp;&nbsp; |';
+	?>
 	<a href="javascript:visible_mode(true);">
-	<img src="<?php template_path(); ?>/arrow_out.png" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a>
+	<img src="<?php echo template_file_load('arrow_out.png');?>" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a>
 	<a href="javascript:visible_mode(false);">
-	<img src="<?php template_path(); ?>/arrow_in.png" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
+	<img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
 	|
 	<a href="opml.php">OPML</a>
 	|
@@ -77,7 +86,7 @@ if(has_items()) {
 	?><span style="float: right; margin-top: -1.3em;"><a href="javascript:void(0);" title="<?php _e('Click to expand/collapse date');
 	?>" onclick="toggle_visible('date<?php echo $current_date;
 	?>');toggle_hide_show('arrow<?php echo $current_date;
-	?>'); return false;"><img src="i/arrow_in.png" alt="<?php _e('Hide Items from this date');
+	?>'); return false;"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide Items from this date');
 	?>" id="arrow<?php echo $current_date;
 	?>" /></a></span></h1>
 	<div id="date<?php echo $current_date;?>">
@@ -91,10 +100,10 @@ if(has_items()) {
 			echo '		<div class="feed" id="feed', md5($item['channel_link']), $current_date, '">';
 		}
 		?>
-			<div class="item" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
+			<div class="item c2" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php template_path(); ?>/application_double.png" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<?php
 				if(!empty($item['enclosures'])){
 					_e('Podcast or Videocast Available');
@@ -144,11 +153,9 @@ else {
 	<?php
 	}
 	?></div>
-<div id="c1">&nbsp;powered by</div>
-<div id="c2">&nbsp;lilina.</div>
 <div id="footer">
 <?php template_footer(); ?><br />
-<img src="<?php template_path(); ?>/magpie.png" alt="Uses MagpieRSS" /><img src="<?php template_path(); ?>/oss.png" alt="Licensed under the GNU General Public License" /><img src="<?php template_path(); ?>/php.png" alt="Powered by PHP: Hypertext Processor" />
+<img src="<?php echo template_file_load('magpie.png'); ?>" alt="Uses MagpieRSS" /><img src="<?php echo template_file_load('/oss.png'); ?>" alt="Licensed under the GNU General Public License" /><img src="<?php echo template_file_load('php.png'); ?>" alt="Powered by PHP: Hypertext Processor" />
 </div>
 </body>
 </html>

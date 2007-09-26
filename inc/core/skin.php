@@ -40,19 +40,13 @@ function template_sitename($return='echo'){
 	}
 }
 
-function template_siteurl($return='echo'){
+function template_siteurl($return=false){
 	global $settings;
-	if($return == 'echo') {
+	if($return == false) {
 		echo $settings['baseurl'];
 		return true;
 	}
-	elseif($return == 'var') {
-		return $settings['baseurl'];
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
+	return $settings['baseurl'];
 }
 
 function template_synd_header($return='echo'){
@@ -283,12 +277,13 @@ if(!function_exists('template_load')) {
 		}
 	}
 }
-if(!function_exists('stylesheet_load')) {
+if(!function_exists('template_file_load')) {
 	/**
-	 * Returns the URL for a specified stylesheet
+	 * Returns the URL for a specified file
 	 */
-	function stylesheet_load($file) {
-		return $settings['template_path'] . '/templates/' . $settings['template'] . '/' . $file;
+	function template_file_load($file) {
+		global $settings;
+		return $settings['template_path'] . '/' . $file;
 	}
 }
 ?>

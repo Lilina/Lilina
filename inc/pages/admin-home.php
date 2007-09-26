@@ -15,7 +15,7 @@ defined('LILINA') or die('Restricted access');
 	<h2>Current feeds</h2>
 	<ul>
 	<?php
-	foreach(get_feeds() as $this_feed) {
+	foreach(get_feed_list() as $this_feed) {
 		if(isset($this_feed['name']) && !empty($this_feed['name'])) {
 			echo '
 		<li><a href="' . $this_feed['feed'] . '">'.$this_feed['name'].'</a></li>';

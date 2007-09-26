@@ -29,15 +29,11 @@ img, a {
 	vertical-align: text-bottom;
 	}
 
-#c1 {
-	color: #fff ;
-	background: #fff ;
-	display: none;
+.c1 {
+	background: #fff;
 }
-#c2 {
-	color: #eeeeee ;
-	background: #eeeeee ;
-	display: none;
+.c2 {
+	background: #eeeeee;
 }
 
 /* Topbar */
@@ -124,7 +120,6 @@ h1 img{
 	margin: 0px 0px 0px 0px;
 	font-size: 12px;
 	border-top: 1px solid #aac ;
-	background-color: #ffffff;
 	padding-bottom: 2px ;
 	padding-left: 15px;
 	}
@@ -156,7 +151,6 @@ h1 img{
 	margin: 3px 0 0 60px;
 	font-size: 11px;
 	width: 90%;
-	display: none;
 	}
 
 

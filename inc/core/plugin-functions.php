@@ -31,7 +31,10 @@ $activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
 */
 function get_hooked($hook) {
 	global $hooked_plugins;
-	return $hooked_plugins[$hook];
+	if(isset($hooked_plugins[$hook])) {
+		return $hooked_plugins[$hook];
+	}
+	return array();
 }
 
 /**

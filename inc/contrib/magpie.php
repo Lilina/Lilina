@@ -256,7 +256,7 @@ class Magpie {
         return $class;        
     }
     
-    function error ($errormsg, $lvl=E_USER_ERROR) {
+    function error ($errormsg=false, $lvl=E_USER_ERROR) {
         // append PHP's error message if track_errors enabled
         if ( isset($php_errormsg) ) { 
             $errormsg .= " ($php_errormsg)";

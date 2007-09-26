@@ -1,4 +1,4 @@
-function SetCookie(cookieName, cookieData) {
+/*function SetCookie(cookieName, cookieData) {
 	var expires = new Date ();
 	expires.setTime(expires.getTime() + 31 * (24 * 60 * 60 * 1000));
 	document.cookie = cookieName + "=" + escape(cookieData) + "; expires=" + expires.toGMTString();
@@ -186,7 +186,7 @@ function visible_mode(display) {
                 }
         }
         showDetails = display ;         SetCookie('showDetails', showDetails) ;
-}*/
+}*\/
 
 function toggleStyle(StyleName) {
 	object = document.getElementById(StyleName) ;
@@ -255,7 +255,7 @@ function search_page(query) {
 			
 		}
 	}
-}
+}*/
 function showChange( whichId, whichName, whichUrl ) {
 	var elem;
 	if( document.getElementById ) {// this is the way the standards work
@@ -304,3 +304,11 @@ function adminLoader(page) {
 			break;
 	}
 }
+
+/* JQuery Stuff! */
+$(document).ready(function() {
+	$(".title").click(function(){
+		$(this).next().next().slideToggle().parent().toggleClass("c1").toggleClass("c2");
+	});
+	$(".title").next().next().hide().parent().addClass("c1").removeClass("c2");
+});
