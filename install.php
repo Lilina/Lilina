@@ -145,6 +145,20 @@ switch($page) {
 							);
 ?>";
 		$settings_file	= @fopen('./conf/settings.php', 'w+');
+		if(!@file_exists('./conf/feeds.data')) {
+			$feeds_file = @fopen('./conf/feeds.data', 'w+');
+			if($feeds_file) {
+				//Serialized and base 64 encoded
+				fputs($feeds_file, 'YToxOntzOjU6ImZlZWRzIjthOjE6e2k6MDthOjM6e3M6NDoiZmVlZCI7czozMzoiaHR0cDovL2xpbGluYS5jdWJlZ2FtZXMubmV0L2ZlZWQvIjtzOjQ6Im5hbWUiO3M6Mjc6IkxpbGluYSBOZXdzIEFnZ3JlZ2F0b3IgQmxvZyI7czozOiJjYXQiO3M6NzoiZGVmYXVsdCI7fX19') ;
+				fclose($feeds_file) ;
+			}
+		}
+		if(!@file_exists('./conf/time.data')) {
+			$times_file = @fopen('./conf/time.data', 'w+');
+			if($times_file) {
+				fclose($times_file);
+			}
+		}
 		if($settings_file){
 			fputs($settings_file, $raw_php) ;
 			fclose($settings_file) ;
