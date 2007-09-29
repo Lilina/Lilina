@@ -28,6 +28,11 @@ HTMLPurifier:
 		to RSnake for letting me package his fantastic XSS
 		cheatsheet for a smoketest.
 
+jQuery:
+	* John Resig (jquery.com)
+		Thanks to John for the great library! Simplifed much
+		of the old JS code.
+
 MagpieRSS:
 	* Kellan Elliott-McCrea <kellan@pobox.com>
 		Kellan recently rewrote his popular parser from the ground up.

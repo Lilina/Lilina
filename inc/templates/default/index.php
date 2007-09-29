@@ -28,7 +28,14 @@ template_synd_header();
 //-->
 </script>
 <script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
-<script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>js/engine.js"></script>
+<?php
+if(file_exists(template_file_load('custom.js'))) {
+	echo '<script language="JavaScript" type="text/javascript" src="' . template_file_load('custom.js');  . '"></script>';
+}
+else {
+	echo '<script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>js/engine.js"></script>';
+}
+?>
 <?php
 //Just extra stuff that a plugin may have added
 call_hooked('template_header');
