@@ -30,10 +30,10 @@ template_synd_header();
 <script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
 <?php
 if(file_exists(template_file_load('custom.js'))) {
-	echo '<script language="JavaScript" type="text/javascript" src="' . template_file_load('custom.js');  . '"></script>';
+	echo '<script language="JavaScript" type="text/javascript" src="' . template_file_load('custom.js')  . '"></script>';
 }
 else {
-	echo '<script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>js/engine.js"></script>';
+	echo '<script language="JavaScript" type="text/javascript" src="' . template_siteurl(true) . 'inc/js/engine.js"></script>';
 }
 ?>
 <?php

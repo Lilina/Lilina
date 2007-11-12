@@ -40,7 +40,7 @@ $settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settin
 $settings['sitename']				= 'Lilina News Aggregator';
 $settings['auth']					= array('user' => 'username', 'pass' => 'password');
 $settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
-$settings['lang']					= 'english';
+$settings['lang']					= 'en';
 //Maximum number of items from each feed, 0 is unlimited
 $settings['feeds']					= array('items' => '25');
 //Default time is always the first time

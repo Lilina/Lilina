@@ -40,18 +40,19 @@ function get_hooked($hook) {
 /**
 * Calls hooked plugins at hook
 *
-* Calls the specified functions registered by the plugins at the specified hook
+* Calls the specified functions registered by the plugins at the specified hook. Passes the
+* $args variable by reference allowing a plugin to directly modify the passed variable
 *
 * @uses get_hooked Get the hooked plugins at the specifed plugin
 * @param string $hook Hook to call plugin functions for
-* @param array $args Arguments to pass on to plugin functions
+* @param array &$args Arguments to pass on to plugin functions
 */
-function call_hooked($hook, $args = array()){
+function call_hooked($hook, &$args = array()){
 	//Get list of plugins hooked here...
 	$plugins = get_hooked($hook);
 	foreach($plugins as $plugin) {
 		$plugin_function = $plugin['func'];
-		$plugin_function($args);
+		$plugin_function(&$args);
 	}
 }
 
@@ -100,7 +101,7 @@ function activate_plugin($plugin) {
 /**
 * Get plugins and load them
 *
-* Gets all activated plugins and require_once's their files
+* Gets all activated plugins and require_once()s their files
 */
 function get_plugins() {
 	global $activated_plugins, $registered_plugins;
@@ -110,8 +111,15 @@ function get_plugins() {
 	}
 }
 
+/**
+ * Gets metadata about plugins
+ *
+ * Thanks to Wordpress, admin-functions.php, lines 1525-1534
+ * @author Wordpress Development Team
+ * @param string $plugin_file Plugin file to search for metadata
+ * @return array Plugin metadata
+ */
 function plugins_meta($plugin_file) {
-	//Thanks to Wordpress, admin-functions.php, lines 1525-1534
 	$plugin_data = implode('', file($plugin_file));
 	preg_match("|Plugin Name:(.*)|i", $plugin_data, $plugin_name);
 	preg_match("|Plugin URI:(.*)|i", $plugin_data, $plugin_uri);
@@ -121,7 +129,7 @@ function plugins_meta($plugin_file) {
 	//If the plugin sets the version...
 	if (preg_match("|Version:(.*)|i", $plugin_data, $version)) {
 		//...Let it
-		$version = trim($version[1]); //F1
+		$version = trim($version[1]);
 	}
 	else {
 		//...Otherwise assume it's 1.0
@@ -138,27 +146,25 @@ function plugins_meta($plugin_file) {
 	}
 	//Set the $plugin array for returning
 	$plugin					= array();
-	$plugin['name']			= $plugin_name[1]; //F1
-	$plugin['uri']			= $plugin_uri[1]; //F1
-	$plugin['description']	= $description[1]; //F1
-	$plugin['author']		= $author_name[1]; //F1
-	$plugin['author_uri']	= $author_uri[1]; //F1
-	$plugin['version']		= $version[1]; //F1
-	$plugin['min_version']	= $min_version[1]; //F1
-	//Footnote 1: 	The 1st item [0] is the item found while the 2nd [1] is the content
-	//				We always want the content, so we use $metadata[1]
+	$plugin['name']			= $plugin_name[1];
+	$plugin['uri']			= $plugin_uri[1];
+	$plugin['description']	= $description[1];
+	$plugin['author']		= $author_name[1];
+	$plugin['author_uri']	= $author_uri[1];
+	$plugin['version']		= $version[1];
+	$plugin['min_version']	= $min_version[1];
 	return $plugin;
 }
 
 /**
-* Returns available plugin file
-*
-* Gets a list of all PHP files within a given directory. Primarily used for plugins, but
-* can be used for other things, such as _by_ plugins. Probably needs to be renamed to
-* lilina_file_list() and also accept a file type parameter
-*
-* @param string $directory Directory to search for plugin files in
-*/
+ * Returns available plugin file
+ *
+ * Gets a list of all PHP files within a given directory. Primarily used for plugins, but
+ * can be used for other things, such as _by_ plugins. Probably needs to be renamed to
+ * lilina_file_list() and also accept a file type parameter
+ *
+ * @param string $directory Directory to search for plugin files in
+ */
 function lilina_plugins_list($directory){
 	//Make sure we open it correctly
 	if ($handle = opendir($directory)) {
@@ -187,7 +193,7 @@ function lilina_plugins_list($directory){
 }
 
 function lilina_init_plugins() {
-	$plugins		= lilina_plugins_list(LILINA_PATH . '/plugins');
+	$plugins		= lilina_plugins_list(LILINA_INCPATH . '/plugins/');
 	$old_plugins	= lilina_old_plugins();
 	//Note the order; array_diff() returns missing elements from _2nd_ param
 	//Therefore:

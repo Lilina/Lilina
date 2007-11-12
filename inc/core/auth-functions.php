@@ -27,6 +27,7 @@ function lilina_auth($un, $pw) {
 			if(md5($pw) === $settings['auth']['pass']) {
 				//All details good to go, lets
 				//indicate we are logged in
+				session_regenerate_id();
 				$_SESSION['is_logged_in'] = true;
 				return true;
 			}
@@ -57,16 +58,16 @@ function lilina_form($error = false) {
 	if($error) {
 		switch($error) {
 			case 'pw':
-				$error_message = _r('Your password') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+				$error_message = _r('Your password is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 				$highlight_pw	= 'color:#FF615A;';
 			break;
 			case 'un':
-				$error_message = _r('Your username') . ' ' . _r('is incorrect. Please make sure you have spelt it correctly.') . '<br />';
+				$error_message = _r('Your username is incorrect. Please make sure you have spelt it correctly.') . '<br />';
 				$higlight_un	= 'color:#FF615A;';
 			break;
 		}
 	}
-	require_once('./inc/pages/admin-login.php');
+	require_once(LILINA_INCPATH . '/pages/admin-login.php');
 	die();
 }
 

@@ -252,7 +252,7 @@ header('Content-Type: text/html; charset=utf-8');
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/jquery-1.2.1.pack.js"></script>
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>js/engine.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/engine.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/admin.js"></script>
 </head>
 <body>
@@ -261,12 +261,8 @@ if(isset($result) && !empty($result)) {
 	echo '<div id="alert">' . $result . '</div>';
 }
 ?>
-<div id="wrap">
-<div id="pagetitle">
-	<h1><?php echo $settings['sitename']; ?> - Admin Panel</h1>
-</div>
-<div id="navigation">
-	<ul class="links">
+<div id="header">
+	<ul id="admin-tools">
 		<li>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
 			if($page=='home'){
@@ -285,10 +281,15 @@ if(isset($result) && !empty($result)) {
 			echo ' class="current"';
 			}?>><?php _e('Settings');?></a>
 		</li>
+	</ul>
+	<ul id="site-tools">
 		<li>
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=logout">
 			<?php _e('Logout'); ?></a>
+		</li>
+		<li><a href="index.php">View site &raquo;</a></li>
 	</ul>
+	</div>
 </div>
 <div id="main">
 <?php
@@ -359,7 +360,6 @@ else {
 	echo 'No page selected';
 }
 ?>
-</div>
 </div>
 </body>
 </html>

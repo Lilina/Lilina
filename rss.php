@@ -20,6 +20,9 @@ require_once('./inc/core/conf.php');
 //Require our standard stuff
 require_once('./inc/core/lib.php');
 
+//Plugins
+require_once('./inc/core/plugin-functions.php');
+
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
 
@@ -74,12 +77,6 @@ $rss_out->descriptionHtmlSyndicated = true;
 $rss_out->link = $settings['baseurl'];
 $rss_out->syndicationURL = $settings['baseurl'] . $_SERVER['PHP_SELF'];
 
-//$image = new FeedImage();
-//$image->title = $settings['sitename'];
-//$image->url = $settings['baseurl'].'/i/logo.jpg";
-//$image->link = $settings['baseurl'];
-//$image->description = $settings['sitename'];
-
 //optional
 //$image->descriptionTruncSize = 500;
 //$image->descriptionHtmlSyndicated = true;
@@ -93,6 +90,7 @@ foreach($items as $item) {
    
    $item_out->title = $item['title'];
    $item_out->link = $item['link'];
+   $item_out->link = $item['guid'];
    $item_out->source = $item['channel_title'];
    $item_out->description = $item['summary'];
    if(!$item_out->description) $item_out->description = $item['summary'];

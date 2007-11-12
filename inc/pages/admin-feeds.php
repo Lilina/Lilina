@@ -26,21 +26,26 @@ $num			= 'odd';
 //Uses a for loop instead of a foreach, so we can
 //get the current id
 $j	= 0;
-foreach($feeds as $this_feed) {
-	$list		.= '<tr class="row_' . $num . ' row">
-	<td class="col_even col">'.$j.'</td>
-	<td class="col_odd col">'.$this_feed['name'].'</td>
-	<td class="col_even col">'.$this_feed['feed'].'</td>
-	<td class="col_odd col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
-	<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" class="change_link">Change</a></td>
-	</tr>';
-	if($num=='odd'){
-		$num	= 'even';
+if(is_array($feeds)) {
+	foreach($feeds as $this_feed) {
+		$list		.= '<tr class="row_' . $num . ' row">
+		<td class="col_even col">'.$j.'</td>
+		<td class="col_odd col">'.$this_feed['name'].'</td>
+		<td class="col_even col">'.$this_feed['feed'].'</td>
+		<td class="col_odd col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
+		<td class="col_even col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" class="change_link">Change</a></td>
+		</tr>';
+		if($num=='odd'){
+			$num	= 'even';
+		}
+		else {
+			$num	= 'odd';
+		}
+		++$j;
 	}
-	else {
-		$num	= 'odd';
-	}
-	++$j;
+}
+else {
+	$list .= '<tr class="row_odd row"><td class="col_even col" colspan="5">No feeds installed yet</td></tr>';
 }
 $list .= '</table>';
 ?>

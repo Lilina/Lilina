@@ -37,6 +37,7 @@ function lilina_return_output($all_items) {
 		$out[$index]['timestamp']	= $item['date_timestamp'];
 		$out[$index]['channel_link']= $item['channel_url']; 
 		$out[$index]['link']		= (!isset($item['link']) || empty($item['link'])) ? $item['guid'] : $item['link'];
+		$out[$index]['guid']		= (!isset($item['guid']) || empty($item['guid'])) ? $item['link'] : $item['guid'];
 		$out[$index]['old_channel']	= (isset($channel_url_old)) ? $channel_url_old : '' ;
 		$out[$index]['id']			= md5($out[$index]['link'] . $out[$index]['channel_link']);
 		$out[$index]['icon']		= (isset($item['favicon'])) ? $item['favicon'] : '' ;
@@ -58,6 +59,7 @@ function lilina_return_output($all_items) {
 		$channel_url_old	= $out[$index]['channel_link'];
 		++$index;
 	}
+	call_hooked('return_output', $out);
 	return lilina_parse_html($out);
 }
 
@@ -232,7 +234,12 @@ function lilina_parse_html($val_array){
 	$purifier = new HTMLPurifier($config);
 	if(is_array($val_array)) {
 		foreach($val_array as $this_array) {
-			$purified_array[] = $purifier->purifyArray($this_array);
+			if(is_array($this_array)) {
+				$purified_array[] = $purifier->purifyArray($this_array);
+			}
+			else {
+				$purified_array[] = $purifier->purify($this_array);
+			}
 		}
 	}
 	else {

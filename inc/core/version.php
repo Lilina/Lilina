@@ -9,16 +9,16 @@ Licensed under the GNU General Public License
 See LICENSE.txt to view the license
 ******************************************/
 //Backwards compatibility only
-$LILINAVERSION	= '1.0' ;
+$LILINAVERSION	= '1.0-alpha1' ;
 $lilina			= array(
 						'core-sys'		=> array(
-												'version'	=> 1.0
+												'version'	=> '1.0-alpha1'
 												),
 						'plugin-sys'	=> array(
-												'version'	=> 1.0
+												'version'	=> '1.0-alpha1'
 												),
 						'template-sys'	=> array(
-												'version'	=> 1.0
+												'version'	=> '1.0-alpha1'
 												),
 						);
 ?>

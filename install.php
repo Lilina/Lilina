@@ -73,7 +73,7 @@ $error					= ((!$sitename || !$url || !$username || !$password) && $page && $pag
 	<body>
 		<div id="container">
 			<div id="header">
-				<img src="inc/templates/default/logo.jpg" alt="Lilina Logo" />
+				<img src="inc/templates/default/logo.png" alt="Lilina Logo" />
 				<h1>Lilina News Aggregator</h1>
 				<h2>Installation Step <?php echo $page;?></h2>
 			</div>
@@ -122,7 +122,7 @@ switch($page) {
 		<tr>
 			<td colspan="2"><span class="formw">
 				<input type="hidden" value="2" name="page" id="page" />
-				<input type="submit" value="Next &raquo;" />
+				<input type="submit" value="Next &raquo;" style="width:50%;font-size:2em;" />
 			</span>
 			</td>
 		</tr>
@@ -148,8 +148,6 @@ switch($page) {
 		if(!@file_exists('./conf/feeds.data')) {
 			$feeds_file = @fopen('./conf/feeds.data', 'w+');
 			if($feeds_file) {
-				//Serialized and base 64 encoded
-				fputs($feeds_file, 'YToxOntzOjU6ImZlZWRzIjthOjE6e2k6MDthOjM6e3M6NDoiZmVlZCI7czozMzoiaHR0cDovL2xpbGluYS5jdWJlZ2FtZXMubmV0L2ZlZWQvIjtzOjQ6Im5hbWUiO3M6Mjc6IkxpbGluYSBOZXdzIEFnZ3JlZ2F0b3IgQmxvZyI7czozOiJjYXQiO3M6NzoiZGVmYXVsdCI7fX19') ;
 				fclose($feeds_file) ;
 			}
 		}
@@ -163,7 +161,7 @@ switch($page) {
 			fputs($settings_file, $raw_php) ;
 			fclose($settings_file) ;
 ?>
-<p>Lilina has been set up on your server and is ready to run. Open <a href="admin.php">your admin panel</a> and add some feeds.</p>
+<p>Lilina has been set up on your server and is ready to run. Open <a href="index.php">your home page</a> and get reading!</p>
 <dl>
 	<dt>Username</dt>
 	<dd><?php echo $username;?></dd>
@@ -196,7 +194,7 @@ switch($page) {
 <p>Welcome to Lilina installation. We're now going to start installing. Make sure that both the <code>conf/</code> and <code>cache/</code> directories exist and are <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
-<input type="submit" value="Install &raquo;" />
+<input type="submit" value="Install &raquo;" style="width: 50%; font-size: 2em;" />
 </form>
 <?php
 		break;

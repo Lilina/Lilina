@@ -11,6 +11,8 @@ Lilina 1.0:
 	* Jean-Marc Liotier <jim@liotier.org>
 		Code for RSS output, based on example code from
 		FeedCreator
+	* NeoRame <webmaster@blog.kain-planet.de>
+		Great new logo. We love him for it :)
 
 Software used:
 --------------
@@ -22,11 +24,11 @@ cache.php:
 HTMLPurifier:
 	* Edward Z. Yang (Ambush Commander)
 	* (From HTMLPurifier credits)
-		Lots of thanks to the DevNetwork Community for their
+		"Lots of thanks to the DevNetwork Community for their
 		help (see docs/ref-devnetwork.html for more details),
 		Feyd especially (namely IPv6 and optimization).  Thanks
 		to RSnake for letting me package his fantastic XSS
-		cheatsheet for a smoketest.
+		cheatsheet for a smoketest."
 
 jQuery:
 	* John Resig (jquery.com)
@@ -38,8 +40,6 @@ MagpieRSS:
 		Kellan recently rewrote his popular parser from the ground up.
 		Lilina uses the 2.0-alpha-alpha-alpha, the first version
 		of this rewritten code.
-		Without MagpieRSS at the start, Lilina would not exist.
-		ALL HAIL KELLAN!
 
 parseOPML.php
 	* Sencer Yurdagül

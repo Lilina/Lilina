@@ -1,103 +1,74 @@
 body, html {
-	background: #EEEEEE;
-	font-family: Helvetica, Verdana, sans-serif;
+	font-family: Helvetica, Verdana, Arial, sans-serif;
 	font-size: 0.9em;
+	margin: 0;
 }
 #alert {
 	border:1px solid #e7dc2b;
 	background: #fff888;
 }
-#wrap {
-	background: #FFFFFF;
-	border: 0.1em solid #AAAAAA;
-	margin: 2em auto;
-	padding: 2em;
-	width: 80%;
-}
-
-#pagetitle {
-	background: #AAAAAA;
-	color: #FFFFFF;
-	padding: 0.5em;
-	margin-left: -2em;
-	margin-right: -2em;
-	margin-top: -2em;
-}
-
-#pagetitle h1{
-	font-size: 1em;
-}
-
-#navigation {
-	margin-left: -2em;
-	margin-right: -2em;
-	margin-top: -2em;
-}
-
-#navigation ul {
-	padding-left: 0;
-	background-color: #036;
-	color: #FFFFFF;
-	float: left;
+.skip-link {
+	color: #FFF;
+	display: block;
 	width: 100%;
-	font-family: arial, helvetica, sans-serif;
+	text-align: center;
+	clear: both;
 }
-
-#navigation ul li {
+.skip-link:hover {
+	color: #000;
+}
+#header {
+	background: #dddddc url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAeCAMAAADaS4T1AAAAA3NCSVQICAjb4U/gAAAAPFBMVEXs7Ozr6+vq6urp6eno6Ojn5+fm5ubl5eXk5OTj4+Pi4uLh4eHg4ODf39/e3t7d3d3c3Nzb29va2tr///+KsXasAAAAFHRSTlP/////////////////////////AE9P5xEAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAUdEVYdENyZWF0aW9uIFRpbWUAOC85LzA32WH5FwAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTM5jWRgMAAAAbSURBVAiZY2CAA2YoZINDTjjkgUJ+OBRiEAIAEcQA92wvhr0AAAAASUVORK5CYII=") repeat-x 0 -2px;
+	height: 50px;
+}
+#site-tools {
+	float: right;
+	margin-right: 0.2em;
+	width: 40%;
+	text-align: right;
+	padding-right: 40px;
+}
+#site-tools li {
 	display: inline;
+	margin-left: 0.4em;
 }
-
-#navigation ul li a {
+/*#navigation ul li a {
 	padding: 0.2em 1em;
 	background-color: #036;
-	color: White;
+	color: #FFF;
 	text-decoration: none;
 	float: left;
-	border-right: 1px solid #fff;
-}
-
-#navigation ul li a:hover {
-	background-color: #369;
-	color: #fff;
-}
-
-/*
-#navigation li {
-	display: inline;
-	list-style-type: none;
-	padding-right: 2em;
-}
-
-#navigation a {
-	text-decoration: none;
-	color: #000000;
+	border-right: 1px solid #FFF;
 }*/
-
-/* IE Only */
-* html #navigation {
-	margin-top: 0em;
+#admin-tools {
+	float: left;
+	margin-left: 0.2em;
+	width: 40%;
 }
-
+#admin-tools li {
+	display: inline;
+	margin-right: 0.4em;
+}
+#main {
+	margin: 50px;
+	clear: both;
+}
 #feeds_list {
 	border-collapse: collapse;
 	border-spacing: 1px;
 }
-
 #feeds_list td, #feeds_list th {
 	padding:6px 6px;
 	border-bottom:solid 1px #eee;
 	vertical-align:top;
 }
-
 #feeds_list .col {
 	padding-right: 2em;
 	font-size: 0.8em;
 }
-
 #feeds_list .row_odd {
 	background:#edf3fe;
 }
-
 #feeds_list tr:hover a {
 	color: #ffffff;
 }

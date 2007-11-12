@@ -52,10 +52,10 @@ function template_siteurl($return=false){
 function template_synd_header($return='echo'){
 	global $settings;
 	if($settings['output']['rss']){
-		echo '<link rel="alternate" type="application/rss+xml" title="RSS ' . _r('Feed') . '" href="rss.php" />';
+		echo '<link rel="alternate" type="application/rss+xml" title="' . _r('RSS Feed') . '" href="rss.php" />';
 	}
 	if($settings['output']['atom']){
-		echo '<link rel="alternate" type="application/rss+xml" title="Atom ' . _r('Feed') . '" href="rss.php?output=atom" />';
+		echo '<link rel="alternate" type="application/rss+xml" title="' . _r('Atom Feed') . '" href="rss.php?output=atom" />';
 	}
 	return true;
 }
@@ -63,7 +63,7 @@ function template_synd_header($return='echo'){
 function template_synd_links(){
 	global $settings;
 	if($settings['output']['rss']){
-		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="RSS ' . _r('Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
+		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="' . _r('RSS Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
 	}
 	if($settings['output']['atom']){
 		echo 'Atom: <a href="rss.php?output=atom"><img src="', template_file_load('feed.png'), '" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
@@ -188,6 +188,9 @@ function has_items() {
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
+	if(empty($data) || !is_array($data) || count($data) === 0) {
+		return false;
+	}
 	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
@@ -225,6 +228,9 @@ function has_feeds() {
 	global $data, $list, $settings;
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
+	}
+	if(empty($data) || !is_array($data) || count($data) === 0) {
+		return false;
 	}
 	if(empty($list)) {
 		$list	= lilina_return_items($data);

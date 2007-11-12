@@ -15,15 +15,21 @@ defined('LILINA') or die('Restricted access');
 	<h2>Current feeds</h2>
 	<ul>
 	<?php
-	foreach(get_feed_list() as $this_feed) {
-		if(isset($this_feed['name']) && !empty($this_feed['name'])) {
-			echo '
+	$feed_list = get_feed_list();
+	if(is_array($feed_list)) {
+		foreach($feed_list as $this_feed) {
+			if(isset($this_feed['name']) && !empty($this_feed['name'])) {
+				echo '
 		<li><a href="' . $this_feed['feed'] . '">'.$this_feed['name'].'</a></li>';
-		}
-		else {
-			echo '
+			}
+			else {
+				echo '
 		<li><a href="' . $this_feed['feed'] . '">(No title specified)</a></li>';
+			}
 		}
+	}
+	else {
+		echo '<li>No feeds installed yet.</li>';
 	}
 	?>
 	</ul>

@@ -18,6 +18,9 @@ function lilina_load_times() {
 	else {
 		$time_table = array();
 	}
+	if(!$time_table || !is_array($time_table)) {
+		$time_table = array();
+	}
 	return $time_table;
 }
 // index.php, line 200
@@ -33,6 +36,9 @@ function lilina_save_times($times) {
 function lilina_load_feeds($data_file) {
 	$data = file_get_contents($data_file) ;
 	$data = unserialize( base64_decode($data) ) ;
+	if(!$data || !is_array($data)) {
+		$data = array();
+	}
 	return $data;
 }
 ?>
