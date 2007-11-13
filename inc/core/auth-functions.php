@@ -17,32 +17,21 @@ defined('LILINA') or die('Restricted access');
 * settings.php; Takes a MD5 hash of the password as of rev 66
 * @param string $un Supplied username
 * @param string $pw Supplied password
-* @return mixed True if logged in, "pw" if password error, "un" if username error, false otherwise
+* @return bool True if logged in, false if error
 */
 function lilina_auth($un, $pw) {
 	global $settings;
 	if(!empty($un) && !empty($pw)) {
 		//Check the username and password
-		if ($un === $settings['auth']['user']) {
-			if(md5($pw) === $settings['auth']['pass']) {
-				//All details good to go, lets
-				//indicate we are logged in
-				session_regenerate_id();
-				$_SESSION['is_logged_in'] = true;
-				return true;
-			}
-			else {
-				//Error, 
-				return 'pw';
-			}
-		}
-		else {
-			return 'un';
+		if ($un === $settings['auth']['user'] && md5($pw) === $settings['auth']['pass']) {
+			//All details good to go, lets
+			//indicate we are logged in
+			session_regenerate_id();
+			$_SESSION['is_logged_in'] = true;
+			return true;
 		}
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 /**
@@ -53,20 +42,6 @@ function lilina_auth($un, $pw) {
 * @todo Move admin-login.php into here
 */
 function lilina_form($error = false) {
-	$highlight_pw	= '';
-	$highlight_un	= '';
-	if($error) {
-		switch($error) {
-			case 'pw':
-				$error_message = _r('Your password is incorrect. Please make sure you have spelt it correctly.') . '<br />';
-				$highlight_pw	= 'color:#FF615A;';
-			break;
-			case 'un':
-				$error_message = _r('Your username is incorrect. Please make sure you have spelt it correctly.') . '<br />';
-				$higlight_un	= 'color:#FF615A;';
-			break;
-		}
-	}
 	require_once(LILINA_INCPATH . '/pages/admin-login.php');
 	die();
 }

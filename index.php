@@ -56,21 +56,17 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 
-$showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
+//Templating functions
+require_once(LILINA_INCPATH . '/core/skin.php');
 
-/*$data = lilina_load_feeds($settings['files']['feeds']);
+$showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
 
 // load times*/
 $time_table	= lilina_load_times();
-/*//CAUTION: Returns array
-$list = lilina_make_items($data);
-$out = lilina_make_output($list[1]);/*/
+
 lilina_save_times($time_table);
 global $settings;
-//echo '<!--Generated fresh-->' . "\n";
 ob_start();
-require_once(LILINA_INCPATH . '/core/skin.php');
-//require_once(LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php');
 template_load();
 
 //Cache the output

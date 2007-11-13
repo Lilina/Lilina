@@ -19,8 +19,9 @@ defined('LILINA') or die('Restricted access');
 <body>
 <div id="login" style="border:1px solid #777; background: #ddd; margin-top:1em;padding:1em;padding-bottom:0em;">
 <?php
-if(isset($error_message) && !empty($error_message)) {
-	echo '<p style="font-weight:bold; color:#E60000;">' . $error_message . '</p>';
+if($error) {
+?>	<p style="font-weight:bold; color:#E60000;"><?php _e('Your password or username is incorrect. Please make sure you have spelt it correctly.') ?></p>
+<?php
 }
 ?>	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 		<table>
