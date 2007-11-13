@@ -41,7 +41,7 @@ function lilina_return_output($all_items) {
 		$out[$index]['old_channel']	= (isset($channel_url_old)) ? $channel_url_old : '' ;
 		$out[$index]['id']			= md5($out[$index]['link'] . $out[$index]['channel_link']);
 		$out[$index]['icon']		= (isset($item['favicon'])) ? $item['favicon'] : '' ;
-		$out[$index]['title']		= $item['title'];
+		$out[$index]['title']		= (!isset($item['title']) || empty($item['title'])) ? _r('(No title)') : $item['title'];
 		$out[$index]['channel_title']	= $item['channel_title'];
 		//First enclosure listed is the one displayed
 		if(isset($item['enclosures'])){

@@ -12,21 +12,11 @@ About
 =====
 Lilina is a news aggregator written in PHP.
 
+NOTE
+====
+readme.html will most likely be more up to date than this file and contains much more information.
+
 Installation
 ============
 Unzip to your web server and open the Lilina directory in your web browser.
 Follow the on screen instructions.
-
-Manual Installation
-===================
-1) Make the cache, feeds and conf directories writable.
-2) Copy inc/core/conf.php into conf/settings.php
-3) Customize to your liking
-4) Open index.php and Lilina will be set up
-
-Administration
-==============
-1) Click the login link on your Lilina homepage, or visit admin.php
-2) You will be prompted for your username and password.
-2a) If you have forgotten your password, click the link at the bottom to reset.
-2b) An email will be sent out with your new password.
