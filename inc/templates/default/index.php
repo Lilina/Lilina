@@ -10,6 +10,7 @@ See LICENSE.txt to view the license
 ******************************************/
 header('Content-Type: text/html; charset=utf-8');
 global $settings, $showtime; //Just in case ;)
+$nothing = array(); // For blank parameters
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -38,12 +39,12 @@ else {
 ?>
 <?php
 //Just extra stuff that a plugin may have added
-call_hooked('template_header');
+call_hooked('template_header', $nothing);
 ?>
 </head>
 <body>
 <?php
-call_hooked('body_top');
+call_hooked('body_top', $nothing);
 ?>
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">

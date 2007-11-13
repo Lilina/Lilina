@@ -13,6 +13,7 @@
 define('LILINA',1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
+$nothing = array();
 //Require our settings, must be first required file
 require_once('./inc/core/conf.php');
 
@@ -31,7 +32,6 @@ require_once('./inc/core/file-functions.php');
 //Template files, needed for middle-man parsing
 require_once('./inc/core/skin.php');
 //header('Content-type: application/atom+xml; charset=' . $settings['encoding'], true);
-$more = 1;
 echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:lang="<?php echo $settings['lang']; ?>" xml:base="<?php echo $settings['baseurl']; ?>atom.php"<?php call_hooked('atom_ns'); ?>>
 	<title type="text"><?php echo $settings['sitename']; ?></title>
@@ -43,7 +43,7 @@ echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 	<id><?php echo $settings['baseurl'], 'atom.php'; ?></id>
 	<link rel="self" type="application/atom+xml" href="<?php echo $settings['baseurl']; ?>atom.php" />
 
-	<?php call_hooked('atom_head'); ?>
+	<?php call_hooked('atom_head', $nothing); ?>
 	<?php 
 	if(has_items()) {
 		foreach(get_items() as $item) {
@@ -61,7 +61,7 @@ echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 		<summary type="html"><![CDATA[<?php echo $item['summary']; ?>]]></summary>
 		<content type="html" xml:base="<?php echo $item['link']; ?>"><![CDATA[<?php echo $item['summary']; ?>]]></content>
 <?php //atom_enclosure(); ?>
-<?php call_hooked('atom_entry'); ?>
+<?php call_hooked('atom_entry', $item); ?>
 	</entry>
 	<?php
 		}

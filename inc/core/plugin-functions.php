@@ -47,7 +47,7 @@ function get_hooked($hook) {
 * @param string $hook Hook to call plugin functions for
 * @param array &$args Arguments to pass on to plugin functions
 */
-function call_hooked($hook, &$args = array()){
+function call_hooked($hook, &$args){
 	//Get list of plugins hooked here...
 	$plugins = get_hooked($hook);
 	foreach($plugins as $plugin) {

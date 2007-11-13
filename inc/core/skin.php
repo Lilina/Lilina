@@ -73,7 +73,6 @@ function template_synd_links(){
 
 function template_header($return='echo'){
 	global $settings;
-	//call_hooked('template_header');
 	return true;
 }
 
