@@ -30,6 +30,9 @@ function lilina_auth($un, $pw) {
 			$_SESSION['is_logged_in'] = true;
 			return true;
 		}
+		else {
+			return 'error';
+		}
 	}
 	return false;
 }
@@ -56,17 +59,11 @@ function lilina_form($error = false) {
 function lilina_admin_auth($user, $pass) {
 	//Are we logged in?
 	$logged_in	= lilina_auth($user, $pass);
-	//And we got back...
-	if(is_string($logged_in)) {
-		//...A string, an error must have been returned
-		lilina_form($logged_in);
-		return false;
-	}
-	elseif($logged_in === true) {
+	if($logged_in === true) {
 		//...Boolean true, we are logged in
 		return true;
 	}
-	elseif($logged_in === false) {
+	elseif($logged_in === false || $logged_in === 'error') {
 		//...Boolean false, we aren't logged in, let's show the form
 		lilina_form($logged_in);
 		return false;

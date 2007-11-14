@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: CSS Naked Day
-Plugin URI: http://lilina.cubegames.net/extend/plugins/naked
+Plugin URI: http://lilina.cubegames.net/docs/plugins:naked
 Description: Disables style sheets for CSS Naked Day. See the plugin URI for more info.
 Author: Ryan McCue
 Version: 1.0
@@ -51,4 +51,4 @@ else {
 	header('Content-Type: text/css; charset=utf-8');
 	echo '/* Don\'t you know? It\'s CSS Naked Day today. Check it out at http://naked.dustindiaz.com/ */';
 }
-?> 
+?>
