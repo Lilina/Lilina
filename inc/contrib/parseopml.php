@@ -59,7 +59,7 @@ function parse_opml($remote_file) {
 		// Parse each 4KB chunk with the XML parser created above
 		xml_parse($xml_parser, $data, feof($fp))
 			// Handle errors in parsing
-			or die(sprintf("XML error: %s at line %d",  
+			or die(sprintf(_r('XML error: %s at line %d'),  
 				xml_error_string(xml_get_error_code($xml_parser)),  
 				xml_get_current_line_number($xml_parser)));
 

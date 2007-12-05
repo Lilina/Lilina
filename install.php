@@ -54,10 +54,18 @@ else {
 	$page				= false;
 }
 $from					= (isset($_POST['from'])) ? htmlentities($_POST['from']) : false;
-$sitename				= (isset($_POST['sitename'])) ? htmlentities($_POST['sitename']) : false;
-$url					= (isset($_POST['url'])) ? htmlentities($_POST['url']) : false;
-$username				= (isset($_POST['username'])) ? htmlentities($_POST['username']) : false;
-$password				= (isset($_POST['password'])) ? htmlentities($_POST['password']) : false;
+if(!get_magic_quotes_gpc()) {
+	$sitename				= (isset($_POST['sitename'])) ? addslashes(htmlentities($_POST['sitename'])) : false;
+	$url					= (isset($_POST['url'])) ? addslashes(htmlentities($_POST['url'])) : false;
+	$username				= (isset($_POST['username'])) ? addslashes(htmlentities($_POST['username'])) : false;
+	$password				= (isset($_POST['password'])) ? addslashes(htmlentities($_POST['password'])) : false;
+}
+else {
+	$sitename				= (isset($_POST['sitename'])) ? htmlentities($_POST['sitename']) : false;
+	$url					= (isset($_POST['url'])) ? htmlentities($_POST['url']) : false;
+	$username				= (isset($_POST['username'])) ? htmlentities($_POST['username']) : false;
+	$password				= (isset($_POST['password'])) ? htmlentities($_POST['password']) : false;
+}
 $error					= ((!$sitename || !$url || !$username || !$password) && $page && $page != 1) ? true : false;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"

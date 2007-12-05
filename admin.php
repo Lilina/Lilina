@@ -94,6 +94,32 @@ function get_feed_list() {
 	global $data;
 	return $data['feeds'];
 }
+/**
+ * Generates nonce
+ *
+ * Uses the current time
+ * @param string $nonce Supplied nonce
+ * @return bool True if nonce is equal, false if not
+ */
+function generate_nonce() {
+	global $settings;
+	$time = ceil(time() / 43200);
+	return md5($time . $settings['auth']['user'] . $settings['auth']['pass']);
+}
+/**
+ * Checks whether supplied nonce matches current nonce
+ * @param string $nonce Supplied nonce
+ * @return bool True if nonce is equal, false if not
+ */
+function check_nonce($nonce) {
+	global $settings;
+	$time = ceil(time() / 43200);
+	$current_nonce = md5($time . $settings['auth']['user'] . $settings['auth']['pass']);
+	if($nonce !== $current_nonce) {
+		return false;
+	}
+	return true;
+}
 
 //Navigation
 switch($page) {
@@ -255,43 +281,27 @@ header('Content-Type: text/html; charset=utf-8');
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/engine.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/admin.js"></script>
 </head>
-<body>
+<body id="admin-<?php echo $out_page; ?>" class="admin-page">
+<div id="header">
+	<h1 id="sitetitle"><a href="<?php echo $settings['baseurl']; ?>"><?php echo $settings['sitename']; ?></a></h1>
+	<div id="navigation">
+	    <h2>Navigation</h2>
+		<ul>
+			<li class="page_item"><a href="admin.php">Home</a></li>
+			<li class="page_item"><a href="admin.php?page=feeds" title="<?php _e('Add, change and remove feeds'); ?>"><?php _e('Feeds'); ?></a></li>
+			<li class="page_item"><a href="admin.php?page=settings" title="<?php _e('Change settings and run a diagnostic test'); ?>"><?php _e('Settings'); ?></a></li>
+			<li class="page_item seperator"><a href="http://lilina.cubegames.net/docs/<?php _e('en'); ?>:start" title="<?php _e('Documentation and Support on the Wiki');?>"><?php _e('Lilina Documentation'); ?></a></li>
+			<li class="page_item"><a href="http://lilina.cubegames.net/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Lilina Forums'); ?></a></li>
+			<li id="page_item_logout" class="page_item seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
+		</ul>
+	</div>
+</div>
+<div id="main">
 <?php
 if(isset($result) && !empty($result)) {
 	echo '<div id="alert">' . $result . '</div>';
 }
 ?>
-<div id="header">
-	<ul id="admin-tools">
-		<li>
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>"<?php
-			if($page=='home'){
-			echo ' class="current"';
-			}?>><?php _e('Home'); ?></a>
-		</li>
-		<li>
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"<?php
-			if($page=='feeds'){
-			echo ' class="current"';
-			}?>><?php _e('Feeds'); ?></a>
-		</li>
-		<li>
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"<?php
-			if($page=='settings'){
-			echo ' class="current"';
-			}?>><?php _e('Settings');?></a>
-		</li>
-	</ul>
-	<ul id="site-tools">
-		<li>
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout=logout">
-			<?php _e('Logout'); ?></a>
-		</li>
-		<li><a href="index.php">View site &raquo;</a></li>
-	</ul>
-	</div>
-</div>
-<div id="main">
 <?php
 if($action == 'diagnostic') {
 	echo 'Now starting diagnostic test...';

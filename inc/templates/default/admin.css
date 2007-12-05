@@ -1,4 +1,5 @@
 body, html {
+	/*font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;*/
 	font-family: Helvetica, Verdana, Arial, sans-serif;
 	font-size: 0.9em;
 	margin: 0;
@@ -17,41 +18,102 @@ body, html {
 .skip-link:hover {
 	color: #000;
 }
+/*
+Lilina Navigation Styles
+Based on http://htmlpurifier.org/
+Thanks to Edward Z. Yang (Ambush Commander) for giving permission to reuse this
+Mostly Copyright (c) Edward Z. Yang
+*/
+
 #header {
-	background: #dddddc url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAeCAMAAADaS4T1AAAAA3NCSVQICAjb4U/gAAAAPFBMVEXs7Ozr6+vq6urp6eno6Ojn5+fm5ubl5eXk5OTj4+Pi4uLh4eHg4ODf39/e3t7d3d3c3Nzb29va2tr///+KsXasAAAAFHRSTlP/////////////////////////AE9P5xEAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAUdEVYdENyZWF0aW9uIFRpbWUAOC85LzA32WH5FwAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTM5jWRgMAAAAbSURBVAiZY2CAA2YoZINDTjjkgUJ+OBRiEAIAEcQA92wvhr0AAAAASUVORK5CYII=") repeat-x 0 -2px;
-	height: 50px;
+	font-size:0.8em;
 }
-#site-tools {
-	float: right;
-	margin-right: 0.2em;
-	width: 40%;
-	text-align: right;
-	padding-right: 40px;
+#header #sitetitle {
+	background: #4A6282;
+	background-position: right 0.2em;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	color: #FFF;
+	width: 100%;
+	font-size: 1em;
 }
-#site-tools li {
-	display: inline;
-	margin-left: 0.4em;
-}
-/*#navigation ul li a {
-	padding: 0.2em 1em;
-	background-color: #036;
+#header #sitetitle a {
+	margin: 0;
+	padding: 0.5em 5%;
 	color: #FFF;
 	text-decoration: none;
-	float: left;
-	border-right: 1px solid #FFF;
-}*/
-#admin-tools {
-	float: left;
-	margin-left: 0.2em;
-	width: 40%;
+	font-family: Georgia, serif;
+	font-weight: normal;
+	font-variant: small-caps;
+	letter-spacing: 0.2em;
+	font-size: 1.9em;
+	line-height: 2em;
+	border-bottom: none;
 }
-#admin-tools li {
+#header #sitetitle a:hover {
+	color: #E0E2E6;
+	border-bottom: none;
+}
+
+/* navigation */
+
+#navigation {
+	text-align: left;
+	margin: 0;
+	padding: 0 0 1px 0;
+	border: solid #4A6282;
+	border-width: 1px 0;
+	background: #6480A6;
+	width: 100%;
+	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+}
+#navigation h2 {
+	display:none;
+}
+#navigation ul {
+	margin: 0 5%;
+	padding: 0;
+	display: block;
+}
+#navigation li {
 	display: inline;
-	margin-right: 0.4em;
+	line-height: 1.7em;
+	margin: 0 0.6em 0 0;
+	font-size: 1.1em;
 }
+#navigation li a {
+	color: #FFF;
+	text-decoration:none;
+	padding: 0.3em;
+	border-bottom: 2px none;
+}
+#navigation li a:hover {
+	border-bottom: 2px solid #FFF;
+}
+#navigation .current_page_item a{
+	background: #4A6282;
+	font-weight: bold;
+	border-bottom: 2px solid #4A6282;
+}
+#navigation .current_page_item a:hover {
+	border-bottom: #4A6282;
+}
+#navigation .section_page_item a{
+	background: #4A6282;
+	border-bottom: 2px solid #4A6282;
+}
+#navigation .seperator{
+	margin-left: 2em;
+}
+#navigation #page_item_logout {
+	font-weight: bold;
+}
+
 #main {
 	margin: 50px;
 	clear: both;
+	font-size: 1.1em;
 }
 #feeds_list {
 	border-collapse: collapse;

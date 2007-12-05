@@ -33,7 +33,7 @@ $settings['magpie']					= array('cachetime' => 3600);
 
 $settings['baseurl']				= 'http://localhost/';
 //No need to change this really
-$settings['path']					= dirname(dirname(dirname(__FILE__)));
+$settings['path']					= LILINA_PATH;
 //Name of template
 $settings['template']				= 'default';
 $settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];

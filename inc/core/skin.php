@@ -63,10 +63,10 @@ function template_synd_header($return='echo'){
 function template_synd_links(){
 	global $settings;
 	if($settings['output']['rss']){
-		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="' . _r('RSS Feed') . '" title="RSS ' . _r('Feed') . '" /></a> ';
+		echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', _r('RSS Feed') . '" title="', _r('RSS Feed'), '" /></a> ';
 	}
 	if($settings['output']['atom']){
-		echo 'Atom: <a href="rss.php?output=atom"><img src="', template_file_load('feed.png'), '" alt="Atom ' . _r('Feed') . '" title="Atom ' . _r('Feed') . '" /></a>';
+		echo _r('Atom'), ': <a href="rss.php?output=atom"><img src="', template_file_load('feed.png'), '" alt="', _r('Atom Feed'), '" title="', _r('Atom Feed'), '" /></a>';
 	}
 	return true;
 }
@@ -145,14 +145,9 @@ function template_end_errors($return='echo'){
 function template_footer(){
 	global $timer_start;
 	global $lilina;
-		echo '<p>' . _r('Powered by') . ' <a href="http://lilina.cubegames.net/"><img src="', template_file_load('logo.jpg'), '" alt="Lilina News Aggregator" title="Lilina News Aggregator" /></a> v'
-		. $lilina['core-sys']['version']
-		. '<br />' . _r('This page was last generated on') . ' '
-		. date('Y-m-d \a\t g:i a')
-		. ' ' . _r('and took') . ' '
-		. lilina_timer_end($timer_start)
-		. ' ' . _r('seconds') . '</p>';
-		return true;
+	echo '<p>', sprintf(_r('Powered by <a href="http://lilina.cubegames.net/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
+	'<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start));
+	return true;
 }
 
 function template_path(){
@@ -258,17 +253,17 @@ function get_feeds() {
  */
 
 if(!function_exists('template_load')) {
+	global $templates;
+	$templates['default']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php';
+	$templates['rss']		= LILINA_INCPATH . '/templates/' . $settings['template'] . '/rss.php';
+	$templates['mobile']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/mobile.php';
 	/**
 	* Load the current template
 	*
 	* @param string $type Type of template; rss, default, mobile
 	*/
 	function template_load($type='default') {
-		global $settings;
-		$templates	= array();
-		$templates['default']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/index.php';
-		$templates['rss']		= LILINA_INCPATH . '/templates/' . $settings['template'] . '/rss.php';
-		$templates['mobile']	= LILINA_INCPATH . '/templates/' . $settings['template'] . '/mobile.php';
+		global $settings, $templates;
 		if(file_exists($templates[$type])) {
 			require_once($templates[$type]);
 		}

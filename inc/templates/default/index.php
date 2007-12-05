@@ -23,11 +23,6 @@ template_synd_header();
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo template_file_load('style.css'); ?>" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script language="JavaScript" type="text/javascript"><!--
-	/* var showDetails = <?php echo (isset($_COOKIE['showDetails']) && ($_COOKIE['showDetails'] == 'true')) ? 'true' : 'false'; ?>;
-	//var markID = '<?php //echo $_COOKIE['mark']; ?>' ; */
-//-->
-</script>
 <script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
 <?php
 if(file_exists(template_file_load('custom.js'))) {
@@ -42,7 +37,7 @@ else {
 call_hooked('template_header', $nothing);
 ?>
 </head>
-<body>
+<body id="river-<?php echo $showtime; ?>" class="river-page">
 <?php
 call_hooked('body_top', $nothing);
 ?>
@@ -104,7 +99,7 @@ if(has_items()) {
 			<div class="item c2" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php echo $item['time'];?></span>
 				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php _e('Post from'); ?> <?php echo $item['channel_title'];?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php printf(_r('Post from %s'), $item['channel_title']);?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<?php
 				if(!empty($item['enclosures'])){
 					_e('Podcast or Videocast Available');
@@ -158,7 +153,7 @@ else {
 	?></div>
 <div id="footer">
 <?php template_footer(); ?><br />
-<img src="<?php echo template_file_load('magpie.png'); ?>" alt="Uses MagpieRSS" /><img src="<?php echo template_file_load('/oss.png'); ?>" alt="Licensed under the GNU General Public License" /><img src="<?php echo template_file_load('php.png'); ?>" alt="Powered by PHP: Hypertext Processor" />
+<img src="<?php echo template_file_load('magpie.png'); ?>" alt="Uses MagpieRSS" /><img src="<?php echo template_file_load('oss.png'); ?>" alt="Licensed under the GNU General Public License" /><img src="<?php echo template_file_load('php.png'); ?>" alt="Powered by PHP: Hypertext Processor" />
 </div>
 </body>
 </html>
