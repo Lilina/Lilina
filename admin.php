@@ -221,7 +221,7 @@ function add_feed($url, $name = '', $original_url = false) {
 				if($new_result) { return true; }
 			}
 			//If we're still going, it failed
-			add_notice(printf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed.'), $url) . '<br />');
+			add_notice(sprintf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed.'), $url) . '<br />');
 			add_tech_notice(_r('Magpie said: ') . magpie_error());
 			return false;
 		}
