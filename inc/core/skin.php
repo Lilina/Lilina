@@ -35,7 +35,7 @@ function template_synd_header($return='echo'){
 		echo '<link rel="alternate" type="application/rss+xml" title="' . _r('RSS Feed') . '" href="rss.php" />';
 	}
 	if($settings['output']['atom']){
-		echo '<link rel="alternate" type="application/rss+xml" title="' . _r('Atom Feed') . '" href="rss.php?output=atom" />';
+		echo '<link rel="alternate" type="application/rss+xml" title="' . _r('Atom Feed') . '" href="atom.php" />';
 	}
 	return true;
 }
@@ -46,7 +46,7 @@ function template_synd_links(){
 		echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', _r('RSS Feed') . '" title="', _r('RSS Feed'), '" /></a> ';
 	}
 	if($settings['output']['atom']){
-		echo _r('Atom'), ': <a href="rss.php?output=atom"><img src="', template_file_load('feed.png'), '" alt="', _r('Atom Feed'), '" title="', _r('Atom Feed'), '" /></a>';
+		echo _r('Atom'), ': <a href="atom.php"><img src="', template_file_load('feed.png'), '" alt="', _r('Atom Feed'), '" title="', _r('Atom Feed'), '" /></a>';
 	}
 	return true;
 }

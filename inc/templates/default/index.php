@@ -46,13 +46,8 @@ call_hooked('body_top', $nothing);
 	<img src="<?php echo template_file_load('logo.jpg');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
 	<?php 
-	if($settings['output']['rss']){
-		echo 'RSS: <a href="rss.php"><img src="', template_file_load('feed.png') . '" alt="', _r('RSS Feed'), '" title="', _r('RSS Feed'), '" /></a> ';
-	}
-	if($settings['output']['atom']){
-		echo 'Atom: <a href="rss.php?output=atom"><img src="', template_file_load('feed.png') . '" alt="' . _r('Atom Feed') . '" title="' . _r('Atom Feed') . '" /></a>';
-	}
-	echo '&nbsp;&nbsp; |';
+	if(template_synd_links())
+		echo ' | ';
 	?>
 	<a id="expandall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_out.png');?>" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a> |
 	<a id="collapseall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a> |
