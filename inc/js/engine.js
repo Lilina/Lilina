@@ -25,4 +25,9 @@ $(document).ready(function() {
 		$(".title").next().next().slideUp().parent().addClass("c1").removeClass("c2");
 		return false;
 	});
+	$(".river-page .hide_feed").click(function(){
+		whichFeed = $(this).children("span").attr("class");
+		$("." + whichFeed).slideUp();
+		return false;
+	});
 });

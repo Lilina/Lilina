@@ -36,7 +36,6 @@ $settings['baseurl']				= 'http://localhost/';
 $settings['path']					= LILINA_PATH;
 //Name of template
 $settings['template']				= 'default';
-$settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];
 $settings['sitename']				= 'Lilina News Aggregator';
 $settings['auth']					= array('user' => 'username', 'pass' => 'password');
 $settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
@@ -63,7 +62,6 @@ $settings['debug']					= 'false';
 require_once(LILINA_PATH . '/conf/settings.php') ;
 
 //Settings that use other settings variables, can not be overriden
-$settings['template_path']			= $settings['baseurl'] . 'inc/templates/' . $settings['template'];
 $settings['cachedir']				= $settings['path'] . '/cache/';
 $settings['files']					= array(
 											'feeds'		=> $settings['path'] . '/conf/feeds.data',

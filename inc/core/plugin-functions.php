@@ -176,12 +176,12 @@ function lilina_plugins_list($directory){
 					//Found a directory, let's see if a plugin exists in it,
 					//with the same name as the directory
 					if(file_exists($directory . '/' . $file . '/' . $file . '.php')) {
-						$plugin_list[] = $file . '/' . $file;
+						$plugin_list[] = $directory . '/' . $file . '/' . $file . '.php';
 					}
 				} else {
 					//Only add plugin files
 					if(strpos($file,'.php') !== FALSE) {
-						$plugin_list[] = $file;
+						$plugin_list[] = $directory . '/' . $file;
 					}
 				}
 			}

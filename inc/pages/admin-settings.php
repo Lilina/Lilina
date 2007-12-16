@@ -10,38 +10,58 @@ See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
 ?>
-<h1>Settings</h1>
-<?php
-//Defined in admin panel
-$list			= '<table id="feeds_list">
-<tr class="row_header row">
-<th class="col_even col">Setting Name</th>
-<th class="col_odd col">Setting Value</th>
-</tr>';
-$num			= 'odd';
-//Uses a for loop instead of a foreach, so we can
-//get the current id
-$j	= 0;
-foreach($settings as $key => $value) {
-	$list		.= '<tr class="row_' . $num . ' row">
-	<td class="col_even col">'.$key.'</td>
-	<td class="col_odd col">'.$value.'</td>
-	</tr>';
-	if($num=='odd'){
-		$num	= 'even';
-	}
-	else {
-		$num	= 'odd';
-	}
-	++$j;
-}
-$list .= '</table>';
-?>
-<h2>Current Settings</h2>
-<?php
-echo $list;
-?>
-<h2>Troubleshooting</h2>
+<h2><?php _e('Settings'); ?></h2>
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
+	<fieldset id="general">
+		<legend><?php _e('General Settings'); ?></legend>
+		<p class="option">
+			<label for="sitename"><?php _e('Site name'); ?>:</label>
+			<input type="text" name="sitename" id="sitename" value="<?php echo $settings['sitename']; ?>" />
+		</p>
+		<p class="option">
+			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
+			<input type="text" name="baseurl" id="baseurl" value="<?php echo $settings['baseurl']; ?>" />
+		</p>
+	</fieldset>
+	<fieldset id="views">
+		<legend><?php _e('Viewing Settings'); ?></legend>
+		<p class="option">
+			<label for="template"><?php _e('Template'); ?>:</label>
+			<select id="template" name="template">
+				<?php
+				foreach(available_templates() as $template) {
+					echo '<option value="', $template['name'];
+					if($template['name'] === $settings['template']) {
+						echo '" selected="selected';
+					}
+					echo '">', $template['real_name'], '</option>';
+				}
+				?>
+			</select>
+		</p>
+		<p class="option">
+			<label for="lang">Language</label>
+			<select id="lang" name="lang">
+				<?php
+				echo '<option';
+				if('en' == $settings['lang']) {
+					echo ' selected="selected"';
+				}
+				echo ' value="en">English (default)</option>';
+				foreach(available_locales() as $locale) {
+					echo '<option';
+					if($locale['name'] === $settings['lang']) {
+						echo ' selected="selected"';
+					}
+					echo '>', $locale['name'], '</option>';
+				}
+				?>
+			</select>
+		</p>
+	</fieldset>
+	<input type="submit" value="<?php _e('Save Settings'); echo ' (Not yet functional)'; ?>" disabled="disabled" />
+</form>
+<h3>Troubleshooting</h3>
 <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings&amp;action=diagnostic">Run diagnostic test</a>
-<h2>Reset</h2>
+<h3>Reset</h3>
 <p>This will delete your settings.php and you will need to run install.php again. <a href="<?php echo $_SERVER['PHP_SELF'];?>?page=settings&amp;action=reset">Proceed?</a></p>

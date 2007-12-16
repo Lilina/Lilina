@@ -55,13 +55,13 @@ function parse_opml($remote_file) {
 	$fp = fopen($remote_file,'r');
 
 	// Read the XML file 4KB at a time
-	while ($data = fread($fp, 4096))
+	while ($data = fread($fp, 4096)) {
 		// Parse each 4KB chunk with the XML parser created above
-		xml_parse($xml_parser, $data, feof($fp))
+		if(!xml_parse($xml_parser, $data, feof($fp))) {
 			// Handle errors in parsing
-			or die(sprintf(_r('XML error: %s at line %d'),  
-				xml_error_string(xml_get_error_code($xml_parser)),  
-				xml_get_current_line_number($xml_parser)));
+			return sprintf(_r('XML error: %s at line %d'), xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser));
+		}
+	}
 
 	// Free up memory used by the XML parser
 	xml_parser_free($xml_parser);

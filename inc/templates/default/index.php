@@ -86,14 +86,14 @@ if(has_items()) {
 	?>
 	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php echo $item['date'];?></h1>
 	<div id="date<?php echo $current_date;?>">
-		<div class="feed" id="feed<?php echo md5($item['channel_link']), $current_date;?>">
+		<div class="feed feed-<?php echo md5($item['channel_link']); ?>">
 		<?php
 		}
 		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
 			if(isset($item['old_channel'])) {
 				echo '		</div>';
 			}
-			echo '		<div class="feed" id="feed', md5($item['channel_link']), $current_date, '">';
+			echo '		<div class="feed feed-', md5($item['channel_link']), '">';
 		}
 		?>
 			<div class="item c2" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
@@ -135,7 +135,12 @@ else {
 	<ul><?php
 		if(has_feeds()) {
 			foreach(get_feeds() as $feed) { ?>
-		<li><a href="<?php echo $feed['link']; ?>"><img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />&nbsp; <?php echo $feed['name']; ?></a> <a href="<?php echo $feed['feed']; ?>">[Feed]</a></li><?php
+		<li>
+			<a href="<?php echo $feed['link']; ?>"><img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />
+			<?php echo $feed['name']; ?></a>
+			[<a href="<?php echo $feed['feed']; ?>"><?php _e('Feed');?></a>]
+			<a href="javascript:void(0);" class="hide_feed"><span class="feed-<?php echo md5(htmlentities($feed['link'])); ?>">(<?php _e('Hide items from this channel'); ?>)</span></a>
+		</li><?php
 			}
 		}
 		else {

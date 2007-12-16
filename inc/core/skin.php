@@ -1,27 +1,7 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		skin.php
-Purpose:	Templating functions
-Notes:		CAUTION: HERE BE DRAGONS!
-			$return_type can be either
-			echo (default) or var for an array
-Functions:	template_sitename( $return_type );
-			template_siteurl( $return_type );
-			template_synd_header( $return_type );
-			template_synd_links( $return_type );
-			template_header( $return_type );
-			template_opml( $return_type );
-			template_output( $return_type );
-			template_source_list( $return_type );
-			template_end_errors( $return_type );
-			template_footer( $return_type );
-			template_path( $return_type );
-			template_times( $return_type );
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Templating functions
+ */
 defined('LILINA') or die('Restricted access');
 
 //Define all the functions for our skins
@@ -147,12 +127,8 @@ function template_footer(){
 	global $lilina;
 	echo '<p>', sprintf(_r('Powered by <a href="http://lilina.cubegames.net/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
 	'<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start));
+	call_hooked('template_footer', $timer_start);
 	return true;
-}
-
-function template_path(){
-	global $settings;
-	return $settings['template_path'];
 }
 
 function template_times(){
@@ -283,7 +259,7 @@ if(!function_exists('template_file_load')) {
 	 */
 	function template_file_load($file) {
 		global $settings;
-		return $settings['template_path'] . '/' . $file;
+		return $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file;
 	}
 }
 ?>

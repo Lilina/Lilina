@@ -10,9 +10,9 @@ See LICENSE.txt to view the license
 ******************************************/
 defined('LILINA') or die('Restricted access');
 ?>
-<h1>Admin Panel</h1>
+<h2>Admin Panel</h2>
 <div class="home_container" id="contain_feeds">
-	<h2>Current feeds</h2>
+	<h3>Current feeds</h3>
 	<ul>
 	<?php
 	$feed_list = get_feed_list();
@@ -37,5 +37,5 @@ defined('LILINA') or die('Restricted access');
 </div>
 
 <div class="home_container" id="contain_settings">
-	<h2><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Change your settings</a></h3>
+	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Change your settings</a></h3>
 </div>

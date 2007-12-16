@@ -15,10 +15,11 @@ if($_GET['action'] !== 'style') {
 	 * Replaces built in stylesheet loader
 	 */
 	function stylesheet_load($type='default'){
+		global $settings;
 		if(!is_naked_day()) {
-			return $settings['template_path'] . '/templates/' . $settings['template'] . '/' . $file;
+			return $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file;
 		}
-		return LILINA_INCPATH . '/plugins/example.php?action=style';
+		return $settings['baseurl'] . 'inc/plugins/example.php?action=style';
 	}
 	/**
 	 * From the CSS Naked Day website

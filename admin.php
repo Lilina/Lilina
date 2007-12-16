@@ -22,29 +22,29 @@ global $settings;
 $authed		= false;
 $result		= '';
 $page		= (isset($_GET['page'])? $_GET['page'] : '');
-$page		= htmlentities($page);
+$page		= htmlspecialchars($page);
 $action		= (isset($_GET['action'])? $_GET['action'] : '');
-$action		= htmlentities($action);
-$product	= (isset($_GET['product'])? $_GET['product'] : '');
-$product	= htmlentities($product);
+$action		= htmlspecialchars($action);
 
 //Add variables
 $add_name	= (isset($_GET['add_name'])? $_GET['add_name'] : '');
-$add_name	= htmlentities($add_name);
+$add_name	= htmlspecialchars($add_name);
 $add_url	= (isset($_GET['add_url'])? $_GET['add_url'] : '');
-$add_url	= htmlentities($add_url);
 
 //Change variables
 $change_name	= (isset($_GET['change_name']))? $_GET['change_name'] : '';
-$change_name	= htmlentities($change_name);
+$change_name	= htmlspecialchars($change_name);
 $change_url	= (isset($_GET['change_url']))? $_GET['change_url'] : '';
-$change_url	= htmlentities($change_url);
 $change_id	= (isset($_GET['change_id']))? $_GET['change_id'] : '';
-$change_id	= htmlentities($change_id);
+$change_id	= htmlspecialchars($change_id);
 
 //Remove variables
 $remove_id	= (isset($_GET['remove']))? $_GET['remove'] : '';
-$remove_id	= htmlentities($remove_id);
+$remove_id	= htmlspecialchars($remove_id);
+
+//Import variable
+$import_url	= (isset($_GET['import_url']))? $_GET['import_url'] : '';
+$import_url	= htmlspecialchars($import_url);
 
 //Require our settings, must be before $data
 require_once(LILINA_INCPATH . '/core/conf.php');
@@ -55,7 +55,7 @@ require_once(LILINA_INCPATH . '/core/l10n.php');
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
 //Old functions, not yet migrated
-//require_once(LILINA_INCPATH . '/core/lib.php');
+require_once(LILINA_INCPATH . '/core/lib.php');
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
 
@@ -64,6 +64,8 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 //Parse OPML files
 require_once(LILINA_INCPATH . '/contrib/parseopml.php');
+
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Authentication Section
 //Start the session
@@ -121,6 +123,196 @@ function check_nonce($nonce) {
 	return true;
 }
 
+function available_templates() {
+	//Make sure we open it correctly
+	if ($handle = opendir(LILINA_INCPATH . '/templates/')) {
+		//Go through all entries
+		while (false !== ($dir = readdir($handle))) {
+			// just skip the reference to current and parent directory
+			if ($dir != '.' && $dir != '..') {
+				if (is_dir(LILINA_INCPATH . '/templates/' . $dir)) {
+					if(file_exists(LILINA_INCPATH . '/templates/' . $dir . '/style.css')) {
+						$list[] = LILINA_INCPATH . '/templates/' . $dir . '/style.css';
+					}
+				} 
+			}
+		}
+		// ALWAYS remember to close what you opened
+		closedir($handle);
+	}
+	foreach($list as $the_template) {
+		$temp_data = implode('', file($the_template));
+		preg_match("|Name:(.*)|i", $temp_data, $name);
+		preg_match("|Real Name:(.*)|i", $temp_data, $real_name);
+		preg_match("|Description:(.*)|i", $temp_data, $desc);
+		$templates[]	= array(
+								'name' => trim($name[1]),
+								'real_name' => trim($real_name[1]),
+								'description' => trim($desc[1])
+								);
+	}
+	return $templates;
+}
+
+function available_locales() {
+	//Make sure we open it correctly
+	if ($handle = opendir(LILINA_INCPATH . '/locales/')) {
+		//Go through all entries
+		while (false !== ($file = readdir($handle))) {
+			// just skip the reference to current and parent directory
+			if ($file != '.' && $file != '..') {
+				if (!is_dir(LILINA_INCPATH . '/locales/' . $file)) {
+					//Only add plugin files
+					if(strpos($file,'.mo') !== FALSE) {
+						$locale_list[] = $file;
+					}
+				}
+			}
+		}
+		// ALWAYS remember to close what you opened
+		closedir($handle);
+	}
+	foreach($locale_list as $locale) {
+	echo $locale;
+		//Quick and dirty name
+		$locales[]	= array('name' => str_replace('.mo', '', $locale),
+							'file' => $locale);
+	}
+	return $locales;
+}
+
+/**
+ * Adds a notice to the top of the page
+ *
+ * Concatenates the string as a paragraph to the global $result variable
+ * @param string $message Notice to add
+ */
+function add_notice($message) {
+	global $result;
+	$result .= "<p>$message</p>\n";
+}
+
+/**
+ * Adds a technical notice to the top of the page
+ *
+ * Concatenates the string as a paragraph to the global $result variable
+ * @param string $message Notice to add
+ */
+function add_tech_notice($message) {
+	global $result;
+	$result .= '<p class="tech_notice"><span class="actual_notice">' . $message . '</span></p>' . "\n";
+}
+
+/**
+ *
+ *
+ */
+function add_feed($url, $name = '', $original_url = false) {
+	global $settings, $data;
+	//Fix users' kludges; They'll thank us for it
+	$url	= str_replace(array('feed://http://', 'feed://http//', 'feed://', 'feed:http://', 'feed:'), 'http://', $url);
+	$feed_info = fetch_rss($url);
+	if(!$feed_info && !$original_url) {
+		//Try again, but autodiscover
+		$auto = lilina_get_rss($url);
+		if(is_array($auto)) {
+			foreach($auto as $new_feed) {
+				$new_result = add_feed($new_feed, $name, $url);
+				if($new_result) { return true; }
+			}
+			//If we're still going, it failed
+			add_notice(printf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed.'), $url) . '<br />');
+			add_tech_notice(_r('Magpie said: ') . magpie_error());
+			return false;
+		}
+		else {
+			//No feeds autodiscovered;
+			add_notice(sprintf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.'), $url));
+			return false;
+		}
+	}
+	elseif(!$feed_info && is_string($original_url)) {
+		//May be more feeds to check, don't print an error; The original does that for us
+		return false;
+	}
+	if(empty($name)) {
+		//Get it from the feed
+		$name = $feed_info->channel['title'];
+	}
+	if(empty($url)) {
+		//Now this we do care about
+		add_notice(_r('Couldn\'t add feed: No feed URL supplied'));
+		return false;
+	}
+	$feed_num	= count($data['feeds']);
+	$data['feeds'][$feed_num]['feed']	= $url;
+	$data['feeds'][$feed_num]['name']	= $name;
+	$data['feeds'][$feed_num]['cat']	= 'default'; //$add_category;
+	$sdata	= base64_encode(serialize($data)) ;
+	$fp		= fopen($settings['files']['feeds'],'w') ;
+	if(!$fp) {
+		add_notice(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), $settings['files']['feeds']));
+		return false;
+	}
+	fputs($fp,$sdata) ;
+	fclose($fp) ;
+	add_notice(sprintf(_r('Added feed "%1$s"'), $name));
+	return true;
+}
+
+/**
+ *
+ */
+function import_opml($opml_url) {
+	if(!empty($opml_url)) {
+		$imported_feeds = parse_opml($opml_url);
+		if(is_array($imported_feeds)) {
+			$feeds_num = 0;
+			foreach($imported_feeds as $imported_feed) {
+				if($imported_feed['TYPE'] != 'rss' && $imported_feed['TYPE'] != 'atom') {
+					continue;
+				}
+				//Make sure we blank it
+				$this_feed = array('url' => '', 'title' => '');
+				if(!isset($imported_feed['XMLURL']) || empty($imported_feed['XMLURL'])) {
+					if(!isset($imported_feed['HTMLURL']) || empty($imported_feed['HTMLURL'])) {
+						//Can't live without a URL
+						continue;
+					}
+					else {
+						$this_feed['url'] = $imported_feed['HTMLURL'];
+					}
+				}
+				else {
+					$this_feed['url'] = $imported_feed['XMLURL'];
+				}
+				if(!isset($imported_feed['TEXT']) || empty($imported_feed['TEXT'])) {
+					if(!isset($imported_feed['TITLE']) || empty($imported_feed['TITLE'])) {
+						//We'll need to get it via Magpie later
+						$this_feed['title'] = '';
+					}
+					else {
+						$this_feed['title'] = $imported_feed['TITLE'];
+					}
+				}
+				else {
+					$this_feed['title'] = $imported_feed['TEXT'];
+				}
+				add_feed($this_feed['url'], $this_feed['title']);
+				++$feeds_num;
+			}
+			add_notice(sprintf(_r('Added %d feed(s)'), $feeds_num));
+		}
+		else {
+			add_notice(_r('The OPML file could not be read.'));
+			add_tech_notice(_r('The parser said: ') . $imported_feeds);
+		}
+	}
+	else {
+		add_notice(sprintf(_r('No OPML specified')));
+	}
+}
+
 //Navigation
 switch($page) {
 	case 'feeds': 
@@ -148,92 +340,24 @@ switch($action){
 		if ($handle = @opendir($cachedir)) {
 			while (false !== ($file = @readdir($handle))) {
 				if ($file != '.' and $file != '..') {
-					//$result .= $file . ' deleted.<br />';
 					@unlink($cachedir . '/' . $file);
 				}
 			}
 			@closedir($handle);
 		}
 		else {
-			$result		.= sprintf(_r('Error deleting files in %s - Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.'), $settings['cachedir']) . '<br />';
+			add_notice(sprintf(_r('Error deleting files in %s'), $settings['cachedir']));
+			add_tech_notice(_r('Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.'));
 		}
 		if($times_file = @fopen($settings['files']['times'], 'w')) fclose($times_file);
 		else {
-			$result		.= sprintf(_r('Error clearing times from %s - Make sure the file is writable and PHP/Apache has the correct permissions to modify it.'), $settings['files']['times']) . '<br />';
+			add_notice(sprintf(_r('Error clearing times from %s'), $settings['files']['times']));
+			add_tech_notice(_r('Make sure the file is writable and PHP/Apache has the correct permissions to modify it.'));
 		}
-		$result			.= _r('Successfully cleared cache!') . '<br />';
+		add_notice(_r('Successfully cleared cache!'));
 	break;
 	case 'add':
-		/*$data = array(
-						'feeds' => array(
-										array(
-											'feed'	=> 'http://liberta-project.net/rss.xml',
-											'name'	=> 'Liberta Project',
-											'cat'	=> 'default'),
-										array(
-											'feed'	=> 'http://cubegames.net/wordpress/feed/',
-											'name'	=> 'Cube Games Blog',
-											'cat'	=> 'default'),
-										array(
-											'feed'	=> 'http://lilina.cubegames.net/feed/',
-											'name'	=> 'Lilina News Aggregator Blog',
-											'cat'	=> 'default')
-									)
-					);*/
-		if(strpos($add_url, 'feed://') === 0) {
-			$add_url	= str_replace('feed://', 'http://', $add_url);
-		}
-		elseif(strpos($add_url, 'feed:') === 0) {
-			$add_url	= str_replace('feed:', '', $add_url);
-		}
-		else {
-			$file	= fopen($add_url, 'r');
-			if(!$file) {
-				$result	.= _r('Could not retrieve feed. Check that this server can connect to the remote server');
-				break;
-			}
-			else {
-				$meta	= stream_get_meta_data($file);
-				foreach($meta['wrapper_data'] as $the_meta) {
-					$content_type	= eregi('^Content-Type: [^;];', $the_meta);
-					if($content_type) {
-						//Insert RSS or Atom types here
-						switch($content_type) {
-							case 'text/xml':
-							case 'application/xml':
-							case 'application/rss+xml':
-							case 'application/atom+xml':
-								break;
-							default:
-								$add_url = lilina_get_rss($add_url);
-								break;
-						}
-					}
-				}
-			}
-			fclose($file);
-		}
-		if(empty($add_category)) {
-			$category	= 'default';
-		}
-		if(empty($add_name)) {
-			//We don't care, we'll get it from the feed
-		}
-		if(empty($add_url)) {
-			//Now this we do care about
-			$result .= _r('Couldn\'t add feed: No feed URL supplied');
-			break;
-		}
-		$feed_num	= count($data['feeds']);
-		$data['feeds'][$feed_num]['feed']	= $add_url;
-		$data['feeds'][$feed_num]['name']	= $add_name;
-		$data['feeds'][$feed_num]['cat']	= 'default'; //$add_category;
-		$sdata	= base64_encode(serialize($data)) ;
-		$fp		= fopen($settings['files']['feeds'],'w') ;
-		if(!$fp) { echo 'Error';}
-		fputs($fp,$sdata) ;
-		fclose($fp) ;
-		$result	.= sprintf(_r('Added feed %s with URL as %s'), $add_name, htmlentities($add_url)) . '<br />';
+		add_feed($add_url, $add_name);
 	break;
 	case 'remove':
 		unset($data['feeds'][$remove_id]);
@@ -243,23 +367,25 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= _r('Removed feed') . '<br />';
+		add_notice(_r('Removed feed'));
 	break;
 	case 'change':
 		$data['feeds'][$change_id]['feed'] = $change_url;
-		$data['feeds'][$change_id]['name'] = $change_name;
+		if(!empty($change_name)) {
+			$data['feeds'][$change_id]['name'] = $change_name;
+		}
+		else {
+			//Need to have a similar function to add_feed()
+		}
 		$sdata	= base64_encode(serialize($data)) ;
 		$fp		= fopen($settings['files']['feeds'],'w') ;
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		$result	.= sprintf(_r('Changed feed #%d with URL as %s'), $change_id, htmlentities($change_url)) . '<br />';
+		add_notice(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
 	break;
 	case 'import':
-		$imported_feeds = parse_opml($add_url);
-		foreach($imported_feeds as $imported_feed) {
-			
-		}
+		import_opml($import_url);
 	break;
 	case 'reset':
 		unlink(LILINA_PATH . '/conf/settings.php');
@@ -276,9 +402,8 @@ header('Content-Type: text/html; charset=utf-8');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/jquery-1.2.1.pack.js"></script>
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/engine.js"></script>
+<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
 <script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/admin.js"></script>
 </head>
 <body id="admin-<?php echo $out_page; ?>" class="admin-page">
@@ -299,7 +424,7 @@ header('Content-Type: text/html; charset=utf-8');
 <div id="main">
 <?php
 if(isset($result) && !empty($result)) {
-	echo '<div id="alert">' . $result . '</div>';
+	echo '<div id="alert" class="fade">' . $result . '</div>';
 }
 ?>
 <?php
@@ -371,5 +496,7 @@ else {
 }
 ?>
 </div>
+<p id="footer"><?php printf(_r('Powered by <a href="http://lilina.cubegames.net/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']); 
+	call_hooked('admin_footer', $out_page); ?> | <a href="http://lilina.cubegames.net/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
 </body>
 </html>

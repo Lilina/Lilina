@@ -244,6 +244,8 @@ function _r($text, $domain='default') {
 function _n($single, $plural, $number, $domain='default') {
 	_dngettext($domain, $single, $plural, $number);
 }
+/*
+Now declared in admin.php
 
 function available_locales() {
 	$available_locales = array();
@@ -272,7 +274,7 @@ function available_locales() {
 		closedir($handle);
 	}
 	return $available_locales;
-}
+}*/
 
 function locale_available($locale) {
 	return @file_exists(LILINA_INCPATH . '/locales/' . $locale . '.mo');

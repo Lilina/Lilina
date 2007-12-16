@@ -75,7 +75,7 @@ function lilina_get_rss($location) {
     if(!$location) {
         return false;
     }
-	$html = file_get_contents($location);
+	$html = @file_get_contents($location);
 	if(!$html) {
 		return false;
 	}
@@ -94,19 +94,19 @@ function lilina_get_rss($location) {
 				$final_link[strtolower($att[0])] = $att[1];
 			}
 		}
-		$final_links[$n] = $final_link;
+		$final_links[$n] = str_replace('"', '', $final_link);
 	}
 	//now figure out which one points to the RSS file
 	for($n=0; $n<$link_count; $n++){
 		if(strtolower($final_links[$n]['rel']) == 'alternate'){
-			if(strtolower($final_links[$n]['type']) == 'application/rss+xml'){
+			if(strtolower($final_links[$n]['type']) == 'application/rss+xml' || strtolower($final_links[$n]['type']) == 'application/atom+xml'){
 				$href = $final_links[$n]['href'];
 			}
-			if(!$href and strtolower($final_links[$n]['type']) == 'text/xml'){
+			if(!isset($href) && strtolower($final_links[$n]['type']) == 'text/xml'){
 				//kludge to make the first version of this still work
 				$href = $final_links[$n]['href'];
 			}
-			if($href){
+			if(!empty($href)){
 				if(strstr($href, "http://") !== false) { //if it's absolute
 					$full_url[] = $href;
 				}

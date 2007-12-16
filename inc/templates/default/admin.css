@@ -1,22 +1,13 @@
+/**
+ * Cast: (in order of appearance)
+ */
+
 body, html {
 	/*font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;*/
 	font-family: Helvetica, Verdana, Arial, sans-serif;
 	font-size: 0.9em;
 	margin: 0;
-}
-#alert {
-	border:1px solid #e7dc2b;
-	background: #fff888;
-}
-.skip-link {
-	color: #FFF;
-	display: block;
-	width: 100%;
-	text-align: center;
-	clear: both;
-}
-.skip-link:hover {
-	color: #000;
+	background: #FFF url("admin-background.png");
 }
 /*
 Lilina Navigation Styles
@@ -110,31 +101,93 @@ Mostly Copyright (c) Edward Z. Yang
 	font-weight: bold;
 }
 
+#alert {
+	border: 1px solid #2580B2;
+	background: #CFEBF7;
+	padding: 1.5em;
+}
+#alert p {
+	margin: 0.1em;
+	padding: 0;
+}
+
 #main {
-	margin: 50px;
+	margin: 15px 5%;
+	padding: 1em;
 	clear: both;
 	font-size: 1.1em;
+	background-color: #FFF;
+	border: 1px solid #CCC;
 }
+
+#main h2 {
+	border-bottom: 3px double #CCC;
+}
+#main h3 {
+	border-bottom: 1px solid #CCC;
+}
+
+/* Table */
 #feeds_list {
 	border-collapse: collapse;
 	border-spacing: 1px;
+	width: 100%;
 }
-#feeds_list td, #feeds_list th {
-	padding:6px 6px;
-	border-bottom:solid 1px #eee;
-	vertical-align:top;
+/* Section */
+#feeds_list thead {
+	background: #DFDFDF;
 }
-#feeds_list .col {
-	padding-right: 2em;
-	font-size: 0.8em;
-}
-#feeds_list .row_odd {
-	background:#edf3fe;
-}
-#feeds_list tr:hover a {
+/* Rows */
+#feeds_list tbody tr:hover a {
 	color: #ffffff;
 }
-#feeds_list tr:hover, #feeds_list tr.row_odd:hover {
+#feeds_list tbody tr:hover, #feeds_list tbody tr.alt:hover {
 	background-color: #3d80df;
 	color: #ffffff;
+}
+#feeds_list .alt {
+	background:#edf3fe;
+}
+/* Columns*/
+#feeds_list .change-col, #feeds_list .remove-col {
+	text-align: center;
+}
+/* Cells */
+#feeds_list th, #feeds_list td {
+	text-align: left;
+	border-bottom:solid 1px #eee;
+	vertical-align:top;
+	padding: 5px 6px;
+	font-size: 0.8em;
+}
+
+
+fieldset {
+	border: 1px solid #CCC;
+	margin: 1em;
+}
+.option {
+	clear: both;
+	padding-bottom: 1em;
+}
+.option label {
+	display: block;
+	float: left;
+	width: 30%;
+	text-align: right;
+	margin-right: 2em;
+}
+.option input {
+	width: 14em;
+}
+.option span.sidenote {
+	float: right;
+	width: 300px;
+	border: 1px solid #CCC;
+	padding: 0.4em;
+	margin-left: 10px;
+}
+
+#footer {
+	margin: 15px 5%;
 }
