@@ -11,6 +11,9 @@
 //Stop hacking attempts
 defined('LILINA') or die('Restricted access');
 
+/**
+ * @todo Document
+ */
 function lilina_check_installed() {
 	if(@file_exists('./conf/settings.php')) {
 		return true;

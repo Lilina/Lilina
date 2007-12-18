@@ -13,8 +13,8 @@ defined('LILINA') or die('Restricted access');
 /**
 * Check actual authentication supplied
 *
-* Checks the supplied username and password to the username and password stored in
-* settings.php; Takes a MD5 hash of the password as of rev 66
+* Checks the supplied username and MD5'd password to the username and password stored in
+* settings.php
 * @param string $un Supplied username
 * @param string $pw Supplied password
 * @return bool True if logged in, false if error
@@ -54,7 +54,7 @@ function lilina_form($error = false) {
 *
 * @param string $user Supplied username
 * @param string $pass Supplied password
-* @return boolean True if logged in, false if not, however should never return false, since it should die()
+* @return bool True if logged in, false if not, however should never return false, since it should die()
 */
 function lilina_admin_auth($user, $pass) {
 	//Are we logged in?

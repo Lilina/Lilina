@@ -13,7 +13,13 @@
  */
 
 defined('LILINA') or die('Restricted access');
-$settings = 0;
+
+/**
+ * Holds all settings for Lilina
+ *
+ * Overwritten with values from conf/settings.php
+ * @global array $settings
+ */
 global $settings;
 $settings							= array();
 

@@ -13,6 +13,10 @@
 
 //Stop hacking attempts
 defined('LILINA') or die('Restricted access');
+
+/**
+ * @todo Document
+ */
 //require_once('./inc/core/file-functions.php');
 require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
 require_once(LILINA_INCPATH . '/core/version.php');
@@ -50,6 +54,7 @@ $empty_ico_data = base64_decode(
 /**
  * Gets the URL for a favicon for a given URL
  *
+ * @todo Document
  * @see channel_favicon
  * @param string $location Web site to look for favicon at
  * @return string
@@ -72,6 +77,7 @@ function get_favicon_url($location){
 /**
  * Gets the favicon for a feed and caches it
  *
+ * @todo Document
  * @param string $location Web site location
  * @return string
  */
@@ -103,6 +109,7 @@ function channel_favicon($location) {
 /**
  * Creates a timestamp via time() and saves it in the $time_table variable
  *
+ * @todo Document
  * @param string $s Name of item, must be unique
  * @return int
  */
@@ -120,6 +127,7 @@ function create_time($s) {
 /**
  * Function used to sort rss items in chronological order
  *
+ * @todo Document
  * @param array $a First feed item
  * @param array $b Second feed item
  * @return int
@@ -137,6 +145,7 @@ if(!function_exists('parse_w3cdtf')) {
 	 * From MagpieRSS' rss_utils.inc - Converts a -- date formatted string to
 	 * time from epoch in seconds
 	 *
+	 * @todo Document
 	 * @param string $date_str -- formatted date
 	 * @return int
 	 */

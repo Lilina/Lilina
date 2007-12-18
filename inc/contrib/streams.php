@@ -1,4 +1,10 @@
 <?php
+/**
+ * @todo Document properly
+ * @author Danilo Segan <danilo@kvota.net>
+ * @package PHP-gettext
+ * @version 1.0.7
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 /*
    Copyright (c) 2003, 2005 Danilo Segan <danilo@kvota.net>.
 

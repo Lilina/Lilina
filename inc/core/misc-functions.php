@@ -1,18 +1,16 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		misc-functions.php
-Purpose:	Miscellaneous functions
-Notes:		
-Functions:	lilina_time_start();
-			lilina_time_end( $timer_start_time );
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * @todo Document
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 defined('LILINA') or die('Restricted access');
 
-// index.php, line 23
+/**
+ * @todo Document
+ */
 function lilina_timer_start() {
 	//Start measuring execution time
 	$mtime = microtime();
@@ -21,7 +19,9 @@ function lilina_timer_start() {
 	$starttime = $mtime;
 	return $starttime;
 }
-// index.php, line 290
+/**
+ * @todo Document
+ */
 function lilina_timer_end($starttime) {
 	$mtime = microtime();
 	$mtime = explode(" ",$mtime);

@@ -18,6 +18,10 @@ defined('LILINA') or die('Restricted access');
 global $activated_plugins, $registered_plugins, $hooked_plugins;
 $activated_plugins = array();
 $registered_plugins = array();
+/**
+ * All currently hooked plugins and associated functions
+ * @global array $hooked_plugins
+ */
 $hooked_plugins = array('template_header' => array());
 $activated_plugins	= @file_get_contents($settings['files']['plugins']) ;
 $activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
@@ -27,7 +31,7 @@ $activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
 *
 * @global array All currently hooked plugins
 * @param string $hook Hook to look for plugin functions at
-* @return
+* @return array All the hooked plugins available at hook
 */
 function get_hooked($hook) {
 	global $hooked_plugins;

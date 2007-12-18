@@ -9,6 +9,9 @@
 
 defined('LILINA') or die('Restricted access');
 
+/**
+ * @todo Document
+ */
 function lilina_return_output($all_items) {
 	global $showtime, $settings;
 	$out	= array();

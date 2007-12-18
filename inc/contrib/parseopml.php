@@ -3,7 +3,7 @@
  * OPML Parser
  * Adapted from http://www.sencer.de/code/showOPML.phps
  * @author Sencer Yurdagül
- * @package Miscellaneous Contributions
+ * @package Miscellaneous
  */
 
 error_reporting(E_ALL);

@@ -1,10 +1,20 @@
 <?php
 /**
  * Templating functions
+ * @todo Document this file
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+
 defined('LILINA') or die('Restricted access');
 
-//Define all the functions for our skins
+
+/**
+ * @todo Document
+ */
+ //Define all the functions for our skins
 function template_sitename($return='echo'){
 	global $settings;
 	if($return == 'echo') {
@@ -20,6 +30,9 @@ function template_sitename($return='echo'){
 	}
 }
 
+/**
+ * @todo Document
+ */
 function template_siteurl($return=false){
 	global $settings;
 	if($return == false) {
@@ -29,6 +42,9 @@ function template_siteurl($return=false){
 	return $settings['baseurl'];
 }
 
+/**
+ * @todo Document
+ */
 function template_synd_header($return='echo'){
 	global $settings;
 	if($settings['output']['rss']){
@@ -40,6 +56,9 @@ function template_synd_header($return='echo'){
 	return true;
 }
 
+/**
+ * @todo Document
+ */
 function template_synd_links(){
 	global $settings;
 	if($settings['output']['rss']){
@@ -51,61 +70,17 @@ function template_synd_links(){
 	return true;
 }
 
+/**
+ * @todo Document
+ */
 function template_header($return='echo'){
 	global $settings;
 	return true;
 }
 
-/*function template_opml($return='echo'){
-	global $settings;
-	if($settings['output']['opml']===true) {
-		if($return == 'echo') {
-			echo '<a href="cache/opml.xml">OPML</a>';
-			return true;
-		}
-		elseif($return == 'var') {
-			return 'cache/opml.xml';
-		}
-		else {
-			echo 'Error: return type '.$return.' is not valid';
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
-}*/
-
-// function template_output($return='echo', $feeds){
-	// if($return == 'echo') {
-		// echo lilina_make_output($feeds);
-		// return true;
-	// }
-	// elseif($return == 'var') {
-		// return lilina_make_output($feeds);
-	// }
-	// else {
-		// echo 'Error: return type '.$return.' is not valid';
-		// return false;
-	// }
-// }
-
-// function template_source_list($return='echo', $input){
-	// if($return == 'echo') {
-		// $list = lilina_make_items($input);
-		// echo $list[0];
-		// return $list[1];
-	// }
-	// elseif($return == 'var') {
-		// $list = lilina_make_items($input);
-		// return $list;
-	// }
-	// else {
-		// echo 'Error: return type '.$return.' is not valid';
-		// return false;
-	// }
-// }
-
+/**
+ * @todo Document
+ */
 function template_end_errors($return='echo'){
 	global $end_errors;
 	if($return == 'echo') {
@@ -122,6 +97,9 @@ function template_end_errors($return='echo'){
 }
 
 
+/**
+ * @todo Document
+ */
 function template_footer(){
 	global $timer_start;
 	global $lilina;
@@ -131,6 +109,9 @@ function template_footer(){
 	return true;
 }
 
+/**
+ * @todo Document
+ */
 function template_times(){
 	global $settings;
 	foreach($settings['interface']['times'] as $current_time){

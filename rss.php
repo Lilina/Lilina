@@ -1,16 +1,15 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		rss.php
-Purpose:	RSS output
-Notes:		Need to move all crud to plugins
-			Thanks to Jean-Marc Liotier for
-			this code
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * @todo Document
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 //Stop hacking attempts
+/**
+ * @todo Document
+ */
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');

@@ -6,7 +6,14 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-//Stop hacking attempts
+
+//
+/**
+ * Stop hacking attempts
+ *
+ * All included files (external libraries excluded) must check for presence of
+ * this define (using defined() ) to avoid the files being accessed directly
+ */
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
@@ -52,6 +59,10 @@ require_once(LILINA_INCPATH . '/core/conf.php');
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
+/**
+ * Contains all feed names, URLs and (eventually) categories
+ * @global array $data
+ */
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
 //Old functions, not yet migrated
@@ -92,6 +103,10 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 }
 
 //Misc. Functions
+/**
+ * 
+ * @global array
+ */
 function get_feed_list() {
 	global $data;
 	return $data['feeds'];
@@ -100,6 +115,7 @@ function get_feed_list() {
  * Generates nonce
  *
  * Uses the current time
+ * @global array Need settings for user and password
  * @param string $nonce Supplied nonce
  * @return bool True if nonce is equal, false if not
  */
@@ -110,6 +126,7 @@ function generate_nonce() {
 }
 /**
  * Checks whether supplied nonce matches current nonce
+ * @global array Need settings for user and password
  * @param string $nonce Supplied nonce
  * @return bool True if nonce is equal, false if not
  */
@@ -186,6 +203,7 @@ function available_locales() {
  *
  * Concatenates the string as a paragraph to the global $result variable
  * @param string $message Notice to add
+ * @global string Contains all messages, we just concatenate to this
  */
 function add_notice($message) {
 	global $result;
@@ -197,6 +215,7 @@ function add_notice($message) {
  *
  * Concatenates the string as a paragraph to the global $result variable
  * @param string $message Notice to add
+ * @global string Contains all messages, we just concatenate to this
  */
 function add_tech_notice($message) {
 	global $result;
@@ -204,8 +223,12 @@ function add_tech_notice($message) {
 }
 
 /**
- *
- *
+ * Adds a new feed, then saves the feeds
+ * @todo Move saving to outside, it's really inefficient when importing a lot of feeds
+ * @todo Document parameters
+ * @global array Contains file names which are used when saving
+ * @global array Contains all feeds, this is what we add the new feed to
+ * @return bool True if succeeded, false if failed
  */
 function add_feed($url, $name = '', $original_url = false) {
 	global $settings, $data;
@@ -261,15 +284,21 @@ function add_feed($url, $name = '', $original_url = false) {
 }
 
 /**
- *
+ * @todo Document
  */
 function import_opml($opml_url) {
 	if(!empty($opml_url)) {
 		$imported_feeds = parse_opml($opml_url);
 		if(is_array($imported_feeds)) {
 			$feeds_num = 0;
-			foreach($imported_feeds as $imported_feed) {
-				if($imported_feed['TYPE'] != 'rss' && $imported_feed['TYPE'] != 'atom') {
+			foreach($imported_feeds as &$imported_feed) {
+				if(!isset($imported_feed['TYPE'])) {
+					//This is just so we are nice to our ancestors, like 0.7
+					if(isset($imported_feed['XMLURL']) && !empty($imported_feed['XMLURL'])) {
+						$imported_feed['TYPE'] = 'rss';
+					}
+				}
+				elseif($imported_feed['TYPE'] != 'rss' && $imported_feed['TYPE'] != 'atom') {
 					continue;
 				}
 				//Make sure we blank it

@@ -1,13 +1,12 @@
 ﻿<?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		admin-feeds.php
-Purpose:	Feeds admin page
-Notes:		Used only in admin.php
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * @todo Move to admin/settings.php
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 defined('LILINA') or die('Restricted access');
 ?>
 <h2><?php _e('Settings'); ?></h2>

@@ -32,6 +32,9 @@
  * While the cache is enabled by default, it can be switched off with the
  * second parameter in the constructor (e.g. whenusing very large MO files
  * that you don't want to keep in memory)
+ *
+ * @package PHP-gettext
+ * @todo Document
  */
 class gettext_reader {
   //public:

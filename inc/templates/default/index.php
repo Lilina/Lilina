@@ -43,7 +43,7 @@ call_hooked('body_top', $nothing);
 ?>
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
-	<img src="<?php echo template_file_load('logo.jpg');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
+	<img src="<?php echo template_file_load('logo_small.png');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
 	<?php 
 	if(template_synd_links())

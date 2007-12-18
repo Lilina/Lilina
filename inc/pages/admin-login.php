@@ -1,13 +1,12 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		admin-login.php
-Purpose:	Just finish off the install
-Notes:		Must turn off the non-fatal ones
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * @todo Move to admin/login.php
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 defined('LILINA') or die('Restricted access');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

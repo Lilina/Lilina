@@ -8,7 +8,9 @@
  */
 
 defined('LILINA') or die('Restricted access');
-
+/**
+ * @todo Document
+ */
 function lilina_load_times() {
 	global $settings;
 	if (file_exists($settings['files']['times'])) {
@@ -23,7 +25,9 @@ function lilina_load_times() {
 	}
 	return $time_table;
 }
-// index.php, line 200
+/**
+ * @todo Document
+ */
 function lilina_save_times($times) {
 	global $settings;
 	// save times
@@ -32,7 +36,9 @@ function lilina_save_times($times) {
 	fputs($fp, $ttime) ;
 	fclose($fp) ;
 }
-// index.php, line 41
+/**
+ * @todo Document
+ */
 function lilina_load_feeds($data_file) {
 	$data = file_get_contents($data_file) ;
 	$data = unserialize( base64_decode($data) ) ;
