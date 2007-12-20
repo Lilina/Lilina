@@ -26,13 +26,12 @@ $settings							= array();
 //Must be in seconds
 $settings['cachetime']				= 600;
 
-/**
- * GZip output
- *
- * Make sure this is disabled if your PHP version is less than
- * 4.0.5 or if you have zlib.output_compression enabled in your
- * php.ini
- */
+/*
+GZip output
+Make sure this is disabled if your PHP version is less than
+4.0.5 or if you have zlib.output_compression enabled in your
+php.ini
+*/
 $settings['gzip']					= false;
 //Magpie cache time is default
 $settings['magpie']					= array('cachetime' => 3600);
@@ -64,7 +63,15 @@ $settings['offset']					= 0;
 $settings['encoding']				= 'utf-8';
 //Debug mode?
 $settings['debug']					= 'false';
+//Just in case we need to check against them
+$default_settings = $settings;
 
+/**
+ * Holds all the users settings
+ *
+ * Holds the new $settings variables which overwrites
+ * all our old settings here.
+ */
 require_once(LILINA_PATH . '/conf/settings.php') ;
 
 //Settings that use other settings variables, can not be overriden
