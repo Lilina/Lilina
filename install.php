@@ -45,26 +45,26 @@ function generate_password ($length = 8) {
 }
 //Initialize variables
 if(!empty($_POST['page'])) {
-	$page				= htmlspecialcharacters($_POST['page']);
+	$page				= htmlspecialchars($_POST['page']);
 }
 elseif(!empty($_GET['page'])) {
-	$page				= htmlspecialcharacters($_GET['page']);
+	$page				= htmlspecialchars($_GET['page']);
 }
 else {
 	$page				= false;
 }
-$from					= (isset($_POST['from'])) ? htmlspecialcharacters($_POST['from']) : false;
+$from					= (isset($_POST['from'])) ? htmlspecialchars($_POST['from']) : false;
 if(!get_magic_quotes_gpc()) {
-	$sitename				= (isset($_POST['sitename'])) ? addslashes(htmlspecialcharacters($_POST['sitename'])) : false;
-	$url					= (isset($_POST['url'])) ? addslashes(htmlspecialcharacters($_POST['url'])) : false;
-	$username				= (isset($_POST['username'])) ? addslashes(htmlspecialcharacters($_POST['username'])) : false;
-	$password				= (isset($_POST['password'])) ? addslashes(htmlspecialcharacters($_POST['password'])) : false;
+	$sitename				= (isset($_POST['sitename'])) ? addslashes(htmlspecialchars($_POST['sitename'])) : false;
+	$url					= (isset($_POST['url'])) ? addslashes(htmlspecialchars($_POST['url'])) : false;
+	$username				= (isset($_POST['username'])) ? addslashes(htmlspecialchars($_POST['username'])) : false;
+	$password				= (isset($_POST['password'])) ? addslashes(htmlspecialchars($_POST['password'])) : false;
 }
 else {
-	$sitename				= (isset($_POST['sitename'])) ? htmlspecialcharacters($_POST['sitename']) : false;
-	$url					= (isset($_POST['url'])) ? htmlspecialcharacters($_POST['url']) : false;
-	$username				= (isset($_POST['username'])) ? htmlspecialcharacters($_POST['username']) : false;
-	$password				= (isset($_POST['password'])) ? htmlspecialcharacters($_POST['password']) : false;
+	$sitename				= (isset($_POST['sitename'])) ? htmlspecialchars($_POST['sitename']) : false;
+	$url					= (isset($_POST['url'])) ? htmlspecialchars($_POST['url']) : false;
+	$username				= (isset($_POST['username'])) ? htmlspecialchars($_POST['username']) : false;
+	$password				= (isset($_POST['password'])) ? htmlspecialchars($_POST['password']) : false;
 }
 $error					= ((!$sitename || !$url || !$username || !$password) && $page && $page != 1) ? true : false;
 ?>

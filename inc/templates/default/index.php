@@ -81,7 +81,7 @@ if(has_items()) {
 	?>
 	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php echo $item['date'];?></h1>
 	<div id="date<?php echo $current_date;?>">
-		<div class="feed feed-<?php echo md5($item['channel_link']); ?>">
+		<div class="feed feed-<?php echo md5(htmlspecialchars($item['channel_link'])); ?>">
 		<?php
 		}
 		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
@@ -134,7 +134,7 @@ else {
 			<a href="<?php echo $feed['link']; ?>"><img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />
 			<?php echo $feed['name']; ?></a>
 			[<a href="<?php echo $feed['feed']; ?>"><?php _e('Feed');?></a>]
-			<a href="javascript:void(0);" class="hide_feed"><span class="feed-<?php echo md5(htmlentities($feed['link'])); ?>">(<?php _e('Hide items from this channel'); ?>)</span></a>
+			<a href="javascript:void(0);" class="hide_feed"><span class="feed-<?php echo md5(htmlspecialchars($feed['link'])); ?>">(<?php _e('Hide items from this channel'); ?>)</span></a>
 		</li><?php
 			}
 		}
