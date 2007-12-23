@@ -1,15 +1,16 @@
 <?php
-/******************************************
-		Lilina: Simple PHP Aggregator
-File:		index.skin.php
-Purpose:	Default Template
-Notes:		
-Style:		**EACH TAB IS 4 SPACES**
-Licensed under the GNU General Public License
-See LICENSE.txt to view the license
-******************************************/
+/**
+ * Default template for Lilina
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @author Panayotis Vryonis <panayotis@vrypan.net>
+ */
+/**
+*/
 header('Content-Type: text/html; charset=utf-8');
 global $settings, $showtime; //Just in case ;)
+/**
+ * @todo Remove this
+ */
 $nothing = array(); // For blank parameters
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

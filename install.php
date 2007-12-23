@@ -81,15 +81,15 @@ $error					= ((!$sitename || !$url || !$username || !$password) && $page && $pag
 	<body>
 		<div id="container">
 			<div id="header">
-				<img src="inc/templates/default/logo.png" alt="Lilina Logo" />
+				<img src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
 				<h1>Lilina News Aggregator</h1>
 				<h2>Installation Step <?php echo $page;?></h2>
 			</div>
 			<div id="menu">
 				<ul>
-					<li><a href="http://lilina.cubegames.net/">Lilina Website</a></li>
-					<li><a href="http://lilina.cubegames.net/wordpress/vanilla/">Forums</a></li>
-					<li><a href="http://lilina.cubegames.net/support/">Support</a></li>
+					<li><a href="http://getlilina.org/">Lilina Website</a></li>
+					<li><a href="http://getlilina.org/forums/">Forums</a></li>
+					<li><a href="http://getlilina.org/docs/">Documentation</a></li>
 				</ul>
 			</div>
 			<div id="content">

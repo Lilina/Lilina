@@ -444,8 +444,8 @@ header('Content-Type: text/html; charset=utf-8');
 			<li class="page_item"><a href="admin.php">Home</a></li>
 			<li class="page_item"><a href="admin.php?page=feeds" title="<?php _e('Add, change and remove feeds'); ?>"><?php _e('Feeds'); ?></a></li>
 			<li class="page_item"><a href="admin.php?page=settings" title="<?php _e('Change settings and run a diagnostic test'); ?>"><?php _e('Settings'); ?></a></li>
-			<li class="page_item seperator"><a href="http://lilina.cubegames.net/docs/<?php _e('en'); ?>:start" title="<?php _e('Documentation and Support on the Wiki');?>"><?php _e('Lilina Documentation'); ?></a></li>
-			<li class="page_item"><a href="http://lilina.cubegames.net/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Lilina Forums'); ?></a></li>
+			<li class="page_item seperator"><a href="http://getlilina.org/docs/<?php _e('en'); ?>:start" title="<?php _e('Documentation and Support on the Wiki');?>"><?php _e('Lilina Documentation'); ?></a></li>
+			<li class="page_item"><a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Lilina Forums'); ?></a></li>
 			<li id="page_item_logout" class="page_item seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
 		</ul>
 	</div>
@@ -525,7 +525,7 @@ else {
 }
 ?>
 </div>
-<p id="footer"><?php printf(_r('Powered by <a href="http://lilina.cubegames.net/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']); 
-	call_hooked('admin_footer', $out_page); ?> | <a href="http://lilina.cubegames.net/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
+<p id="footer"><?php printf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']); 
+	call_hooked('admin_footer', $out_page); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
 </body>
 </html>

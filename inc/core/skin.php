@@ -103,7 +103,7 @@ function template_end_errors($return='echo'){
 function template_footer(){
 	global $timer_start;
 	global $lilina;
-	echo '<p>', sprintf(_r('Powered by <a href="http://lilina.cubegames.net/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
+	echo '<p>', sprintf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
 	'<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start));
 	call_hooked('template_footer', $timer_start);
 	return true;

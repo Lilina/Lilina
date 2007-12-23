@@ -4,6 +4,8 @@ Lilina News Aggregator
 Installation Style Sheet
 Licensed under the GNU General Public License
 Copyright 2007 Ryan McCue
+
+Todo: redesign
 */
 
 /*************
@@ -86,35 +88,7 @@ May I see your ID?
 	background: #f4f4f4;
 	color: #000;
 	padding-bottom: 7px;
-}/*
-#menu {
-	line-height: 1.5em;
-	margin-left: 5em;
 }
-#menu ul li#logo {
-	text-align: right;
-}
-#menu ul li#logo a {
-	border: none;
-	padding-right: 0.8em;
-	background: transparent url(http://cubegames.net/images/logo-16.png) no-repeat center right;
-	margin-left: 11em;
-}
-#menu ul, #menu ul li {
-	display: inline;
-	list-style-type: none;
-	font-size: 1.2em;
-	float: left;
-}
-#menu ul li a {
-	text-decoration: none;
-	border-right: solid #000000 0.1em;
-	padding-right: 0.3em;
-	padding-left: 0.3em;
-}
-#menu ul li#last a {
-	border: none;
-}*/
 #container {
 	background: #FFF;
 	margin: 20px auto;

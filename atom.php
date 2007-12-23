@@ -41,7 +41,7 @@ echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 	<title type="text"><?php echo $settings['sitename']; ?></title>
 
 	<updated><?php //echo date('Y-m-d\TH:i:s\Z', last_item('timestamp')); ?></updated>
-	<generator uri="http://lilina.cubegames.net/" version="<?php echo $lilina['core-sys']['version']; ?>">Lilina News Aggregator</generator>
+	<generator uri="http://getlilina.org/" version="<?php echo $lilina['core-sys']['version']; ?>">Lilina News Aggregator</generator>
 
 	<link rel="alternate" type="text/html" href="<?php echo $settings['baseurl']; ?>" />
 	<id><?php echo $settings['baseurl'], 'atom.php'; ?></id>
