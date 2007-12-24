@@ -389,6 +389,7 @@ switch($action){
 		add_feed($add_url, $add_name);
 	break;
 	case 'remove':
+		$removed = $data['feeds'][$remove_id];
 		unset($data['feeds'][$remove_id]);
 		$data['feeds'] = array_values($data['feeds']);
 		$sdata	= base64_encode(serialize($data)) ;
@@ -396,7 +397,7 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		add_notice(_r('Removed feed'));
+		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), $_SERVER['PHP_SELF'] . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
 	break;
 	case 'change':
 		$data['feeds'][$change_id]['feed'] = $change_url;

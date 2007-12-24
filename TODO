@@ -1,21 +1,25 @@
+TODO list
+=========
+Note: this is outdated in favour of the PHPDoc generated stuff
+
 Milestone 1.0
-=============
-	* Finish plugin system
-	* Finish template system
-	* Function-ize everything
-	* Stop silent failure
-Done	- Always display Magpie errors, switch to non-fatal
-	* Decrease loading time
-		- More caching
-Done		+ Cache served pages
+-------------
+* Finish plugin system
+* Finish template system
+* Function-ize everything
+* Stop silent failure
+	- Always display Magpie errors, switch to non-fatal
+* Decrease loading time
+	- More caching
+		+ Cache served pages (Done!)
 
 Milestone 1.5
-=============
-	* Add different types of views
-		- Item by item (newspaper/page-by-page)
-		- Single feed
-		- Exclude feed(s)
+-------------
+* Add different types of views
+	- Item by item (newspaper/page-by-page)
+	- Single feed
+	- Exclude feed(s)
 
 Milestone 2.0
-=============
-	* Rehaul interface
+-------------
+* Rehaul interface

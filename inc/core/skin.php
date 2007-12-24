@@ -186,7 +186,7 @@ function has_feeds() {
 	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
-	return (count($list[0]) > 0) ? true : false;
+	return (is_array($list[0]) && count($list[0]) > 0) ? true : false;
 }
 
 /**
