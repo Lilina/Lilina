@@ -95,7 +95,6 @@ function lilina_version_check() {
 		if ( isset( $returns[1] ) )
 			$new_option->url = $returns[1];
 	}
-	var_dump($new_option);
 	update_option('update_status', $new_option );
 }
 register_action('init', 'lilina_version_check');
