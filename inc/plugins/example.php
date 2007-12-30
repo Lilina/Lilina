@@ -14,12 +14,12 @@ if($_GET['action'] !== 'style') {
 	/**
 	 * Replaces built in stylesheet loader
 	 */
-	function stylesheet_load($type='default'){
+	function template_file_load($file) {
 		global $settings;
-		if(!is_naked_day()) {
-			return $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file;
+		if(strstr($file, '.css') && is_naked_day()) {
+			return $settings['baseurl'] . 'inc/plugins/example.php?action=style';
 		}
-		return $settings['baseurl'] . 'inc/plugins/example.php?action=style';
+		return $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file;
 	}
 	/**
 	 * From the CSS Naked Day website
@@ -46,7 +46,7 @@ if($_GET['action'] !== 'style') {
 	 * Register our plugin
 	 */
 	register_plugin('example.php','CSS Naked Day');
-	register_plugin_function('body_top', 'naked_notice');
+	register_action('body_top', 'naked_notice');
 }
 else {
 	header('Content-Type: text/css; charset=utf-8');
