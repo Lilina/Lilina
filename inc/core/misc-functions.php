@@ -111,16 +111,16 @@ function lilina_footer_version() {
 
 	switch ( $cur->response ) {
 		case 'development' :
-			printf(' | '.__( 'You are using a development version (%s). Thanks! Make sure you <a href="%s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
+			printf(' | '._r( 'You are using a development version (%s). Thanks! Make sure you <a href="%s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
 		break;
 
 		case 'upgrade' :
-			printf(' | <strong>'.__( 'Your installation of Lilina (%s) is out of date. <a href="%s">Please update</a>.' ).'</strong>', $lilina['core-sys']['version'], $cur->url);
+			printf(' | <strong>'._r( 'Your installation of Lilina (%s) is out of date. <a href="%s">Please update</a>.' ).'</strong>', $lilina['core-sys']['version'], $cur->url);
 		break;
 
 		case 'latest' :
 		default :
-			printf(' | '.__( 'Version %s' ), $lilina['core-sys']['version']);
+			printf(' | '._r( 'Version %s' ), $lilina['core-sys']['version']);
 		break;
 	}
 }
