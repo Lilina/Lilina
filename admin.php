@@ -56,6 +56,8 @@ $import_url	= htmlspecialchars($import_url);
 //Require our settings, must be before $data
 require_once(LILINA_INCPATH . '/core/conf.php');
 
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
@@ -75,8 +77,6 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 //Parse OPML files
 require_once(LILINA_INCPATH . '/contrib/parseopml.php');
-
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Authentication Section
 //Start the session
@@ -98,7 +98,7 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 	//We already know we are logged in,
 	//so lets unset the variable then reload the page
     unset($_SESSION['is_logged_in']);
-	header('Location: ' . $_SERVER['PHP_SELF']);
+	header('Location: ' . htmlentities($_SERVER['PHP_SELF']));
 	die();
 }
 
@@ -244,13 +244,13 @@ function add_feed($url, $name = '', $original_url = false) {
 				if($new_result) { return true; }
 			}
 			//If we're still going, it failed
-			add_notice(sprintf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed.'), $url) . '<br />');
+			add_notice(sprintf(_r("Couldn't add feed: %s is not a valid URL or the server could not be accessed."), $url) . '<br />');
 			add_tech_notice(_r('Magpie said: ') . magpie_error());
 			return false;
 		}
 		else {
 			//No feeds autodiscovered;
-			add_notice(sprintf(_r('Couldn\'t add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.'), $url));
+			add_notice(sprintf(_r("Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery."), $url));
 			return false;
 		}
 	}
@@ -397,7 +397,7 @@ switch($action){
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), $_SERVER['PHP_SELF'] . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
 	break;
 	case 'change':
 		$data['feeds'][$change_id]['feed'] = $change_url;
@@ -527,6 +527,6 @@ else {
 ?>
 </div>
 <p id="footer"><?php printf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']); 
-	call_hooked('admin_footer', $out_page); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
+	do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
 </body>
 </html>

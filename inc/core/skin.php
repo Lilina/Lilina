@@ -62,10 +62,12 @@ function template_synd_header($return='echo'){
 function template_synd_links(){
 	global $settings;
 	if($settings['output']['rss']){
-		echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', _r('RSS Feed') . '" title="', _r('RSS Feed'), '" /></a> ';
+		$rss = _r('RSS Feed');
+		echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', $rss, '" title="', $rss, '" /></a> ';
 	}
 	if($settings['output']['atom']){
-		echo _r('Atom'), ': <a href="atom.php"><img src="', template_file_load('feed.png'), '" alt="', _r('Atom Feed'), '" title="', _r('Atom Feed'), '" /></a>';
+		$atom = _r('Atom Feed');
+		echo _r('Atom'), ': <a href="atom.php"><img src="', template_file_load('feed.png'), '" alt="', $atom, '" title="', $atom, '" /></a>';
 	}
 	return true;
 }
@@ -73,7 +75,7 @@ function template_synd_links(){
 /**
  * @todo Document
  */
-function template_header($return='echo'){
+function template_header(){
 	global $settings;
 	return true;
 }
@@ -105,7 +107,7 @@ function template_footer(){
 	global $lilina;
 	echo '<p>', sprintf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
 	'<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start));
-	call_hooked('template_footer', $timer_start);
+	do_action('template_footer');
 	return true;
 }
 

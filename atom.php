@@ -27,6 +27,8 @@ require_once('./inc/core/lib.php');
 //Plugins
 require_once('./inc/core/plugin-functions.php');
 
+require_once('./inc/core/l10n.php');
+
 //Stuff for parsing Magpie output, etc
 require_once('./inc/core/feed-functions.php');
 
@@ -37,7 +39,7 @@ require_once('./inc/core/file-functions.php');
 require_once('./inc/core/skin.php');
 //header('Content-type: application/atom+xml; charset=' . $settings['encoding'], true);
 echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:lang="<?php echo $settings['lang']; ?>" xml:base="<?php echo $settings['baseurl']; ?>atom.php"<?php call_hooked('atom_ns', $nothing); ?>>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:lang="<?php echo $settings['lang']; ?>" xml:base="<?php echo $settings['baseurl']; ?>atom.php"<?php do_action('atom_ns'); ?>>
 	<title type="text"><?php echo $settings['sitename']; ?></title>
 
 	<updated><?php //echo date('Y-m-d\TH:i:s\Z', last_item('timestamp')); ?></updated>
@@ -47,7 +49,7 @@ echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 	<id><?php echo $settings['baseurl'], 'atom.php'; ?></id>
 	<link rel="self" type="application/atom+xml" href="<?php echo $settings['baseurl']; ?>atom.php" />
 
-	<?php call_hooked('atom_head', $nothing); ?>
+	<?php do_action('atom_head'); ?>
 	<?php 
 	if(has_items()) {
 		foreach(get_items() as $item) {
@@ -65,7 +67,7 @@ echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
 		<summary type="html"><![CDATA[<?php echo $item['summary']; ?>]]></summary>
 		<content type="html" xml:base="<?php echo $item['link']; ?>"><![CDATA[<?php echo $item['summary']; ?>]]></content>
 <?php //atom_enclosure(); ?>
-<?php call_hooked('atom_entry', $item); ?>
+<?php do_action('atom_entry'); ?>
 	</entry>
 	<?php
 		}

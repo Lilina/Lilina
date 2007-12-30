@@ -62,8 +62,9 @@ function lilina_return_output($all_items) {
 		$channel_url_old	= $out[$index]['channel_link'];
 		++$index;
 	}
-	call_hooked('return_output', $out);
-	return lilina_parse_html($out);
+	// apply_filters('return_output', $out);
+	// return lilina_parse_html($out);
+	return apply_filters('return_output', $out);
 }
 
 /**
@@ -164,6 +165,10 @@ function lilina_return_items($input) {
 			continue;
 		}
 		//Get the icon to display
+		if(!isset($rss->channel['link']) || empty($rss->channel['link'])) {
+			//We really need better code here
+			$rss->channel['link'] = $feed['feed'];
+		}
 		$channels[$index]['icon']	= channel_favicon( $rss->channel['link'] );
 		$channels[$index]['link']	= $rss->channel['link'];
 		$channels[$index]['name']	= (empty($feed['name'])) ? $rss->channel['title'] :  $feed['name'];
@@ -183,6 +188,12 @@ function lilina_return_items($input) {
 			}
 			else {
 				$item['channel_title']	= $channels[$index]['name'];
+			}
+			if(!isset($item['title']) || empty($item['title'])){
+				$item['title']			= _r('(No title)');
+			}
+			if(!isset($item['link']) || empty($item['link'])){
+				$item['link']			= $channels[$index]['link'];
 			}
 			$item['channel_url']		= $channels[$index]['link'];
 			$item['favicon']			= $channels[$index]['icon'];
@@ -236,6 +247,7 @@ function lilina_parse_html($val_array){
 	$config->set('Cache', 'SerializerPath', $settings['cachedir']);
 	$purifier = new HTMLPurifier($config);
 	if(is_array($val_array)) {
+		if(empty($val_array)) return $val_array;
 		foreach($val_array as $this_array) {
 			if(is_array($this_array)) {
 				$purified_array[] = $purifier->purifyArray($this_array);
@@ -250,4 +262,5 @@ function lilina_parse_html($val_array){
 	}
 	return $purified_array;
 }
+register_filter('return_output', 'lilina_parse_html', 1);
 ?>

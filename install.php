@@ -15,6 +15,11 @@
 define('LILINA', 1);
 header('Content-Type: text/html; charset=UTF-8');
 
+//Make sure Lilina's not installed
+if(@file_exists('./conf/settings.php')) {
+	die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p></div></div></body></html>');
+}
+
 /**
  * Generates a random password for the user
  *
@@ -42,6 +47,71 @@ function generate_password ($length = 8) {
 	}
 	// done!
 	return $password;
+}
+
+function install($sitename, $username, $password) {
+	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
+	$guessurl = preg_replace('|/install\.php.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	if($guessurl[count($guessurl)-1] != '/') {
+		$guessurl .= '/';
+	}
+	echo $guessurl;
+	?>
+<p>Now saving settings to conf/settings.php - Stand by...</p>
+<?php
+		flush();
+		$raw_php		= "<?php
+\$settings['sitename'] = '$sitename';
+\$settings['baseurl'] = '$guessurl';
+\$settings['auth'] = array(
+							'user' => '$username',
+							'pass' => '" . md5($password) . "'
+							);
+?>";
+		$settings_file	= @fopen('./conf/settings.php', 'w+');
+		if(!@file_exists('./conf/feeds.data')) {
+			$feeds_file = @fopen('./conf/feeds.data', 'w+');
+			if($feeds_file) {
+				fclose($feeds_file) ;
+			}
+		}
+		if(!@file_exists('./conf/time.data')) {
+			$times_file = @fopen('./conf/time.data', 'w+');
+			if($times_file) {
+				fclose($times_file);
+			}
+		}
+		if($settings_file){
+			fputs($settings_file, $raw_php) ;
+			fclose($settings_file) ;
+?>
+<p>Lilina has been set up on your server and is ready to run. Open <a href="index.php">your home page</a> and get reading!</p>
+<dl>
+	<dt>Username</dt>
+	<dd><?php echo $username;?></dd>
+	<dt>Password</dt>
+	<dd><?php echo $password;?></dd>
+</dl>
+<p>Were you expecting more steps? Sorry to disappoint. All done! :)</p>
+<?php
+		}
+		else {
+			echo 'I couldn\'t open conf/settings.php to write to.
+			Please make sure that the conf directory is writable and that the server can write to it.
+			You can also save the following text as conf/settings.php<br /><pre>';
+			highlight_string($raw_php);
+			echo '</pre>
+			<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
+			<input type="hidden" name="sitename" value="'.$sitename.'" />
+			<input type="hidden" name="url" value="'.$url.'" />
+			<input type="hidden" name="username" value="'.$username.'" />
+			<input type="hidden" name="password" value="'.$password.'" />
+			<input type="hidden" name="page" value="2">
+			<input type="submit" value="Try again" />
+			</form>';
+			return false;
+		}
+		return true;
 }
 //Initialize variables
 if(!empty($_POST['page'])) {
@@ -94,10 +164,6 @@ $error					= ((!$sitename || !$url || !$username || !$password) && $page && $pag
 			</div>
 			<div id="content">
 <?php
-//Make sure Lilina's not installed
-if(@file_exists('./conf/settings.php')) {
-	die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p></div></div></body></html>');
-}
 if($error) {
 	$page--;
 }
@@ -140,60 +206,7 @@ switch($page) {
 <?php
 		break;
 	case 2:
-?>
-<p>Now saving settings to conf/settings.php - Stand by...</p>
-<?php
-		flush();
-		$raw_php		= "<?php
-\$settings['sitename'] = '$sitename';
-\$settings['baseurl'] = '$url';
-\$settings['auth'] = array(
-							'user' => '$username',
-							'pass' => '" . md5($password) . "'
-							);
-?>";
-		$settings_file	= @fopen('./conf/settings.php', 'w+');
-		if(!@file_exists('./conf/feeds.data')) {
-			$feeds_file = @fopen('./conf/feeds.data', 'w+');
-			if($feeds_file) {
-				fclose($feeds_file) ;
-			}
-		}
-		if(!@file_exists('./conf/time.data')) {
-			$times_file = @fopen('./conf/time.data', 'w+');
-			if($times_file) {
-				fclose($times_file);
-			}
-		}
-		if($settings_file){
-			fputs($settings_file, $raw_php) ;
-			fclose($settings_file) ;
-?>
-<p>Lilina has been set up on your server and is ready to run. Open <a href="index.php">your home page</a> and get reading!</p>
-<dl>
-	<dt>Username</dt>
-	<dd><?php echo $username;?></dd>
-	<dt>Password</dt>
-	<dd><?php echo $password;?></dd>
-</dl>
-<p>Were you expecting more steps? Sorry to disappoint. All done! :)</p>
-<?php
-		}
-		else {
-			echo 'I couldn\'t open conf/settings.php to write to.
-			Please make sure that the conf directory is writable and that the server can write to it.
-			You can also save the following text as conf/settings.php<br /><pre>';
-			highlight_string($raw_php);
-			echo '</pre>
-			<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-			<input type="hidden" name="sitename" value="'.$sitename.'" />
-			<input type="hidden" name="url" value="'.$url.'" />
-			<input type="hidden" name="username" value="'.$username.'" />
-			<input type="hidden" name="password" value="'.$password.'" />
-			<input type="hidden" name="page" value="2">
-			<input type="submit" value="Try again" />
-			</form>';
-		}
+		install($sitename, $username, $password);
 		break;
 	case 0:
 	case false:

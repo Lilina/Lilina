@@ -35,13 +35,10 @@ else {
 ?>
 <?php
 //Just extra stuff that a plugin may have added
-call_hooked('template_header', $nothing);
+do_action('template_header');
 ?>
 </head>
 <body id="river-<?php echo $showtime; ?>" class="river-page">
-<?php
-call_hooked('body_top', $nothing);
-?>
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
 	<img src="<?php echo template_file_load('logo-small.png');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
@@ -70,7 +67,7 @@ call_hooked('body_top', $nothing);
 
 <div id="main"><?php
 $notfirst = false;
-if(has_items()) {
+if(has_feeds() && has_items()) {
 	foreach(get_items() as $item) {
 		if($item['date'] != $item['old_date']) {
 			if($notfirst) {

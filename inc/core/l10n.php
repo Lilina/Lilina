@@ -292,6 +292,6 @@ else {
 _setlocale(LC_ALL, 'en');
 // Constructs the path to the .mo, as /inc/locales/[lang].mo
 _bindtextdomain('messages', LILINA_INCPATH . '/locales');
-_bind_textdomain_codeset('messages', $l10n['encoding']);
-_textdomain($domain);
+_bind_textdomain_codeset('messages', $settings['encoding']);
+_textdomain('messages');
 ?>

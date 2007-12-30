@@ -20,9 +20,12 @@ html, body {
 	background: #E5E5E5;
 	color: #000000;
 }
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 80%;
+	line-height: 150%;
+}
 p {
-	font-family: Verdana, "Microsoft Sans Serif", Times, serif;
-	font-size: 90%;
 }
 input {
 	border: 1px solid #B2B2B2;
@@ -44,31 +47,31 @@ May I see your ID?
 	float: left;
 }
 #header h1 { 
-	font-family: Georgia, "verdana", Times, serif;
-	font-size: 20pt;
+	font-family: Georgia, Verdana, Times, serif;
+	font-size: 2em;
 	font-weight: 300;
 	color: #000;
 	margin-top: 16px;
-	margin-left: 13px;
+	margin-left: 200px;
 	letter-spacing: 2px;
 }
 #header h2 { 
-	font-family: georgia, verdana, Sans-Serif;
-	font-size: 8pt;
+	font-family: Georgia, Verdana, Sans-Serif;
+	font-size: 1.4em;
 	font-weight: normal;
-	font-style: italic;
 	color: #434343;
-	margin-left: 15px;
+	margin-left: 200px;
 }
-#menu{
+#menu {
 	background-color: #E3E3E3;
 	font-family: verdana, "Microsoft Sans Serif", Times, serif;
 	font-size: 8pt;
 	height:27px;
 	border-bottom: 1px solid #999;
+	clear: both;
 }
 #menu ul {
-	margin: 0;
+	margin: 0 0 0 190px;
 	padding: 0;
 	list-style: none;
 }
@@ -85,7 +88,7 @@ May I see your ID?
 	text-align: center;
 }
 #menu a:hover {
-	background: #f4f4f4;
+	background: #FFF;
 	color: #000;
 	padding-bottom: 7px;
 }

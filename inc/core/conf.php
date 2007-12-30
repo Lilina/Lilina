@@ -72,7 +72,9 @@ $default_settings = $settings;
  * Holds the new $settings variables which overwrites
  * all our old settings here.
  */
-require_once(LILINA_PATH . '/conf/settings.php') ;
+if(!defined('LOADED_SETTINGS')) {
+	require_once(LILINA_PATH . '/conf/settings.php') ;
+}
 
 //Settings that use other settings variables, can not be overriden
 $settings['cachedir']				= $settings['path'] . '/cache/';

@@ -13,6 +13,8 @@ Requirements                {#requirements}
 - Support for socket connections (see <http://php.net/manual/en/function.fsockopen.php>)
 - Support for fopen wrappers (see <http://au.php.net/manual/en/ref.filesystem.php#ini.allow-url-fopen>)
 
+That's it! No PEAR packages are needed and no MySQL, PostgreSQL or SQLite databases are needed. Lilina is fully self-contained and uses flat-files instead of databases.
+
 
 Installation                {#installation}
 ------------

@@ -42,21 +42,43 @@ function get_hooked($hook) {
 }
 
 /**
-* Calls hooked plugins at hook
-*
-* Calls the specified functions registered by the plugins at the specified hook. Passes the
-* $args variable by reference allowing a plugin to directly modify the passed variable
-*
-* @uses get_hooked Get the hooked plugins at the specifed plugin
-* @param string $hook Hook to call plugin functions for
-* @param array &$args Arguments to pass on to plugin functions
-*/
-function call_hooked($hook, &$args){
+ * Applies filters specified by <tt>$filter_name</tt> on <tt>$string</tt>
+ *
+ * Thanks to WordPress for inspiration
+ * @todo Document
+ * @uses get_hooked Get the hooked plugins at the specifed plugin
+ * @param string $filter_name Hook to call plugin functions for
+ * @param string $string String to run through filters
+ */
+function apply_filters($filter_name, $string){
+	global $filters;
+	if(!isset($filters[$filter_name])) {
+		return $string;
+	}
+	$args = func_get_args();
+	foreach($filters[$filter_name] as $filter) {
+		$filter_function = $filter['function'];
+		$string = call_user_func_array($filter['function'], array_slice($args, 1, (int) $filter['num_args']));
+	}
+	return $string;
+}
+
+/**
+ * Calls hooked plugins at hook without parameters
+ *
+ * Calls the specified functions registered by the plugins at the specified hook. Doesn't
+ * pass any parameters
+ * @uses get_hooked Get the hooked plugins at the specifed plugin
+ * @see call_hooked
+ * @param string $hook Hook to call plugin functions for
+ * @param array &$args Arguments to pass on to plugin functions
+ */
+function do_action($hook){
 	//Get list of plugins hooked here...
 	$plugins = get_hooked($hook);
 	foreach($plugins as $plugin) {
 		$plugin_function = $plugin['func'];
-		$plugin_function(&$args);
+		$plugin_function();
 	}
 }
 
@@ -91,6 +113,22 @@ function register_plugin_function($function, $hook) {
 }
 
 /**
+* Register plugin function with system
+*
+* Adds plugin function to $hooked_plugins under the specified hook
+*
+* @param string $function Plugin function to register
+* @param string $hook Hook to register function under
+*/
+function register_filter($filter, $function, $num_args) {
+	global $filters;
+	$filters[$filter][]	= array(
+										'function'	=> $function,
+										'num_args'	=> $num_args,
+										);
+}
+
+/**
 * Activate plugin
 *
 * Adds plugin to $activated_plugins. Must call {@link update_plugins_info} afterwards
@@ -109,7 +147,6 @@ function activate_plugin($plugin) {
 */
 function get_plugins() {
 	global $activated_plugins, $registered_plugins;
-	
 	foreach($activated_plugins as $plugin_name) {
 		require_once(LILINA_INCPATH . '/plugins/' . $registered_plugins[$plugin_name]['file']);
 	}
@@ -197,15 +234,15 @@ function lilina_plugins_list($directory){
 }
 
 function lilina_init_plugins() {
-	$plugins		= lilina_plugins_list(LILINA_INCPATH . '/plugins/');
-	$old_plugins	= lilina_old_plugins();
+	$plugins		= lilina_plugins_list(LILINA_INCPATH . '/plugins');
+	foreach($plugins as $the_plugin) {
+		require_once($the_plugin);
+	}
+	$old_plugins	= array(); //lilina_old_plugins();
 	//Note the order; array_diff() returns missing elements from _2nd_ param
 	//Therefore:
 	$new_plugins	= array_diff($plugins, $old_plugins);
 	$gone_plugins	= array_diff($old_plugins, $plugins);
-	foreach($new_plugins as $new_plugin) {
-		//add_plugin($new_plugin);
-	}
 	//Load the plugin files
 	get_plugins();
 }
