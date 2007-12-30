@@ -15,6 +15,7 @@
  * this define (using defined() ) to avoid the files being accessed directly
  */
 define('LILINA',1) ;
+define('LILINA_ADMIN', 1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 //Check installed
@@ -60,6 +61,9 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
+require_once(LILINA_INCPATH . '/core/misc-functions.php');
+
+do_action('init');
 
 /**
  * Contains all feed names, URLs and (eventually) categories
@@ -111,6 +115,7 @@ function get_feed_list() {
 	global $data;
 	return $data['feeds'];
 }
+
 /**
  * Generates nonce
  *
@@ -124,6 +129,7 @@ function generate_nonce() {
 	$time = ceil(time() / 43200);
 	return md5($time . $settings['auth']['user'] . $settings['auth']['pass']);
 }
+
 /**
  * Checks whether supplied nonce matches current nonce
  * @global array Need settings for user and password
@@ -138,6 +144,46 @@ function check_nonce($nonce) {
 		return false;
 	}
 	return true;
+}
+
+
+function save_settings() {
+	global $settings, $default_settings;
+	$raw_php		= "<?php";
+	$changed_settings = array_diff_assoc_recursive($settings, $default_settings);
+	//Workaround some which aren't needed
+	if(isset($changed_settings['cachedir'])) {
+		unset($changed_settings['cachedir']);
+	}
+	if(isset($changed_settings['cachedir'])) {
+		unset($changed_settings['cachedir']);
+	}
+	var_dump($changed_settings);
+	/*foreach($setting
+\$settings['sitename'] = '$sitename';
+\$settings['baseurl'] = '$guessurl';
+\$settings['auth'] = array(
+							'user' => '$username',
+							'pass' => '" . md5($password) . "'
+							);
+?>";
+		$settings_file	= @fopen('./conf/settings.php', 'w+');
+		if(!@file_exists('./conf/feeds.data')) {
+			$feeds_file = @fopen('./conf/feeds.data', 'w+');
+			if($feeds_file) {
+				fclose($feeds_file) ;
+			}
+		}
+		if(!@file_exists('./conf/time.data')) {
+			$times_file = @fopen('./conf/time.data', 'w+');
+			if($times_file) {
+				fclose($times_file);
+			}
+		}
+		if($settings_file){
+			fputs($settings_file, $raw_php) ;
+			fclose($settings_file) ;
+	return true;*/
 }
 
 function available_templates() {
@@ -526,7 +572,8 @@ else {
 }
 ?>
 </div>
-<p id="footer"><?php printf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']); 
-	do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
+<p id="footer"><?php
+_e('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>');
+do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
 </body>
 </html>

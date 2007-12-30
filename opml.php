@@ -19,7 +19,6 @@ $out		= '';
 //Current Version
 require_once(LILINA_INCPATH . '/core/version.php');
 
-//Timer doesn't need settings so we don't have to wait for them
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
 //Make sure we are actually installed...
@@ -29,11 +28,12 @@ if(!lilina_check_installed()) {
 	die();
 }
 
-//Plugins and misc stuff
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-
 //We need this even for cached pages
 require_once(LILINA_INCPATH . '/core/conf.php');
+
+//Plugins and misc stuff
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+require_once(LILINA_INCPATH . '/core/l10n.php');
 
 //Caching to reduce loading times
 //require_once(LILINA_INCPATH . '/core/cache.php');

@@ -25,7 +25,7 @@ define('MAGPIE_CACHE_ON',1) ;
 define('MAGPIE_CACHE_FRESH_ONLY', true) ;
 //define('MAGPIE_CACHE_DIR', './cache');
 define('MAGPIE_OUTPUT_ENCODING', $settings['encoding']);
-define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'  (+http://getlilina.org/)') ;
+define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'; '.$settings['baseurl']) ;
 require_once(LILINA_INCPATH . '/contrib/magpie.php');
 
 $empty_ico_data = base64_decode(

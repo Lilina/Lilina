@@ -64,22 +64,16 @@ function apply_filters($filter_name, $string){
 }
 
 /**
- * Calls hooked plugins at hook without parameters
+ * Applies filters specified by <tt>$filter_name</tt> on <tt>$string</tt>
  *
- * Calls the specified functions registered by the plugins at the specified hook. Doesn't
- * pass any parameters
+ * Thanks to WordPress for inspiration
+ * @todo Document
  * @uses get_hooked Get the hooked plugins at the specifed plugin
- * @see call_hooked
- * @param string $hook Hook to call plugin functions for
- * @param array &$args Arguments to pass on to plugin functions
+ * @param string $action_name Hook to call plugin functions for
  */
-function do_action($hook){
-	//Get list of plugins hooked here...
-	$plugins = get_hooked($hook);
-	foreach($plugins as $plugin) {
-		$plugin_function = $plugin['func'];
-		$plugin_function();
-	}
+function do_action($action_name){
+	global $actions;
+	apply_filters($action_name, false);
 }
 
 /**
@@ -126,6 +120,18 @@ function register_filter($filter, $function, $num_args) {
 										'function'	=> $function,
 										'num_args'	=> $num_args,
 										);
+}
+
+/**
+* Register plugin function with system
+*
+* Adds plugin function to $hooked_plugins under the specified hook
+*
+* @param string $function Plugin function to register
+* @param string $function Hook to register function under
+*/
+function register_action($action, $function) {
+	register_filter($action, $function, 0);
 }
 
 /**

@@ -3,21 +3,25 @@ Lilina Credits
 
 Lilina
 ------
-* Ryan McCue <cubegames@gmail.com>
+* Licensed under the GNU General Public License version 2.
+	See license.txt for details.
 
-	Me :) I rewrote alot of the code from scratch
-	and took over the project
+* Authors:
+	* Ryan McCue <cubegames@gmail.com>
 
-* Panayotis Vryonis <panayotis@vrypan.net>
+		Me :) I rewrote alot of the code from scratch
+		and took over the project
 
-	0.7 and below, the rest of the code
-* Jean-Marc Liotier <jim@liotier.org>
+	* Panayotis Vryonis <panayotis@vrypan.net>
 
-	Code for RSS output, based on example code from
-	FeedCreator
-* NeoRame <webmaster@blog.kain-planet.de>
+		0.7 and below, the rest of the code
+	* Jean-Marc Liotier <jim@liotier.org>
 
-	Great new logo. We love him for it :)
+		Code for RSS output, based on example code from
+		FeedCreator
+	* NeoRame <webmaster@blog.kain-planet.de>
+
+		Great new logo. We love him for it :)
 
 Caching Methods
 ---------------
@@ -64,3 +68,10 @@ PHP-gettext
 * Danilo Segan <danilo@kvota.net>
 * Nico Kaiser <nico@siriux.net> (contributed most changes between 1.0.2 and 1.0.3, bugfix for 1.0.5)
 * Steven Armstrong <sa@c-area.ch> (gettext.inc, leading to 1.0.6)
+
+WordPress
+---------
+* Contains code from WordPress or influenced by it
+
+	Licensed under the GNU General Public License version 2.
+	See license.txt for details.

@@ -7,13 +7,18 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-//Stop hacking attempts
+/**
+ * Stop hacking attempts
+ */
 define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
 $out		= '';
-//Timer doesn't need settings so we don't have to wait for them
+
+
+require_once(LILINA_INCPATH . '/core/conf.php');
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 $timer_start = lilina_timer_start();
 
@@ -24,12 +29,6 @@ if(!@file_exists('./conf/settings.php')) {
 
 //Current Version
 require_once(LILINA_INCPATH . '/core/version.php');
-
-//Plugins and misc stuff
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-
-//We need this even for cached pages
-require_once(LILINA_INCPATH . '/core/conf.php');
 
 //Custom error handler
 //require_once(LILINA_INCPATH . '/core/errors.php');
