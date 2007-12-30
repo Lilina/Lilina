@@ -17,15 +17,15 @@ $settings	= 0;
 $out		= '';
 
 
+
+if(!@file_exists(LILINA_PATH . '/conf/settings.php')) {
+	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
+	die();
+}
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 $timer_start = lilina_timer_start();
-
-if(!@file_exists('./conf/settings.php')) {
-	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
-	die();
-}
 
 //Current Version
 require_once(LILINA_INCPATH . '/core/version.php');
