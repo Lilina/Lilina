@@ -55,7 +55,6 @@ function install($sitename, $username, $password) {
 	if($guessurl[count($guessurl)-1] != '/') {
 		$guessurl .= '/';
 	}
-	echo $guessurl;
 	?>
 <p>Now saving settings to conf/settings.php - Stand by...</p>
 <?php
@@ -126,17 +125,15 @@ else {
 $from					= (isset($_POST['from'])) ? htmlspecialchars($_POST['from']) : false;
 if(!get_magic_quotes_gpc()) {
 	$sitename				= (isset($_POST['sitename'])) ? addslashes(htmlspecialchars($_POST['sitename'])) : false;
-	$url					= (isset($_POST['url'])) ? addslashes(htmlspecialchars($_POST['url'])) : false;
 	$username				= (isset($_POST['username'])) ? addslashes(htmlspecialchars($_POST['username'])) : false;
 	$password				= (isset($_POST['password'])) ? addslashes(htmlspecialchars($_POST['password'])) : false;
 }
 else {
 	$sitename				= (isset($_POST['sitename'])) ? htmlspecialchars($_POST['sitename']) : false;
-	$url					= (isset($_POST['url'])) ? htmlspecialchars($_POST['url']) : false;
 	$username				= (isset($_POST['username'])) ? htmlspecialchars($_POST['username']) : false;
 	$password				= (isset($_POST['password'])) ? htmlspecialchars($_POST['password']) : false;
 }
-$error					= ((!$sitename || !$url || !$username || !$password) && $page && $page != 1) ? true : false;
+$error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ? true : false;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -179,10 +176,6 @@ switch($page) {
 		<tr<?php if(!$sitename) echo ' class="highlight"';?>>
 			<td class="label"><label for="sitename"><span class="label">Name of site</span></label></td>
 			<td class="formw"><input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" size="40" /></td>
-		</tr>
-		<tr<?php if(!$url) echo ' class="highlight"';?>>
-			<td class="label"><label for="url"><span class="label">URL for Lilina (with trailing slash)</span></label></td>
-			<td class="formw"><input type="text" value="<?php echo (!$url) ? 'http://localhost/' : $url;?>" name="url" id="url" size="40" /></td>
 		</tr>
 		<tr><td colspan="2"><h2>Security Settings</h2></td></tr>
 		<tr<?php if(!$username) echo ' class="highlight"';?>>

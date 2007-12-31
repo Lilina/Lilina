@@ -101,6 +101,7 @@ register_action('init', 'lilina_version_check');
 
 /**
  * @todo Document
+ * @author WordPre
  */
 function lilina_footer_version() {
 	global $lilina;
@@ -140,7 +141,7 @@ function update_nag() {
 
 	echo "<div id='update-nag'>$msg</div>";
 }
-add_action('admin_notices', 'update_nag');
+register_action('admin_notices', 'update_nag');
 
 /**
  * @todo Document

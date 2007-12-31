@@ -62,8 +62,6 @@ function lilina_return_output($all_items) {
 		$channel_url_old	= $out[$index]['channel_link'];
 		++$index;
 	}
-	// apply_filters('return_output', $out);
-	// return lilina_parse_html($out);
 	return apply_filters('return_output', $out);
 }
 
@@ -136,7 +134,7 @@ function lilina_get_rss($location) {
 		}
 	}
 	if (isset($full_url)) {
-		return $full_url;
+		return apply_filters('get_rss', $full_url);
 	}
 	else {
 		return false;
@@ -227,7 +225,7 @@ function lilina_return_items($input) {
 		}
 		++$index;
 	}
-	return array($channels, $items);
+	return apply_filters('return_items', array($channels, $items));
 }
 
 /**
@@ -239,6 +237,7 @@ function lilina_return_items($input) {
  * @return mixed Array or string of purified HTML
  */
 function lilina_parse_html($val_array){
+	require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
 	global $settings;
 	$config = HTMLPurifier_Config::createDefault();
 	$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
@@ -260,7 +259,7 @@ function lilina_parse_html($val_array){
 	else {
 		$purified_array = $purifier->purify($val_array);
 	}
-	return $purified_array;
+	return apply_filters('parse_html', $purified_array);
 }
 register_filter('return_output', 'lilina_parse_html', 1);
 ?>

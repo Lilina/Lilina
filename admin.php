@@ -466,6 +466,7 @@ switch($action){
 	case 'reset':
 		unlink(LILINA_PATH . '/conf/settings.php');
 		printf(_r('settings.php successfully removed. <a href="%s">Reinstall</a>'), $_SERVER['PHP_SELF']);
+		die();
 	break;
 }
 header('Content-Type: text/html; charset=utf-8');

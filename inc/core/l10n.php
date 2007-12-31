@@ -233,7 +233,7 @@ function translate($text, $domain) {
 	if($domain == 'default') {
 		$domain	= 'messages';
 	}
-	return _dgettext($domain, $text);
+	return apply_filters('translate', _dgettext($domain, $text));
 }
 function _e($text, $domain='default') {
 	echo translate($text, $domain);
@@ -244,40 +244,9 @@ function _r($text, $domain='default') {
 function _n($single, $plural, $number, $domain='default') {
 	_dngettext($domain, $single, $plural, $number);
 }
-/*
-Now declared in admin.php
-
-function available_locales() {
-	$available_locales = array();
-	//Make sure we open it correctly
-	if ($handle = opendir(LILINA_INCPATH . '/locales/')) {
-		//Go through all entries
-		while (false !== ($file = readdir($handle))) {
-			// just skip the reference to current and parent directory
-			if ($file != '.' && $file != '..') {
-				if (is_dir($directory . '/' . $file)) {
-					//Found a directory, let's see if a plugin exists in it,
-					//with the same name as the directory
-					if(file_exists($directory . '/' . $file . '/' . $file . '.mo')) {
-						$file = str_replace('.mo', '', $file);
-						$available_locales[] = $file . '/' . $file;
-					}
-				} else {
-					//Only add plugin files
-					if(strpos($file,'.mo') !== FALSE) {
-						$available_locales[] = str_replace('.mo', '', $file);
-					}
-				}
-			}
-		}
-		// ALWAYS remember to close what you opened
-		closedir($handle);
-	}
-	return $available_locales;
-}*/
 
 function locale_available($locale) {
-	return @file_exists(LILINA_INCPATH . '/locales/' . $locale . '.mo');
+	return apply_filters('locale_available', @file_exists(LILINA_INCPATH . '/locales/' . $locale . '.mo'));
 }
 /*
 if(locale_available($settings['lang'])) {

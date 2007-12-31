@@ -50,7 +50,7 @@ function get_hooked($hook) {
  * @param string $filter_name Hook to call plugin functions for
  * @param string $string String to run through filters
  */
-function apply_filters($filter_name, $string){
+function apply_filters($filter_name, $string=''){
 	global $filters;
 	if(!isset($filters[$filter_name])) {
 		return $string;
@@ -72,8 +72,9 @@ function apply_filters($filter_name, $string){
  * @param string $action_name Hook to call plugin functions for
  */
 function do_action($action_name){
-	global $actions;
-	apply_filters($action_name, false);
+	//func_get_args() can't be used as a function parameter
+	$args = func_get_args();
+	call_user_func_array('apply_filters', $args);
 }
 
 /**
@@ -114,7 +115,7 @@ function register_plugin_function($function, $hook) {
 * @param string $function Plugin function to register
 * @param string $hook Hook to register function under
 */
-function register_filter($filter, $function, $num_args) {
+function register_filter($filter, $function, $num_args=1) {
 	global $filters;
 	$filters[$filter][]	= array(
 										'function'	=> $function,
@@ -130,8 +131,8 @@ function register_filter($filter, $function, $num_args) {
 * @param string $function Plugin function to register
 * @param string $function Hook to register function under
 */
-function register_action($action, $function) {
-	register_filter($action, $function, 0);
+function register_action($action, $function, $num_args=0) {
+	register_filter($action, $function, $num_args);
 }
 
 /**

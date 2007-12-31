@@ -14,7 +14,6 @@ define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
-$out		= '';
 
 
 

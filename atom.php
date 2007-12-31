@@ -6,6 +6,7 @@
  * Based on Wordpress' feed-atom.php
  *
  * @author Ryan McCue <cubegames@gmail.com>
+ * @author WordPress Team
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -17,37 +18,43 @@
 define('LILINA',1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
-$nothing = array();
 //Require our settings, must be first required file
-require_once('./inc/core/conf.php');
+require_once(LILINA_INCPATH . '/core/conf.php');
 
 //Require our standard stuff
-require_once('./inc/core/lib.php');
+require_once(LILINA_INCPATH . '/core/lib.php');
 
 //Plugins
-require_once('./inc/core/plugin-functions.php');
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
-require_once('./inc/core/l10n.php');
+require_once(LILINA_INCPATH . '/core/l10n.php');
 
 //Stuff for parsing Magpie output, etc
-require_once('./inc/core/feed-functions.php');
+require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 //File input and output
-require_once('./inc/core/file-functions.php');
+require_once(LILINA_INCPATH . '/core/file-functions.php');
 
 //Template files, needed for middle-man parsing
-require_once('./inc/core/skin.php');
-//header('Content-type: application/atom+xml; charset=' . $settings['encoding'], true);
-echo '<?xml version="1.0" encoding="'.$settings['encoding'].'"?'.'>'; ?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:thr="http://purl.org/syndication/thread/1.0" xml:lang="<?php echo $settings['lang']; ?>" xml:base="<?php echo $settings['baseurl']; ?>atom.php"<?php do_action('atom_ns'); ?>>
-	<title type="text"><?php echo $settings['sitename']; ?></title>
+require_once(LILINA_INCPATH . '/core/skin.php');
 
-	<updated><?php //echo date('Y-m-d\TH:i:s\Z', last_item('timestamp')); ?></updated>
+header('Content-type: application/atom+xml; charset=' . get_option('encoding'), true);
+echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
+<feed xmlns="http://www.w3.org/2005/Atom"
+	xmlns:thr="http://purl.org/syndication/thread/1.0"
+	xml:lang="<?php echo get_option('lang'); ?>"
+	xml:base="<?php echo get_option('baseurl'); ?>atom.php"
+	<?php do_action('atom_ns'); ?>>
+	<title type="text"><?php echo get_option('sitename'); ?></title>
+
+	<?php //Need to fix this ?>
+	<updated><?php echo date('Y-m-d\TH:i:s\Z'); ?></updated>
 	<generator uri="http://getlilina.org/" version="<?php echo $lilina['core-sys']['version']; ?>">Lilina News Aggregator</generator>
 
-	<link rel="alternate" type="text/html" href="<?php echo $settings['baseurl']; ?>" />
-	<id><?php echo $settings['baseurl'], 'atom.php'; ?></id>
-	<link rel="self" type="application/atom+xml" href="<?php echo $settings['baseurl']; ?>atom.php" />
+	<link rel="alternate" type="text/html" href="<?php echo get_option('baseurl'); ?>" />
+	<id><?php echo get_option('baseurl'), 'atom.php'; ?></id>
+	<link rel="self" type="application/atom+xml" href="<?php echo get_option('baseurl'); ?>atom.php" />
 
 	<?php do_action('atom_head'); ?>
 	<?php 

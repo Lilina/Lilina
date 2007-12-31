@@ -15,30 +15,32 @@ defined('LILINA') or die('Restricted access');
  */
 require_once(LILINA_INCPATH . '/core/conf.php');
 
-/**
- * Checks the cache.
- *
- * Checks the cache to find out whether to use the
- * cached file or not.
- */
-function lilina_cache_check(){
-	global $settings, $showtime;
-	// Cache file to either load or create
-	$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html';
-	$cachefile_created = (@file_exists($cachefile)) ? @filemtime($cachefile) : 0;
-	clearstatcache();
-	// Show file from cache if still valid
-	if (time() - $settings['cachetime'] < $cachefile_created) {
-		//echo '<!--Retrieved from cache-->' . "\n";
-		if($settings['gzip'] === true) {
-			ob_start('ob_gzhandler');
-			readfile($cachefile);
-			ob_end_flush();
+if(!function_exists('lilina_cache_check')) {
+	/**
+	 * Checks the cache.
+	 *
+	 * Checks the cache to find out whether to use the
+	 * cached file or not.
+	 */
+	function lilina_cache_check(){
+		global $settings, $showtime;
+		// Cache file to either load or create
+		$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html';
+		$cachefile_created = (@file_exists($cachefile)) ? @filemtime($cachefile) : 0;
+		clearstatcache();
+		// Show file from cache if still valid
+		if (time() - $settings['cachetime'] < $cachefile_created) {
+			//echo '<!--Retrieved from cache-->' . "\n";
+			if($settings['gzip'] === true) {
+				ob_start('ob_gzhandler');
+				readfile($cachefile);
+				ob_end_flush();
+			}
+			else {
+				readfile($cachefile);
+			}
+			exit();
 		}
-		else {
-			readfile($cachefile);
-		}
-		exit();
 	}
 }
 

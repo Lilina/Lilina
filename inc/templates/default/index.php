@@ -101,6 +101,7 @@ if(has_feeds() && has_items()) {
 				<div class="excerpt" id="ICONT<?php echo $item['id'];?>">
 					<?php echo $item['summary'];?>
 				</div>
+				<?php do_action('river_entry', $item); ?>
 			</div><?php
 		//Feed closed above
 	//Date closed above

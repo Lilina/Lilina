@@ -1,126 +1,73 @@
 <?php
 /**
- * @todo Document
+ * RSS 2.0 feed generator
+ *
+ * Generates a RS feed from the available items.
+ * Based on Wordpress' feed-rss2.php
+ *
  * @author Ryan McCue <cubegames@gmail.com>
+ * @author WordPress Team
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-//Stop hacking attempts
+
 /**
  * @todo Document
  */
-define('LILINA',1) ;
+define('LILINA',1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 //Require our settings, must be first required file
-require_once('./inc/core/conf.php');
+require_once(LILINA_INCPATH . '/core/conf.php');
+require_once(LILINA_INCPATH . '/core/lib.php');
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+require_once(LILINA_INCPATH . '/core/l10n.php');
+require_once(LILINA_INCPATH . '/core/feed-functions.php');
+require_once(LILINA_INCPATH . '/core/misc-functions.php');
+require_once(LILINA_INCPATH . '/core/file-functions.php');
+require_once(LILINA_INCPATH . '/core/skin.php');
 
-//Require our standard stuff
-require_once('./inc/core/lib.php');
-
-//Plugins
-require_once('./inc/core/plugin-functions.php');
-
-//Stuff for parsing Magpie output, etc
-require_once('./inc/core/feed-functions.php');
-
-//File input and output
-require_once('./inc/core/file-functions.php');
-
-//Get the feed creator loaded
-require_once('./inc/contrib/feedcreator.class.php');
-
-$display	= (isset($_GET['output'])) ? strtolower($_GET['output']) : 'rss';
-//echo '<!--Display: ' . $display . ' - 1 -->';
-$showtime	= (isset($_REQUEST['hours'])) ? $_REQUEST['hours'] * 3600 : 3600 * $settings['interface']['times'][0] ;
-
-$data = lilina_load_feeds($settings['files']['feeds']) ;
-
-$items = array();
-
-// load times
-
-if (file_exists($settings['files']['times'])) {
-	$time_table = file_get_contents($settings['files']['times']) ;
-	$time_table = unserialize($time_table) ;
-} else {
-	$time_table = array();
-}
-
-
-
-$items = lilina_return_items($data);
-$items = $items[1];
-
-$rss_out = new UniversalFeedCreator();
-switch($display) {
-	case 'opml':
-		$rss_out->useCached('OPML', $settings['cachedir'] . 'opml.xml', $settings['cachetime']);
-		break;
-	case 'atom':
-		$rss_out->useCached('ATOM', $settings['cachedir'] . 'atom.xml', $settings['cachetime']);
-		break;
-	case 'rss':
-	default:
-		$rss_out->useCached('RSS2.0', $settings['cachedir'] . 'feed.xml', $settings['cachetime']);
-		break;
-}
-$rss_out->title = $settings['sitename'];
-$rss_out->description = $settings['baseurl'];
-
-//optional
-$rss_out->descriptionTruncSize = 500;
-$rss_out->descriptionHtmlSyndicated = true;
-
-$rss_out->link = $settings['baseurl'];
-$rss_out->syndicationURL = $settings['baseurl'] . $_SERVER['PHP_SELF'];
-
-//optional
-//$image->descriptionTruncSize = 500;
-//$image->descriptionHtmlSyndicated = true;
-
-//$rss_out->image = $image;
-
-$items = lilina_return_output($items);
-usort($items, 'date_cmp');
-foreach($items as $item) {
-   $item_out = new FeedItem();
-   
-   $item_out->title = $item['title'];
-   $item_out->link = $item['link'];
-   $item_out->link = $item['guid'];
-   $item_out->source = $item['channel_title'];
-   $item_out->description = $item['summary'];
-   if(!$item_out->description) $item_out->description = $item['summary'];
-   if(!$item_out->description) $item_out->description = $item['description'];
-	$item_out->date = date('D d F, Y', $item['timestamp'] ) ;
-
-   //item->descriptionTruncSize = 500;
-   $item_out->descriptionHtmlSyndicated = true;
-
-   $rss_out->addItem($item_out);
-}
-
-
-// valid format strings are: RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
-// MBOX, OPML, ATOM, ATOM0.3, HTML, JS
-if($settings['output']['atom'] == true) {
-	$rss_out->saveFeed('ATOM', $settings['cachedir'] . 'atom.xml', false);
-}
-if($settings['output']['rss'] == true) {
-	$rss_out->saveFeed('RSS2.0', $settings['cachedir'] . 'feed.xml', false);
-}
-
-switch($display) {
-	case 'atom':
-		echo $rss_out->createFeed('ATOM');
-		break;
-	case 'rss':
-	default:
-		echo $rss_out->createFeed('RSS2.0');
-		break;
-}
-
-lilina_save_times($time_table);
+header('Content-Type: text/xml; charset=' . get_option('encoding'), true);
+global $lilina;
+echo '<?xml version="1.0" encoding="'.get_option('encoding').'"?'.'>';
 ?>
+
+<!-- generator="Lilina/<?php echo $lilina['core-sys']['version']; ?>" -->
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	<?php do_action('rss2_ns'); ?>
+>
+
+<channel>
+	<title><?php echo get_option('sitename');?></title>
+	<link><?php echo get_option('baseurl') ?></link>
+	<description><?php echo get_option('sitename'), _r(', an online feed aggregator'); ?></description>
+	<atom:link href="<?php echo get_option('baseurl'), 'rss.php'; ?>" rel="self" type="application/rss+xml" />
+	<?php //Need to fix this ?>
+	<pubDate><?php echo date('D, d M Y H:i:s +0000'); ?></pubDate>
+	<generator>http://getlilina.org/?v=<?php echo $lilina['core-sys']['version']; ?></generator>
+	<language><?php echo get_option('lang'); ?></language>
+	<?php do_action('rss2_head');
+	if(has_items()) {
+		foreach(get_items() as $item) {
+	?>
+	<item>
+		<title><?php echo $item['title']; ?></title>
+		<link><?php echo $item['link']; ?></link>
+		<pubDate><?php echo date('D, d M Y H:i:s +0000', $item['timestamp']); ?></pubDate>
+		<?php //Not entirely accurate; uses the feed name, not the author ?>
+		<dc:creator><?php echo $item['channel_title']; ?></dc:creator>
+
+		<guid isPermaLink="false"><?php echo $item['guid']; ?></guid>
+		<description><![CDATA[<?php echo $item['summary']; ?>]]></description>
+		<content:encoded><![CDATA[<?php echo $item['summary']; ?>]]></content:encoded>
+		<?php do_action('rss2_item'); ?>
+	</item>
+	<?php }
+	}
+	?>
+</channel>
+</rss>
