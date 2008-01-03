@@ -5,6 +5,13 @@ Welcome!                    {#welcome}
 --------
 Welcome and thanks for downloading Lilina! This file is designed to give you a guide into the installation and use of the Lilina News Aggregator software. Please note that readme.html is probably more up-to-date than this file.
 
+About                       {#about}
+-----
+Lilina is an open source feed aggregator, or feed reader, written in PHP. It doesn't require any PEAR or PECL packages and is simple to set up and use.
+
+This software is Open Source Initiative approved Open Source Software.
+Open Source Initiative Approved is a trademark of the Open Source Initiative.
+
 
 Requirements                {#requirements}
 ------------
