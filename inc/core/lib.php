@@ -85,7 +85,7 @@ function channel_favicon($location) {
 	$cached_ico_url		= $settings['baseurl'] . 'cache/' . md5($location) . '.ico';
 	// Serve from the cache if it is younger than $cachetime
 	if (file_exists($cached_ico) && (time() - $settings['cachetime'] < filemtime($cached_ico))){
-		return $cached_ico_url;
+		return apply_filters('channel_favicon-url', $cached_ico_url, $location);
 	}
 	$ico_url			= get_favicon_url($location) ;
 	if(!$ico_url) {
@@ -101,7 +101,7 @@ function channel_favicon($location) {
 	$fp					= fopen($cached_ico,'w');
 	fputs($fp, apply_filters('channel_favicon-data', $data));
 	fclose($fp);
-	return apply_filters('channel_favicon-url', $cached_ico_url);
+	return apply_filters('channel_favicon-url', $cached_ico_url, $location);
 }
 
 /**

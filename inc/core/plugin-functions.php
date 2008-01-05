@@ -111,16 +111,24 @@ function register_plugin_function($function, $hook) {
 * Register plugin function with system
 *
 * Adds plugin function to $hooked_plugins under the specified hook
-*
+* @deprecated Use add_filter instead
 * @param string $function Plugin function to register
 * @param string $hook Hook to register function under
 */
 function register_filter($filter, $function, $num_args=1) {
-	global $filters;
-	$filters[$filter][]	= array(
-										'function'	=> $function,
-										'num_args'	=> $num_args,
-										);
+	add_filter($filter, $function, $num_args);
+}
+
+/**
+* Register plugin action with system
+*
+* Adds plugin function to $hooked_plugins under the specified hook
+* @deprecated Use add_action() instead
+* @param string $function Plugin function to register
+* @param string $function Hook to register function under
+*/
+function register_action($action, $function, $num_args=0) {
+	add_filter($action, $function, $num_args);
 }
 
 /**
@@ -129,10 +137,26 @@ function register_filter($filter, $function, $num_args=1) {
 * Adds plugin function to $hooked_plugins under the specified hook
 *
 * @param string $function Plugin function to register
+* @param string $hook Hook to register function under
+*/
+function add_filter($filter, $function, $num_args=1) {
+	global $filters;
+	$filters[$filter][]	= array(
+										'function'	=> $function,
+										'num_args'	=> $num_args,
+										);
+}
+
+/**
+* Register plugin action with system
+*
+* Adds plugin function to $hooked_plugins under the specified hook
+*
+* @param string $function Plugin function to register
 * @param string $function Hook to register function under
 */
-function register_action($action, $function, $num_args=0) {
-	register_filter($action, $function, $num_args);
+function add_action($action, $function, $num_args=0) {
+	add_filter($action, $function, $num_args);
 }
 
 /**

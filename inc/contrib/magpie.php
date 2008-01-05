@@ -8,13 +8,14 @@
  * @package Magpie
 */
 
-
-function fetch_rss($url, $options=array()) {
-    $magpie = new Magpie();
-    $feed = $magpie->fetch($url, $options);
-    // set global pointer for helper methods
-    $GLOBALS['__MAGPIE_LAST_INSTANCE'] = $magpie; 
-    return $feed;
+if(!function_exists('fetch_rss')) {
+	function fetch_rss($url, $options=array()) {
+	    $magpie = new Magpie();
+	    $feed = $magpie->fetch($url, $options);
+	    // set global pointer for helper methods
+	    $GLOBALS['__MAGPIE_LAST_INSTANCE'] = $magpie; 
+	    return apply_filters('fetch_rss', $feed);
+	}
 }
 
 function magpie_error() {

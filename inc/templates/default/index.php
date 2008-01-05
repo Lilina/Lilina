@@ -19,9 +19,6 @@ $nothing = array(); // For blank parameters
 <head profile="http://gmpg.org/xfn/1">
 <title><?php template_sitename();?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<?php
-template_synd_header();
-?>
 <link rel="stylesheet" type="text/css" href="<?php echo template_file_load('style.css'); ?>" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
@@ -34,8 +31,7 @@ else {
 }
 ?>
 <?php
-//Just extra stuff that a plugin may have added
-do_action('template_header');
+template_header();
 ?>
 </head>
 <body id="river-<?php echo $showtime; ?>" class="river-page">
