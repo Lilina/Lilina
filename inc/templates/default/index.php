@@ -63,48 +63,47 @@ template_header();
 
 <div id="main"><?php
 $notfirst = false;
-if(has_feeds() && has_items()) {
-	foreach(get_items() as $item) {
-		if($item['date'] != $item['old_date']) {
-			if($notfirst) {
-				//Close both feed and date
-				echo '		</div>';
-				echo '	</div>', "\n";
-			}
-			$current_date = date('dmY', $item['timestamp'] );
+while(has_items()) {
+	the_item();
+	if(date_equals()) {
+		if($notfirst) {
+			//Close both feed and date
+			echo '		</div>';
+			echo '	</div>', "\n";
+		}
+		$current_date = date('dmY', $item['timestamp'] );
 	?>
 	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php echo $item['date'];?></h1>
-	<div id="date<?php echo $current_date;?>">
+	<div id="date<?php the_date($args='')?>">
 		<div class="feed feed-<?php echo md5(htmlspecialchars($item['channel_link'])); ?>">
 		<?php
-		}
-		elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
-			if(isset($item['old_channel'])) {
-				echo '		</div>';
-			}
-			echo '		<div class="feed feed-', md5($item['channel_link']), '">';
-		}
-		?>
-			<div class="item c2" id="IITEM-<?php echo $item['id'];?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
-				<span class="time"><?php echo $item['time'];?></span>
-				<span class="title" id="TITLE<?php echo $item['id'];?>" title="<?php _e('Click to expand/collapse item');?>"><?php echo $item['title'];?></span>
-				<span class="source"><a href="<?php echo $item['link'];?>">&#187; <?php printf(_r('Post from %s'), $item['channel_title']);?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
-				<?php
-				if(!empty($item['enclosures'])){
-					_e('Podcast or Videocast Available');
-				}
-				?>
-				<div class="excerpt" id="ICONT<?php echo $item['id'];?>">
-					<?php echo $item['summary'];?>
-				</div>
-				<?php do_action('river_entry', $item); ?>
-			</div><?php
-		//Feed closed above
-	//Date closed above
-	$notfirst = true;
 	}
+	elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
+		if(isset($item['old_channel'])) {
+			echo '		</div>';
+		}
+		echo '		<div class="feed feed-', md5(the_feed_url()), '">';
+	}
+		?>
+			<div class="item c2" id="IITEM-<?php the_id(); ?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
+				<span class="time"><?php the_date('format=H:i'); ?></span>
+				<span class="title" id="TITLE<?php the_id(); ?>" title="<?php _e('Click to expand/collapse item');?>"><?php the_title(); ?></span>
+				<span class="source"><a href="<?php the_feed_url(); ?>">&#187; <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<div class="excerpt" id="ICONT<?php the_id(); ?>">
+					<?php the_summary(); ?>
+					<?php
+					if( has_enclosure() ){
+						echo '<hr />', the_enclosure();
+					}
+					?>
+				</div>
+				<?php do_action('river_entry'); ?>
+			</div><?php
+	//Feed closed above
+//Date closed above
+$notfirst = true;
 }
-elseif(!has_feeds()) {
+if(!has_feeds()) {
 ?>
 	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
 <?php
@@ -138,13 +137,7 @@ else {
 		}
 		?>
 	</ul><?php
-	$the_errors	= template_end_errors('var');
-	if(!empty($the_errors)) { ?>
-	<div id="end_errors">
-	Errors occured while getting feeds:<?php echo $the_errors; ?>
-	</div>
-	<?php
-	}
+	echo $feed->error();
 	?></div>
 <div id="footer">
 <?php template_footer(); ?><br />

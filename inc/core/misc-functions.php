@@ -232,4 +232,52 @@ function get_option($option) {
 	}
 	return $settings[$option];
 }
+
+/**
+ * @author WordPress
+ */
+function lilina_parse_args( $args, $defaults = '' ) {
+	if ( is_object( $args ) )
+		$r = get_object_vars( $args );
+	elseif ( is_array( $args ) )
+		$r =& $args;
+	else
+		lilina_parse_str( $args, $r );
+
+	if ( is_array( $defaults ) )
+		return array_merge( $defaults, $r );
+	return $r;
+}
+
+/**
+ * @author WordPress
+ */
+function lilina_parse_str( $string, &$array ) {
+	parse_str( $string, $array );
+	if ( get_magic_quotes_gpc() )
+		$array = stripslashes_deep( $array ); // parse_str() adds slashes if magicquotes is on.  See: http://php.net/parse_str
+	$array = apply_filters( 'lilina_parse_str', $array );
+}
+
+/**
+ * @author WordPress
+ */
+function stripslashes_deep($value) {
+	 $value = is_array($value) ?
+		 array_map('stripslashes_deep', $value) :
+		 stripslashes($value);
+
+	 return $value;
+}
+
+/**
+ * @author WordPress
+ */
+function urlencode_deep($value) {
+	 $value = is_array($value) ?
+		 array_map('urlencode_deep', $value) :
+		 urlencode($value);
+
+	 return $value;
+}
 ?>

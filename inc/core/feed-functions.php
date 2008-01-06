@@ -11,30 +11,25 @@ defined('LILINA') or die('Restricted access');
 
 /**
  * @todo Document
+ * @todo This is kludgy with SimplePie. Move to separate functions in skin.php
  */
 function lilina_return_output($all_items) {
+	return;
 	global $showtime, $settings;
 	$out	= array();
 	$index	= 0;
-	usort($all_items, 'date_cmp');
-	foreach($all_items as $item) {
+	//usort($all_items, 'date_cmp');
+	foreach($all_items->get_items() as $item) {
+		$feed = $item->get_feed();
+		var_dump($item);
 		//Only display the feeds from the chosen times
 		if ( ($showtime>-1) && (time() - $item['date_timestamp'] > $showtime) ) {
 			break;
 		}
-		if(isset($item['content']) && !empty($item['content'])) {
-			$out[$index]['summary']	= $item['content'];
-		}
-		elseif(isset($item['summary']) && !empty($item['summary'])) {
-			$out[$index]['summary']	= $item['summary'];
-		}
-		elseif(isset($item['description']) && !empty($item['description'])) {
-			$out[$index]['summary']	= $item['description'];
-		}
-		else {
-			$out[$index]['summary']	= _r('No summary specified');
-		}
-		$out[$index]['date']		= date('l d F, Y', $item['date_timestamp'] );
+		$out[$index]['summary']	= $item->get_description();
+		$out[$index]['content']	= $item->get_content();
+		/** Need to convert this to get_local_date() */
+		$out[$index]['date'] = $item->get_date('l d F, Y');
 		$out[$index]['old_date']	= ($index != 0) ? $out[$index-1]['date'] : '';
 		$out[$index]['time']		= date('H:i', $item['date_timestamp'] ) ;
 		$out[$index]['timestamp']	= $item['date_timestamp'];
@@ -151,11 +146,24 @@ function lilina_get_rss($location) {
  * @return array All channels and all items
  */
 function lilina_return_items($input) {
-	global $settings, $end_errors;
+	global $settings, $lilina, $end_errors;
+	// Include the SimplePie library
+	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$items		= array();
 	$channels	= '';
 	$index		= 0;
-	$feeds	= $input['feeds'];
+	// print_r($input);
+	// die();
+	$feed = new SimplePie();
+	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.$settings['baseurl']);
+	$feed->set_stupidly_fast(true);
+	$feed->set_cache_location(LILINA_PATH . '/cache');
+	foreach($input['feeds'] as $the_feed)
+		$feed_list[] = $the_feed['feed'];
+	$feed->set_feed_url($feed_list);
+	$feed->init();
+	return $feed;
+	/*
 	foreach($feeds as $feed) {
 		$rss	= fetch_rss( $feed['feed'] );
 		if (!$rss){
@@ -225,7 +233,7 @@ function lilina_return_items($input) {
 		}
 		++$index;
 	}
-	return apply_filters('return_items', array($channels, $items));
+	return apply_filters('return_items', array($channels, $items));*/
 }
 
 /**

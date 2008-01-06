@@ -280,7 +280,7 @@ function add_feed($url, $name = '', $original_url = false) {
 	global $settings, $data;
 	//Fix users' kludges; They'll thank us for it
 	$url	= str_replace(array('feed://http://', 'feed://http//', 'feed://', 'feed:http://', 'feed:'), 'http://', $url);
-	$feed_info = fetch_rss($url);
+	/*$feed_info = fetch_rss($url);
 	if(!$feed_info && !$original_url) {
 		//Try again, but autodiscover
 		$auto = lilina_get_rss($url);
@@ -312,7 +312,7 @@ function add_feed($url, $name = '', $original_url = false) {
 		//Now this we do care about
 		add_notice(_r('Couldn\'t add feed: No feed URL supplied'));
 		return false;
-	}
+	}*/
 	$feed_num	= count($data['feeds']);
 	$data['feeds'][$feed_num]['feed']	= $url;
 	$data['feeds'][$feed_num]['name']	= $name;

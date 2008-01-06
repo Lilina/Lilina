@@ -138,7 +138,7 @@ function template_times(){
 * @return boolean Are items available?
 */
 function has_items() {
-	global $data, $list, $items, $settings;
+	global $data, $list, $items, $item_number, $settings;
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
@@ -148,10 +148,7 @@ function has_items() {
 	if(empty($list)) {
 		$list	= lilina_return_items($data);
 	}
-	if(empty($items)) {
-		$items	= lilina_return_output($list[1]);
-	}
-	return apply_filters('has_items', ((count($items) > 0) ? true : false));
+	return apply_filters('has_items', ( $item_number < $list->get_item_quantity() ) );
 }
 
 /**
@@ -160,7 +157,7 @@ function has_items() {
 * @return array List of items and associated data
 */
 function get_items() {
-	global $data, $list, $items, $settings;
+	/*global $data, $list, $items, $settings;
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
@@ -168,9 +165,141 @@ function get_items() {
 		$list	= lilina_return_items($data);
 	}
 	if(empty($items)) {
-		$items	= lilina_return_output($list[1]);
+		$items	= lilina_return_output($list);
 	}
-	return apply_filters('get_items', $items);
+	return apply_filters('get_items', $items);*/
+}
+
+/**
+ * @todo Document
+ */
+function the_item() {
+	global $data, $list, $items, $item_number, $item;
+	if(!isset($item_number))
+		$item_number = 0;
+	$item = $list->get_item($item_number);
+	++$item_number;
+}
+
+/**
+ * @todo Document
+ */
+function the_title() {
+	global $item;
+	echo apply_filters('the_title', $item->get_title());
+}
+
+/**
+ * @todo Document
+ */
+function the_summary() {
+	global $item;
+	echo apply_filters('the_summary', $item->get_description());
+}
+
+/**
+ * @todo Document
+ */
+function the_content() {
+	global $item;
+	echo apply_filters('the_content', $item->get_content());
+}
+
+/**
+ * @todo Document
+ */
+function the_id() {
+	global $item;
+	echo apply_filters( 'the_id', $item->get_id() );
+}
+
+/**
+ * @todo Document
+ */
+function the_link() {
+	global $item;
+	echo apply_filters( 'the_id', $item->get_link() );
+}
+
+/**
+ * @todo Document
+ */
+function the_date($args='') {
+	global $item;
+	$defaults = array(
+		'format' => 'H:i:s, l d F, Y'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	echo apply_filters( 'the_date', $item->get_date( $format ) );
+}
+
+/**
+ * @todo Document
+ */
+function the_feed_name() {
+	global $item;
+	printf(_r('Post from %s'), apply_filters( 'the_feed_name', $item->get_feed()->get_title() ) );
+}
+
+/**
+ * @todo Document
+ */
+function the_feed_url() {
+	global $item;
+	echo apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+}
+
+/**
+ * @todo Document
+ */
+function has_enclosure() {
+	global $item, $enclosure;
+	$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
+	return $enclosure;
+}
+
+/**
+ * @todo Document
+ */
+function the_enclosure() {
+	global $item, $enclosure;
+	if(!$enclosure)
+		$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
+	echo apply_filters( 'the_enclosure', $enclosure->embed() );
+}
+
+/**
+ * @todo Document
+ */
+function date_equals($args='') {
+	global $item, $item_number, $list;
+	$defaults = array(
+		'equalto' => 'previous'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	switch ( $equalto ) {
+		case 'previous':
+			if($item_number - 1 >= $list->get_item_quantity())
+				return false;
+			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $item_number - 1 )->get_date( 'l d F, Y' );
+			break;
+		case 'next':
+			if($item_number + 1 >= $list->get_item_quantity())
+				return false;
+			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $item_number + 1 )->get_date( 'l d F, Y' );
+			break;
+		default:
+			//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
+			if( isint( $equalto ) || $equalto >= $list->get_item_quantity() )
+				return false;
+			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
+			break;
+	}
+	return apply_filters('the_title', $equals);
 }
 
 /**
@@ -186,10 +315,12 @@ function has_feeds() {
 	if(empty($data) || !is_array($data) || count($data) === 0) {
 		return false;
 	}
-	if(empty($list)) {
-		$list	= lilina_return_items($data);
-	}
-	return apply_filters('has_feeds', ((is_array($list[0]) && count($list[0]) > 0) ? true : false));
+	return true;
+	//if(empty($list)) {
+	//	$list	= lilina_return_items($data);
+	//}
+	//var_dump($list);
+	//return apply_filters('has_feeds', ((is_array($list[0]) && count($list[0]) > 0) ? true : false));
 }
 
 /**
