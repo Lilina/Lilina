@@ -107,8 +107,9 @@ function template_end_errors($return='echo'){
 function template_footer(){
 	global $timer_start;
 	global $lilina;
-	echo apply_filters('template_footer', '<p>', sprintf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']),
-	'<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start)));
+	$footer = '<p>' . sprintf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']);
+	$footer .= '<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start)));
+	echo apply_filters('template_footer', $footer, 
 	return true;
 }
 
@@ -208,14 +209,6 @@ function the_content() {
 /**
  * @todo Document
  */
-function the_id() {
-	global $item;
-	echo apply_filters( 'the_id', $item->get_id() );
-}
-
-/**
- * @todo Document
- */
 function the_link() {
 	global $item;
 	echo apply_filters( 'the_id', $item->get_link() );
@@ -224,7 +217,7 @@ function the_link() {
 /**
  * @todo Document
  */
-function the_date($args='') {
+function get_the_date($args='') {
 	global $item;
 	$defaults = array(
 		'format' => 'H:i:s, l d F, Y'
@@ -232,7 +225,34 @@ function the_date($args='') {
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
 	extract($args, EXTR_SKIP);
-	echo apply_filters( 'the_date', $item->get_date( $format ) );
+	echo apply_filters( 'get_the_date', $item->get_date( $format ) );
+}
+
+/**
+ * @todo Document
+ */
+function the_date($args='') {
+	echo get_the_date($args);
+}
+
+/**
+ * SimplePie only gives us the URL as an ID, we want a MD5
+ * @todo Document
+ */
+function get_the_id($id = -1) {
+	global $list, $item;
+	if($id >= 0)
+		$current_item = $list->get_item( $id );
+	else
+		$current_item = $item;
+	return apply_filters( 'get_the_id', $current_item->get_id(true), $current_item, $id );
+}
+
+/**
+ * @todo Document
+ */
+function the_id($id = -1) {
+	echo get_the_id($id);
 }
 
 /**
@@ -249,6 +269,25 @@ function the_feed_name() {
 function the_feed_url() {
 	global $item;
 	echo apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+}
+
+/**
+ * @todo Document
+ */
+function get_the_feed_id($id = -1) {
+	global $list, $item;
+	if($id >= 0)
+		$current_feed = $list->get_item( $id )->get_feed();
+	else
+		$current_feed = $item->get_feed();
+	return apply_filters( 'get_the_feed_id', md5($current_feed->get_link() . $current_feed->get_title()) );
+}
+
+/**
+ * @todo Document
+ */
+function the_feed_id($id = -1) {
+	echo get_the_feed_id($id);
 }
 
 /**
@@ -299,7 +338,39 @@ function date_equals($args='') {
 			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
 			break;
 	}
-	return apply_filters('the_title', $equals);
+	return apply_filters('date_equals', $equals, $equalto);
+}
+
+/**
+ * @todo Document
+ */
+function feed_equals($args='') {
+	global $item, $item_number, $list;
+	$defaults = array(
+		'equalto' => 'previous'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	switch ( $equalto ) {
+		case 'previous':
+			if($item_number - 1 >= $list->get_item_quantity())
+				return false;
+			$equals = get_the_feed_id() == get_the_feed_id($item_number - 1);
+			break;
+		case 'next':
+			if($item_number + 1 >= $list->get_item_quantity())
+				return false;
+			$equals = get_the_feed_id() == get_the_feed_id($item_number + 1);
+			break;
+		default:
+			//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
+			if((int) $equalto >= $list->get_item_quantity() || (int) $equalto < 0 )
+				return false;
+			$equals = get_the_feed_id() == get_the_feed_id($equalto);
+			break;
+	}
+	return apply_filters('feed_equals', $equals, $equalto);
 }
 
 /**

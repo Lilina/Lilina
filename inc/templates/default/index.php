@@ -61,7 +61,8 @@ template_header();
 	</ul>
 </div>
 
-<div id="main"><?php
+<div id="main">
+<?php
 $notfirst = false;
 while(has_items()) {
 	the_item();
@@ -71,31 +72,30 @@ while(has_items()) {
 			echo '		</div>';
 			echo '	</div>', "\n";
 		}
-		$current_date = date('dmY', $item['timestamp'] );
-	?>
-	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php echo $item['date'];?></h1>
-	<div id="date<?php the_date($args='')?>">
-		<div class="feed feed-<?php echo md5(htmlspecialchars($item['channel_link'])); ?>">
-		<?php
+?>
+	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php the_date('l d F, Y')?></h1>
+	<div id="date<?php the_date('dmY')?>">
+		<div class="feed feed-<?php get_the_feed_id(); ?>">
+<?php
 	}
-	elseif(!isset($item['old_channel']) || $item['old_channel'] != $item['channel_link']) {
-		if(isset($item['old_channel'])) {
+	elseif(feed_equals()) {
+		global $item_number;
+		if($item_number != 0) {
 			echo '		</div>';
 		}
-		echo '		<div class="feed feed-', md5(the_feed_url()), '">';
+		echo '		<div class="feed feed-', get_the_feed_id(), '">';
 	}
-		?>
-			<div class="item c2" id="IITEM-<?php the_id(); ?>"><img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
+?>
+			<div class="item c2" id="IITEM-<?php the_id(); ?>">
+				<img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
 				<span class="time"><?php the_date('format=H:i'); ?></span>
 				<span class="title" id="TITLE<?php the_id(); ?>" title="<?php _e('Click to expand/collapse item');?>"><?php the_title(); ?></span>
 				<span class="source"><a href="<?php the_feed_url(); ?>">&#187; <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
 				<div class="excerpt" id="ICONT<?php the_id(); ?>">
-					<?php the_summary(); ?>
-					<?php
-					if( has_enclosure() ){
+					<?php the_content(); ?>
+					<?php if( has_enclosure() ){
 						echo '<hr />', the_enclosure();
-					}
-					?>
+					} ?>
 				</div>
 				<?php do_action('river_entry'); ?>
 			</div><?php
@@ -121,7 +121,7 @@ else {
 
 <div id="sources">
 	<strong>Sources:</strong>
-	<ul><?php
+	<ul><?php/*
 		if(has_feeds()) {
 			foreach(get_feeds() as $feed) { ?>
 		<li>
@@ -137,11 +137,10 @@ else {
 		}
 		?>
 	</ul><?php
-	echo $feed->error();
+	echo $feed->error();*/
 	?></div>
 <div id="footer">
-<?php template_footer(); ?><br />
-<img src="<?php echo template_file_load('magpie.png'); ?>" alt="Uses MagpieRSS" /><img src="<?php echo template_file_load('oss.png'); ?>" alt="Licensed under the GNU General Public License" /><img src="<?php echo template_file_load('php.png'); ?>" alt="Powered by PHP: Hypertext Processor" />
+<?php template_footer(); ?>
 </div>
 </body>
 </html>
