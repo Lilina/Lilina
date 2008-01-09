@@ -105,11 +105,7 @@ function template_end_errors($return='echo'){
  * @todo Document
  */
 function template_footer(){
-	global $timer_start;
-	global $lilina;
-	$footer = '<p>' . sprintf(_r('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a> %s'), $lilina['core-sys']['version']);
-	$footer .= '<br />', sprintf(_r('This page was last generated on %s and took %f seconds'), date('Y-m-d \a\t g:i a'), lilina_timer_end($timer_start)));
-	echo apply_filters('template_footer', $footer, 
+	do_action('template_footer');
 	return true;
 }
 
@@ -134,22 +130,65 @@ function template_times(){
 }
 
 /**
-* Items available for parsing with {@link get_items}
-*
-* @return boolean Are items available?
-*/
-function has_items() {
-	global $data, $list, $items, $item_number, $settings;
-	if(empty($data)) {
+ * Initializes SimplePie and loads the feeds into the global <tt>$list</tt> array.
+ *
+ * Loads feeds from conf/feeds.data into the global <tt>$list</tt> array if not already done.
+ * Then calls <tt>lilina_return_items()</tt> and stores the SimplePie object returned in the
+ * global <tt>$list</tt> array if not already done.
+ 
+ * Increments the <tt>$item_number</tt> if the <tt>$increment</tt> parameter is true, or
+ * initializes the <tt>$item_number</tt> if not already done. Then works out the
+ * <tt>$showtime</tt> variable if not already done.
+ *
+ * Checks if the current item's date is less than the <tt>$showtime</tt> variable and if so,
+ * returns false to stop processing items. If not, checks if the <tt>$item_number</tt> is
+ * less than the total number of items and if so, returns true. Otherwise, returns false.
+ * @global <tt>$data</tt> contains feed information
+ * @global <tt>$list</tt> contains a SimplePie object
+ * @global <tt>$item_number</tt> contains the current item's position in the item list
+ * @global <tt>$settings</tt> contains filename information and default time to display
+ * @global <tt>$showtime</tt> contains the
+ *
+ * @return boolean Are items available?
+ */
+function has_items($increment = true) {
+	global $data, $list, $item_number, $settings, $showtime;
+	if(empty($data))
 		$data = lilina_load_feeds($settings['files']['feeds']);
-	}
-	if(empty($data) || !is_array($data) || count($data) === 0) {
+
+	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
-	}
-	if(empty($list)) {
+
+	if(empty($list))
 		$list	= lilina_return_items($data);
+
+	if(!isset($item_number) && $increment)
+		$item_number = 0;
+	elseif ($increment)
+		++$item_number;
+	
+	if(!isset($showtime)) {
+		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
+			if( -1 == $_REQUEST['hours'])
+				$showtime = 0;
+			else
+				$showtime = time() - ((int) $_REQUEST['hours'] * 60 * 60);
+		}
+		else
+			$showtime = time() - ((int) $settings['interface']['times'][0] * 60 * 60);
+
+		$showtime = apply_filters('showtime', $showtime);
 	}
-	return apply_filters('has_items', ( $item_number < $list->get_item_quantity() ) );
+	
+	if(isset($item)) {
+		if(get_the_date('U') < $showtime)
+			return apply_filters('has_items', false);
+	}
+
+	if($item_number < $list->get_item_quantity())
+		return apply_filters('has_items', true);
+
+	return false;
 }
 
 /**
@@ -175,11 +214,8 @@ function get_items() {
  * @todo Document
  */
 function the_item() {
-	global $data, $list, $items, $item_number, $item;
-	if(!isset($item_number))
-		$item_number = 0;
-	$item = $list->get_item($item_number);
-	++$item_number;
+	global $list, $item_number, $item;
+	$item = apply_filters('the_item', $list->get_item( $item_number ));
 }
 
 /**
@@ -260,7 +296,7 @@ function the_id($id = -1) {
  */
 function the_feed_name() {
 	global $item;
-	printf(_r('Post from %s'), apply_filters( 'the_feed_name', $item->get_feed()->get_title() ) );
+	echo apply_filters( 'the_feed_name', $item->get_feed()->get_title() );
 }
 
 /**
@@ -269,6 +305,14 @@ function the_feed_name() {
 function the_feed_url() {
 	global $item;
 	echo apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+}
+
+/**
+ * @todo Document
+ */
+function the_feed_favicon() {
+	global $item;
+	echo apply_filters( 'the_feed_favicon', $item->get_feed()->get_favicon() );
 }
 
 /**
@@ -296,17 +340,38 @@ function the_feed_id($id = -1) {
 function has_enclosure() {
 	global $item, $enclosure;
 	$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
-	return $enclosure;
+	$enclosure_link = $enclosure->get_link();
+	return !empty($enclosure_link);
+}
+
+if(!function_exists('the_enclosure')) {
+	/**
+	 * @todo Document
+	 */
+	function the_enclosure() {
+		global $item, $enclosure;
+		if(empty($enclosure)) {
+			if(!has_enclosure()) {
+				return false;
+			}
+		}
+
+		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '">' . _r('View podcast') . '</a>' . "\n" );
+	}
 }
 
 /**
  * @todo Document
  */
-function the_enclosure() {
+function atom_enclosure() {
 	global $item, $enclosure;
 	if(!$enclosure)
 		$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
-	echo apply_filters( 'the_enclosure', $enclosure->embed() );
+
+	if(!has_enclosure())
+		return false;
+
+	echo apply_filters('atom_enclosure', '<link href="' . $enclosure->get_link() . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->length() . '" />' . "\n");
 }
 
 /**
@@ -320,24 +385,16 @@ function date_equals($args='') {
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
 	extract($args, EXTR_SKIP);
-	switch ( $equalto ) {
-		case 'previous':
-			if($item_number - 1 >= $list->get_item_quantity())
-				return false;
-			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $item_number - 1 )->get_date( 'l d F, Y' );
-			break;
-		case 'next':
-			if($item_number + 1 >= $list->get_item_quantity())
-				return false;
-			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $item_number + 1 )->get_date( 'l d F, Y' );
-			break;
-		default:
-			//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
-			if( isint( $equalto ) || $equalto >= $list->get_item_quantity() )
-				return false;
-			$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
-			break;
-	}
+
+	if( 'previous' == $equalto )
+			$equalto = $item_number - 1;
+	elseif( 'next' == $equalto )
+			$equalto = $item_number + 1 ;
+
+	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
+	if( !is_int( $equalto ) || $equalto >= $list->get_item_quantity() || $equalto < 0 )
+		return false;
+	$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
 	return apply_filters('date_equals', $equals, $equalto);
 }
 
@@ -352,24 +409,16 @@ function feed_equals($args='') {
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
 	extract($args, EXTR_SKIP);
-	switch ( $equalto ) {
-		case 'previous':
-			if($item_number - 1 >= $list->get_item_quantity())
-				return false;
-			$equals = get_the_feed_id() == get_the_feed_id($item_number - 1);
-			break;
-		case 'next':
-			if($item_number + 1 >= $list->get_item_quantity())
-				return false;
-			$equals = get_the_feed_id() == get_the_feed_id($item_number + 1);
-			break;
-		default:
-			//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
-			if((int) $equalto >= $list->get_item_quantity() || (int) $equalto < 0 )
-				return false;
-			$equals = get_the_feed_id() == get_the_feed_id($equalto);
-			break;
-	}
+
+	if( 'previous' == $equalto)
+		$equalto = $item_number - 1;
+	elseif( 'next' == $equalto)
+		$equalto = $item_number + 1;
+
+	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
+	if( !is_int( $equalto ) || $equalto >= $list->get_item_quantity() || $equalto < 0 )
+		return false;
+	$equals = get_the_feed_id() == get_the_feed_id($equalto);
 	return apply_filters('feed_equals', $equals, $equalto);
 }
 
@@ -380,12 +429,12 @@ function feed_equals($args='') {
 */
 function has_feeds() {
 	global $data, $list, $settings;
-	if(empty($data)) {
+	if(empty($data))
 		$data = lilina_load_feeds($settings['files']['feeds']);
-	}
-	if(empty($data) || !is_array($data) || count($data) === 0) {
+
+	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
-	}
+
 	return true;
 	//if(empty($list)) {
 	//	$list	= lilina_return_items($data);
@@ -400,6 +449,7 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
+	return array();
 	global $data, $list, $settings;
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);

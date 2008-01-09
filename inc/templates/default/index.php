@@ -43,9 +43,9 @@ template_header();
 	if(template_synd_links())
 		echo ' | ';
 	?>
-	<a id="expandall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_out.png');?>" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a> |
-	<a id="collapseall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a> |
-	<a id="removedates" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="<?php _e('Remove dates'); ?>" /> <?php _e('Remove date markers'); ?></a>
+	<a id="expandall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_out.png');?>" alt="Show All Items" /> Expand</a> |
+	<a id="collapseall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="Hide All Items" /> Collapse</a> |
+	<a id="removedates" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="Remove dates" /> Remove date markers</a>
 	|
 	<a href="opml.php">OPML</a>
 	|
@@ -64,21 +64,25 @@ template_header();
 <div id="main">
 <?php
 $notfirst = false;
-while(has_items()) {
-	the_item();
-	if(date_equals()) {
+// We call it with false as a parameter to avoid incrementing the item number
+if(has_items(false)) {
+	while(has_items()): the_item();
+	if(!date_equals()) {
 		if($notfirst) {
 			//Close both feed and date
 			echo '		</div>';
 			echo '	</div>', "\n";
 		}
+		else {
+			$notfirst = true;
+		}
 ?>
-	<h1 title="<?php _e('Click to expand/collapse date');?>">News stories from <?php the_date('l d F, Y')?></h1>
-	<div id="date<?php the_date('dmY')?>">
-		<div class="feed feed-<?php get_the_feed_id(); ?>">
+	<h1 title="Click to expand/collapse date">News stories from <?php the_date('format=l d F, Y'); ?></h1>
+	<div id="date<?php the_date('format=dmY'); ?>">
+		<div class="feed feed-<?php the_feed_id(); ?>">
 <?php
 	}
-	elseif(feed_equals()) {
+	elseif(!feed_equals()) {
 		global $item_number;
 		if($item_number != 0) {
 			echo '		</div>';
@@ -87,10 +91,10 @@ while(has_items()) {
 	}
 ?>
 			<div class="item c2" id="IITEM-<?php the_id(); ?>">
-				<img src="<?php echo $item['icon'];?>" alt="<?php _e('Favicon');?>" title="<?php _e('Favicon');?>" style="width:16px; height:16px;" />
+				<img src="<?php the_feed_favicon(); ?>" alt="Favicon for <?php the_feed_name();?>" title="Favicon for <?php the_feed_name();?>" style="width:16px; height:16px;" />
 				<span class="time"><?php the_date('format=H:i'); ?></span>
-				<span class="title" id="TITLE<?php the_id(); ?>" title="<?php _e('Click to expand/collapse item');?>"><?php the_title(); ?></span>
-				<span class="source"><a href="<?php the_feed_url(); ?>">&#187; <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link'); ?>" /></a></span>
+				<span class="title" id="TITLE<?php the_id(); ?>" title="Click to expand/collapse item"><?php the_title(); ?></span>
+				<span class="source"><a href="<?php the_link(); ?>">&#187; Post from <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="Visit off-site link" /></a></span>
 				<div class="excerpt" id="ICONT<?php the_id(); ?>">
 					<?php the_content(); ?>
 					<?php if( has_enclosure() ){
@@ -99,11 +103,10 @@ while(has_items()) {
 				</div>
 				<?php do_action('river_entry'); ?>
 			</div><?php
-	//Feed closed above
-//Date closed above
-$notfirst = true;
+
+	endwhile;
 }
-if(!has_feeds()) {
+elseif(!has_feeds()) {
 ?>
 	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
 <?php
@@ -121,7 +124,8 @@ else {
 
 <div id="sources">
 	<strong>Sources:</strong>
-	<ul><?php/*
+	<ul>
+	<?php
 		if(has_feeds()) {
 			foreach(get_feeds() as $feed) { ?>
 		<li>
@@ -135,11 +139,13 @@ else {
 		else {
 			//Already handled above; if there are no feeds, then there should be no items...
 		}
-		?>
+	?>
 	</ul><?php
-	echo $feed->error();*/
+	//echo $feed->error();
 	?></div>
 <div id="footer">
+<p><?php echo get_option('sitename'); ?> is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a></p>
+<!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
 <?php template_footer(); ?>
 </div>
 </body>

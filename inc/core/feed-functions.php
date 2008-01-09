@@ -272,5 +272,5 @@ function lilina_parse_html($val_array){
 register_filter('the_title', 'lilina_parse_html');
 register_filter('the_content', 'lilina_parse_html');
 register_filter('the_summary', 'lilina_parse_html');
-register_filter('return_output', 'lilina_parse_html', 1);
+register_filter('return_output', 'lilina_parse_html');
 ?>

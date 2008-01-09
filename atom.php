@@ -59,25 +59,25 @@ echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 	<?php do_action('atom_head'); ?>
 	<?php 
 	if(has_items()) {
-		foreach(get_items() as $item) {
+		while(has_items()): the_item();
 	?>
 	<entry>
 		<author>
-			<name><?php echo $item['channel_title']; ?></name>
-			<uri><?php echo $item['channel_link']; ?></uri>
+			<name><?php the_feed_name(); ?></name>
+			<uri><?php the_feed_url(); ?></uri>
 		</author>
-		<title type="html"><![CDATA[<?php echo $item['title']; ?>]]></title>
-		<link rel="alternate" type="text/html" href="<?php echo $item['link']; ?>" />
-		<id><?php echo $item['guid']; ?></id>
-		<updated><?php echo date('Y-m-d\TH:i:s\Z', $item['timestamp']); ?></updated>
-		<published><?php echo date('Y-m-d\TH:i:s\Z', $item['timestamp']); ?></published>
-		<summary type="html"><![CDATA[<?php echo $item['summary']; ?>]]></summary>
-		<content type="html" xml:base="<?php echo $item['link']; ?>"><![CDATA[<?php echo $item['summary']; ?>]]></content>
-<?php //atom_enclosure(); ?>
-<?php do_action('atom_entry'); ?>
+		<title type="html"><![CDATA[<?php the_title(); ?>]]></title>
+		<link rel="alternate" type="text/html" href="<?php the_link(); ?>" />
+		<id><?php the_id(); ?></id>
+		<updated><?php the_date('Y-m-d\TH:i:s\Z'); ?></updated>
+		<published><?php the_date('Y-m-d\TH:i:s\Z'); ?></published>
+		<summary type="html"><![CDATA[<?php the_summary(); ?>]]></summary>
+		<content type="html" xml:base="<?php the_link(); ?>"><![CDATA[<?php the_summary(); ?>]]></content>
+		<?php atom_enclosure(); ?>
+		<?php do_action('atom_entry'); ?>
 	</entry>
 	<?php
-		}
+		endwhile;
 	}
 	?>
 </feed>

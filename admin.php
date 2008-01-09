@@ -269,54 +269,63 @@ function add_tech_notice($message) {
 }
 
 /**
- * Adds a new feed, then saves the feeds
- * @todo Move saving to outside, it's really inefficient when importing a lot of feeds
+ * Adds a new feed
+ *
+ * Adds the specified feed name and URL to the global <tt>$data</tt> array. If no name is set
+ * by the user, it fetches one from the feed. If the URL specified is a HTML page and not a
+ * feed, it lets SimplePie do autodiscovery and uses the XML url returned.
  * @todo Document parameters
- * @global array Contains file names which are used when saving
  * @global array Contains all feeds, this is what we add the new feed to
+ * @global array Contains current version number
  * @return bool True if succeeded, false if failed
  */
-function add_feed($url, $name = '', $original_url = false) {
-	global $settings, $data;
-	//Fix users' kludges; They'll thank us for it
+function add_feed($url, $name = '', $cat = 'default') {
+	global $data, $lilina;
+	/** Fix users' kludges; They'll thank us for it */
 	$url	= str_replace(array('feed://http://', 'feed://http//', 'feed://', 'feed:http://', 'feed:'), 'http://', $url);
-	/*$feed_info = fetch_rss($url);
-	if(!$feed_info && !$original_url) {
-		//Try again, but autodiscover
-		$auto = lilina_get_rss($url);
-		if(is_array($auto)) {
-			foreach($auto as $new_feed) {
-				$new_result = add_feed($new_feed, $name, $url);
-				if($new_result) { return true; }
-			}
-			//If we're still going, it failed
-			add_notice(sprintf(_r("Couldn't add feed: %s is not a valid URL or the server could not be accessed."), $url) . '<br />');
-			add_tech_notice(_r('Magpie said: ') . magpie_error());
-			return false;
-		}
-		else {
-			//No feeds autodiscovered;
-			add_notice(sprintf(_r("Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery."), $url));
-			return false;
-		}
-	}
-	elseif(!$feed_info && is_string($original_url)) {
-		//May be more feeds to check, don't print an error; The original does that for us
+	if(empty($url)) {
+		add_notice(_r("Couldn't add feed: No feed URL supplied"));
 		return false;
 	}
+
+	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+	$feed_info = new SimplePie();
+	$feed_info->set_useragent( 'Lilina/' . $lilina['core-sys']['version'].'; ' . get_option('baseurl') );
+	$feed_info->set_stupidly_fast( true );
+	$feed_info->set_cache_location(LILINA_PATH . '/cache');
+	$feed_info->set_feed_url( $url );
+	$feed_info->init();
+	$feed_error = $feed_info->error();
+
+	if(!empty($feed_error)) {
+		//No feeds autodiscovered;
+		add_notice( sprintf( _r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ) );
+		add_tech_notice($feed_error, $url);
+		return false;
+	}
+
 	if(empty($name)) {
 		//Get it from the feed
-		$name = $feed_info->channel['title'];
+		$name = $feed_info->get_title();
 	}
-	if(empty($url)) {
-		//Now this we do care about
-		add_notice(_r('Couldn\'t add feed: No feed URL supplied'));
-		return false;
-	}*/
-	$feed_num	= count($data['feeds']);
-	$data['feeds'][$feed_num]['feed']	= $url;
-	$data['feeds'][$feed_num]['name']	= $name;
-	$data['feeds'][$feed_num]['cat']	= 'default'; //$add_category;
+
+	$data['feeds'][] = array(
+		'feed'	=> $url,
+		'name'	=> $name,
+		'cat'	=> $cat,
+	);
+	add_notice( sprintf( _r('Added feed "%1$s"'), $name ) );
+	add_action( 'admin_header-admin-feeds.php', 'save_feeds' );
+	return true;
+}
+
+/**
+ * Saves all feeds to the file specified in the settings
+ *
+ * Serializes, then base 64 encodes
+ */
+function save_feeds() {
+	global $data, $settings;
 	$sdata	= base64_encode(serialize($data)) ;
 	$fp		= fopen($settings['files']['feeds'],'w') ;
 	if(!$fp) {
@@ -325,8 +334,6 @@ function add_feed($url, $name = '', $original_url = false) {
 	}
 	fputs($fp,$sdata) ;
 	fclose($fp) ;
-	add_notice(sprintf(_r('Added feed "%1$s"'), $name));
-	return true;
 }
 
 /**
@@ -469,6 +476,10 @@ switch($action){
 		die();
 	break;
 }
+
+do_action('admin_header');
+do_action("admin_header-$out_page");
+
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

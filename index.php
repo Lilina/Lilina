@@ -57,8 +57,6 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 //Templating functions
 require_once(LILINA_INCPATH . '/core/skin.php');
 
-$showtime = ( isset($_REQUEST['hours']) ? $_REQUEST['hours']*3600 : 3600*$settings['interface']['times'][0] ) ;
-
 // load times*/
 $time_table	= lilina_load_times();
 

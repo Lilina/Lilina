@@ -141,10 +141,10 @@ function register_action($action, $function, $num_args=0) {
 */
 function add_filter($filter, $function, $num_args=1) {
 	global $filters;
-	$filters[$filter][]	= array(
-										'function'	=> $function,
-										'num_args'	=> $num_args,
-										);
+	$filters[$filter][$function]	= array(
+		'function'	=> $function,
+		'num_args'	=> $num_args,
+		);
 }
 
 /**
