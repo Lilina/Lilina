@@ -1,11 +1,11 @@
 <?php
 /**
- * @todo Document properly
- * @author Danilo Segan <danilo@kvota.net>
- * @package PHP-gettext
- * @version 1.0.7
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-/*
+ * PHP-Gettext External Library: StreamReader classes
+ *
+ * @package External
+ * @subpackage PHP-gettext
+ *
+ * @internal 
    Copyright (c) 2003, 2005 Danilo Segan <danilo@kvota.net>.
 
    This file is part of PHP-gettext.
@@ -24,7 +24,7 @@
    along with PHP-gettext; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-*/
+ */
 
 
 // Simple class to wrap file streams, string streams, etc.
@@ -34,17 +34,17 @@ class StreamReader {
   function read($bytes) {
     return false;
   }
-  
+
   // should return new position
   function seekto($position) {
     return false;
   }
-  
+
   // returns current position
   function currentpos() {
     return false;
   }
-  
+
   // returns length of entire stream (limit for seekto()s)
   function length() {
     return false;
@@ -120,7 +120,7 @@ class FileReader {
         $bytes -= strlen($chunk);
       }
       $this->_pos = ftell($this->_fd);
-      
+
       return $data;
     } else return '';
   }
@@ -145,7 +145,7 @@ class FileReader {
 
 }
 
-// Preloads entire file in memory first, then creates a StringReader 
+// Preloads entire file in memory first, then creates a StringReader
 // over it (it assumes knowledge of StringReader internals)
 class CachedFileReader extends StringReader {
   function CachedFileReader($filename) {
