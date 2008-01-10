@@ -130,6 +130,75 @@ function template_times(){
 }
 
 /**
+ * @todo Document
+ * @todo Implement items_per_page, feed_include, feed_exclude
+ */
+function query_setup($override = true) {
+	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
+	$defaults = array(
+		'show_since' => -1,
+		'items_per_page' => 5,
+		'max_items' => -1,
+
+		'feed_include' => -1,
+		'feed_exclude' => -1,
+
+		'page_num' => -1,
+		'offset' => -1,
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+
+	/** Default setup */
+	if($show_since < 0) {
+		if(!isset($showtime)) {
+			if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
+				if( -1 == $_REQUEST['hours'])
+					$showtime = 0;
+				else
+					$showtime = ((int) $_REQUEST['hours'] * 60 * 60);
+			}
+			else
+				$showtime = ((int) $settings['interface']['times'][0] * 60 * 60);
+
+			$showtime = apply_filters('showtime', $showtime);
+		}
+		$show_since = $showtime;
+	}
+	$showtime = time() - $show_since;
+	
+	if($items_per_page < 0)
+		// Do nothing for now
+
+	if($max_items < 0)
+		$max_items = $list->get_item_quantity();
+
+	$total_items = $max_items;
+
+	if($feed_include < 0)
+		// Do nothing for now
+
+	if($feed_exclude < 0)
+		// Do nothing for now
+		
+	if($page_num > 0)
+		$offset += ($items_per_page * $page_num);
+
+	if($offset >= 0)
+		$item_number = ($offset - 1);
+		
+	if(empty($data))
+		$data = lilina_load_feeds($settings['files']['feeds']);
+
+	if(!isset($data['feeds']) || count($data['feeds']) === 0)
+		return false;
+
+	if(empty($list))
+		$list	= lilina_return_items($data);
+}
+
+/**
  * Initializes SimplePie and loads the feeds into the global <tt>$list</tt> array.
  *
  * Loads feeds from conf/feeds.data into the global <tt>$list</tt> array if not already done.
@@ -152,7 +221,7 @@ function template_times(){
  * @return boolean Are items available?
  */
 function has_items($increment = true) {
-	global $data, $list, $item_number, $settings, $showtime;
+	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
 	if(empty($data))
 		$data = lilina_load_feeds($settings['files']['feeds']);
 
@@ -185,7 +254,10 @@ function has_items($increment = true) {
 			return apply_filters('has_items', false);
 	}
 
-	if($item_number < $list->get_item_quantity())
+	if(!isset($total_items))
+		$total_items = $list->get_item_quantity();
+
+	if($item_number < $total_items)
 		return apply_filters('has_items', true);
 
 	return false;
@@ -253,22 +325,22 @@ function the_link() {
 /**
  * @todo Document
  */
-function get_the_date($args='') {
+function get_the_date($format='U') {
 	global $item;
-	$defaults = array(
-		'format' => 'H:i:s, l d F, Y'
-	);
-	$args = lilina_parse_args($args, $defaults);
-	/** Make sure we don't overwrite any current variables */
-	extract($args, EXTR_SKIP);
-	echo apply_filters( 'get_the_date', $item->get_date( $format ) );
+	return apply_filters( 'get_the_date', $item->get_date( $format ) );
 }
 
 /**
  * @todo Document
  */
 function the_date($args='') {
-	echo get_the_date($args);
+	$defaults = array(
+		'format' => 'H:i:s, l d F, Y'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	echo get_the_date($format);
 }
 
 /**
@@ -378,7 +450,7 @@ function atom_enclosure() {
  * @todo Document
  */
 function date_equals($args='') {
-	global $item, $item_number, $list;
+	global $item, $item_number, $list, $total_items;
 	$defaults = array(
 		'equalto' => 'previous'
 	);
@@ -392,7 +464,7 @@ function date_equals($args='') {
 			$equalto = $item_number + 1 ;
 
 	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
-	if( !is_int( $equalto ) || $equalto >= $list->get_item_quantity() || $equalto < 0 )
+	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
 	return apply_filters('date_equals', $equals, $equalto);
@@ -402,7 +474,7 @@ function date_equals($args='') {
  * @todo Document
  */
 function feed_equals($args='') {
-	global $item, $item_number, $list;
+	global $item, $item_number, $list, $total_items;
 	$defaults = array(
 		'equalto' => 'previous'
 	);
@@ -416,7 +488,7 @@ function feed_equals($args='') {
 		$equalto = $item_number + 1;
 
 	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
-	if( !is_int( $equalto ) || $equalto >= $list->get_item_quantity() || $equalto < 0 )
+	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$equals = get_the_feed_id() == get_the_feed_id($equalto);
 	return apply_filters('feed_equals', $equals, $equalto);

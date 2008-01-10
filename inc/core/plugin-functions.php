@@ -12,34 +12,7 @@
  */
 
 defined('LILINA') or die('Restricted access');
-/**
-* @todo Document globals
-*/
-global $activated_plugins, $registered_plugins, $hooked_plugins;
-$activated_plugins = array();
-$registered_plugins = array();
-/**
- * All currently hooked plugins and associated functions
- * @global array $hooked_plugins
- */
-$hooked_plugins = array('template_header' => array());
-$activated_plugins	= @file_get_contents($settings['files']['plugins']) ;
-$activated_plugins	= unserialize( base64_decode( $activated_plugins ) ) ;
 
-/**
-* Get all hooked plugins at hook
-*
-* @global array All currently hooked plugins
-* @param string $hook Hook to look for plugin functions at
-* @return array All the hooked plugins available at hook
-*/
-function get_hooked($hook) {
-	global $hooked_plugins;
-	if(isset($hooked_plugins[$hook])) {
-		return $hooked_plugins[$hook];
-	}
-	return array();
-}
 
 /**
  * Applies filters specified by <tt>$filter_name</tt> on <tt>$string</tt>
@@ -264,17 +237,22 @@ function lilina_plugins_list($directory){
 	return $plugin_list;
 }
 
-function lilina_init_plugins() {
-	$plugins		= lilina_plugins_list(LILINA_INCPATH . '/plugins');
-	foreach($plugins as $the_plugin) {
-		require_once($the_plugin);
+/**
+ * Loads activated plugin files
+ *
+ * Retrieves a base 64 encoded, serialize
+ * @global array $settings Contains file path
+ */
+function init_plugins() {
+	global $settings;
+	$current_plugins	= @file_get_contents($settings['files']['plugins']) ;
+	$current_plugins	= unserialize( $current_plugins ) ;
+	if ( is_array($current_plugins) ) {
+		foreach ($current_plugins as $plugin) {
+			if ('' != $plugin && file_exists(ABSPATH . PLUGINDIR . '/' . $plugin))
+				include_once(ABSPATH . PLUGINDIR . '/' . $plugin);
+		}
 	}
-	$old_plugins	= array(); //lilina_old_plugins();
-	//Note the order; array_diff() returns missing elements from _2nd_ param
-	//Therefore:
-	$new_plugins	= array_diff($plugins, $old_plugins);
-	$gone_plugins	= array_diff($old_plugins, $plugins);
-	//Load the plugin files
-	get_plugins();
 }
+add_action('init', 'init_plugins');
 ?>
