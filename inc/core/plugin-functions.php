@@ -29,10 +29,17 @@ function apply_filters($filter_name, $string=''){
 		return $string;
 	}
 	$args = func_get_args();
-	foreach($filters[$filter_name] as $filter) {
-		$filter_function = $filter['function'];
-		$string = call_user_func_array($filter['function'], array_slice($args, 1, (int) $filter['num_args']));
-	}
+
+	ksort($filters[$filter_name]);
+
+	reset( $filters[$filter_name] );
+
+	do {
+		foreach((array) current($filters[$filter_name]) as $filter) {
+			$filter_function = $filter['function'];
+			$string = call_user_func_array($filter['function'], array_slice($args, 1, (int) $filter['num_args']));
+		}
+	} while ( next($filters[$filter_name]) !== false );
 	return $string;
 }
 
@@ -112,9 +119,9 @@ function register_action($action, $function, $num_args=0) {
 * @param string $function Plugin function to register
 * @param string $hook Hook to register function under
 */
-function add_filter($filter, $function, $num_args=1) {
+function add_filter($filter, $function, $priority = 0, $num_args=1) {
 	global $filters;
-	$filters[$filter][$function]	= array(
+	$filters[$filter][$priority][$function]	= array(
 		'function'	=> $function,
 		'num_args'	=> $num_args,
 		);
@@ -249,8 +256,8 @@ function init_plugins() {
 	$current_plugins	= unserialize( $current_plugins ) ;
 	if ( is_array($current_plugins) ) {
 		foreach ($current_plugins as $plugin) {
-			if ('' != $plugin && file_exists(ABSPATH . PLUGINDIR . '/' . $plugin))
-				include_once(ABSPATH . PLUGINDIR . '/' . $plugin);
+			if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
+				include_once(LILINA_INCPATH . '/plugins/' . $plugin);
 		}
 	}
 }
