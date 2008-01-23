@@ -19,7 +19,7 @@ defined('LILINA') or die('Restricted access');
 		foreach($feed_list as $this_feed) {
 			if(isset($this_feed['name']) && !empty($this_feed['name'])) {
 				echo '
-		<li><a href="' . $this_feed['feed'] . '">'.$this_feed['name'].'</a></li>';
+		<li><a href="' . $this_feed['feed'] . '">'.stripslashes($this_feed['name']).'</a></li>';
 			}
 			else {
 				echo '

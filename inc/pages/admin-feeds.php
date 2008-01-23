@@ -33,7 +33,7 @@ if(is_array($feeds)) {
 	foreach($feeds as $this_feed) {
 		$list		.= '<tr class="' . $alt . '">
 		<td class="id-col">'.$j.'</td>
-		<td class="name-col">'.$this_feed['name'].'</td>
+		<td class="name-col">'.stripslashes($this_feed['name']).'</td>
 		<td class="url-col">'.$this_feed['feed'].'</td>
 		<td class="change-col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" class="change_link">Change</a></td>
 		<td class="remove-col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
