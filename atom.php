@@ -58,7 +58,7 @@ echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 
 	<?php do_action('atom_head'); ?>
 	<?php 
-	if(has_items()) {
+	if(has_items(false)) {
 		while(has_items()): the_item();
 	?>
 	<entry>
