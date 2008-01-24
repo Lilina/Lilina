@@ -60,29 +60,79 @@ function install($sitename, $username, $password) {
 <?php
 		flush();
 		$raw_php		= "<?php
+// What you want to call your Lilina installation
 \$settings['sitename'] = '$sitename';
+
+// The URL to your server
 \$settings['baseurl'] = '$guessurl';
+
+// Username and password to log into the administration panel
+// 'pass' is MD5ed
 \$settings['auth'] = array(
 							'user' => '$username',
 							'pass' => '" . md5($password) . "'
 							);
+
+// All the enabled plugins, stored in a serialized string
+\$settings['enabled_plugins'] = '';
 ?>";
-		$settings_file	= @fopen('./conf/settings.php', 'w+');
-		if(!@file_exists('./conf/feeds.data')) {
+		if( !is_writable('./conf/')
+			|| !($settings_file = @fopen('./conf/settings.php', 'w+'))
+			|| !is_resource($settings_file) ) {
+			?>
+			<p>Please make sure that the conf directory is writable and that I can create <code>conf/settings.php</code></p>
+			<p>You can also try saving the following as <code>conf/settings.php</code></p>
+<pre>
+<?php highlight_string($raw_php); ?>
+</pre>
+			<form action="<?php /** @todo This is unsafe. Convert */ echo $_SERVER['PHP_SELF']; ?>" method="post">
+			<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
+			<input type="hidden" name="username" value="<?php echo $username; ?>" />
+			<input type="hidden" name="password" value="<?php echo $password; ?>" />
+			<input type="hidden" name="page" value="2">
+			<input type="submit" value="Try again?" />
+			</form>
+			<?php
+			return false;
+		}
+		if(file_exists('./conf/feeds.data')) {
+			echo "<p>Using existing feeds</p>\n";
+		}
+		else {
 			$feeds_file = @fopen('./conf/feeds.data', 'w+');
-			if($feeds_file) {
+			if(is_resource($feeds_file)) {
 				fclose($feeds_file) ;
 			}
-		}
-		if(!@file_exists('./conf/time.data')) {
-			$times_file = @fopen('./conf/time.data', 'w+');
-			if($times_file) {
-				fclose($times_file);
+			else {
+				echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
 			}
 		}
-		if($settings_file){
-			fputs($settings_file, $raw_php) ;
-			fclose($settings_file) ;
+		/** Make sure it's writable now */
+		if(!is_writable('./conf/feeds.data')) {
+			/** We'll try this first */
+			chmod('./conf/feeds.data', 0755);
+			if(!is_writable('./conf/feeds.data')) {
+				/** Nope, let's give group permissions too */
+				chmod('./conf/feeds.data', 0775);
+				if(!is_writable('./conf/feeds.data')) {
+					/** Still no dice, give write permissions to all */
+					chmod('./conf/feeds.data', 0777);
+					if(!is_writable('./conf/feeds.data')) {
+						/** OK, we can't make it writable ourselves. Tell the user this */
+						echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
+					}
+				}
+			}
+		}
+		// I don't think we need this any more
+		/*if(!@file_exists('./conf/time.data')) {
+			$times_file = @fopen('./conf/time.data', 'w+');
+			if(is_resource($times_file)) {
+				fclose($times_file);
+			}
+		}*/
+		fputs($settings_file, $raw_php);
+		fclose($settings_file);
 ?>
 <p>Lilina has been set up on your server and is ready to run. Open <a href="index.php">your home page</a> and get reading!</p>
 <dl>
@@ -93,23 +143,6 @@ function install($sitename, $username, $password) {
 </dl>
 <p>Were you expecting more steps? Sorry to disappoint. All done! :)</p>
 <?php
-		}
-		else {
-			echo 'I couldn\'t open conf/settings.php to write to.
-			Please make sure that the conf directory is writable and that the server can write to it.
-			You can also save the following text as conf/settings.php<br /><pre>';
-			highlight_string($raw_php);
-			echo '</pre>
-			<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-			<input type="hidden" name="sitename" value="'.$sitename.'" />
-			<input type="hidden" name="url" value="'.$url.'" />
-			<input type="hidden" name="username" value="'.$username.'" />
-			<input type="hidden" name="password" value="'.$password.'" />
-			<input type="hidden" name="page" value="2">
-			<input type="submit" value="Try again" />
-			</form>';
-			return false;
-		}
 		return true;
 }
 //Initialize variables

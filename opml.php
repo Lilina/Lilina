@@ -16,9 +16,10 @@ define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
 $out		= '';
-//Current Version
+/** Current Version */
 require_once(LILINA_INCPATH . '/core/version.php');
-
+require_once(LILINA_INCPATH . '/core/conf.php');
+require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
 //Make sure we are actually installed...
@@ -27,9 +28,6 @@ if(!lilina_check_installed()) {
 	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
 	die();
 }
-
-//We need this even for cached pages
-require_once(LILINA_INCPATH . '/core/conf.php');
 
 //Plugins and misc stuff
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');

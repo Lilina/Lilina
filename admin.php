@@ -326,6 +326,10 @@ function add_feed($url, $name = '', $cat = 'default') {
  */
 function save_feeds() {
 	global $data, $settings;
+	if(!is_writable($settings['files']['feeds'])) {
+		add_notice(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), $settings['files']['feeds']));
+		return false;
+	}
 	$sdata	= base64_encode(serialize($data)) ;
 	$fp		= fopen($settings['files']['feeds'],'w') ;
 	if(!$fp) {
