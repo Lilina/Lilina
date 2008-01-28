@@ -110,13 +110,13 @@ function install($sitename, $username, $password) {
 		/** Make sure it's writable now */
 		if(!is_writable('./conf/feeds.data')) {
 			/** We'll try this first */
-			chmod('./conf/feeds.data', 0755);
+			chmod('./conf/feeds.data', 0644);
 			if(!is_writable('./conf/feeds.data')) {
 				/** Nope, let's give group permissions too */
-				chmod('./conf/feeds.data', 0775);
+				chmod('./conf/feeds.data', 0664);
 				if(!is_writable('./conf/feeds.data')) {
 					/** Still no dice, give write permissions to all */
-					chmod('./conf/feeds.data', 0777);
+					chmod('./conf/feeds.data', 0666);
 					if(!is_writable('./conf/feeds.data')) {
 						/** OK, we can't make it writable ourselves. Tell the user this */
 						echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
