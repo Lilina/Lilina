@@ -51,19 +51,19 @@ echo '<?xml version="1.0" encoding="'.get_option('encoding').'"?'.'>';
 	<generator>http://getlilina.org/?v=<?php echo $lilina['core-sys']['version']; ?></generator>
 	<language><?php echo get_option('lang'); ?></language>
 	<?php do_action('rss2_head');
-	if(has_items()) {
-		foreach(get_items() as $item) {
+	if(has_items(false)) {
+		while(has_items()) { the_item();
 	?>
 	<item>
-		<title><?php echo $item['title']; ?></title>
-		<link><?php echo $item['link']; ?></link>
-		<pubDate><?php echo date('D, d M Y H:i:s +0000', $item['timestamp']); ?></pubDate>
+		<title><![CDATA[<?php the_title(); ?>]]></title>
+		<link><?php the_link(); ?></link>
+		<pubDate><?php the_date('D, d M Y H:i:s +0000'); ?></pubDate>
 		<?php //Not entirely accurate; uses the feed name, not the author ?>
-		<dc:creator><?php echo $item['channel_title']; ?></dc:creator>
+		<dc:creator><?php the_feed_name(); ?></dc:creator>
 
-		<guid isPermaLink="false"><?php echo $item['guid']; ?></guid>
-		<description><![CDATA[<?php echo $item['summary']; ?>]]></description>
-		<content:encoded><![CDATA[<?php echo $item['summary']; ?>]]></content:encoded>
+		<guid isPermaLink="false"><?php the_id(); ?></guid>
+		<description><![CDATA[<?php the_summary(); ?>]]></description>
+		<content:encoded><![CDATA[<?php the_content(); ?>]]></content:encoded>
 		<?php do_action('rss2_item'); ?>
 	</item>
 	<?php }
