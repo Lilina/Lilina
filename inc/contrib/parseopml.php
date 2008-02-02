@@ -39,7 +39,7 @@ class OPMLParser {
 
 function parse_opml($remote_file) {
 	// Create an XML parser
-	$xml_parser = xml_parser_create('ISO-8859-1');
+	$xml_parser = xml_parser_create();
 
 	$opml_parser = new OPMLParser();
 	xml_set_object($xml_parser,$opml_parser);
