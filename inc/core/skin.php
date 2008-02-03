@@ -248,19 +248,26 @@ function has_items($increment = true) {
 
 		$showtime = apply_filters('showtime', $showtime);
 	}
-	
-	if(isset($item)) {
-		if(get_the_date('U') < $showtime)
-			return apply_filters('has_items', false, $showtime);
-	}
 
 	if(!isset($total_items))
 		$total_items = $list->get_item_quantity();
+	
+	if($total_items <= 0)
+		return apply_filters('has_items', false, $showtime, $total_items);
+	
+	if(!isset($item)) {
+		if($list->get_item(0)->get_date( $format ) < $showtime)
+			return apply_filters('has_items', false, $showtime, $total_items);
+	}
+	else {
+		if(get_the_date('U') < $showtime)
+			return apply_filters('has_items', false, $showtime, $total_items);
+	}
 
 	if($item_number < $total_items)
-		return apply_filters('has_items', true);
+		return apply_filters('has_items', true, $showtime, $total_items);
 
-	return false;
+	return apply_filters('has_items', false, $showtime, $total_items);
 }
 
 /**
@@ -319,7 +326,7 @@ function the_content() {
  */
 function the_link() {
 	global $item;
-	echo apply_filters( 'the_id', $item->get_link() );
+	echo apply_filters( 'the_link', $item->get_link() );
 }
 
 /**
