@@ -577,4 +577,10 @@ if(!function_exists('template_file_load')) {
 		return apply_filters('template_file_load', $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file, $file);
 	}
 }
+if(!function_exists('template_directory')) {
+	function template_directory() {
+		global $settings;
+		echo get_option('baseurl') . 'inc/templates/' . get_option('template');
+	}
+}
 ?>

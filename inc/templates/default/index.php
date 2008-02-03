@@ -19,17 +19,10 @@ $nothing = array(); // For blank parameters
 <head profile="http://gmpg.org/xfn/1">
 <title><?php template_sitename();?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="<?php echo template_file_load('style.css'); ?>" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/style.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript" src="<?php template_siteurl(); ?>inc/js/jquery-1.2.1.pack.js"></script>
-<?php
-if(file_exists(template_file_load('custom.js'))) {
-	echo '<script language="JavaScript" type="text/javascript" src="' . template_file_load('custom.js')  . '"></script>';
-}
-else {
-	echo '<script language="JavaScript" type="text/javascript" src="' . template_siteurl(true) . 'inc/js/engine.js"></script>';
-}
-?>
+<script language="JavaScript" type="text/javascript" src="<?php template_directory(); ?>/effects.js"></script>
 <?php
 template_header();
 ?>
@@ -37,15 +30,14 @@ template_header();
 <body id="river-<?php echo $showtime; ?>" class="river-page">
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
-	<img src="<?php echo template_file_load('logo-small.png');?>" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
+	<img src="<?php template_directory(); ?>/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
 	<?php 
 	if(template_synd_links())
 		echo ' | ';
 	?>
-	<a id="expandall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_out.png');?>" alt="Show All Items" /> Expand</a> |
-	<a id="collapseall" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="Hide All Items" /> Collapse</a> |
-	<a id="removedates" href="javascript:void(0);"><img src="<?php echo template_file_load('arrow_in.png'); ?>" alt="Remove dates" /> Remove date markers</a>
+	<a id="expandall" href="javascript:void(0);"><img src="<?php template_directory(); ?>/arrow_out.png" alt="Show All Items" /> Expand</a> |
+	<a id="collapseall" href="javascript:void(0);"><img src="<?php template_directory(); ?>/arrow_in.png" alt="Hide All Items" /> Collapse</a>
 	|
 	<a href="opml.php">OPML</a>
 	|
@@ -114,7 +106,7 @@ elseif(!has_feeds()) {
 else {
 ?>
 	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo ($showtime/3600); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
-	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php echo template_file_load('loading.gif'); ?>" alt="Loading..." /></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="Loading..." /></div>
 <?php
 }
 ?>
