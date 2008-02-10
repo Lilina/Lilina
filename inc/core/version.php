@@ -6,17 +6,21 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-//Backwards compatibility only
-$LILINAVERSION	= '1.0-alpha1' ;
 $lilina			= array(
 						'core-sys'		=> array(
-												'version'	=> '1.0-alpha1'
-												),
+							'version'	=> '1.0-alpha1'
+							),
 						'plugin-sys'	=> array(
-												'version'	=> '1.0-alpha1'
-												),
+							'version'	=> 146
+							),
 						'template-sys'	=> array(
-												'version'	=> '1.0-alpha1'
-												),
+							'version'	=> 146
+							),
+						'feed-storage' => array(
+							'version'	=> 147
+							),
+						'settings-storage' => array(
+							'version'	=> 147
+							),
 						);
 ?>

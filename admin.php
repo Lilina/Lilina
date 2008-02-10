@@ -296,6 +296,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 	$feed_info->set_feed_url( $url );
 	$feed_info->init();
 	$feed_error = $feed_info->error();
+	$feed_url = $feed_info->subscribe_url();
 
 	if(!empty($feed_error)) {
 		//No feeds autodiscovered;
@@ -310,7 +311,8 @@ function add_feed($url, $name = '', $cat = 'default') {
 	}
 
 	$data['feeds'][] = array(
-		'feed'	=> $url,
+		'feed'	=> $feed_url,
+		'url'	=> $feed_info->get_link(),
 		'name'	=> $name,
 		'cat'	=> $cat,
 	);

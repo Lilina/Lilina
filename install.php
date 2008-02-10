@@ -17,7 +17,15 @@ header('Content-Type: text/html; charset=UTF-8');
 
 //Make sure Lilina's not installed
 if(@file_exists('./conf/settings.php')) {
-	die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p></div></div></body></html>');
+	define('LILINA_PATH', dirname(__FILE__));
+	require_once(LILINA_PATH . '/inc/core/conf.php');
+	if(( !isset($settings['settings_version']) || $settings['settings_version'] > $lilina['settings-storage']['version'] )
+		&& (isset($_GET['action']) && $_GET['action'] == 'upgrade')) {
+		die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>');
+	}
+	elseif(!isset($_GET['action']) || $_GET['action'] != 'upgrade') {
+		die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p>');
+	}
 }
 
 /**
@@ -50,6 +58,8 @@ function generate_password ($length = 8) {
 }
 
 function install($sitename, $username, $password) {
+	require_once('./inc/core/version.php');
+
 	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
 	$guessurl = preg_replace('|/install\.php.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 	if($guessurl[count($guessurl)-1] != '/') {
@@ -75,7 +85,27 @@ function install($sitename, $username, $password) {
 
 // All the enabled plugins, stored in a serialized string
 \$settings['enabled_plugins'] = '';
+
+// Version of these settings; don't change this
+\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";
 ?>";
+		/** Make sure it's writable now */
+		if(!is_writable('./conf/feeds.data')) {
+			/** We'll try this first */
+			chmod('./conf/', 0644);
+			if(!is_writable('./conf/')) {
+				/** Nope, let's give group permissions too */
+				chmod('./conf/', 0664);
+				if(!is_writable('./conf/')) {
+					/** Still no dice, give write permissions to all */
+					chmod('./conf/', 0666);
+					if(!is_writable('./conf/')) {
+						/** OK, we can't make it writable ourselves. Tell the user this */
+						echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
+					}
+				}
+			}
+		}
 		if( !is_writable('./conf/')
 			|| !($settings_file = @fopen('./conf/settings.php', 'w+'))
 			|| !is_resource($settings_file) ) {
@@ -246,38 +276,6 @@ switch($page) {
 <?php
 		break;
 }
-		/*if(isset($from) && is_numeric($from)) {
-			//We already came from a page, lets display the next
-			if(!is_numeric($from)) {
-				lilina_install_err(0,$from);
-			}
-			else {
-				if($from < 3) {
-					//We add one so it displays the next page
-					$from++;
-					lilina_install_page($from);
-				}
-				else {
-					//Otherwise, we must be on the last page
-					//We should never get this
-					lilina_install_err(0,$from);
-				}
-			}
-		}
-		else {
-			//Not from a page
-			if(!is_numeric($page)) {
-				lilina_install_err(0,$page);
-			}
-			else {
-				lilina_install_page($page);
-			}
-		}
-	}
-	else {
-		//Woops, we are already installed
-		lilina_install_err(1);
-	}*/
 ?>
 			</div>
 		</div>

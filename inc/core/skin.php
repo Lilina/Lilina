@@ -206,8 +206,8 @@ function query_setup($override = true) {
  * global <tt>$list</tt> array if not already done.
  
  * Increments the <tt>$item_number</tt> if the <tt>$increment</tt> parameter is true, or
- * initializes the <tt>$item_number</tt> if not already done. Then works out the
- * <tt>$showtime</tt> variable if not already done.
+ * initializes the <tt>$item_number</tt> if not already done. Then sets the <tt>$showtime</tt>
+ * variable if not already done.
  *
  * Checks if the current item's date is less than the <tt>$showtime</tt> variable and if so,
  * returns false to stop processing items. If not, checks if the <tt>$item_number</tt> is
@@ -237,16 +237,9 @@ function has_items($increment = true) {
 		++$item_number;
 	
 	if(!isset($showtime)) {
-		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
-			if( -1 == $_REQUEST['hours'])
-				$showtime = 0;
-			else
-				$showtime = time() - ((int) $_REQUEST['hours'] * 60 * 60);
-		}
-		else
-			$showtime = time() - ((int) $settings['interface']['times'][0] * 60 * 60);
-
-		$showtime = apply_filters('showtime', $showtime);
+		$showtime = get_offset();
+		if($showtime != 0)
+			$showtime = time() - $showtime;
 	}
 
 	if(!isset($total_items))
@@ -287,6 +280,29 @@ function get_items() {
 		$items	= lilina_return_output($list);
 	}
 	return apply_filters('get_items', $items);*/
+}
+
+/**
+ * Gets the offset seconds from which the items are shown
+ *
+ * @global array Holds defaults
+ * @global string Holds offset time
+ */
+function get_offset($format = 'U') {
+	global $settings, $offset_time;
+
+	if(!isset($offset_time)) {
+		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
+			if( -1 == $_REQUEST['hours'])
+				$offset_time = 0;
+			else
+				$offset_time = (int) $_REQUEST['hours'] * 60 * 60;
+		}
+		else
+			$offset_time = (int) $settings['interface']['times'][0] * 60 * 60;
+		$offset_time = apply_filters('showtime', $offset_time);
+	}
+	return date($format, $offset_time);
 }
 
 /**
@@ -470,7 +486,6 @@ function date_equals($args='') {
 	elseif( 'next' == $equalto )
 			$equalto = $item_number + 1 ;
 
-	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
 	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
@@ -494,7 +509,6 @@ function feed_equals($args='') {
 	elseif( 'next' == $equalto)
 		$equalto = $item_number + 1;
 
-	//Idiot proofing^H^H^H^H^H^H^H^H^H^H^H^H^HPoka-Yoke
 	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$equals = get_the_feed_id() == get_the_feed_id($equalto);
@@ -560,10 +574,10 @@ if(!function_exists('template_load')) {
 		}
 		else {
 			if($type == 'default') {
-				require_once(LILINA_INCPATH . '/templates/default/index.php');
+				require_once(LILINA_INCPATH . '/templates/' . get_option('template') . '/index.php');
 			}
 			else {
-				require_once(LILINA_INCPATH . '/templates/default/' . $type . '.php');
+				require_once(LILINA_INCPATH . '/templates/' . get_option('template') . '/' . $type . '.php');
 			}
 		}
 	}
@@ -571,6 +585,7 @@ if(!function_exists('template_load')) {
 if(!function_exists('template_file_load')) {
 	/**
 	 * Returns the URL for a specified file
+	 * @deprecated Deprecated in favour of {@see{template_directory()}
 	 */
 	function template_file_load($file) {
 		global $settings;
