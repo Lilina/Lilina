@@ -105,7 +105,7 @@ elseif(!has_feeds()) {
 }
 else {
 ?>
-	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo get_offset('format=H'); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo get_offset('H'); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
 	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="Loading..." /></div>
 <?php
 }
