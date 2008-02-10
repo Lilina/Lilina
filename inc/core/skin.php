@@ -435,6 +435,7 @@ function the_feed_id($id = -1) {
 function has_enclosure() {
 	global $item, $enclosure;
 	$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
+	if(!$enclosure) return false;
 	$enclosure_link = $enclosure->get_link();
 	return !empty($enclosure_link);
 }
