@@ -20,7 +20,7 @@ Mostly Copyright (c) Edward Z. Yang
 	font-size:0.8em;
 }
 #header #sitetitle {
-	background: #4A6282;
+	background: #2E91D0;
 	background-position: right 0.2em;
 	margin: 0;
 	padding: 0;
@@ -52,12 +52,11 @@ Mostly Copyright (c) Edward Z. Yang
 #navigation {
 	text-align: left;
 	margin: 0;
-	padding: 0 0 1px 0;
-	border: solid #4A6282;
-	border-width: 1px 0;
-	background: #6480A6;
+	padding: 0 0 3px;
+	background: #2E91D0;
 	width: 100%;
 	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+	border-bottom: 1px solid #000;
 }
 #navigation h2 {
 	display:none;
@@ -76,25 +75,18 @@ Mostly Copyright (c) Edward Z. Yang
 #navigation li a {
 	color: #FFF;
 	text-decoration:none;
-	padding: 0.3em;
-	border-bottom: 2px none;
+	padding: 0.6em;
 }
 #navigation li a:hover {
-	border-bottom: 2px solid #FFF;
+	background-color: #FFF;
+	color: #662;
 }
-#navigation .current_page_item a{
-	background: #4A6282;
-	font-weight: bold;
-	border-bottom: 2px solid #4A6282;
+#navigation li.current a {
+	background-color: #FFF;
+	color: #662;
+	border: 1px solid #FFF;
 }
-#navigation .current_page_item a:hover {
-	border-bottom: #4A6282;
-}
-#navigation .section_page_item a{
-	background: #4A6282;
-	border-bottom: 2px solid #4A6282;
-}
-#navigation .seperator{
+#navigation .seperator {
 	margin-left: 2em;
 }
 #navigation #page_item_logout {
@@ -132,21 +124,15 @@ Mostly Copyright (c) Edward Z. Yang
 	border-collapse: collapse;
 	border-spacing: 1px;
 	width: 100%;
+	border: 1px solid #CCC;
 }
 /* Section */
 #feeds_list thead {
-	background: #DFDFDF;
+	background: #2678AB;
+	color: #FFF;
 }
-/* Rows */
-#feeds_list tbody tr:hover a {
-	color: #ffffff;
-}
-#feeds_list tbody tr:hover, #feeds_list tbody tr.alt:hover {
-	background-color: #3d80df;
-	color: #ffffff;
-}
-#feeds_list .alt {
-	background:#edf3fe;
+#feeds_list tbody tr {
+	border-bottom: 1px solid #CCC;
 }
 /* Columns*/
 #feeds_list .change-col, #feeds_list .remove-col {
@@ -155,9 +141,8 @@ Mostly Copyright (c) Edward Z. Yang
 /* Cells */
 #feeds_list th, #feeds_list td {
 	text-align: left;
-	border-bottom:solid 1px #eee;
-	vertical-align:top;
-	padding: 5px 6px;
+	vertical-align: top;
+	padding: 12px 6px;
 	font-size: 0.8em;
 }
 
