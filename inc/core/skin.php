@@ -288,7 +288,7 @@ function get_items() {
  * @global array Holds defaults
  * @global string Holds offset time
  */
-function get_offset($format = 'U') {
+function get_offset($as_hours = false) {
 	global $settings, $offset_time;
 
 	if(!isset($offset_time)) {
@@ -302,7 +302,9 @@ function get_offset($format = 'U') {
 			$offset_time = (int) $settings['interface']['times'][0] * 60 * 60;
 		$offset_time = apply_filters('showtime', $offset_time);
 	}
-	return date($format, $offset_time);
+	if($as_hours == true)
+		return $offset_time / 60 / 60;
+	return $offset_time;
 }
 
 /**
