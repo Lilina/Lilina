@@ -572,6 +572,7 @@ if(!function_exists('template_load')) {
 	*/
 	function template_load($type='default') {
 		global $settings, $templates;
+		lilina_cache_start();
 		if(file_exists($templates[$type])) {
 			require_once($templates[$type]);
 		}
@@ -583,6 +584,7 @@ if(!function_exists('template_load')) {
 				require_once(LILINA_INCPATH . '/templates/' . get_option('template') . '/' . $type . '.php');
 			}
 		}
+		lilina_cache_end();
 	}
 }
 if(!function_exists('template_file_load')) {

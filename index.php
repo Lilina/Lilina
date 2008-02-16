@@ -38,13 +38,6 @@ require_once(LILINA_INCPATH . '/core/cache.php');
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
-// Do not update cache unless called with parameter force_update=1
-if (isset($_GET['force_update']) && $_GET['force_update'] == 1) {
-	define('MAGPIE_CACHE_AGE', 1);
-}
-else {
-	lilina_cache_check();
-}
 //Require our standard stuff
 require_once(LILINA_INCPATH . '/core/lib.php');
 
@@ -57,22 +50,5 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 //Templating functions
 require_once(LILINA_INCPATH . '/core/skin.php');
 
-// load times*/
-$time_table	= lilina_load_times();
-
-lilina_save_times($time_table);
-global $settings;
-ob_start();
 template_load();
-
-//Cache the output
-global $showtime;
-$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html'; // Cache file to either or create
-// Now the script has run, generate a new cache file
-$fp = fopen($cachefile, 'w');
-$pagecontent = ob_get_contents();
-// save the contents of output buffer to the file
-fwrite($fp, $pagecontent);
-fclose($fp);
-ob_end_flush();
 ?>

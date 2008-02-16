@@ -51,20 +51,26 @@ Mostly Copyright (c) Edward Z. Yang
 
 #navigation {
 	text-align: left;
-	margin: 0;
-	padding: 0 0 3px;
-	background: #2E91D0;
 	width: 100%;
-	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
-	border-bottom: 1px solid #000;
 }
 #navigation h2 {
-	display:none;
+	float: right;
+	text-indent: -9000px;
 }
 #navigation ul {
-	margin: 0 5%;
-	padding: 0;
+	margin: 0;
+	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
 	display: block;
+}
+#mainnavigation {
+	padding: 0 5% 3px;
+	background: #2E91D0;
+	border-bottom: 1px solid #000;
+}
+#subnavigation {
+	padding: 4px 5% 4px;
+	background: #fff;
+	border-bottom: 1px solid #CCC;
 }
 #navigation li {
 	display: inline;
@@ -72,19 +78,31 @@ Mostly Copyright (c) Edward Z. Yang
 	margin: 0 0.6em 0 0;
 	font-size: 1.1em;
 }
+#subnavigation li {
+	font-size: 1.2em;
+}
 #navigation li a {
 	color: #FFF;
 	text-decoration:none;
 	padding: 0.6em;
 }
+#subnavigation li a {
+	color: #2E91D0;
+}
 #navigation li a:hover {
 	background-color: #FFF;
 	color: #662;
 }
-#navigation li.current a {
+#subnavigation li a:hover {
+	background: none;
+}
+#mainnavigation li.current a {
 	background-color: #FFF;
 	color: #662;
 	border: 1px solid #FFF;
+}
+#subnavigation li.current a {
+	font-weight: bold;
 }
 #navigation .seperator {
 	margin-left: 2em;
@@ -174,5 +192,13 @@ fieldset {
 }
 
 #footer {
-	margin: 15px 5%;
+	margin: 0;
+	padding: 15px 5%;
+	background: #4D4D4D;
+	color: #999;
+	text-align: center;
+}
+#footer a {
+	color: #FFF;
+	text-decoration: none;
 }

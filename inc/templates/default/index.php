@@ -27,7 +27,7 @@ $nothing = array(); // For blank parameters
 template_header();
 ?>
 </head>
-<body id="river-<?php echo $showtime; ?>" class="river-page">
+<body class="river-page">
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
 	<img src="<?php template_directory(); ?>/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />

@@ -507,15 +507,51 @@ header('Content-Type: text/html; charset=utf-8');
 	<div id="navigation">
 	    <h2>Navigation</h2>
 		<ul id="mainnavigation">
-			<li<?php if($out_page == 'admin-home.php') echo ' class="current"'; ?>><a href="admin.php">Home</a></li>
-			<li<?php if($out_page == 'admin-feeds.php') echo ' class="current"'; ?>><a href="admin.php?page=feeds" title="<?php _e('Add, change and remove feeds'); ?>"><?php _e('Feeds'); ?></a></li>
-			<li<?php if($out_page == 'admin-settings.php') echo ' class="current"'; ?>><a href="admin.php?page=settings" title="<?php _e('Change settings and run a diagnostic test'); ?>"><?php _e('Settings'); ?></a></li>
-			<li class="seperator"><a href="http://getlilina.org/docs/<?php _e('en'); ?>:start" title="<?php _e('Documentation and Support on the Wiki');?>"><?php _e('Lilina Documentation'); ?></a></li>
-			<li><a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Lilina Forums'); ?></a></li>
+<?php
+$navigation = array(
+	array(_r('Home'), 'admin-home.php', ''),
+	array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
+	array(_r('Settings'), 'admin-settings.php', 'settings'),
+);
+$subnavigation = apply_filters('navigation', $navigation);
+foreach($navigation as $nav_item) {
+	if($out_page == $nav_item[1]) {
+		/** Hack */
+		if(!isset($current_page))
+			$current_page = $nav_item[2];
+		$nav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+	}
+	else
+		$nav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+}
+echo implode("</li>\n", $nav_items);
+?></li>
 			<li id="page_item_logout" class="seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
 		</ul>
-		<ul id="subnavigation">
-		</ul>
+<?php
+$subnavigation = array(
+	'admin-home.php' => array(
+		array(_r('Home'), 'admin-home.php', ''),
+	),
+	'admin-feeds.php' => array(
+		array(_r('Manage'), 'admin-feeds.php', ''),
+	),
+	'admin-settings.php' => array(
+		array(_r('General'), 'admin-settings.php', 'settings'),
+	),
+);
+$subnavigation = apply_filters('subnavigation', $subnavigation, $navigation, $current_page);
+if( isset($subnavigation[ strtolower($current_page) ]) && !empty($subnavigation[ strtolower($current_page) ]) ) {
+	echo '<ul id="subnavigation">';
+	foreach($subnavigation[strtolower($current_page)] as $subnav_item) {
+		if($out_page == $subnav_item[1])
+			$subnav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		else
+			$subnav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+	}
+	echo implode("</li>\n", $subnav_items), '</li></ul>';
+}
+?>
 	</div>
 </div>
 <div id="main">
@@ -568,9 +604,8 @@ Now attempting to include all files: ';
 	require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 	require_once(LILINA_INCPATH . '/core/skin.php');
 	require_once(LILINA_INCPATH . '/core/version.php');
-	require_once(LILINA_INCPATH . '/contrib/feedcreator.class.php');
+	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	require_once(LILINA_INCPATH . '/contrib/gettext.php');
-	require_once(LILINA_INCPATH . '/contrib/magpie.php');
 	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
 	require_once(LILINA_INCPATH . '/contrib/streams.php');
 	flush();
@@ -595,6 +630,7 @@ else {
 </div>
 <p id="footer"><?php
 _e('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>');
-do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation and Support'); ?></p>
+do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation');
+?></a> and <a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Support'); ?></a></p>
 </body>
 </html>

@@ -28,29 +28,19 @@ if(!function_exists('lilina_cache_check')) {
 		$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html';
 		$cachefile_created = (@file_exists($cachefile)) ? @filemtime($cachefile) : 0;
 		clearstatcache();
-		// Show file from cache if still valid
+		/** Show file from cache if still valid */
 		if (time() - $settings['cachetime'] < $cachefile_created) {
-			//echo '<!--Retrieved from cache-->' . "\n";
-			if($settings['gzip'] === true) {
-				ob_start('ob_gzhandler');
-				readfile($cachefile);
-				ob_end_flush();
-			}
-			else {
-				readfile($cachefile);
-			}
-			exit();
+			readfile($cachefile);
+			die();
 		}
 	}
 }
 
 /**
  * Starts the output handler to capture output
- * @deprecated Embed directly in source code instead, as it's simple.
  */
 function lilina_cache_start(){
-	global $settings;
-	//echo '<!--Generated fresh-->' . "\n";
+	lilina_cache_check();
 	ob_start();
 }
 
@@ -58,14 +48,12 @@ function lilina_cache_start(){
  * Ends the output handler
  *
  * Saves output as a cached file and flushes the output cache to the display
- * @deprecated Embed directly in source code instead, as it's simple.
  */
 function lilina_cache_end() {
-	global $settings, $showtime;
-	$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html'; // Cache file to either or create
+	$cachefile = apply_filters('cache_file', get_option('cachedir') . md5('index-' . get_offset()) . '.html'); // Cache file to either or create
 	// Now the script has run, generate a new cache file
 	$fp = fopen($cachefile, 'w');
-	$pagecontent = ob_get_contents();
+	$pagecontent = apply_filters('lilina_cache_end', ob_get_contents());
 	// save the contents of output buffer to the file
 	fwrite($fp, $pagecontent);
 	fclose($fp);
