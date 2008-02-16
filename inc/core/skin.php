@@ -253,7 +253,7 @@ function has_items($increment = true) {
 			return apply_filters('has_items', false, $showtime, $total_items);
 	}
 	else {
-		if(get_the_date('U') < $showtime)
+		if($list->get_item($item_number)->get_date('U') < $showtime)
 			return apply_filters('has_items', false, $showtime, $total_items);
 	}
 
