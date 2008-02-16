@@ -11,21 +11,12 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-//Stop hacking attempts
-defined('LILINA') or die('Restricted access');
-
 /**
  * @todo Document
  */
-//require_once('./inc/core/file-functions.php');
-require_once(LILINA_INCPATH . '/core/version.php');
+defined('LILINA') or die('Restricted access');
 
-define('MAGPIE_CACHE_ON', 1) ;
-define('MAGPIE_CACHE_FRESH_ONLY', true) ;
-//define('MAGPIE_CACHE_DIR', './cache');
-define('MAGPIE_OUTPUT_ENCODING', $settings['encoding']);
-define('MAGPIE_USER_AGENT','Lilina/'. $lilina['core-sys']['version'].'; '.$settings['baseurl']) ;
-require_once(LILINA_INCPATH . '/contrib/magpie.php');
+require_once(LILINA_INCPATH . '/core/version.php');
 
 /**
  * Gets the URL for a favicon for a given URL
@@ -102,89 +93,5 @@ function channel_favicon($location) {
 	fputs($fp, apply_filters('channel_favicon-data', $data));
 	fclose($fp);
 	return apply_filters('channel_favicon-url', $cached_ico_url, $location);
-}
-
-/**
- * Creates a timestamp via time() and saves it in the $time_table variable
- *
- * @todo Document
- * @param string $s Name of item, must be unique
- * @return int
- */
-
-function create_time($s) {
-	global $time_table, $settings;
-
-	$md5 = md5($s);
-	if (!isset($time_table[$md5]) || $time_table[$md5] <= 0) {
-		$time_table[$md5] = time() + ($settings['offset'] * 60 * 60);
-	}
-	return apply_filters('create_time', $time_table[$md5]);
-}
-
-/**
- * Function used to sort rss items in chronological order
- *
- * @todo Document
- * @param array $a First feed item
- * @param array $b Second feed item
- * @return int
- */
-function date_cmp($a, $b) {
-   if ($a['date_timestamp'] == $b['date_timestamp'] ) {
-		#descending order
-		return ( strcmp($a['title'], $b['title']) == 1 ) ? -1 : 1; 
-   }    
-   return apply_filters('date_cmp', (($a['date_timestamp'] > $b['date_timestamp'] ) ? -1 : 1));
-}
-
-if(!function_exists('parse_w3cdtf')) {
-	/**
-	 * From MagpieRSS' rss_utils.inc - Converts a -- date formatted string to
-	 * time from epoch in seconds
-	 *
-	 * @todo Document
-	 * @param string $date_str -- formatted date
-	 * @return int
-	 */
-	function parse_w3cdtf ( $date_str ) {
-	    // regex to match wc3dtf
-	    $pat = "/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(:(\d{2}))?(?:([-+])(\d{2}):?(\d{2})|(Z))?/";
-	    
-	    if ( preg_match( $pat, $date_str, $match ) ) {
-	        list( $year, $month, $day, $hours, $minutes, $seconds) = 
-	            array( $match[1], $match[2], $match[3], $match[4], $match[5], $match[7]);
-	        
-	        // calc epoch for current date assuming GMT
-	        $epoch = gmmktime( $hours, $minutes, $seconds, $month, $day, $year);
-	        
-	        $offset = 0;
-	        if ( $match[10] == 'Z' ) {
-	            // zulu time, aka GMT
-	        }
-	        else {
-	            list( $tz_mod, $tz_hour, $tz_min ) =
-	                array( $match[8], $match[9], $match[10]);
-	            
-	            // zero out the variables
-	            if ( ! $tz_hour ) { $tz_hour = 0; }
-	            if ( ! $tz_min ) { $tz_min = 0; }
-	        
-	            $offset_secs = (($tz_hour*60)+$tz_min)*60;
-	            
-	            // is timezone ahead of GMT?  then subtract offset
-	            if ( $tz_mod == '+' ) {
-	                $offset_secs = $offset_secs * -1;
-	            }
-	            
-	            $offset = $offset_secs; 
-	        }
-	        $epoch = $epoch + $offset;
-	        return apply_filters('parse_w3cdtf', $epoch);
-	    }
-	    else {
-	        return -1;
-	    }
-	}
 }
 ?>
