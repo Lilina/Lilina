@@ -534,7 +534,7 @@ function feed_equals($args='') {
 * @return boolean Are feeds available?
 */
 function has_feeds() {
-	global $data, $list, $settings;
+	global $data, $settings;
 	if(empty($data))
 		$data = lilina_load_feeds($settings['files']['feeds']);
 
@@ -555,15 +555,11 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
-	return array();
-	global $data, $list, $settings;
+	global $data, $settings;
 	if(empty($data)) {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
-	if(empty($list)) {
-		$list	= lilina_return_items($data);
-	}
-	return apply_filters('get_feeds', $list[0]);
+	return apply_filters('get_feeds', $data['feeds']);
 }
 
 /**

@@ -121,7 +121,7 @@ else {
 		if(has_feeds()) {
 			foreach(get_feeds() as $feed) { ?>
 		<li>
-			<a href="<?php echo $feed['link']; ?>"><img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />
+			<a href="<?php echo $feed['url']; ?>"><!--<img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />-->
 			<?php echo $feed['name']; ?></a>
 			[<a href="<?php echo $feed['feed']; ?>"><?php _e('Feed');?></a>]
 			<a href="javascript:void(0);" class="hide_feed"><span class="feed-<?php echo md5(htmlspecialchars($feed['link'])); ?>">(<?php _e('Hide items from this channel'); ?>)</span></a>

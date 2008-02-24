@@ -73,7 +73,7 @@ if(has_feeds()) {
 	<outline text="' .  htmlspecialchars($feed['name']) .
 	'" title="' .   htmlspecialchars($feed['name']) .
 	'" type="rss" xmlUrl="' . htmlspecialchars($feed['feed']) .
-	'" htmlUrl="' . htmlspecialchars($feed['link']) . '" />';
+	'" htmlUrl="' . htmlspecialchars($feed['url']) . '" />';
 	}
 }
 else {
