@@ -12,7 +12,7 @@ defined('LILINA') or die('Restricted access');
  * Fixes the $_SERVER['REQUEST_URI'] variable on IIS
  * @author WordPress
  */
-function fix_request_uri() {
+function lilina_fix_request_uri() {
 	// Fix for IIS, which doesn't set REQUEST_URI
 	if ( empty( $_SERVER['REQUEST_URI'] ) ) {
 
@@ -101,7 +101,7 @@ register_action('init', 'lilina_version_check');
 
 /**
  * @todo Document
- * @author WordPre
+ * @author WordPress
  */
 function lilina_footer_version() {
 	global $lilina;
@@ -259,6 +259,7 @@ function lilina_parse_str( $string, &$array ) {
 	$array = apply_filters( 'lilina_parse_str', $array );
 }
 
+if(!function_exists('stripslashes_deep')) {
 /**
  * @author WordPress
  */
@@ -269,7 +270,9 @@ function stripslashes_deep($value) {
 
 	 return $value;
 }
+}
 
+if(!function_exists('urlencode_deep')) {
 /**
  * @author WordPress
  */
@@ -279,5 +282,38 @@ function urlencode_deep($value) {
 		 urlencode($value);
 
 	 return $value;
+}
+}
+
+/**
+ * Unregisters globals and reverts magic quotes
+ *
+ * @author WordPress
+ */
+function lilina_level_playing_field() {
+	lilina_fix_request_uri();
+	if (ini_get('register_globals')) {
+
+	if ( isset($_REQUEST['GLOBALS']) )
+		die('GLOBALS overwrite attempt detected');
+
+	// Variables that shouldn't be unset
+	$keep = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix');
+
+	$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
+	foreach ( $input as $k => $v ) {
+		if ( !in_array($k, $keep) && isset($GLOBALS[$k]) ) {
+			$GLOBALS[$k] = NULL;
+			unset($GLOBALS[$k]);
+		}
+	}
+	}
+
+	if (get_magic_quotes_gpc()) {
+		$_GET = stripslashes_deep($_GET);
+		$_POST = stripslashes_deep($_POST);
+		$_COOKIE = stripslashes_deep($_COOKIE);
+		$_REQUEST = stripslashes_deep($_REQUEST);
+	}
 }
 ?>

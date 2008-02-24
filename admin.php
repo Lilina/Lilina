@@ -82,28 +82,18 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
 //Parse OPML files
 require_once(LILINA_INCPATH . '/contrib/parseopml.php');
+require_once(LILINA_INCPATH . '/core/auth-functions.php');
 
 //Authentication Section
-//Start the session
-session_start();
-//Check if we are logged in
-
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-	//Not logged in, lets load the authentication script
-	require_once(LILINA_INCPATH . '/core/auth-functions.php');
-		
-	if(isset($_POST['user']) && isset($_POST['pass'])) {
-		$authed = lilina_admin_auth($_POST['user'], $_POST['pass']);
-	}
-	else {
-		$authed = lilina_admin_auth('', '');
-	}
+if(isset($_POST['user']) && isset($_POST['pass'])) {
+	lilina_login_form($_POST['user'], $_POST['pass']);
 }
+else {
+	lilina_login_form('', '');
+}
+
 if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
-	//We already know we are logged in,
-	//so lets unset the variable then reload the page
-    unset($_SESSION['is_logged_in']);
-	header('Location: ' . htmlentities($_SERVER['PHP_SELF']));
+	lilina_logout();
 	die();
 }
 
@@ -126,9 +116,9 @@ function get_feed_list() {
  * @return bool True if nonce is equal, false if not
  */
 function generate_nonce() {
-	global $settings;
+	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	return md5($time . $settings['auth']['user'] . $settings['auth']['pass']);
+	return md5($time . $user_settings['user'] . $user_settings['pass']);
 }
 
 /**
@@ -138,9 +128,9 @@ function generate_nonce() {
  * @return bool True if nonce is equal, false if not
  */
 function check_nonce($nonce) {
-	global $settings;
+	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . $settings['auth']['user'] . $settings['auth']['pass']);
+	$current_nonce = md5($time . $user_settings['user'] . $user_settings['pass']);
 	if($nonce !== $current_nonce) {
 		return false;
 	}
@@ -248,25 +238,21 @@ function available_locales() {
 /**
  * Adds a notice to the top of the page
  *
- * Concatenates the string as a paragraph to the global $result variable
+ * Creates an anonymous function to concatenate $message to the alert_box filter
  * @param string $message Notice to add
- * @global string Contains all messages, we just concatenate to this
  */
 function add_notice($message) {
-	global $result;
-	$result .= "<p>$message</p>\n";
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . $message . '</p>\';'));
 }
 
 /**
  * Adds a technical notice to the top of the page
  *
- * Concatenates the string as a paragraph to the global $result variable
+ * Creates an anonymous function to concatenate $message to the alert_box filter
  * @param string $message Notice to add
- * @global string Contains all messages, we just concatenate to this
  */
 function add_tech_notice($message) {
-	global $result;
-	$result .= '<p class="tech_notice"><span class="actual_notice">' . $message . '</span></p>' . "\n";
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . $message . '</span></p>\';'));
 }
 
 /**
@@ -351,7 +337,7 @@ function import_opml($opml_url) {
 		$imported_feeds = parse_opml($opml_url);
 		if(is_array($imported_feeds)) {
 			$feeds_num = 0;
-			foreach($imported_feeds as &$imported_feed) {
+			foreach($imported_feeds as $imported_feed) {
 				if(!isset($imported_feed['TYPE'])) {
 					//This is just so we are nice to our ancestors, like 0.7
 					if(isset($imported_feed['XMLURL']) && !empty($imported_feed['XMLURL'])) {
@@ -556,11 +542,9 @@ if( isset($subnavigation[ strtolower($current_page) ]) && !empty($subnavigation[
 </div>
 <div id="main">
 <?php
-if(isset($result) && !empty($result)) {
+if( ($result = apply_filters( 'alert_box', $result )) != '') {
 	echo '<div id="alert" class="fade">' . $result . '</div>';
 }
-?>
-<?php
 if($action == 'diagnostic') {
 	echo 'Now starting diagnostic test...';
 	echo '<pre>';
@@ -572,24 +556,22 @@ if($action == 'diagnostic') {
 		echo "\nSetting error reporting level to E_ALL";
 		
 	}
-	echo '
-Register Globals: '.(ini_get('register_globals') == '' ? 'Off' : 'On');
+	echo "\nRegister Globals: " . (ini_get('register_globals') == '' ? 'Off' : 'On');
+	echo "\nMagic Quotes: " . (get_magic_quotes_gpc() ? 'Off' : 'On');
+	echo "\nMagic Quotes (runtime): " . (get_magic_quotes_runtime() ? 'Off' : 'On');
 	flush();
-	if(!isset($settings['auth']) || !is_array($settings['auth']) ||
-		!isset($settings['auth']['user']) || !isset($settings['auth']['pass'])) {
-		echo '
-Error with authentication settings';
+	if( !is_array($user_settings = get_option('auth') ) ||
+		!isset($user_settings['user']) ||
+		!isset($user_settings['pass']) ||
+		$user_settings['pass'] == 'password') {
+		echo "\nError with authentication settings";
 		flush();
 	}
-	echo '
-Current path to Lilina: ', LILINA_PATH;
-	echo '
-Current path to includes folder: ', LILINA_INCPATH;
-	echo '
-Current URL: ', $settings['baseurl'];
+	echo "\nCurrent path to Lilina: ", LILINA_PATH;
+	echo "\nCurrent path to includes folder: ", LILINA_INCPATH;
+	echo "\nCurrent installation path: ", get_option('baseurl');
 	flush();
-	echo '
-Now attempting to include all files: ';
+	echo "\nNow attempting to include all files: ";
 	flush();
 	require_once(LILINA_INCPATH . '/core/auth-functions.php');
 	require_once(LILINA_INCPATH . '/core/cache.php');
@@ -609,15 +591,12 @@ Now attempting to include all files: ';
 	require_once(LILINA_INCPATH . '/contrib/parseopml.php');
 	require_once(LILINA_INCPATH . '/contrib/streams.php');
 	flush();
-	echo '
-All files successfully included';
-	echo '
-Settings dump:';
+	echo "\nAll files successfully included";
+	echo "\nSettings dump:";
 	flush();
 	var_dump($settings);
 	flush();
-	echo '
-Diagnostic finished</pre>'; 
+	echo "\nDiagnostic finished</pre>"; 
 	flush();
 }
 elseif($out_page){

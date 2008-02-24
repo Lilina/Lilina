@@ -249,13 +249,13 @@ function has_items($increment = true) {
 		return apply_filters('has_items', false, $showtime, $total_items);
 	
 	if(!isset($item)) {
-		if($list->get_item(0)->get_date('U') < $showtime)
-			return apply_filters('has_items', false, $showtime, $total_items);
+		$temp_item = $list->get_item(0);
 	}
 	else {
-		if($list->get_item($item_number)->get_date('U') < $showtime)
-			return apply_filters('has_items', false, $showtime, $total_items);
+		$temp_item = $list->get_item($item_number);
 	}
+	if($temp_item->get_date('U') < $showtime)
+		return apply_filters('has_items', false, $showtime, $total_items);
 
 	if($item_number < $total_items)
 		return apply_filters('has_items', true, $showtime, $total_items);
@@ -393,7 +393,8 @@ function the_id($id = -1) {
  */
 function the_feed_name() {
 	global $item;
-	echo apply_filters( 'the_feed_name', $item->get_feed()->get_title() );
+	$temp_item = $item->get_feed();
+	echo apply_filters( 'the_feed_name', $temp_item->get_title() );
 }
 
 /**
@@ -401,7 +402,8 @@ function the_feed_name() {
  */
 function the_feed_url() {
 	global $item;
-	echo apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+	$temp_item = $item->get_feed();
+	echo apply_filters( 'the_feed_url', $temp_item->get_link() );
 }
 
 /**
@@ -409,7 +411,8 @@ function the_feed_url() {
  */
 function the_feed_favicon() {
 	global $item;
-	echo apply_filters( 'the_feed_favicon', $item->get_feed()->get_favicon() );
+	$temp_item = $item->get_feed();
+	echo apply_filters( 'the_feed_favicon', $temp_item->get_favicon() );
 }
 
 /**
@@ -417,8 +420,10 @@ function the_feed_favicon() {
  */
 function get_the_feed_id($id = -1) {
 	global $list, $item;
-	if($id >= 0)
-		$current_feed = $list->get_item( $id )->get_feed();
+	if($id >= 0) {
+		$temp_item = $list->get_item( $id );
+		$current_feed = $temp_item->get_feed();
+	}
 	else
 		$current_feed = $item->get_feed();
 	return apply_filters( 'get_the_feed_id', md5($current_feed->get_link() . $current_feed->get_title()) );
@@ -491,7 +496,8 @@ function date_equals($args='') {
 
 	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
-	$equals = $item->get_date( 'l d F, Y' ) == $list->get_item( $equalto )->get_date( 'l d F, Y' );
+	$temp_item = $list->get_item( $equalto );
+	$equals = $item->get_date( 'l d F, Y' ) == $temp_item->get_date( 'l d F, Y' );
 	return apply_filters('date_equals', $equals, $equalto);
 }
 

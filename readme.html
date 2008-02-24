@@ -23,15 +23,18 @@
 				</ul>
 			</div>
 			<div id="content">
-				<h3 id="welcome">Welcome</h3>
+				<h3 id="welcome">Welcome!</h3>
 					<p>Welcome and thanks for downloading Lilina! This file is designed to give you a guide into the installation and use of the Lilina News Aggregator software.</p>
 				<h3 id="about">About</h3>
 					<p>Lilina is an open source feed aggregator, or feed reader, written in PHP. It doesn't require any PEAR or PECL packages and is simple to set up and use.</p>
 					<p>This software is Open Source Initiative approved Open Source Software. Open Source Initiative Approved is a trademark of the Open Source Initiative.</p>
 				<h3 id="requirements">Requirements</h3>
 					<ul><li>A webserver, like Apache or IIS</li>
-					<li>PHP 4.0.2+</li></ul>
-					<p>That's it. No database required or anything else. Lilina is completely self-contained and there are no libraries required.</p>
+					<li>PHP 4.0.2+</li>
+					<li>Support for socket connections (see <a href="http://php.net/manual/en/function.fsockopen.php">the PHP manual entry on fsockopen()</a>)</li>
+					<li>Support for fopen wrappers (see <a href="http://php.net/manual/en/ref.filesystem.php#ini.allow-url-fopen">the PHP manual entry on allow-url-fopen</a>)</li>
+					</ul>
+					<p>That's it! No PEAR packages are needed and no MySQL, PostgreSQL or SQLite databases are needed. Lilina is fully self-contained and uses flat-files instead of databases.</p>
 				<h3 id="installation">Installation</h3>
 					<p>Upload to your server and then simply open up <a href="install.php">install.php</a> in your browser</p>
 				<h3 id="permissions">Permissions</h3>
@@ -41,7 +44,7 @@
 					<pre>chmod -R 0777 cache conf</pre>
 					<p>If you use a graphical FTP client, you can also set it on each folder using the number 755 or 777, or giving read and execute permissions to all and the write permission to the owner only</p>
 				<h3 id="support">Support</h3>
-					<p>Support is available from the <a href="http://getlilina.org/docs/support">Lilina support page</a>, via email, the forums or on the wiki</p>
+					<p>Support is available from the <a href="http://getlilina.org/docs/support">Lilina support page</a>, <a href="http://getlilina.org/forums/">the Lilina forums</a> or <a href="http://getlilina.org/docs/">on the Lilina wiki</a>.</p>
 			</div>
 		</div>
 		<div id="footer">
