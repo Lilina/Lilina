@@ -249,10 +249,14 @@ function has_items($increment = true) {
 		return apply_filters('has_items', false, $showtime, $total_items);
 	
 	if(!isset($item)) {
-		$temp_item = $list->get_item(0);
+		if(!is_object($temp_item = $list->get_item(0))) {
+			return apply_filters('has_items', false, $showtime, $total_items);
+		}
 	}
 	else {
-		$temp_item = $list->get_item($item_number);
+		if(!is_object($temp_item = $list->get_item($item_number))) {
+			return apply_filters('has_items', false, $showtime, $total_items);
+		}
 	}
 	if($temp_item->get_date('U') < $showtime)
 		return apply_filters('has_items', false, $showtime, $total_items);
