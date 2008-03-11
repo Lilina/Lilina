@@ -43,107 +43,6 @@ function lilina_fix_request_uri() {
 }
 
 /**
- * Checks to see if a new version of Lilina is available
- * @author WordPress
- */
-function lilina_version_check() {
-	if ( !function_exists('fsockopen') || strpos($_SERVER['PHP_SELF'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
-		return;
-
-	global $lilina, $settings;
-	//Just to make sure
-	require_once(LILINA_INCPATH . '/core/version.php');
-	require_once(LILINA_INCPATH . '/core/conf.php');
-	$lilina_version = $lilina['core-sys']['version'];
-	$php_version = phpversion();
-
-	$current = get_option('update_status');
-	$locale = get_option('lang');
-
-	if (
-		isset( $current->last_checked ) &&
-		43200 > ( time() - $current->last_checked ) &&
-		$current->version_checked == $lilina_version
-	)
-		return false;
-
-	$new_option = '';
-	$new_option->last_checked = time(); // this gets set whether we get a response or not, so if something is down or misconfigured it won't delay the page load for more than 3 seconds, twice a day
-	$new_option->version_checked = $lilina_version;
-
-	$http_request  = "GET /version-check/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale HTTP/1.0\r\n";
-	$http_request .= "Host: getlilina.org\r\n";
-	//$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('blog_charset') . "\r\n";
-	$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . $settings['encoding'] . "\r\n";
-	$http_request .= 'User-Agent: Lilina/'. $lilina_version .';  ' . $settings['baseurl'] . "\r\n";
-	$http_request .= "\r\n";
-
-	$response = '';
-	if ( false !== ( $fs = @fsockopen( 'getlilina.org', 80, $errno, $errstr, 3 ) ) && is_resource($fs) ) {
-		fwrite( $fs, $http_request );
-		while ( !feof( $fs ) )
-			$response .= fgets( $fs, 1160 ); // One TCP-IP packet
-		fclose( $fs );
-
-		$response = explode("\r\n\r\n", $response, 2);
-		$body = trim( $response[1] );
-		$body = str_replace(array("\r\n", "\r"), "\n", $body);
-
-		$returns = explode("\n", $body);
-
-		$new_option->response = $returns[0];
-		if ( isset( $returns[1] ) )
-			$new_option->url = $returns[1];
-	}
-	update_option('update_status', $new_option );
-}
-register_action('init', 'lilina_version_check');
-
-/**
- * @todo Document
- * @author WordPress
- */
-function lilina_footer_version() {
-	global $lilina;
-	$cur = get_option('update_status');
-	if(!is_admin() || !is_object($cur)) {
-		echo $lilina['core-sys']['version'];
-	}
-
-	switch ( $cur->response ) {
-		case 'development' :
-			printf(' | '._r( 'You are using a development version (%s). Thanks! Make sure you <a href="%s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
-		break;
-
-		case 'upgrade' :
-			printf(' | <strong>'._r( 'Your installation of Lilina (%s) is out of date. <a href="%s">Please update</a>.' ).'</strong>', $lilina['core-sys']['version'], $cur->url);
-		break;
-
-		case 'latest' :
-		default :
-			printf(' | '._r( 'Version %s' ), $lilina['core-sys']['version']);
-		break;
-	}
-}
-register_action('admin_footer', 'lilina_footer_version');
-
-/**
- * @todo Document
- * @author WordPress
- */
-function update_nag() {
-	$cur = get_option( 'update_status' );
-
-	if ( ! isset( $cur->response ) || $cur->response != 'upgrade' )
-		return false;
-
-	$msg = sprintf(_r('A new version of Lilina is available! <a href="%s">Please update now</a>.'), $cur->url);
-
-	echo "<div id='update-nag'>$msg</div>";
-}
-register_action('admin_notices', 'update_nag');
-
-/**
  * @todo Document
  */
 function lilina_timer_start() {
@@ -315,5 +214,64 @@ function lilina_level_playing_field() {
 		$_COOKIE = stripslashes_deep($_COOKIE);
 		$_REQUEST = stripslashes_deep($_REQUEST);
 	}
+}
+
+/**
+ *
+ */
+function lilina_nice_die($message, $title = 'Error') {
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title><?php echo $title; ?> - Lilina News Aggregator</title>
+		<style type="text/css">
+			@import "install.css";
+		</style>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<img src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
+				<h1>Lilina News Aggregator</h1>
+				<h2><?php echo $title; ?></h2>
+			</div>
+			<div id="menu">
+				<ul>
+					<li><a href="http://getlilina.org/">Lilina Website</a></li>
+					<li><a href="http://getlilina.org/forums/">Forums</a></li>
+					<li><a href="http://getlilina.org/docs/">Documentation</a></li>
+				</ul>
+			</div>
+			<div id="content">
+				<?php echo $message; ?>
+			</div>
+		</div>
+	</body>
+</html>
+<?php
+	die();
+}
+
+/**
+ * Adds a notice to the top of the page
+ *
+ * Creates an anonymous function to concatenate $message to the alert_box filter
+ * @param string $message Notice to add
+ */
+function add_notice($message) {
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . $message . '</p>\';'));
+}
+
+/**
+ * Adds a technical notice to the top of the page
+ *
+ * Creates an anonymous function to concatenate $message to the alert_box filter
+ * @param string $message Notice to add
+ */
+function add_tech_notice($message) {
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . $message . '</span></p>\';'));
 }
 ?>
