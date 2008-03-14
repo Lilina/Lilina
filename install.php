@@ -314,6 +314,9 @@ else {
 	$page				= false;
 }
 $from					= (isset($_POST['from'])) ? htmlspecialchars($_POST['from']) : false;
+$sitename				= isset($_POST['sitename']) ? $_POST['sitename'] : false;
+$username				= isset($_POST['username']) ? $_POST['username'] : false;
+$password				= isset($_POST['password']) ? $_POST['password'] : false;
 $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ? true : false;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -343,7 +346,7 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 			<div id="content">
 <?php
 if($error) {
-	$page--;
+	//$page--;
 }
 switch($page) {
 	case 1:
