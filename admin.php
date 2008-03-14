@@ -63,6 +63,7 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
+require_once(LILINA_INCPATH . '/core/update-functions.php');
 
 do_action('init');
 
