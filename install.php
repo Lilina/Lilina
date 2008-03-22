@@ -17,11 +17,12 @@ define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 header('Content-Type: text/html; charset=UTF-8');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
+require_once(LILINA_INCPATH . '/core/install-functions.php');
 
 //Make sure Lilina's not installed
-if(@file_exists('./conf/settings.php')) {
+if(lilina_is_installed()) {
 	require_once(LILINA_PATH . '/inc/core/conf.php');
-	if( !isset($settings['settings_version']) || $settings['settings_version'] > $lilina['settings-storage']['version'] ) {
+	if( !lilina_settings_current() ) {
 		if(isset($_GET['action']) && $_GET['action'] == 'upgrade') {
 			upgrade();
 		}
@@ -95,23 +96,6 @@ function install($sitename, $username, $password) {
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";
 ?>";
-		/** Make sure it's writable now */
-		if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
-			/** We'll try this first */
-			chmod(LILINA_PATH . '/conf/', 0644);
-			if(!is_writable('/conf/')) {
-				/** Nope, let's give group permissions too */
-				chmod(LILINA_PATH . '/conf/', 0664);
-				if(!is_writable('/conf/')) {
-					/** Still no dice, give write permissions to all */
-					chmod(LILINA_PATH . '/conf/', 0666);
-					if(!is_writable(LILINA_PATH . '/conf/')) {
-						/** OK, we can't make it writable ourselves. Tell the user this */
-						echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
-					}
-				}
-			}
-		}
 		if( !is_writable(LILINA_PATH . '/conf/')
 			|| !($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+'))
 			|| !is_resource($settings_file) ) {
@@ -132,35 +116,24 @@ function install($sitename, $username, $password) {
 			return false;
 		}
 		if(file_exists(LILINA_PATH . '/conf/feeds.data')) {
-			echo "<p>Using existing feeds</p>\n";
+			echo "<p>Using existing feeds data</p>\n";
 		}
 		else {
 			$feeds_file = @fopen(LILINA_PATH . '/conf/feeds.data', 'w+');
 			if(is_resource($feeds_file)) {
 				$data['version'] = $lilina['feed-storage']['version'];
-				if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
-					lilina_nice_die(
-						'<code>' . LILINA_PATH . '/conf/feeds.data</code> is not writable by the server. Please make sure the server can write to it and then
-						<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-						<input type="hidden" name="sitename" value="' . $sitename . '" />
-						<input type="hidden" name="username" value="' . $username . '" />
-						<input type="hidden" name="password" value="' . $password . '" />
-						<input type="hidden" name="page" value="2">
-						<input type="submit" value="Try again" />
-						</form>');
-					return false;
-				}
 				$sdata	= base64_encode(serialize($data)) ;
-				if(!$fp) {
-					lilina_nice_die(
-						'An error occurred when saving to <code>' . LILINA_PATH . '/conf/feeds.data</code> and your data may not have been saved. Please make sure the server can write to it and then
-						<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-						<input type="hidden" name="sitename" value="' . $sitename . '" />
-						<input type="hidden" name="username" value="' . $username . '" />
-						<input type="hidden" name="password" value="' . $password . '" />
-						<input type="hidden" name="page" value="2">
-						<input type="submit" value="Try again" />
-						</form>');
+				if(!$feeds_file) {
+					?>
+					An error occurred when saving to <code><?php echo LILINA_PATH; ?>/conf/feeds.data</code> and your data may not have been saved. Please make sure the server can write to it.
+					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
+					<input type="hidden" name="username" value="<?php echo $username; ?>" />
+					<input type="hidden" name="password" value="<?php echo $password; ?>" />
+					<input type="hidden" name="page" value="2">
+					<input type="submit" value="Try again" />
+					</form>
+					<?php
 					return false;
 				}
 				fputs($feeds_file, $sdata);
@@ -183,7 +156,7 @@ function install($sitename, $username, $password) {
 					chmod(LILINA_PATH . '/conf/feeds.data', 0666);
 					if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
 						/** OK, we can't make it writable ourselves. Tell the user this */
-						echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
+						echo "<p>Couldn't make <code>conf/feeds.data</code> writable. Please ensure you make it writable yourself</p>\n";
 					}
 				}
 			}
@@ -227,10 +200,10 @@ function upgrade() {
 	if(@file_exists(LILINA_PATH . '/conf/feeds.data')) {
 		$feeds = file_get_contents(LILINA_PATH . '/conf/feeds.data') ;
 		$feeds = unserialize( base64_decode($feeds) ) ;
-		if(isset($feeds['version']) && $feeds['version'] == $lilina['feed-storage']['version'])
+		if(!isset($feeds['version']) || $feeds['version'] != $lilina['feed-storage']['version'])
 			break;
 
-		if(!is_array($feeds) || empty($feeds) || !isset($feeds['feeds']) || !is_array($feeds['feeds']) || empty($feeds['feeds'])) {
+		if(is_array($feeds) || !empty($feeds) || !isset($feeds['feeds']) || !is_array($feeds['feeds']) || empty($feeds['feeds'])) {
 			// Discard feed data
 			break;
 		}

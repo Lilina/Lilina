@@ -10,7 +10,7 @@
 defined('LILINA') or die('Restricted access');
 
 /**
- * Takes an array of feeds and returns all channels and all items from them
+ * lilina_return_items() - Takes an array of feeds and returns all channels and all items from them
  *
  * Takes an input array and parses it using the SimplePie library. Returns a SimplePie object.
  * @param array $input Input array of user specified feeds
@@ -32,22 +32,25 @@ function lilina_return_items($input) {
 }
 
 /**
- * Parses HTML with HTML Purifier
+ * lilina_parse_html() - Parses HTML with HTML Purifier using filters
  *
  * Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
  * both arrays and strings
+ * @global Cache the HTMLPurifier object for later
  * @param mixed $val_array Array or string to parse/purify
  * @return mixed Array or string of purified HTML
  */
 function lilina_parse_html($val_array){
 	require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
-	global $settings;
-	$config = HTMLPurifier_Config::createDefault();
-	$config->set('Core', 'Encoding', $settings['encoding']); //replace with your encoding
-	$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
-	$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
-	$config->set('Cache', 'SerializerPath', $settings['cachedir']);
-	$purifier = new HTMLPurifier($config);
+	global $purifier;
+	if(!isset($purifier) || !is_a($purifier, 'HTMLPurifier')) {
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', get_option('encoding')); //replace with your encoding
+		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
+		$config->set('Cache', 'SerializerPath', get_option('cachedir'));
+		$purifier = new HTMLPurifier($config);
+	}
 	if(is_array($val_array)) {
 		if(empty($val_array)) return $val_array;
 		foreach($val_array as $this_array) {
@@ -70,7 +73,7 @@ register_filter('the_summary', 'lilina_parse_html');
 register_filter('return_output', 'lilina_parse_html');
 
 /**
- * Adds a new feed
+ * add_feed() - Adds a new feed
  *
  * Adds the specified feed name and URL to the global <tt>$data</tt> array. If no name is set
  * by the user, it fetches one from the feed. If the URL specified is a HTML page and not a
@@ -126,7 +129,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 }
 
 /**
- * Saves all feeds to the file specified in the settings
+ * save_feeds() - Saves all feeds to the file specified in the settings
  *
  * Serializes, then base 64 encodes
  */
@@ -147,7 +150,9 @@ function save_feeds() {
 }
 
 /**
- * @todo Document
+ * import_opml() - {{@internal Missing Short Description}}}
+ *
+ * {{@internal Missing Long Description}}}
  */
 function import_opml($opml_url) {
 	if(!empty($opml_url)) {

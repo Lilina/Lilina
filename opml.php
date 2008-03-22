@@ -16,18 +16,16 @@ define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
 $out		= '';
+
+//Check installed
+require_once(LILINA_INCPATH . '/core/install-functions.php');
+lilina_check_installed();
+
 /** Current Version */
 require_once(LILINA_INCPATH . '/core/version.php');
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
-
-//Make sure we are actually installed...
-require_once(LILINA_INCPATH . '/core/install-functions.php');
-if(!lilina_check_installed()) {
-	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
-	die();
-}
 
 //Plugins and misc stuff
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
@@ -43,8 +41,6 @@ require_once(LILINA_INCPATH . '/core/l10n.php');
 //else {
 //	lilina_cache_check();
 //}
-//Require our standard stuff
-require_once(LILINA_INCPATH . '/core/lib.php');
 
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');

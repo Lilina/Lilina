@@ -30,9 +30,8 @@ function lilina_version_check() {
 
 	$http_request  = "GET /version-check/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale HTTP/1.0\r\n";
 	$http_request .= "Host: getlilina.org\r\n";
-	//$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('blog_charset') . "\r\n";
-	$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . $settings['encoding'] . "\r\n";
-	$http_request .= 'User-Agent: Lilina/'. $lilina_version .';  ' . $settings['baseurl'] . "\r\n";
+	$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('encoding') . "\r\n";
+	$http_request .= 'User-Agent: Lilina/'. $lilina_version .';  ' . get_option('baseurl') . "\r\n";
 	$http_request .= "\r\n";
 
 	$response = '';

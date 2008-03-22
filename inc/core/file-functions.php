@@ -8,36 +8,11 @@
  */
 
 defined('LILINA') or die('Restricted access');
+
 /**
- * @todo Document
- */
-function lilina_load_times() {
-	global $settings;
-	if (file_exists($settings['files']['times'])) {
-		$time_table = file_get_contents($settings['files']['times']) ;
-		$time_table = unserialize($time_table) ;
-	}
-	else {
-		$time_table = array();
-	}
-	if(!$time_table || !is_array($time_table)) {
-		$time_table = array();
-	}
-	return $time_table;
-}
-/**
- * @todo Document
- */
-function lilina_save_times($times) {
-	global $settings;
-	// save times
-	$ttime = serialize($times);
-	$fp = fopen($settings['files']['times'],'w') ;
-	fputs($fp, $ttime) ;
-	fclose($fp) ;
-}
-/**
- * @todo Document
+ * lilina_load_feeds() - {{@internal Missing Short Description}}}
+ *
+ * {{@internal Missing Long Description}}}
  */
 function lilina_load_feeds($data_file) {
 	$data = file_get_contents($data_file) ;
@@ -48,6 +23,11 @@ function lilina_load_feeds($data_file) {
 	return $data;
 }
 
+/**
+ * available_templates() - {{@internal Missing Short Description}}}
+ *
+ * {{@internal Missing Long Description}}}
+ */
 function available_templates() {
 	//Make sure we open it correctly
 	if ($handle = opendir(LILINA_INCPATH . '/templates/')) {
@@ -79,6 +59,11 @@ function available_templates() {
 	return $templates;
 }
 
+/**
+ * available_locales() - {{@internal Missing Short Description}}}
+ *
+ * {{@internal Missing Long Description}}}
+ */
 function available_locales() {
 	//Make sure we open it correctly
 	if ($handle = opendir(LILINA_INCPATH . '/locales/')) {
@@ -106,7 +91,11 @@ function available_locales() {
 	return $locales;
 }
 
-
+/**
+ * save_settings() - {{@internal Missing Short Description}}}
+ *
+ * {{@internal Missing Long Description}}}
+ */
 function save_settings() {
 	global $settings, $default_settings;
 	$raw_php		= "<?php";
@@ -147,7 +136,7 @@ function save_settings() {
 }
 
 /**
- * Generates nonce
+ * generate_nonce() - Generates nonce
  *
  * Uses the current time
  * @global array Need settings for user and password
@@ -161,7 +150,7 @@ function generate_nonce() {
 }
 
 /**
- * Checks whether supplied nonce matches current nonce
+ * check_nonce() - Checks whether supplied nonce matches current nonce
  * @global array Need settings for user and password
  * @param string $nonce Supplied nonce
  * @return bool True if nonce is equal, false if not

@@ -23,6 +23,10 @@ $(document).ready(function() {
 	$(".river-page #viewallitems").click(function(){
 		$("#main").children().toggle().parent().load("index.php?hours=-1 #main");
 		$(".title").next().next().slideUp().parent().addClass("c1").removeClass("c2");
+		$(".river-page .title").click(function(){
+			$(this).next().next().slideToggle().parent().toggleClass("c1").toggleClass("c2");
+			return false;
+		});
 		return false;
 	});
 	$(".river-page .hide_feed").click(function(){

@@ -17,10 +17,9 @@ $settings	= 0;
 
 
 
-if(!@file_exists(LILINA_PATH . '/conf/settings.php')) {
-	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
-	die();
-}
+require_once(LILINA_INCPATH . '/core/install-functions.php');
+lilina_check_installed();
+
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
@@ -37,9 +36,6 @@ require_once(LILINA_INCPATH . '/core/cache.php');
 
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
-
-//Require our standard stuff
-require_once(LILINA_INCPATH . '/core/lib.php');
 
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');

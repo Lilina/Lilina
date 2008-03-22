@@ -18,9 +18,13 @@
 define('LILINA',1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
+
+//Check installed
+require_once(LILINA_INCPATH . '/core/install-functions.php');
+lilina_check_installed();
+
 //Require our settings, must be first required file
 require_once(LILINA_INCPATH . '/core/conf.php');
-require_once(LILINA_INCPATH . '/core/lib.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/feed-functions.php');

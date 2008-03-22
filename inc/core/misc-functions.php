@@ -187,91 +187,51 @@ function urlencode_deep($value) {
 /**
  * Unregisters globals and reverts magic quotes
  *
+ * This looks like ugly code.
  * @author WordPress
  */
 function lilina_level_playing_field() {
 	lilina_fix_request_uri();
 	if (ini_get('register_globals')) {
+		if ( isset($_REQUEST['GLOBALS']) )
+			die('GLOBALS overwrite attempt detected');
 
-	if ( isset($_REQUEST['GLOBALS']) )
-		die('GLOBALS overwrite attempt detected');
+		// Variables that shouldn't be unset
+		$keep = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix');
 
-	// Variables that shouldn't be unset
-	$keep = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix');
-
-	$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
-	foreach ( $input as $k => $v ) {
-		if ( !in_array($k, $keep) && isset($GLOBALS[$k]) ) {
-			$GLOBALS[$k] = NULL;
-			unset($GLOBALS[$k]);
+		$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
+		foreach ( $input as $k => $v ) {
+			if ( !in_array($k, $keep) && isset($GLOBALS[$k]) ) {
+				$GLOBALS[$k] = NULL;
+				unset($GLOBALS[$k]);
+			}
 		}
-	}
 	}
 
 	if (get_magic_quotes_gpc()) {
-		$_GET = stripslashes_deep($_GET);
-		$_POST = stripslashes_deep($_POST);
-		$_COOKIE = stripslashes_deep($_COOKIE);
-		$_REQUEST = stripslashes_deep($_REQUEST);
+		list($_GET, $_POST, $_COOKIE, $_REQUEST) = stripslashes_deep(array($_GET, $_POST, $_COOKIE, $_REQUEST));
 	}
-}
-
-/**
- *
- */
-function lilina_nice_die($message, $title = 'Error') {
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title><?php echo $title; ?> - Lilina News Aggregator</title>
-		<style type="text/css">
-			@import "install.css";
-		</style>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	</head>
-	<body>
-		<div id="container">
-			<div id="header">
-				<img src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
-				<h1>Lilina News Aggregator</h1>
-				<h2><?php echo $title; ?></h2>
-			</div>
-			<div id="menu">
-				<ul>
-					<li><a href="http://getlilina.org/">Lilina Website</a></li>
-					<li><a href="http://getlilina.org/forums/">Forums</a></li>
-					<li><a href="http://getlilina.org/docs/">Documentation</a></li>
-				</ul>
-			</div>
-			<div id="content">
-				<?php echo $message; ?>
-			</div>
-		</div>
-	</body>
-</html>
-<?php
-	die();
 }
 
 /**
  * Adds a notice to the top of the page
  *
  * Creates an anonymous function to concatenate $message to the alert_box filter
+ * Note: this uses ugly code, but must to avoid escaping double quotes as well
  * @param string $message Notice to add
  */
 function add_notice($message) {
-	add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . $message . '</p>\';'));
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . str_replace( '\'', '\\\'', $message) . '</p>\';'));
 }
 
 /**
  * Adds a technical notice to the top of the page
  *
  * Creates an anonymous function to concatenate $message to the alert_box filter
+ * Note: this uses ugly code, but must to avoid escaping double quotes as well
  * @param string $message Notice to add
  */
 function add_tech_notice($message) {
-	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . $message . '</span></p>\';'));
+	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . str_replace( '\'', '\\\'', $message) . '</span></p>\';'));
 }
 ?>

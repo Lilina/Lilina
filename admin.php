@@ -19,15 +19,15 @@ define('LILINA',1) ;
 define('LILINA_ADMIN', 1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
-//Check installed
-require_once(LILINA_INCPATH . '/core/install-functions.php');
-if(!lilina_check_installed()) {
-	echo 'Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a>';
-	die();
-}
+
 //Protect from register_globals
 $settings	= 0;
 global $settings;
+
+//Check installed
+require_once(LILINA_INCPATH . '/core/install-functions.php');
+lilina_check_installed();
+
 $authed		= false;
 $result		= '';
 $page		= (isset($_GET['page'])? $_GET['page'] : '');
@@ -55,9 +55,6 @@ $remove_id	= htmlspecialchars($remove_id);
 $import_url	= (isset($_GET['import_url']))? $_GET['import_url'] : '';
 $import_url	= htmlspecialchars($import_url);
 
-//Require our settings, must be before $data
-require_once(LILINA_INCPATH . '/core/conf.php');
-
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Localisation
@@ -73,8 +70,6 @@ do_action('init');
  */
 $data		= file_get_contents($settings['files']['feeds']) ;
 $data		= unserialize( base64_decode($data) ) ;
-//Old functions, not yet migrated
-require_once(LILINA_INCPATH . '/core/lib.php');
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
 
@@ -107,7 +102,9 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
  */
 function get_feed_list() {
 	global $data;
-	return $data['feeds'];
+	if(isset($data['feeds']))
+		return $data['feeds'];
+	return false;
 }
 
 //Navigation
@@ -304,7 +301,6 @@ if($action == 'diagnostic') {
 	require_once(LILINA_INCPATH . '/core/file-functions.php');
 	require_once(LILINA_INCPATH . '/core/install-functions.php');
 	require_once(LILINA_INCPATH . '/core/l10n.php');
-	require_once(LILINA_INCPATH . '/core/lib.php');
 	require_once(LILINA_INCPATH . '/core/misc-functions.php');
 	require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 	require_once(LILINA_INCPATH . '/core/skin.php');

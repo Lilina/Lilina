@@ -1,77 +1,28 @@
-Lilina Credits
-==============
+Credits
+=======
 
-Lilina
-------
-* Licensed under the GNU General Public License version 2.
-	See license.txt for details.
+Lilina Contributors
+-------------------
+* Ryan McCue <cubegames@gmail.com>
+* Panayotis Vryonis <panayotis@vrypan.net>
+* Jean-Marc Liotier <jim@liotier.org>
+* Trevor Fitzgerald <fitztrev@gmail.com>
 
-* Authors:
-	* Ryan McCue <cubegames@gmail.com>
-
-		Me :) I rewrote alot of the code from scratch
-		and took over the project
-
-	* Panayotis Vryonis <panayotis@vrypan.net>
-
-		0.7 and below, the rest of the code
-	* Jean-Marc Liotier <jim@liotier.org>
-
-		Code for RSS output, based on example code from
-		FeedCreator
-	* NeoRame <webmaster@blog.kain-planet.de>
-
-		Great new logo. We love him for it :-)
-
-Caching Methods
----------------
-* Dave Childs
-
-	Thanks to Dave for the caching method used in cache.php
-
-HTMLPurifier
-------------
-* Edward Z. Yang (Ambush Commander)
-
-	> Lots of thanks to the DevNetwork Community for their
-	> help (see docs/ref-devnetwork.html for more details),
-	> Feyd especially (namely IPv6 and optimization).  Thanks
-	> to RSnake for letting me package his fantastic XSS
-	> cheatsheet for a smoketest.
-
-jQuery
-------
-* John Resig (jquery.com)
-
-	Thanks to John for the great library! Simplifed much
-	of the old JS code.
-
-MagpieRSS
----------
-* Kellan Elliott-McCrea <kellan@pobox.com>
-
-	Kellan recently rewrote his popular parser from the ground up.
-	Lilina uses the 2.0-alpha-alpha-alpha, the first version
-	of this rewritten code.
-
-parseOPML.php
--------------
-* Sencer Yurdagül
-* Adapted by Ryan McCue <cubegames@gmail.com> for Lilina
-
+Libraries/Includes Used
+-----------------------
+* HTMLPurifier by Edward Z. Yang
+	http://htmlpurifier.org/
+* jQuery by John Resig
+	http://jquery.org/
+* parseOPML.php by Sencer Yurdagül (modifications by Ryan McCue for Lilina)
 	http://www.sencer.de/code/showOPML.phps
-	Code believed to be under public domain license. If this
-	is not the case, please email us at lilina-developement@googlegroups.com
+* PHP-gettext by Danilo Segan, Nico Kaiser and Steven Armstrong
+* SimplePie by Ryan Parman and Geoffery Sneddon
+	http://simplepie.org/
 
-PHP-gettext
------------
-* Danilo Segan <danilo@kvota.net>
-* Nico Kaiser <nico@siriux.net> (contributed most changes between 1.0.2 and 1.0.3, bugfix for 1.0.5)
-* Steven Armstrong <sa@c-area.ch> (gettext.inc, leading to 1.0.6)
-
-WordPress
----------
-* Contains code from WordPress or influenced by it
-
-	Licensed under the GNU General Public License version 2.
-	See license.txt for details.
+Code Borrowed From/Inspiration
+------------------------------
+* Feed on Feeds
+	http://feedonfeeds.com/
+* WordPress
+	http://wordpress.org/
