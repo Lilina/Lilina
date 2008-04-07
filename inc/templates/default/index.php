@@ -7,11 +7,6 @@
 /**
 */
 header('Content-Type: text/html; charset=utf-8');
-global $settings, $showtime; //Just in case ;)
-/**
- * @todo Remove this
- */
-$nothing = array(); // For blank parameters
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -132,9 +127,8 @@ else {
 			//Already handled above; if there are no feeds, then there should be no items...
 		}
 	?>
-	</ul><?php
-	//echo $feed->error();
-	?></div>
+	</ul>
+</div>
 <div id="footer">
 <p><?php echo get_option('sitename'); ?> is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a></p>
 <!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->

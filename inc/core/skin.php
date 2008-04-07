@@ -413,10 +413,18 @@ function the_feed_url() {
 /**
  * @todo Document
  */
-function the_feed_favicon() {
+function get_the_feed_favicon() {
 	global $item;
 	$temp_item = $item->get_feed();
-	echo apply_filters( 'the_feed_favicon', $temp_item->get_favicon() );
+	return apply_filters( 'the_feed_favicon', $temp_item->get_favicon() );
+	
+}
+
+/**
+ * @todo Document
+ */
+function the_feed_favicon() {
+	echo get_the_feed_favicon();
 }
 
 /**
@@ -560,6 +568,24 @@ function get_feeds() {
 		$data = lilina_load_feeds($settings['files']['feeds']);
 	}
 	return apply_filters('get_feeds', $data['feeds']);
+}
+
+/**
+ *
+ */
+function list_feeds($args = '') {
+	$defaults = array(
+		'format' => '<a href="$1%s">$3%s</a> [<a href="$4%s">' . _r('Feed') . '</a>]'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+
+	if(has_feeds()) {
+		foreach(get_feeds() as $feed) {
+			printf($format, $feed['url'], get_the_feed_favicon($feed['url']), $feed['name'], $feed['feed']);
+		}
+	}
 }
 
 /**

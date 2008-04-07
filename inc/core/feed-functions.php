@@ -24,6 +24,7 @@ function lilina_return_items($input) {
 	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(LILINA_PATH . '/cache');
+	//$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
 	$feed->set_feed_url($feed_list);

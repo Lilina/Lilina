@@ -164,4 +164,144 @@ function check_nonce($nonce) {
 	}
 	return true;
 }
+
+/**
+ * get_temp_dir() - Get a temporary directory to try writing files to
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function get_temp_dir() {
+	if ( defined('LILINA_TEMP_DIR') )
+		return trailingslashit(LILINA_TEMP_DIR);
+
+	$temp = LILINA_PATH . '/cache';
+	if ( is_dir($temp) && is_writable($temp) )
+		return $temp;
+
+	if  ( function_exists('sys_get_temp_dir') )
+		return trailingslashit(sys_get_temp_dir());
+
+	return '/tmp/';
+}
+
+/**
+ * get_filesystem_method() - Get a temporary directory to try writing files to
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function get_filesystem_method() {
+	$tempFile = tempnam(get_temp_dir(), 'LILINAUPDATE');
+
+	if ( getmyuid() == fileowner($tempFile) ) {
+		unlink($tempFile);
+		return 'direct';
+	} else {
+		unlink($tempFile);
+	}
+
+	if ( extension_loaded('ftp') ) return 'ftpext';
+	if ( extension_loaded('sockets') || function_exists('fsockopen') ) return 'ftpsockets'; //Sockets: Socket extension; PHP Mode: FSockopen / fwrite / fread
+	return false;
+}
+
+/**
+ * request_filesystem_credentials() - Retrieve the FTP access credentials if needed
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function request_filesystem_credentials($form_post, $type = '', $error = false) {
+	$req_cred = apply_filters('request_filesystem_credentials', '', $form_post, $type, $error);
+	if ( '' !== $req_cred )
+		return $req_cred;
+
+	if ( empty($type) )
+		$type = get_filesystem_method();
+
+	if ( 'direct' == $type )
+		return true;
+		
+	if( ! $credentials = get_option('ftp_credentials') )
+		$credentials = array();
+	// If defined, set it to that, Else, If POST'd, set it to that, If not, Set it to whatever it previously was(saved details in option)
+	$credentials['hostname'] = defined('FTP_HOST') ? FTP_HOST : (!empty($_POST['hostname']) ? $_POST['hostname'] : $credentials['hostname']);
+	$credentials['username'] = defined('FTP_USER') ? FTP_USER : (!empty($_POST['username']) ? $_POST['username'] : $credentials['username']);
+	$credentials['password'] = defined('FTP_PASS') ? FTP_PASS : (!empty($_POST['password']) ? $_POST['password'] : $credentials['password']);
+	$credentials['ssl']      = defined('FTP_SSL')  ? FTP_SSL  : (!empty($_POST['ssl'])      ? $_POST['ssl']      : $credentials['ssl']);
+
+	if ( ! $error && !empty($credentials['password']) && !empty($credentials['username']) && !empty($credentials['hostname']) ) {
+		$stored_credentials = $credentials;
+		unset($stored_credentials['password']);
+		update_option('ftp_credentials', $stored_credentials);
+		return $credentials;
+	}
+	$hostname = '';
+	$username = '';
+	$password = '';
+	$ssl = '';
+	if ( !empty($credentials) )
+		extract($credentials, EXTR_OVERWRITE);
+	if( $error )
+		echo '<div id="message" class="error"><p>' . __('<strong>Error:</strong> There was an error connecting to the server, Please verify the settings are correct.') . '</p></div>';
+?>
+<form action="<?php echo $form_post ?>" method="post">
+	<h2><?php _e('FTP Connection Information') ?></h2>
+	<p><?php _e('To perform the requested update, FTP connection information is required.') ?></p>
+		<p class="option">
+			<label for="hostname"><?php _e('Hostname:') ?></label>
+			<input name="hostname" type="text" id="hostname" value="<?php echo attribute_escape($hostname) ?>"<?php if( defined('FTP_HOST') ) echo ' disabled="disabled"' ?> size="40" />
+		</p>
+		<p class="option">
+			<label for="username"><?php _e('Username:') ?></label>
+			<input name="username" type="text" id="username" value="<?php echo attribute_escape($username) ?>"<?php if( defined('FTP_USER') ) echo ' disabled="disabled"' ?> size="40" />
+		</p>
+		<p class="option">
+			<label for="password"><?php _e('Password:') ?></label>
+			<input name="password" type="password" id="password" value=""<?php if( defined('FTP_PASS') ) echo ' disabled="disabled"' ?> size="40" /><?php if( defined('FTP_PASS') && !empty($password) ) echo '<em>'._r('(Password not shown)').'</em>'; ?>
+		</p>
+		<p class="option">
+			<label for="ssl"><?php _e('Use SSL:') ?></label>
+			<select name="ssl" id="ssl"<?php if( defined('FTP_SSL') ) echo ' disabled="disabled"' ?>>
+			<?php
+			foreach ( array(0 => _r('No'), 1 => _r('Yes') ) as $key => $value ) :
+				$selected = ($ssl == $value) ? 'selected="selected"' : '';
+				echo "\n\t<option value='$key' $selected>" . $value . '</option>';
+			endforeach;
+			?>
+			</select>
+		</p>
+		<input type="submit" name="submit" value="<?php _e('Proceed'); ?>" />
+</form>
+<?php
+	return false;
+}
+
+/**
+ * lilina_filesystem() - Retrieve the FTP access credentials if needed
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function lilina_filesystem( $args = false, $preference = false ) {
+	global $lilina_filesystem;
+
+	$method = get_filesystem_method($preference);
+	if ( ! $method )
+		return false;
+
+	require_once(LILINA_INCPATH . '/core/class-wp-filesystem-' . $method . '.php');
+	$method = "lilina_filesystem_$method";
+
+	$lilina_filesystem = new $method($args);
+
+	if ( $lilina_filesystem->errors->get_error_code() )
+		return false;
+
+	if ( !$lilina_filesystem->connect() )
+		return false; //There was an erorr connecting to the server.
+
+	return true;
+}
 ?>

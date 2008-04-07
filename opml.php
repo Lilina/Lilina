@@ -34,14 +34,6 @@ require_once(LILINA_INCPATH . '/core/l10n.php');
 //Caching to reduce loading times
 //require_once(LILINA_INCPATH . '/core/cache.php');
 
-// Do not update cache unless called with parameter force_update=1
-//if (isset($_GET['force_update']) && $_GET['force_update'] == 1) {
-//	define('MAGPIE_CACHE_AGE', 1);
-//}
-//else {
-//	lilina_cache_check();
-//}
-
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 
@@ -51,12 +43,7 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 //Templating functions
 require_once(LILINA_INCPATH . '/core/skin.php');
 
-/*$data = lilina_load_feeds($settings['files']['feeds']);
-
-// load times*/
 header('Content-Type: application/xml; charset=utf-8');
-$time_table	= lilina_load_times();
-lilina_save_times($time_table); //Thu, 22 Feb 2007 03:09:43 GMT
 echo '<opml version="1.1">
 	<head>
 <title>' . $settings['sitename'] . '</title>
