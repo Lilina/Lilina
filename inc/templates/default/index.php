@@ -109,26 +109,20 @@ else {
 </div>
 </div>
 
+<?php
+if(has_feeds()) {
+	?>
 <div id="sources">
 	<strong>Sources:</strong>
-	<ul>
-	<?php
-		if(has_feeds()) {
-			foreach(get_feeds() as $feed) { ?>
-		<li>
-			<a href="<?php echo $feed['url']; ?>"><!--<img src="<?php echo $feed['icon']; ?>" style="height:16px" alt="icon" />-->
-			<?php echo $feed['name']; ?></a>
-			[<a href="<?php echo $feed['feed']; ?>"><?php _e('Feed');?></a>]
-			<a href="javascript:void(0);" class="hide_feed"><span class="feed-<?php echo md5(htmlspecialchars($feed['link'])); ?>">(<?php _e('Hide items from this channel'); ?>)</span></a>
-		</li><?php
-			}
-		}
-		else {
-			//Already handled above; if there are no feeds, then there should be no items...
-		}
-	?>
+	<ul><?php list_feeds('format=<li><a href="%1$s">%3$s</a> [<a href="%4$s">' . _r('Feed') . "</a>]</li>\n"); ?>
 	</ul>
 </div>
+<?php
+}
+else {
+	//Already handled above; if there are no feeds, then there should be no items...
+}
+	?>
 <div id="footer">
 <p><?php echo get_option('sitename'); ?> is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a></p>
 <!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->

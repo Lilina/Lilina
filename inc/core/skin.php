@@ -575,7 +575,7 @@ function get_feeds() {
  */
 function list_feeds($args = '') {
 	$defaults = array(
-		'format' => '<a href="$1%s">$3%s</a> [<a href="$4%s">' . _r('Feed') . '</a>]'
+		'format' => '<a href="%1$s">%3$s</a> [<a href="%4$s">' . _r('Feed') . '</a>]'
 	);
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
@@ -583,7 +583,7 @@ function list_feeds($args = '') {
 
 	if(has_feeds()) {
 		foreach(get_feeds() as $feed) {
-			printf($format, $feed['url'], get_the_feed_favicon($feed['url']), $feed['name'], $feed['feed']);
+			printf($format, $feed['url'], /** This doesn't work yet: get_the_feed_favicon($feed['url']) */ '', $feed['name'], $feed['feed']);
 		}
 	}
 }

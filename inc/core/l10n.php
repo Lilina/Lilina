@@ -1,266 +1,330 @@
 <?php
 /**
- * Localisation based on gettext example
- * @author Danilo Segan <danilo@kvota.net>
- * @author Steven Armstrong <sa@c-area.ch>
- * @author Ryan McCue <cubegames@gmail.com>
+ * Translation API
+ *
+ * @author WordPress
  * @package Lilina
- * @version 1.0
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @subpackage i18n
  */
-
-defined('LILINA') or die('Restricted access');
-if(!defined('LC_ALL')) {
-	/**
-	 * Gettext needs these constants
-	 */
-	define('LC_CTYPE', 0);
-	define('LC_NUMERIC', 1);
-	define('LC_TIME', 2);
-	define('LC_COLLATE', 3);
-	define('LC_MONETARY', 4);
-	define('LC_MESSAGES', 5);
-	define('LC_ALL', 6);
-}
-elseif(!defined('LC_MESSAGES')) {
-	define('LC_MESSAGES', 5);
-}
-
-require_once(LILINA_INCPATH . '/contrib/streams.php');
-require_once(LILINA_INCPATH . '/contrib/gettext.php');
-
-
-// Variables
-
-global $text_domains, $default_domain, $LC_CATEGORIES, $EMULATEGETTEXT, $CURRENTLOCALE;
-$text_domains = array();
-$default_domain = 'messages';
-$LC_CATEGORIES = array('LC_CTYPE', 'LC_NUMERIC', 'LC_TIME', 'LC_COLLATE', 'LC_MONETARY', 'LC_MESSAGES', 'LC_ALL');
-$EMULATEGETTEXT = 0;
-$CURRENTLOCALE = '';
-
-
-// Utility functions
 
 /**
- * Utility function to get a StreamReader for the given text domain.
+ * get_locale() - Gets the current locale
+ *
+ * If the locale is set, then it will filter the locale
+ * in the 'locale' filter hook and return the value.
+ *
+ * If the locale is not set already, then the WPLANG
+ * constant is used if it is defined. Then it is filtered
+ * through the 'locale' filter hook and the value for the
+ * locale global set and the locale is returned.
+ *
+ * The process to get the locale should only be done once
+ * but the locale will always be filtered using the
+ * 'locale' hook.
+ *
+ * @since 1.0
+ * @uses apply_filters() Calls 'locale' hook on locale value
+ * @uses $locale Gets the locale stored in the global
+ * @uses $settings
+ *
+ * @return string The locale of the blog or from the 'locale' hook
  */
-function _get_reader($domain=null, $category=5, $enable_cache=true) {
-	global $text_domains, $default_domain, $LC_CATEGORIES;
-	if (!isset($domain)) $domain = $default_domain;
-	if (!isset($text_domains[$domain]->l10n)) {
-		// get the current locale
-		$locale = _setlocale(LC_MESSAGES, 0);
-		$p = isset($text_domains[$domain]->path) ? $text_domains[$domain]->path : './';
-		//$path = $p . "$locale/". $LC_CATEGORIES[$category] ."/$domain.mo";
-		$path = $p . $locale . '.mo';
-		if (file_exists($path)) {
-			$input = new FileReader($path);
-		}
-		else {
-			$input = null;
-		}
-		$text_domains[$domain]->l10n = new gettext_reader($input, $enable_cache);
-	}
-	return $text_domains[$domain]->l10n;
+function get_locale() {
+	global $locale, $settings;
+
+	if (isset($locale))
+		return apply_filters( 'locale', $locale );
+
+	if (isset($settings['locale']))
+		$locale = $settings['locale'];
+
+	if (empty($locale))
+		$locale = '';
+
+	$locale = apply_filters('locale', $locale);
+
+	return $locale;
 }
 
 /**
- * Returns whether we are using our emulated gettext API or PHP built-in one.
+ * translate() - Retrieve the translated text
+ *
+ * If the domain is set in the $l10n global, then the text is run
+ * through the domain's translate method. After it is passed to
+ * the 'gettext' filter hook, along with the untranslated text as
+ * the second parameter.
+ *
+ * If the domain is not set, the $text is just returned.
+ *
+ * @since 1.0
+ * @uses $l10n Gets list of domain translated string (gettext_reader) objects
+ * @uses apply_filters() Calls 'gettext' on domain translated text
+ *		with the untranslated text as second parameter
+ *
+ * @param string $text Text to translate
+ * @param string $domain Domain to retrieve the translated text
+ * @return string Translated text
  */
-function locale_emulation() {
-    global $EMULATEGETTEXT;
-    return $EMULATEGETTEXT;
-}
+function translate($text, $domain = 'default') {
+	global $l10n;
 
-/**
- * Checks if the current locale is supported on this system.
- */
-function _check_locale() {
-    global $EMULATEGETTEXT;
-    return !$EMULATEGETTEXT;
-}
+	$text = apply_filters('pre_gettext', $text, $domain);
 
-/**
- * Get the codeset for the given domain.
- */
-function _get_codeset($domain=null) {
-	global $text_domains, $default_domain, $LC_CATEGORIES;
-	if (!isset($domain)) $domain = $default_domain;
-	return (isset($text_domains[$domain]->codeset))? $text_domains[$domain]->codeset : ini_get('mbstring.internal_encoding');
-}
-
-/**
- * Convert the given string to the encoding set by bind_textdomain_codeset.
- */
-function _encode($text) {
-	/**
-	 * Hack for systems that don't have the multibyte extension enabled
-	 */
-	if(!function_exists('mb_detect_encoding')) {
+	if (isset($l10n[$domain]))
+		return apply_filters('gettext', $l10n[$domain]->translate($text), $text, $domain);
+	else
 		return $text;
+}
+
+/**
+ * translate_with_context() - Retrieve the translated text and strip context
+ *
+ * If the domain is set in the $l10n global, then the text is run
+ * through the domain's translate method. After it is passed to
+ * the 'gettext' filter hook, along with the untranslated text as
+ * the second parameter.
+ *
+ * If the domain is not set, the $text is just returned.
+ *
+ * @since 1.0
+ * @uses translate()
+ *
+ * @param string $text Text to translate
+ * @param string $domain Domain to retrieve the translated text
+ * @return string Translated text
+ */
+function translate_with_context($text, $domain = 'default') {
+	$whole = translate($text, $domain);
+	$last_bar = strrpos($whole, '|');
+	if ( false == $last_bar ) {
+		return $whole;
+	} else {
+		return substr($whole, 0, $last_bar);
 	}
-	$source_encoding = mb_detect_encoding($text);
-	$target_encoding = _get_codeset();
-	if ($source_encoding != $target_encoding) {
-		return mb_convert_encoding($text, $target_encoding, $source_encoding);
-	}
-	else {
-		return $text;
-	}
-}
-
-
-
-
-// Custom implementation of the standard gettext related functions
-
-/**
- * Sets a requested locale, if needed emulates it.
- */
-function _setlocale($category, $locale) {
-    global $CURRENTLOCALE, $EMULATEGETTEXT;
-    if ($locale === 0) { // use === to differentiate between string "0"
-        if ($CURRENTLOCALE != '') 
-            return $CURRENTLOCALE;
-        else 
-            // obey LANG variable, maybe extend to support all of LC_* vars
-            // even if we tried to read locale without setting it first
-            return _setlocale($category, $CURRENTLOCALE);
-    } else {
-        $ret = 0;
-        if (function_exists('setlocale')) // I don't know if this ever happens ;)
-           $ret = setlocale($category, $locale);
-        if (($ret and $locale == '') or ($ret == $locale)) {
-            $EMULATEGETTEXT = 0;
-            $CURRENTLOCALE = $ret;
-        } else {
-  	    if ($locale == '') // emulate variable support
- 	        $CURRENTLOCALE = getenv('LANG');
-	    else
-	        $CURRENTLOCALE = $locale;
-            $EMULATEGETTEXT = 1;
-        }
-        return $CURRENTLOCALE;
-    }
 }
 
 /**
- * Sets the path for a domain.
+ * __() - Retrieve a translated string
+ *
+ * _r() is a convenience function which retrieves the translated
+ * string from the translate().
+ *
+ * @see translate() An alias of translate()
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ * @return string Translated text
  */
-function _bindtextdomain($domain, $path) {
-	global $text_domains;
-	// ensure $path ends with a slash
-	if ($path[strlen($path) - 1] != '/') $path .= '/';
-	elseif ($path[strlen($path) - 1] != '\\') $path .= '\\';
-	$text_domains[$domain]->path = $path;
-}
-
-/**
- * Specify the character encoding in which the messages from the DOMAIN message catalog will be returned.
- */
-function _bind_textdomain_codeset($domain, $codeset) {
-	global $text_domains;
-	$text_domains[$domain]->codeset = $codeset;
-}
-
-/**
- * Sets the default domain.
- */
-function _textdomain($domain) {
-	global $default_domain;
-	$default_domain = $domain;
-}
-
-/**
- * Lookup a message in the current domain.
- */
-function _gettext($msgid) {
-	$l10n = _get_reader();
-	//return $l10n->translate($msgid);
-	return _encode($l10n->translate($msgid));
-}
-/**
- * Alias for gettext.
- */
-function __($msgid) {
-	return _gettext($msgid);
-}
-/**
- * Plural version of gettext.
- */
-function _ngettext($single, $plural, $number) {
-	$l10n = _get_reader();
-	//return $l10n->ngettext($single, $plural, $number);
-	return _encode($l10n->ngettext($single, $plural, $number));
-}
-
-/**
- * Override the current domain.
- */
-function _dgettext($domain, $msgid) {
-	$l10n = _get_reader($domain);
-	//return $l10n->translate($msgid);
-	return _encode($l10n->translate($msgid));
-}
-/**
- * Plural version of dgettext.
- */
-function _dngettext($domain, $single, $plural, $number) {
-	$l10n = _get_reader($domain);
-	//return $l10n->ngettext($single, $plural, $number);
-	return _encode($l10n->ngettext($single, $plural, $number));
-}
-
-/**
- * Overrides the domain and category for a single lookup.
- */
-function _dcgettext($domain, $msgid, $category) {
-	$l10n = _get_reader($domain, $category);
-	//return $l10n->translate($msgid);
-	return _encode($l10n->translate($msgid));
-}
-/**
- * Plural version of dcgettext.
- */
-function _dcngettext($domain, $single, $plural, $number, $category) {
-	$l10n = _get_reader($domain, $category);
-	//return $l10n->ngettext($single, $plural, $number);
-	return _encode($l10n->ngettext($single, $plural, $number));
-}
-
-function translate($text, $domain) {
-	if($domain == 'default') {
-		$domain	= 'messages';
-	}
-	return apply_filters('translate', _dgettext($domain, $text));
-}
-function _e($text, $domain='default') {
-	echo translate($text, $domain);
-}
-function _r($text, $domain='default') {
+function _r($text, $domain = 'default') {
 	return translate($text, $domain);
 }
-function _n($single, $plural, $number, $domain='default') {
-	_dngettext($domain, $single, $plural, $number);
+
+// .
+/**
+ * _e() - Display a translated string
+ *
+ * _e() is a convenience function which displays the returned
+ * translated text from translate().
+ *
+ * @see translate() Echos returned translate() string
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ */
+function _e($text, $domain = 'default') {
+	echo translate($text, $domain);
 }
 
-function locale_available($locale) {
-	return apply_filters('locale_available', @file_exists(LILINA_INCPATH . '/locales/' . $locale . '.mo'));
+/**
+ * _c() - Retrieve context translated string
+ *
+ * Quite a few times, there will be collisions with similar
+ * translatable text found in more than two places but with
+ * different translated context.
+ *
+ * In order to use the separate contexts, the _c() function
+ * is used and the translatable string uses a pipe ('|')
+ * which has the context the string is in.
+ *
+ * When the translated string is returned, it is everything
+ * before the pipe, not including the pipe character. If
+ * there is no pipe in the translated text then everything
+ * is returned.
+ *
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ * @return string Translated context string without pipe
+ */
+function _c($text, $domain = 'default') {
+	return translate_with_context($text, $domain);
 }
-/*
-if(locale_available($settings['lang'])) {
-	echo "<p>locale '$settings[lang]' is supported by Lilina, using it now.</p>\n";
+
+/**
+ * __ngettext() - Retrieve the plural or single form based on the amount
+ *
+ * If the domain is not set in the $l10n list, then a comparsion
+ * will be made and either $plural or $single parameters returned.
+ *
+ * If the domain does exist, then the parameters $single, $plural,
+ * and $number will first be passed to the domain's ngettext method.
+ * Then it will be passed to the 'ngettext' filter hook along with
+ * the same parameters. The expected type will be a string.
+ *
+ * @since 1.0
+ * @uses $l10n Gets list of domain translated string (gettext_reader) objects
+ * @uses apply_filters() Calls 'ngettext' hook on domains text returned,
+ *		along with $single, $plural, and $number parameters. Expected to return string.
+ *
+ * @param string $single The text that will be used if $number is 1
+ * @param string $plural The text that will be used if $number is not 1
+ * @param int $number The number to compare against to use either $single or $plural
+ * @param string $domain Optional. The domain identifier the text should be retrieved in
+ * @return string Either $single or $plural translated text
+ */
+function __ngettext($single, $plural, $number, $domain = 'default') {
+	global $l10n;
+
+	if (isset($l10n[$domain])) {
+		return apply_filters('ngettext', $l10n[$domain]->ngettext($single, $plural, $number), $single, $plural, $number);
+	} else {
+		if ($number != 1)
+			return $plural;
+		else
+			return $single;
+	}
 }
-else {
-	echo "<p>locale '$settings[lang]' is <em>not</em> supported by Lilina, using the default locale 'en'.</p>\n";
-	$settings['lang'] = 'en';
-}*/
-// gettext setup
-// Sets global $locale variable
-_setlocale(LC_ALL, 'en');
-// Constructs the path to the .mo, as /inc/locales/[lang].mo
-_bindtextdomain('messages', LILINA_INCPATH . '/locales');
-_bind_textdomain_codeset('messages', $settings['encoding']);
-_textdomain('messages');
+
+/**
+ * __ngettext_noop() - register plural strings in POT file, but don't translate them
+ *
+ * Used when you want do keep structures with translatable plural strings and
+ * use them later.
+ *
+ * Example:
+ *  $messages = array(
+ *  	'post' => ngettext_noop('%s post', '%s posts'),
+ *  	'page' => ngettext_noop('%s pages', '%s pages')
+ *  );
+ *  ...
+ *  $message = $messages[$type];
+ *  $usable_text = sprintf(__ngettext($message[0], $message[1], $count), $count);
+ *
+ * @since 1.0
+ * @param $single Single form to be i18ned
+ * @param $plural Plural form to be i18ned
+ * @param $number Not used, here for compatibility with __ngettext, optional
+ * @param $domain Not used, here for compatibility with __ngettext, optional
+ * @return array array($single, $plural)
+ */
+function __ngettext_noop($single, $plural, $number=1, $domain = 'default') {
+	return array($single, $plural);
+}
+
+/**
+ * load_textdomain() - Loads MO file into the list of domains
+ *
+ * If the domain already exists, the inclusion will fail. If the
+ * MO file is not readable, the inclusion will fail.
+ *
+ * On success, the mofile will be placed in the $l10n global by
+ * $domain and will be an gettext_reader object.
+ *
+ * @since 1.0
+ * @uses $l10n Gets list of domain translated string (gettext_reader) objects
+ * @uses CacheFileReader Reads the MO file
+ * @uses gettext_reader Allows for retrieving translated strings
+ *
+ * @param string $domain Unique identifier for retrieving translated strings
+ * @param string $mofile Path to the .mo file
+ * @return null On failure returns null and also on success returns nothing.
+ */
+function load_textdomain($domain, $mofile) {
+	global $l10n;
+
+	if (isset($l10n[$domain]))
+		return;
+
+	if ( is_readable($mofile))
+		$input = new CachedFileReader($mofile);
+	else
+		return;
+
+	$l10n[$domain] = new gettext_reader($input);
+}
+
+/**
+ * load_default_textdomain() - Loads default translated strings based on locale
+ *
+ * Loads the .mo file in LANGDIR constant path from WordPress root.
+ * The translated (.mo) file is named based off of the locale.
+ *
+ * @since 1.0
+ */
+function load_default_textdomain() {
+	$locale = get_locale();
+	if ( empty($locale) )
+		$locale = 'en_US';
+
+	$mofile = LILINA_PATH . LANGDIR . "/$locale.mo";
+
+	load_textdomain('default', $mofile);
+}
+
+/**
+ * load_plugin_textdomain() - Loads the plugin's translated strings
+ *
+ * If the path is not given then it will be the root of the plugin
+ * directory. The .mo file should be named based on the domain with a
+ * dash followed by a dash, and then the locale exactly.
+ *
+ * The plugin may place all of the .mo files in another folder and set
+ * the $path based on the relative location from ABSPATH constant. The
+ * plugin may use the constant PLUGINDIR and/or plugin_basename() to
+ * get path of the plugin and then add the folder which holds the .mo
+ * files.
+ *
+ * @since 1.0
+ *
+ * @param string $domain Unique identifier for retrieving translated strings
+ * @param string $path Optional. Path of the folder where the .mo files reside.
+ */
+function load_plugin_textdomain($domain, $path = false) {
+	$locale = get_locale();
+	if ( empty($locale) )
+		$locale = 'en_US';
+
+	if ( false === $path )
+		$path = PLUGINDIR;
+
+	$mofile = LILINA_PATH . "$path/$domain-$locale.mo";
+	load_textdomain($domain, $mofile);
+}
+
+/**
+ * load_theme_textdomain() - Includes theme's translated strings for the theme
+ *
+ * If the current locale exists as a .mo file in the theme's root directory, it
+ * will be included in the translated strings by the $domain.
+ *
+ * The .mo files must be named based on the locale exactly.
+ *
+ * @since 1.0
+ *
+ * @param string $domain Unique identifier for retrieving translated strings
+ */
+function load_theme_textdomain($domain) {
+	$locale = get_locale();
+	if ( empty($locale) )
+		$locale = 'en_US';
+
+	$mofile = get_template_directory() . "/$locale.mo";
+	load_textdomain($domain, $mofile);
+}
+
+//Get started
+load_default_textdomain();
 ?>

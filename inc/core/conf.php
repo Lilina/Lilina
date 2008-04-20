@@ -48,7 +48,7 @@ if(!defined('LOADED_SETTINGS')) {
 	$settings['sitename']				= 'Lilina News Aggregator';
 	$settings['auth']					= array('user' => 'username', 'pass' => 'password');
 	$settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
-	$settings['lang']					= 'en';
+	$settings['locale']					= 'en';
 	//Maximum number of items from each feed, 0 is unlimited
 	$settings['feeds']					= array('items' => '25');
 	//Default time is always the first time
@@ -77,6 +77,15 @@ if(!defined('LOADED_SETTINGS')) {
 	 * all our old settings here.
 	 */
 	require_once(LILINA_PATH . '/conf/settings.php') ;
+	
+	/**
+	 * Stores the location of the language directory. First looks for language folder in wp-content
+	 * and uses that folder if it exists. Or it uses the "languages" folder in WPINC.
+	 *
+	 * @since 1.0.0
+	 */
+	if ( !defined('LANGDIR'))
+		define('LANGDIR', '/inc/locales');
 
 	//Settings that use other settings variables, can not be overriden
 	$settings['cachedir']				= $settings['path'] . '/cache/';
@@ -89,6 +98,4 @@ if(!defined('LOADED_SETTINGS')) {
 
 	$plugins							= '';
 }
-
-//$new_settings = array_diff($default_settings, $settings);
 ?>

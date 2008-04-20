@@ -14,7 +14,7 @@ define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 $settings	= 0;
-
+error_reporting(E_ALL);
 
 
 require_once(LILINA_INCPATH . '/core/install-functions.php');

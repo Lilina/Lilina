@@ -45,9 +45,19 @@ function lilina_is_installed() {
 function lilina_settings_current() {
 	global $settings;
 	require_once(LILINA_PATH . '/inc/core/conf.php');
+
 	global $lilina;
 	require_once(LILINA_PATH . '/inc/core/version.php');
-	if( isset($settings['settings_version']) && $settings['settings_version'] == $lilina['settings-storage']['version'] ) {
+
+	require_once(LILINA_PATH . '/inc/core/file-functions.php');
+
+	global $data;
+	$data = lilina_load_feeds($settings['files']['feeds']);
+
+	if( isset($settings['settings_version'])
+	  && $settings['settings_version'] == $lilina['settings-storage']['version']
+	  && isset($data['version'])
+	  && $data['version'] == $lilina['feed-storage']['version'] ) {
 		return true;
 	}
 	return false;

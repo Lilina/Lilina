@@ -8,6 +8,7 @@
  */
 
 defined('LILINA') or die('Restricted access');
+require_once(LILINA_INCPATH . '/core/file-functions.php');
 ?>
 <h2><?php _e('Settings'); ?></h2>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">

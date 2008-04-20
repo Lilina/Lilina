@@ -97,7 +97,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 	$feed_info = new SimplePie();
 	$feed_info->set_useragent( 'Lilina/' . $lilina['core-sys']['version'].'; ' . get_option('baseurl') );
 	$feed_info->set_stupidly_fast( true );
-	$feed_info->set_cache_location(LILINA_PATH . '/cache');
+	$feed_info->enable_cache(false);
 	$feed_info->set_feed_url( $url );
 	$feed_info->init();
 	$feed_error = $feed_info->error();
@@ -125,6 +125,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 		add_notice( sprintf( _r('Added feed "%1$s"'), $name ) );
 	else
 		add_notice( "Added feed \"$name\"");
+
 	add_action( 'send_headers', 'save_feeds' );
 	return true;
 }
