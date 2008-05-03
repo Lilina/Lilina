@@ -10,7 +10,7 @@ Author URI: http://cubegames.net
 License: GPL
 */
 if($_GET['action'] !== 'style') {
-	defined('LILINA') or die('Restricted access');
+	defined('LILINA_PATH') or die('Restricted access');
 	/**
 	 * Replaces built in stylesheet loader
 	 */

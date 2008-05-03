@@ -6,7 +6,7 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * Fixes the $_SERVER['REQUEST_URI'] variable on IIS
@@ -115,6 +115,7 @@ function array_diff_assoc_recursive($array1, $array2) {
 function update_option($option, $new_value) {
 	global $settings;
 	$settings[$option] = $new_value;
+	save_settings();
 }
 
 /**
@@ -124,10 +125,16 @@ function update_option($option, $new_value) {
  * @global array <tt>$settings</tt> contains whatever option we are getting
  * @param string $option Option key to get
  */
-function get_option($option) {
+function get_option($option, $suboption = '') {
 	global $settings;
-	if(!isset($settings[$option])) {
+
+	if(!isset($settings[$option]))
 		return false;
+
+	if($suboption) {
+		if(!isset($settings[$option][$suboption]))
+			return false;
+		return $settings[$option][$suboption];
 	}
 	return $settings[$option];
 }

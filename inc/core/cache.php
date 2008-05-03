@@ -8,7 +8,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * Load the configuration incase it hasn't been already
@@ -23,13 +23,13 @@ if(!function_exists('lilina_cache_check')) {
 	 * cached file or not.
 	 */
 	function lilina_cache_check(){
-		global $settings, $showtime;
+		global $showtime;
 		// Cache file to either load or create
-		$cachefile = $settings['cachedir'] . md5('index-' . $showtime) . '.html';
+		$cachefile = get_option('cachedir') . md5('index-' . $showtime) . '.html';
 		$cachefile_created = (@file_exists($cachefile)) ? @filemtime($cachefile) : 0;
 		clearstatcache();
 		/** Show file from cache if still valid */
-		if (time() - $settings['cachetime'] < $cachefile_created) {
+		if (time() - get_option('cachetime') < $cachefile_created) {
 			readfile($cachefile);
 			die();
 		}

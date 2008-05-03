@@ -7,7 +7,28 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
+/**
+ * @todo Document
+ */
+function diagnostic() {
+	echo 'Now starting diagnostic test...';
+	if(version_compare('4.3', phpversion(), '<')) {
+		echo 'Your server is running PHP version ' . phpversion() . ' but Lilina needs 4.3 or newer<br />';
+		$diag_errors++;
+	}
+	if(ini_get('display_errors') != '1') {
+		echo 'Errors are currently set to not output to the browser <br />';
+		$diag_warnings++;
+	}
+	echo 'Testing throwing of non-fatal errors: <br />';
+	trigger_error('Testing E_USER_WARNING', E_USER_WARNING);
+	trigger_error('Testing E_USER_NOTICE', E_USER_NOTICE);
+	echo '<code>register_globals</code> is currently ' . ini_get('register_globals') ? 'on' : 'off';
+	echo '<code>magic_quotes_gpc</code> is currently ' . get_magic_quotes_gpc() ? 'on' : 'off';
+	echo '<code>magic_quotes_runtime</code> is currently ' . get_magic_quotes_runtime() ? 'on' : 'off';
+}
+
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 ?>
 <h2><?php _e('Settings'); ?></h2>

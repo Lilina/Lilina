@@ -8,16 +8,15 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-
-/**
- * Stops hacking later on
- */
-define('LILINA', 1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 header('Content-Type: text/html; charset=UTF-8');
+
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
+
+if(version_compare('4.3', phpversion(), '<'))
+	nice_die('Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer<br />');
 
 //Make sure Lilina's not installed
 if(lilina_is_installed()) {
@@ -318,9 +317,6 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 			</div>
 			<div id="content">
 <?php
-if($error) {
-	//$page--;
-}
 switch($page) {
 	case 1:
 		if($error) {

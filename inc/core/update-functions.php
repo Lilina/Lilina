@@ -1,5 +1,10 @@
 <?php
 /**
+ *
+ * @package Lilina
+ * @subpackage Updater
+ */
+/**
  * Checks to see if a new version of Lilina is available
  * @author WordPress
  */
@@ -7,7 +12,7 @@ function lilina_version_check() {
 	if ( !function_exists('fsockopen') || strpos($_SERVER['PHP_SELF'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
 		return;
 
-	global $lilina, $settings;
+	global $lilina;
 	//Just to make sure
 	require_once(LILINA_INCPATH . '/core/version.php');
 	require_once(LILINA_INCPATH . '/core/conf.php');
@@ -28,21 +33,18 @@ function lilina_version_check() {
 	$new_option->last_checked = time(); // this gets set whether we get a response or not, so if something is down or misconfigured it won't delay the page load for more than 3 seconds, twice a day
 	$new_option->version_checked = $lilina_version;
 
-	$http_request  = "GET /version-check/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale HTTP/1.0\r\n";
-	$http_request .= "Host: getlilina.org\r\n";
-	$http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('encoding') . "\r\n";
-	$http_request .= 'User-Agent: Lilina/'. $lilina_version .';  ' . get_option('baseurl') . "\r\n";
-	$http_request .= "\r\n";
+	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+	$request = new SimplePie_File("http://api.getlilina.org/version-check/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
+		2, //Timeout
+		0, //No. of redirects allowed
+		$headers,
+		"Lilina/$lilina_version;  " . get_option('baseurl')
+	);
+	update_option('update_status', $new_option);
+	return var_dump($request);
 
-	$response = '';
-	if ( false !== ( $fs = @fsockopen( 'getlilina.org', 80, $errno, $errstr, 3 ) ) && is_resource($fs) ) {
-		fwrite( $fs, $http_request );
-		while ( !feof( $fs ) )
-			$response .= fgets( $fs, 1160 ); // One TCP-IP packet
-		fclose( $fs );
-
-		$response = explode("\r\n\r\n", $response, 2);
-		$body = trim( $response[1] );
+	if ( $request->success ) {
+		$body = trim( $request->body );
 		$body = str_replace(array("\r\n", "\r"), "\n", $body);
 
 		$returns = explode("\n", $body);
@@ -51,9 +53,7 @@ function lilina_version_check() {
 		if ( isset( $returns[1] ) )
 			$new_option->url = $returns[1];
 	}
-	update_option('update_status', $new_option );
 }
-register_action('init', 'lilina_version_check');
 
 /**
  * @todo Document
@@ -81,7 +81,6 @@ function lilina_footer_version() {
 		break;
 	}
 }
-register_action('admin_footer', 'lilina_footer_version');
 
 /**
  * @todo Document
@@ -97,5 +96,4 @@ function update_nag() {
 
 	echo "<div id='update-nag'>$msg</div>";
 }
-register_action('admin_notices', 'update_nag');
 ?>

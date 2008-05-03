@@ -12,7 +12,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * Make sure that we don't load the settings multiple times
@@ -24,7 +24,7 @@ if(!defined('LOADED_SETTINGS')) {
 	 * Overwritten with values from conf/settings.php
 	 * @global array $settings
 	 */
-	global $settings;
+	global $settings, $default_settings;
 	$settings							= array();
 
 	//Must be in seconds

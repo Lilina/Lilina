@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * lilina_load_feeds() - {{@internal Missing Short Description}}}
@@ -92,47 +92,51 @@ function available_locales() {
 }
 
 /**
- * save_settings() - {{@internal Missing Short Description}}}
+ * recursive_array_code() - {{@internal Missing Short Description}}}
  *
  * {{@internal Missing Long Description}}}
  */
+function recursive_array_code($vars) {
+	global $level_count;
+	foreach($vars as $var => $value) {
+		if(is_array($value)) {
+			$content .= "\n" . str_repeat("\t", $level_count) . 'array(';
+			$level_count++;
+			$content .= recursive_array_code($value);
+		}
+		else
+			$content .= "\n" . str_repeat("\t", $level_count) . "'$var' => '$value',";
+	}
+	while($level_count > 1) {
+		$level_count--;
+		$content .= "\n" . str_repeat("\t", $level_count) . '),';
+	}
+	return $content;
+}
+
+/**
+ * save_settings() - {@internal Missing Short Description}}
+ *
+ *
+ */
 function save_settings() {
 	global $settings, $default_settings;
-	$raw_php		= "<?php";
-	$changed_settings = array_diff_assoc_recursive($settings, $default_settings);
-	//Workaround some which aren't needed
-	if(isset($changed_settings['cachedir'])) {
-		unset($changed_settings['cachedir']);
-	}
-	if(isset($changed_settings['cachedir'])) {
-		unset($changed_settings['cachedir']);
-	}
-	var_dump($changed_settings);
-	/*foreach($setting
-\$settings['sitename'] = '$sitename';
-\$settings['baseurl'] = '$guessurl';
-\$settings['auth'] = array(
-							'user' => '$username',
-							'pass' => '" . md5($password) . "'
-							);
-?>";
-		$settings_file	= @fopen('./conf/settings.php', 'w+');
-		if(!@file_exists('./conf/feeds.data')) {
-			$feeds_file = @fopen('./conf/feeds.data', 'w+');
-			if($feeds_file) {
-				fclose($feeds_file) ;
-			}
+	$vars = array_diff_assoc_recursive($settings, $default_settings);
+	/** We want to ignore these, as they are set in conf.php */
+	unset($vars['cachedir'], $vars['files']);
+	$content = '<' . '?php';
+
+	global $level_count; $level_count = 1;
+	foreach($vars as $var => $value) {
+		if(is_array($value)) {
+			$content .= "\n\$settings['{$var}'] = array(";
+			$content .= recursive_array_code($value);
+			$content .= "\n);";
 		}
-		if(!@file_exists('./conf/time.data')) {
-			$times_file = @fopen('./conf/time.data', 'w+');
-			if($times_file) {
-				fclose($times_file);
-			}
-		}
-		if($settings_file){
-			fputs($settings_file, $raw_php) ;
-			fclose($settings_file) ;
-	return true;*/
+		else
+			$content .= "\n\$settings['{$var}'] = '{$value}';";
+	}
+	var_dump($content);
 }
 
 /**
@@ -146,7 +150,7 @@ function save_settings() {
 function generate_nonce() {
 	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	return md5($time . $user_settings['user'] . $user_settings['pass']);
+	return md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
 }
 
 /**
@@ -158,7 +162,7 @@ function generate_nonce() {
 function check_nonce($nonce) {
 	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . $user_settings['user'] . $user_settings['pass']);
+	$current_nonce = md5($time . get_option('auth', 'user') . get_option('auth', 'pass]'));
 	if($nonce !== $current_nonce) {
 		return false;
 	}

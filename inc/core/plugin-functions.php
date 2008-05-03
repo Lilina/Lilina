@@ -11,7 +11,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 
 /**
@@ -34,12 +34,18 @@ function apply_filters($filter_name, $string=''){
 
 	reset( $filters[$filter_name] );
 
+	global $current_filter;
+	$current_filter = $filter_name;
+
 	do {
 		foreach((array) current($filters[$filter_name]) as $filter) {
 			$filter_function = $filter['function'];
 			$string = call_user_func_array($filter['function'], array_slice($args, 1, (int) $filter['num_args']));
 		}
 	} while ( next($filters[$filter_name]) !== false );
+
+	$current_filter = '';
+
 	return $string;
 }
 
@@ -96,7 +102,7 @@ function register_plugin_function($function, $hook) {
 * @param string $hook Hook to register function under
 */
 function register_filter($filter, $function, $num_args=1) {
-	add_filter($filter, $function, $num_args);
+	add_filter($filter, $function, 0, $num_args);
 }
 
 /**
@@ -244,22 +250,13 @@ function lilina_plugins_list($directory){
 	return $plugin_list;
 }
 
-/**
- * Loads activated plugin files
- *
- * Retrieves a base 64 encoded, serialize
- * @global array $settings Contains file path
- */
-function init_plugins() {
-	global $settings;
-	$current_plugins	= @file_get_contents($settings['files']['plugins']) ;
-	$current_plugins	= unserialize( $current_plugins ) ;
-	if ( is_array($current_plugins) ) {
-		foreach ($current_plugins as $plugin) {
-			if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
-				include_once(LILINA_INCPATH . '/plugins/' . $plugin);
-		}
+global $settings;
+$current_plugins	= @file_get_contents(get_option('files', 'plugins')) ;
+$current_plugins	= unserialize( $current_plugins ) ;
+if ( is_array($current_plugins) ) {
+	foreach ($current_plugins as $plugin) {
+		if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
+			include_once(LILINA_INCPATH . '/plugins/' . $plugin);
 	}
 }
-add_action('init', 'init_plugins');
 ?>

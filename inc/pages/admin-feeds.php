@@ -7,8 +7,31 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+defined('LILINA_PATH') or die('Restricted access');
 
-defined('LILINA') or die('Restricted access');
+/**
+ * 
+ * @global array
+ */
+function get_feed_list() {
+	global $data;
+	if(isset($data['feeds']))
+		return $data['feeds'];
+	return false;
+}
+
+$action = (isset($_GET['action'])? $_GET['action'] : '');
+/** We need some sort of value here */
+if( !isset($_GET['add_name']) )
+	$_GET['add_name'] = '';
+
+/** Make sure we're actually adding */
+if($action == 'add') {
+	if(!isset($_GET['add_url']))
+		add_notice(_r('No URL specified');
+	else
+		add_feed($_GET['add_url'], $_GET['add_name']);
+}
 ?>
 <h2><?php _e('Feeds'); ?></h2>
 <?php

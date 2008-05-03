@@ -8,21 +8,21 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 
 /**
  * @todo Document
+ * @deprecated Use get_option('sitename') instead
  */
  //Define all the functions for our skins
 function template_sitename($return='echo'){
-	global $settings;
 	if($return == 'echo') {
-		echo $settings['sitename'];
+		echo get_option('sitename');
 		return true;
 	}
 	elseif($return == 'var') {
-		return $settings['sitename'];
+		return get_option('sitename');
 	}
 	else {
 		echo 'Error: return type '.$return.' is not valid';
@@ -32,41 +32,39 @@ function template_sitename($return='echo'){
 
 /**
  * @todo Document
+ * @deprecated Use get_option('baseurl') instead
  */
 function template_siteurl($return=false){
 	global $settings;
 	if($return == false) {
-		echo $settings['baseurl'];
+		echo get_option('baseurl');
 		return true;
 	}
-	return $settings['baseurl'];
+	return get_option('baseurl');
 }
 
 /**
  * @todo Document
  */
 function template_synd_header($return='echo'){
-	global $settings;
-	if($settings['output']['rss']){
+	if(get_option('output', 'rss')){
 		$header = '<link rel="alternate" type="application/rss+xml" title="' . _r('RSS Feed') . '" href="rss.php" />';
 	}
-	if($settings['output']['atom']){
+	if(get_option('output', 'atom')){
 		$header = '<link rel="alternate" type="application/rss+xml" title="' . _r('Atom Feed') . '" href="atom.php" />';
 	}
 	echo apply_filters('template_synd_header', $header);
 }
-add_action('template_header', 'template_synd_header');
 
 /**
  * @todo Document
  */
 function template_synd_links(){
-	global $settings;
-	if($settings['output']['rss']){
+	if(get_option('output', 'rss')){
 		$rss = _r('RSS Feed');
 		echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', $rss, '" title="', $rss, '" /></a> ';
 	}
-	if($settings['output']['atom']){
+	if(get_option('output', 'atom')){
 		$atom = _r('Atom Feed');
 		echo _r('Atom'), ': <a href="atom.php"><img src="', template_file_load('feed.png'), '" alt="', $atom, '" title="', $atom, '" /></a>';
 	}
@@ -77,13 +75,12 @@ function template_synd_links(){
  * @todo Document
  */
 function template_header(){
-	global $settings;
 	do_action('template_header');
-	return true;
 }
 
 /**
  * @todo Document
+ * @deprecated Never used.
  */
 function template_end_errors($return='echo'){
 	global $end_errors;
@@ -106,15 +103,13 @@ function template_end_errors($return='echo'){
  */
 function template_footer(){
 	do_action('template_footer');
-	return true;
 }
 
 /**
  * @todo Document
  */
 function template_times(){
-	global $settings;
-	foreach($settings['interface']['times'] as $current_time){
+	foreach(get_option('interface', 'times') as $current_time){
 		if(is_int($current_time)){
 			echo '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
 		}
@@ -134,7 +129,7 @@ function template_times(){
  * @todo Implement items_per_page, feed_include, feed_exclude
  */
 function query_setup($override = true) {
-	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
+	global $data, $item, $list, $item_number, $showtime, $total_items;
 	$defaults = array(
 		'show_since' => -1,
 		'items_per_page' => 5,
@@ -159,8 +154,10 @@ function query_setup($override = true) {
 				else
 					$showtime = ((int) $_REQUEST['hours'] * 60 * 60);
 			}
-			else
+			else {
+				global $settings;
 				$showtime = ((int) $settings['interface']['times'][0] * 60 * 60);
+			}
 
 			$showtime = apply_filters('showtime', $showtime);
 		}
@@ -189,7 +186,7 @@ function query_setup($override = true) {
 		$item_number = ($offset - 1);
 		
 	if(empty($data))
-		$data = lilina_load_feeds($settings['files']['feeds']);
+		$data = lilina_load_feeds(get_option('files', 'feeds'));
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
@@ -219,11 +216,15 @@ function query_setup($override = true) {
  * @global <tt>$showtime</tt> contains the
  *
  * @return boolean Are items available?
+ * @todo This is somewhat ugly code. Clean it up.
  */
 function has_items($increment = true) {
+	global $lilina_items;
 	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
-	if(empty($data))
-		$data = lilina_load_feeds($settings['files']['feeds']);
+
+	if(empty($data)) {
+		$data = lilina_load_feeds(get_option('files', 'feeds'));
+	}
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
@@ -258,7 +259,7 @@ function has_items($increment = true) {
 			return apply_filters('has_items', false, $showtime, $total_items);
 		}
 	}
-	if($temp_item->get_date('U') < $showtime)
+	if($temp_item->get_date('U') && $temp_item->get_date('U') < $showtime)
 		return apply_filters('has_items', false, $showtime, $total_items);
 
 	if($item_number < $total_items)

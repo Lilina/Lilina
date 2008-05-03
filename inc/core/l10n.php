@@ -25,18 +25,17 @@
  * @since 1.0
  * @uses apply_filters() Calls 'locale' hook on locale value
  * @uses $locale Gets the locale stored in the global
- * @uses $settings
  *
  * @return string The locale of the blog or from the 'locale' hook
  */
 function get_locale() {
-	global $locale, $settings;
+	global $locale;
 
 	if (isset($locale))
 		return apply_filters( 'locale', $locale );
 
-	if (isset($settings['locale']))
-		$locale = $settings['locale'];
+	if (get_option('locale'))
+		$locale = get_option('locale');
 
 	if (empty($locale))
 		$locale = '';

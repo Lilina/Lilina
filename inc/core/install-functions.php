@@ -8,7 +8,7 @@
  */
 
 //Stop hacking attempts
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * lilina_check_installed() - {{@internal Missing Short Description}}}

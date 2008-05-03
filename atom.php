@@ -15,7 +15,6 @@
 /**
  * @todo Document
  */
-define('LILINA',1);
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 
@@ -40,6 +39,8 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 
 //Template files, needed for middle-man parsing
 require_once(LILINA_INCPATH . '/core/skin.php');
+require_once(LILINA_INCPATH . '/core/version.php');
+global $lilina;
 
 header('Content-type: application/atom+xml; charset=' . get_option('encoding'), true);
 echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
@@ -55,7 +56,7 @@ echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 	<generator uri="http://getlilina.org/" version="<?php echo $lilina['core-sys']['version']; ?>">Lilina News Aggregator</generator>
 
 	<link rel="alternate" type="text/html" href="<?php echo get_option('baseurl'); ?>" />
-	<id><?php echo get_option('baseurl'), 'atom.php'; ?></id>
+	<id><?php echo get_option('baseurl');?>atom.php</id>
 	<link rel="self" type="application/atom+xml" href="<?php echo get_option('baseurl'); ?>atom.php" />
 
 	<?php do_action('atom_head'); ?>

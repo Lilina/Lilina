@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * lilina_auth() - Check user authentication
@@ -21,14 +21,13 @@ defined('LILINA') or die('Restricted access');
  * @return mixed Boolean true if logged in, otherwise passes the result of {@link lilina_check_user_pass()}} through
  */
 function lilina_auth($u,$p) {
-	$user_settings = get_option('auth');
 	session_start();
 	if (isset( $_SESSION['is_logged_in'] ) &&
 		isset( $_COOKIE['lilina_user'] ) &&
 		isset( $_COOKIE['lilina_pass'] ) &&
 		$_SESSION['is_logged_in'] === true &&
-		$_COOKIE['lilina_user'] === $user_settings['user'] &&
-		$_COOKIE['lilina_pass'] === $user_settings['pass']) {
+		$_COOKIE['lilina_user'] === get_option('auth', 'user') &&
+		$_COOKIE['lilina_pass'] === get_option('auth', 'pass')) {
 
 		session_regenerate_id();
 		return true;
@@ -44,6 +43,11 @@ function lilina_auth($u,$p) {
 	return $check;
 }
 
+/**
+ * lilina_logout() - {@internal Missing Short Description}}
+ *
+ * {@internal Missing Long Description}}
+ */
 function lilina_logout() {
 	setcookie ( 'lilina_user', ' ', time() - 31536000 );
 	setcookie ( 'lilina_pass', ' ', time() - 31536000 );
@@ -64,9 +68,8 @@ function lilina_logout() {
  */
 function lilina_check_user_pass($un, $pw) {
 	if(!empty($un) && !empty($pw)) {
-		$user_settings = get_option('auth');
 		//Check the username and password
-		if ($un === $user_settings['user'] && ($password_hash = md5($pw)) === $user_settings['pass']) {
+		if ($un === get_option('auth', 'user') && ($password_hash = md5($pw)) === get_option('auth', 'pass')) {
 			return array('u' => $un, 'p' => $password_hash);
 		}
 		else {

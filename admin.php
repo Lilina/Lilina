@@ -15,7 +15,6 @@
  * All included files (external libraries excluded) must check for presence of
  * this define (using defined() ) to avoid the files being accessed directly
  */
-define('LILINA',1) ;
 define('LILINA_ADMIN', 1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
@@ -32,13 +31,8 @@ $authed		= false;
 $result		= '';
 $page		= (isset($_GET['page'])? $_GET['page'] : '');
 $page		= htmlspecialchars($page);
-$action		= (isset($_GET['action'])? $_GET['action'] : '');
-$action		= htmlspecialchars($action);
 
 //Add variables
-$add_name	= (isset($_GET['add_name'])? $_GET['add_name'] : '');
-$add_name	= htmlspecialchars($add_name);
-$add_url	= (isset($_GET['add_url'])? $_GET['add_url'] : '');
 
 //Change variables
 $change_name	= (isset($_GET['change_name']))? $_GET['change_name'] : '';
@@ -58,8 +52,8 @@ $import_url	= htmlspecialchars($import_url);
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Localisation
-require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
+require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 
 do_action('init');
@@ -68,7 +62,7 @@ do_action('init');
  * Contains all feed names, URLs and (eventually) categories
  * @global array $data
  */
-$data		= file_get_contents($settings['files']['feeds']) ;
+$data		= file_get_contents(get_option('files', 'feeds')) ;
 $data		= unserialize( base64_decode($data) ) ;
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
@@ -93,72 +87,30 @@ if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 	die();
 }
 
+/** This sanitises all input variables, so we don't have to worry about them later */
+lilina_level_playing_field();
 
 
-//Misc. Functions
-/**
- * 
- * @global array
- */
-function get_feed_list() {
-	global $data;
-	if(isset($data['feeds']))
-		return $data['feeds'];
-	return false;
-}
 
-//Navigation
-switch($page) {
-	case 'feeds': 
-		$out_page = 'admin-feeds.php';
-	break;
-	case 'settings':
-		$out_page = 'admin-settings.php';
-	break;
-	default:
-		$out_page = 'admin-home.php';
-	break;
-}
+$admin_pages = array(
+	'feeds' => '/pages/admin-feeds.php',
+	'settings' => '/pages/admin-settings.php',
+	'home' => '/pages/admin-home.php',
+);
 
-//Actions:	flush (cache),
-//			add (feed)
-//			remove (feed)
-//			change (feed)
-//			import (OPML)
+if(isset($admin_pages[$page]))
+	require_once(LILINA_INCPATH . $admin_pages[$page]);
+else
+	require_once(LILINA_INCPATH . $admin_pages['home']);
+
+
 switch($action){
-	case 'flush':
-		//Must delete Magpie and Lilina caches at the same time
-		//Lilina cache clear from
-		//http://www.ilovejackdaniels.com/php/caching-output-in-php/
-		$cachedir = $settings['cachedir'];
-		if ($handle = @opendir($cachedir)) {
-			while (false !== ($file = @readdir($handle))) {
-				if ($file != '.' and $file != '..') {
-					@unlink($cachedir . '/' . $file);
-				}
-			}
-			@closedir($handle);
-		}
-		else {
-			add_notice(sprintf(_r('Error deleting files in %s'), $settings['cachedir']));
-			add_tech_notice(_r('Make sure the directory is writable and PHP/Apache has the correct permissions to modify it.'));
-		}
-		if($times_file = @fopen($settings['files']['times'], 'w')) fclose($times_file);
-		else {
-			add_notice(sprintf(_r('Error clearing times from %s'), $settings['files']['times']));
-			add_tech_notice(_r('Make sure the file is writable and PHP/Apache has the correct permissions to modify it.'));
-		}
-		add_notice(_r('Successfully cleared cache!'));
-	break;
-	case 'add':
-		add_feed($add_url, $add_name);
-	break;
 	case 'remove':
 		$removed = $data['feeds'][$remove_id];
 		unset($data['feeds'][$remove_id]);
 		$data['feeds'] = array_values($data['feeds']);
 		$sdata	= base64_encode(serialize($data)) ;
-		$fp		= fopen($settings['files']['feeds'],'w') ;
+		$fp		= fopen(get_option('files', 'feeds'),'w') ;
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
@@ -173,7 +125,7 @@ switch($action){
 			//Need to have a similar function to add_feed()
 		}
 		$sdata	= base64_encode(serialize($data)) ;
-		$fp		= fopen($settings['files']['feeds'],'w') ;
+		$fp		= fopen(get_option('files', 'feeds'),'w') ;
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
@@ -189,11 +141,8 @@ switch($action){
 	break;
 }
 
-do_action('admin_header');
-do_action("admin_header-$out_page");
-do_action('send_headers');
-
-header('Content-Type: text/html; charset=utf-8');
+function admin_header() {
+	header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -203,106 +152,74 @@ header('Content-Type: text/html; charset=utf-8');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/jquery-1.2.1.pack.js"></script>
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/fat.js"></script>
-<script type="text/javascript" src="<?php echo $settings['baseurl']; ?>inc/js/admin.js"></script>
+<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/jquery-1.2.1.pack.js"></script>
+<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/fat.js"></script>
+<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
 <body id="admin-<?php echo $out_page; ?>" class="admin-page">
 <div id="header">
-	<h1 id="sitetitle"><a href="<?php echo $settings['baseurl']; ?>"><?php echo $settings['sitename']; ?></a></h1>
+	<h1 id="sitetitle"><a href="<?php get_option('baseurl'); ?>"><?php get_option('sitename'); ?></a></h1>
 	<div id="navigation">
 	    <h2>Navigation</h2>
 		<ul id="mainnavigation">
 <?php
-$navigation = array(
-	array(_r('Home'), 'admin-home.php', ''),
-	array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
-	array(_r('Settings'), 'admin-settings.php', 'settings'),
-);
-$subnavigation = apply_filters('navigation', $navigation);
-foreach($navigation as $nav_item) {
-	if($out_page == $nav_item[1]) {
-		/** Hack */
-		if(!isset($current_page))
-			$current_page = $nav_item[2];
-		$nav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+	$navigation = array(
+		array(_r('Home'), 'admin-home.php', ''),
+		array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
+		array(_r('Settings'), 'admin-settings.php', 'settings'),
+	);
+	$subnavigation = apply_filters('navigation', $navigation);
+	foreach($navigation as $nav_item) {
+		if($out_page == $nav_item[1]) {
+			/** Hack */
+			if(!isset($current_page))
+				$current_page = $nav_item[2];
+			$nav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		}
+		else
+			$nav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
 	}
-	else
-		$nav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
-}
-echo implode("</li>\n", $nav_items);
+	echo implode("</li>\n", $nav_items);
 ?></li>
 			<li id="page_item_logout" class="seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
 		</ul>
 <?php
-$subnavigation = array(
-	'admin-home.php' => array(
-		array(_r('Home'), 'admin-home.php', ''),
-	),
-	'admin-feeds.php' => array(
-		array(_r('Manage'), 'admin-feeds.php', ''),
-	),
-	'admin-settings.php' => array(
-		array(_r('General'), 'admin-settings.php', 'settings'),
-	),
-);
-$subnavigation = apply_filters('subnavigation', $subnavigation, $navigation, $current_page);
-if( isset($subnavigation[ strtolower($current_page) ]) && !empty($subnavigation[ strtolower($current_page) ]) ) {
-	echo '<ul id="subnavigation">';
-	foreach($subnavigation[strtolower($current_page)] as $subnav_item) {
-		if($out_page == $subnav_item[1])
-			$subnav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
-		else
-			$subnav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+	$subnavigation = array(
+		'admin-home.php' => array(
+			array(_r('Home'), 'admin-home.php', ''),
+		),
+		'admin-feeds.php' => array(
+			array(_r('Manage'), 'admin-feeds.php', ''),
+		),
+		'admin-settings.php' => array(
+			array(_r('General'), 'admin-settings.php', 'settings'),
+		),
+	);
+	$subnavigation = apply_filters('subnavigation', $subnavigation, $navigation, $current_page);
+	if( isset($subnavigation[ strtolower($current_page) ]) && !empty($subnavigation[ strtolower($current_page) ]) ) {
+		echo '<ul id="subnavigation">';
+		foreach($subnavigation[strtolower($current_page)] as $subnav_item) {
+			if($out_page == $subnav_item[1])
+				$subnav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+			else
+				$subnav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		}
+		echo implode("</li>\n", $subnav_items), '</li></ul>';
 	}
-	echo implode("</li>\n", $subnav_items), '</li></ul>';
-}
 ?>
 	</div>
 </div>
 <div id="main">
 <?php
-if( ($result = apply_filters( 'alert_box', $result )) != '') {
-	echo '<div id="alert" class="fade">' . $result . '</div>';
-}
-if($action == 'diagnostic') {
-	echo 'Now starting diagnostic test...';
-	echo '<pre>';
-	echo 'PHP Version: '.phpversion();
-	echo "\nDisplay Errors: ".(ini_get('display_errors') == '1' ? 'On' : 'Off');
-	$error_reporting_level = (ini_get('error_reporting') == '2047' ? 'E_ALL' : 'Not E_ALL');
-	echo "\nError Level: $error_reporting_level";
-	if($error_reporting_level == 'Not E_ALL') {
-		echo "\nSetting error reporting level to E_ALL";
-		
+	if($result = apply_filters( 'alert_box', $result )) {
+		echo '<div id="alert" class="fade">' . $result . '</div>';
 	}
-	echo "\nRegister Globals: " . (ini_get('register_globals') == '' ? 'Off' : 'On');
-	echo "\nMagic Quotes: " . (get_magic_quotes_gpc() ? 'Off' : 'On');
-	echo "\nMagic Quotes (runtime): " . (get_magic_quotes_runtime() ? 'Off' : 'On');
-	flush();
-	if( !is_array($user_settings = get_option('auth') ) ||
-		!isset($user_settings['user']) ||
-		!isset($user_settings['pass']) ||
-		$user_settings['pass'] == 'password') {
-		echo "\nError with authentication settings";
-		flush();
-	}
-	echo "\nCurrent path to Lilina: ", LILINA_PATH;
-	echo "\nCurrent path to includes folder: ", LILINA_INCPATH;
-	echo "\nCurrent installation path: ", get_option('baseurl');
-	echo "\nSettings dump:";
-	flush();
-	var_dump($settings);
-	flush();
-	echo "\nDiagnostic finished</pre>"; 
-	flush();
+	do_action('admin_header');
+	do_action("admin_header-$out_page");
+	do_action('send_headers');
 }
-elseif($out_page){
-	require_once(LILINA_INCPATH . '/pages/'.$out_page);
-}
-else {
-	echo 'No page selected';
-}
+
+function admin_footer() {
 ?>
 </div>
 <p id="footer"><?php
@@ -311,3 +228,6 @@ do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'
 ?></a> and <a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Support'); ?></a></p>
 </body>
 </html>
+<?php
+}
+?>

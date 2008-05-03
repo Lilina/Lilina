@@ -7,15 +7,12 @@
 * @version 1.0
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
-//Stop hacking attempts
+
 /**
  * @todo Document
  */
-define('LILINA',1) ;
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
-$settings	= 0;
-$out		= '';
 
 //Check installed
 require_once(LILINA_INCPATH . '/core/install-functions.php');
@@ -44,23 +41,21 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
 
 header('Content-Type: application/xml; charset=utf-8');
-echo '<opml version="1.1">
+?><opml version="1.1">
 	<head>
-<title>' . $settings['sitename'] . '</title>
-<dateModified>' . date('D, j M Y G:i:s O') . '</dateModified>
-</head>
-	<body>';
+		<title><?php get_option('sitename'); ?></title>
+		<dateModified><?php /** This is unclean */ date('D, j M Y G:i:s O'); ?></dateModified>
+	</head>
+	<body>
+<?php
 if(has_feeds()) {
-	foreach(get_feeds() as $feed) { 
-	echo '
-	<outline text="' .  htmlspecialchars($feed['name']) .
-	'" title="' .   htmlspecialchars($feed['name']) .
-	'" type="rss" xmlUrl="' . htmlspecialchars($feed['feed']) .
-	'" htmlUrl="' . htmlspecialchars($feed['url']) . '" />';
+	foreach(get_feeds() as $feed) {
+		$feed = array_map('htmlspecialchars', $feed)
+		?>
+		<outline text="<?php echo $feed['name']; ?>" title="<?php echo $feed['name']; ?>" type="rss" xmlUrl="<?php echo $feed['feed']; ?>" htmlUrl="<?php echo $feed['url']; ?>" />
+		<?php
 	}
 }
-else {
-	//Already handled above; if there are no feeds, then there should be no items...
-}
-echo '</body></opml>';
 ?>
+	</body>
+</opml>

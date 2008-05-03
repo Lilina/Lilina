@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA') or die('Restricted access');
+defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * lilina_return_items() - Takes an array of feeds and returns all channels and all items from them
@@ -18,18 +18,32 @@ defined('LILINA') or die('Restricted access');
  */
 function lilina_return_items($input) {
 	global $lilina;
-	// Include the SimplePie library
+
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+
 	$feed = new SimplePie();
 	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(LILINA_PATH . '/cache');
-	//$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
+	// $feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
+
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
+
 	$feed->set_feed_url($feed_list);
 	$feed->init();
-	return $feed;
+
+	/** We need this so we have something to work with. */
+	$feed->get_items();
+
+	if(!isset($feed->data['ordered_items'])) {
+		$feed->data['ordered_items'] = $feed->data['items'];
+	}
+	/** Let's force sorting */
+	usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
+	usort($feed->data['items'], array(&$feed, 'sort_items'));
+
+	return apply_filters('return_items', $feed);
 }
 
 /**
@@ -68,10 +82,7 @@ function lilina_parse_html($val_array){
 	}
 	return apply_filters('parse_html', $purified_array);
 }
-register_filter('the_title', 'lilina_parse_html');
-register_filter('the_content', 'lilina_parse_html');
-register_filter('the_summary', 'lilina_parse_html');
-register_filter('return_output', 'lilina_parse_html');
+
 
 /**
  * add_feed() - Adds a new feed
@@ -136,15 +147,15 @@ function add_feed($url, $name = '', $cat = 'default') {
  * Serializes, then base 64 encodes
  */
 function save_feeds() {
-	global $data, $settings;
-	if(!is_writable($settings['files']['feeds'])) {
-		add_notice(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), $settings['files']['feeds']));
+	global $data;
+	if(!is_writable(get_option('files', 'feeds'))) {
+		add_notice(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), get_option('files', 'feeds')));
 		return false;
 	}
 	$sdata	= base64_encode(serialize($data)) ;
-	$fp		= fopen($settings['files']['feeds'],'w') ;
+	$fp		= fopen(get_option('files', 'feeds'),'w') ;
 	if(!$fp) {
-		add_notice(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), $settings['files']['feeds']));
+		add_notice(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), get_option('files', 'feeds')));
 		return false;
 	}
 	fputs($fp,$sdata) ;
