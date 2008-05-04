@@ -34,7 +34,7 @@ function lilina_version_check() {
 	$new_option->version_checked = $lilina_version;
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-	$request = new SimplePie_File("http://api.getlilina.org/version-check/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
+	$request = new SimplePie_File("http://api.getlilina.org/version-check/1.0/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
 		2, //Timeout
 		0, //No. of redirects allowed
 		$headers,

@@ -22,7 +22,6 @@ lilina_check_installed();
 require_once(LILINA_INCPATH . '/core/version.php');
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
 //Plugins and misc stuff
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
@@ -43,8 +42,8 @@ require_once(LILINA_INCPATH . '/core/skin.php');
 header('Content-Type: application/xml; charset=utf-8');
 ?><opml version="1.1">
 	<head>
-		<title><?php get_option('sitename'); ?></title>
-		<dateModified><?php /** This is unclean */ date('D, j M Y G:i:s O'); ?></dateModified>
+		<title><?php echo get_option('sitename'); ?></title>
+		<dateModified><?php /** This is unclean */ echo date('D, j M Y G:i:s O'); ?></dateModified>
 	</head>
 	<body>
 <?php

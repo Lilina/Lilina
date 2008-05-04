@@ -25,7 +25,7 @@ function lilina_return_items($input) {
 	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(LILINA_PATH . '/cache');
-	// $feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
+	$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
@@ -116,7 +116,11 @@ function add_feed($url, $name = '', $cat = 'default') {
 
 	if(!empty($feed_error)) {
 		//No feeds autodiscovered;
-		add_notice( sprintf( _r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ) );
+		if(function_exists('_r'))
+			add_notice( sprintf( _r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ) );
+		else
+			add_notice("Couldn't add feed: $url is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.");
+
 		add_tech_notice($feed_error, $url);
 		return false;
 	}

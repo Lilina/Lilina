@@ -21,46 +21,55 @@ function get_feed_list() {
 }
 
 $action = (isset($_GET['action'])? $_GET['action'] : '');
-/** We need some sort of value here */
-if( !isset($_GET['add_name']) )
-	$_GET['add_name'] = '';
 
 /** Make sure we're actually adding */
 if($action == 'add') {
+	/** We need some sort of value here */
+	if( !isset($_GET['add_name']) )
+		$_GET['add_name'] = '';
+
 	if(!isset($_GET['add_url']))
-		add_notice(_r('No URL specified');
+		add_notice(_r('No URL specified'));
 	else
 		add_feed($_GET['add_url'], $_GET['add_name']);
 }
+elseif($action == 'import') {
+	if(!isset($_GET['import_url']))
+		add_notice(_r('No URL specified to import OPML from'));
+	else
+		import_opml($_GET['import_url']);
+}
+
+
+admin_header();
 ?>
 <h2><?php _e('Feeds'); ?></h2>
+<h3><?php _e('Current Feeds'); ?></h3>
+<table id="feeds_list">
+	<thead>
+		<tr>
+		<th><?php _e('Feed ID'); ?></th>
+		<th ><?php _e('Feed Name'); ?></th>
+		<th><?php _e('URL'); ?></th>
+		<th class="change-col"><?php _e('Change Feed'); ?></th>
+		<th class="remove-col"><?php _e('Remove Feed'); ?></th>
+		</tr>
+	</thead>
+	<tbody>
 <?php
 //Defined in admin panel
 $feeds			= get_feed_list();
-$list			= '<table id="feeds_list">
-<thead>
-	<tr>
-	<th>' . _r('Feed ID') . '</th>
-	<th >' . _r('Feed Name') . '</th>
-	<th>' . _r('URL') . '</th>
-	<th class="change-col">' . _r('Change Feed') . '</th>
-	<th class="remove-col">'. _r ('Remove Feed') . '</th>
-	</tr>
-</thead>
-<tbody>';
-$alt			= '';
-//Uses a for loop instead of a foreach, so we can
-//get the current id
 $j	= 0;
 if(is_array($feeds)) {
 	foreach($feeds as $this_feed) {
-		$list		.= '<tr class="' . $alt . '">
+		$list		.= '
+	<tr class="' . $alt . '">
 		<td class="id-col">'.$j.'</td>
 		<td class="name-col">'.stripslashes($this_feed['name']).'</td>
 		<td class="url-col">'.$this_feed['feed'].'</td>
 		<td class="change-col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;change=' . $j .'&amp;action=change" class="change_link">Change</a></td>
 		<td class="remove-col"><a href="' . $_SERVER['PHP_SELF'] . '?page=feeds&amp;remove=' . $j . '&amp;action=remove">Remove</a></td>
-		</tr>';
+	</tr>';
 		$alt = empty($alt) ? 'alt' : '';
 		++$j;
 	}
@@ -68,12 +77,9 @@ if(is_array($feeds)) {
 else {
 	$list .= '<tr class="row_odd row"><td class="col_even col" colspan="5">' . _r('No feeds installed yet') . '</td></tr>';
 }
-$list .= '</tbody></table>';
 ?>
-<h3><?php _e('Current Feeds'); ?></h3>
-<?php
-echo $list;
-?>
+	</tbody>
+</table>
 <div id="changer">
 	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
 		<fieldset id="change">
@@ -127,3 +133,6 @@ echo $list;
 		<input type="submit" value="<?php _e('Import Feeds from OPML'); ?>" />
 	</fieldset>
 </form>
+<?php
+admin_footer();
+?>

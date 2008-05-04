@@ -15,8 +15,8 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 
-if(version_compare('4.3', phpversion(), '<'))
-	nice_die('Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer<br />');
+if(version_compare('4.3', phpversion(), '>'))
+	lilina_nice_die('Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer<br />');
 
 //Make sure Lilina's not installed
 if(lilina_is_installed()) {
@@ -196,35 +196,50 @@ function upgrade() {
 	elseif(@file_exists(LILINA_PATH . '/conf/.feeds.data'))
 		rename(LILINA_PATH . '/conf/.feeds.data', LILINA_PATH . '/conf/feeds.data');
 
+
 	if(@file_exists(LILINA_PATH . '/conf/feeds.data')) {
 		$feeds = file_get_contents(LILINA_PATH . '/conf/feeds.data') ;
 		$feeds = unserialize( base64_decode($feeds) ) ;
-		if(!isset($feeds['version']) || $feeds['version'] != $lilina['feed-storage']['version'])
-			break;
 
-		if(is_array($feeds) || !empty($feeds) || !isset($feeds['feeds']) || !is_array($feeds['feeds']) || empty($feeds['feeds'])) {
-			// Discard feed data
-			break;
-		}
-		elseif(!is_array($feeds['feeds'][0])) {
-			// 0.7 or below
-			// 1 dimensional array, each value is a feed URL string
-			foreach($feeds['feeds'] as $new_feed) {
-				add_feed($new_feed);
+		/** Are we pre-versioned? */
+		if(!isset($feeds['version'])){
+
+			/** Is this 0.7? */
+			if(!is_array($feeds['feeds'][0])) {
+				/** 1 dimensional array, each value is a feed URL string */
+				foreach($feeds['feeds'] as $new_feed) {
+					add_feed($new_feed);
+				}
+				global $data;
+				$data = $feeds;
+				$data['version'] = $lilina['feed-storage']['version'];
+				save_feeds();
 			}
-		}
-		elseif(!isset($feeds['feeds'][0]['url'])) {
-			// Between 0.7 and r147
-			foreach($feeds['feeds'] as $new_feed) {
-				add_feed($new_feed['feed'], $new_feed['name']);
+
+			/** We must be in between 0.7 and r147, when we started versioning */
+			elseif(!isset($feeds['feeds'][0]['url'])) {
+				foreach($feeds['feeds'] as $new_feed) {
+					add_feed($new_feed['feed'], $new_feed['name']);
+				}
+				global $data;
+				$data = $feeds;
+				$data['version'] = $lilina['feed-storage']['version'];
+				save_feeds();
 			}
+
 		}
-	}
-	else {
-		global $data;
-		$data = array('version' => $lilina['feed-storage']['version']);
-		save_feeds();
-	}
+		elseif($feeds['version'] != $lilina['feed-storage']['version']) {
+			switch($feeds['version']):
+				case 147:
+					/** We had a b0rked upgrader, so we need to make sure everything is okay */
+					foreach($feeds['feeds'] as $this_feed) {
+						
+					}
+			endswitch;
+			$feeds['version']
+		}
+	} //end file_exists()
+
 
 	if(@file_exists(LILINA_PATH . '/conf/settings.php')) {
 		/** Just in case... */
@@ -267,8 +282,13 @@ function upgrade() {
 			fputs($settings_file, $raw_php);
 			fclose($settings_file);
 		}
+		elseif($settings['settings_version'] != $lilina['settings-storage']['version']) {
+			
+		}
 	}
-	do_action('send_headers');
+	else {
+		/** What the hell? We should never end up here. */
+	}
 	lilina_nice_die('Successfully upgraded settings and feeds. <a href="index.php">Get reading!</a>', 'Upgrade successful');
 }
 

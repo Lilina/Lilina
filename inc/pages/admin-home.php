@@ -8,6 +8,7 @@
  */
 
 defined('LILINA_PATH') or die('Restricted access');
+admin_header();
 ?>
 <h2>Admin Panel</h2>
 <div class="home_container" id="contain_feeds">
@@ -48,3 +49,6 @@ else {
 <div class="home_container" id="contain_settings">
 	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Change your settings</a></h3>
 </div>
+<?php
+admin_footer();
+?>

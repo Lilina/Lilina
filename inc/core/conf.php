@@ -13,6 +13,8 @@
  */
 
 defined('LILINA_PATH') or die('Restricted access');
+/** Ensures that we have this for maybe_unserialize() */
+require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
 /**
  * Make sure that we don't load the settings multiple times
@@ -77,10 +79,17 @@ if(!defined('LOADED_SETTINGS')) {
 	 * all our old settings here.
 	 */
 	require_once(LILINA_PATH . '/conf/settings.php') ;
+
+	/**
+	 * Unserialize any settings which were serialized, e.g. objects
+	 */
+	foreach($settings as &$the_setting) {
+		$the_setting = maybe_unserialize($the_setting);
+	}
 	
 	/**
 	 * Stores the location of the language directory. First looks for language folder in wp-content
-	 * and uses that folder if it exists. Or it uses the "languages" folder in WPINC.
+	 * and uses that folder if it exists. Or it uses the "languages" folder in LILINA_INCPATH.
 	 *
 	 * @since 1.0.0
 	 */

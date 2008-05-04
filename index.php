@@ -19,7 +19,6 @@ lilina_check_installed();
 
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-require_once(LILINA_INCPATH . '/core/misc-functions.php');
 $timer_start = lilina_timer_start();
 
 /** Current Version */

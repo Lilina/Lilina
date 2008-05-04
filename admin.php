@@ -52,7 +52,6 @@ $import_url	= htmlspecialchars($import_url);
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
 //Localisation
-require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 
@@ -132,7 +131,6 @@ switch($action){
 		add_notice(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
 	break;
 	case 'import':
-		import_opml($import_url);
 	break;
 	case 'reset':
 		unlink(LILINA_PATH . '/conf/settings.php');
@@ -152,13 +150,13 @@ function admin_header() {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/jquery-1.2.1.pack.js"></script>
-<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/fat.js"></script>
-<script type="text/javascript" src="<?php get_option('baseurl'); ?>inc/js/admin.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery-1.2.1.pack.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/fat.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
 <body id="admin-<?php echo $out_page; ?>" class="admin-page">
 <div id="header">
-	<h1 id="sitetitle"><a href="<?php get_option('baseurl'); ?>"><?php get_option('sitename'); ?></a></h1>
+	<h1 id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></h1>
 	<div id="navigation">
 	    <h2>Navigation</h2>
 		<ul id="mainnavigation">

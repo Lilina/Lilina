@@ -9,7 +9,9 @@
 defined('LILINA_PATH') or die('Restricted access');
 
 /**
- * Fixes the $_SERVER['REQUEST_URI'] variable on IIS
+ * lilina_fix_request_uri() - Fixes the $_SERVER['REQUEST_URI'] variable on IIS
+ *
+ * {@internal Missing Long Description}}
  * @author WordPress
  */
 function lilina_fix_request_uri() {
@@ -43,6 +45,9 @@ function lilina_fix_request_uri() {
 }
 
 /**
+ * lilina_timer_start() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @todo Document
  */
 function lilina_timer_start() {
@@ -54,6 +59,9 @@ function lilina_timer_start() {
 	return $starttime;
 }
 /**
+ * lilina_timer_end() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @todo Document
  */
 function lilina_timer_end($starttime) {
@@ -65,7 +73,11 @@ function lilina_timer_end($starttime) {
 	$totaltime = round($totaltime, 2);
 	return $totaltime;
 }
-
+/**
+ * is_admin() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
+ */
 function is_admin() {
 	if(defined('LILINA_ADMIN') && LILINA_ADMIN == true) {
 		return true;
@@ -140,6 +152,9 @@ function get_option($option, $suboption = '') {
 }
 
 /**
+ * lilina_parse_args() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @author WordPress
  */
 function lilina_parse_args( $args, $defaults = '' ) {
@@ -156,6 +171,9 @@ function lilina_parse_args( $args, $defaults = '' ) {
 }
 
 /**
+ * lilina_parse_str() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @author WordPress
  */
 function lilina_parse_str( $string, &$array ) {
@@ -167,6 +185,9 @@ function lilina_parse_str( $string, &$array ) {
 
 if(!function_exists('stripslashes_deep')) {
 /**
+ * stripslashes_deep() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @author WordPress
  */
 function stripslashes_deep($value) {
@@ -178,8 +199,12 @@ function stripslashes_deep($value) {
 }
 }
 
-if(!function_exists('urlencode_deep')) {
+if(!function_exists('urlencode_deep')):
+
 /**
+ * urlencode_deep() - {@internal Missing Short Description}
+ *
+ * {@internal Missing Long Description}}
  * @author WordPress
  */
 function urlencode_deep($value) {
@@ -189,6 +214,52 @@ function urlencode_deep($value) {
 
 	 return $value;
 }
+
+endif; //function_exists('urlencode_deep)
+
+/**
+ * maybe_unserialize() - Unserialize data only if it is serialized
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function maybe_unserialize( $original ) {
+	if ( is_serialized( $original ) ) // don't attempt to unserialize data that wasn't serialized going in
+		if ( false !== $gm = @unserialize( $original ) )
+			return $gm;
+	return $original;
+}
+
+/**
+ * is_serialized() - Check if $data is serialized
+ *
+ * {@internal Missing Long Description}}
+ * @author WordPress
+ */
+function is_serialized( $data ) {
+	// if it isn't a string, it isn't serialized
+	if ( !is_string( $data ) )
+		return false;
+	$data = trim( $data );
+	if ( 'N;' == $data )
+		return true;
+	if ( !preg_match( '/^([adObis]):/', $data, $badions ) )
+		return false;
+	switch ( $badions[1] ) {
+		case 'a' :
+		case 'O' :
+		case 's' :
+			if ( preg_match( "/^{$badions[1]}:[0-9]+:.*[;}]\$/s", $data ) )
+				return true;
+			break;
+		case 'b' :
+		case 'i' :
+		case 'd' :
+			if ( preg_match( "/^{$badions[1]}:[0-9.E-]+;\$/", $data ) )
+				return true;
+			break;
+	}
+	return false;
 }
 
 /**

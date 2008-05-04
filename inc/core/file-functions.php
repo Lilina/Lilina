@@ -133,6 +133,9 @@ function save_settings() {
 			$content .= recursive_array_code($value);
 			$content .= "\n);";
 		}
+		elseif(is_object($value)) {
+			$content .= "\n\$settings['{$var}'] = '" . base64_encode(serialize($value)) . "';";
+		}
 		else
 			$content .= "\n\$settings['{$var}'] = '{$value}';";
 	}

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @todo Move to admin/settings.php
  * @author Ryan McCue <cubegames@gmail.com>
@@ -30,6 +30,7 @@ function diagnostic() {
 }
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
+admin_header();
 ?>
 <h2><?php _e('Settings'); ?></h2>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
