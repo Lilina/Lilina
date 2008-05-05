@@ -141,8 +141,8 @@ function add_filter($filter, $function, $priority = 0, $num_args=1) {
 * @param string $function Plugin function to register
 * @param string $function Hook to register function under
 */
-function add_action($action, $function, $num_args=0) {
-	add_filter($action, $function, $num_args);
+function add_action($action, $function, $priority = 0, $num_args=0) {
+	add_filter($action, $function, $priority, $num_args);
 }
 
 /**
@@ -250,13 +250,17 @@ function lilina_plugins_list($directory){
 	return $plugin_list;
 }
 
-global $settings;
-$current_plugins	= @file_get_contents(get_option('files', 'plugins')) ;
-$current_plugins	= unserialize( $current_plugins ) ;
-if ( is_array($current_plugins) ) {
-	foreach ($current_plugins as $plugin) {
-		if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
-			include_once(LILINA_INCPATH . '/plugins/' . $plugin);
+/**
+ *
+ */
+function lilina_plugins_init() {
+	$current_plugins = get_option('activated_plugins');
+	if ( is_array($current_plugins) ) {
+		foreach ($current_plugins as $plugin) {
+			if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
+				include_once(LILINA_INCPATH . '/plugins/' . $plugin);
+		}
 	}
 }
+lilina_plugins_init();
 ?>
