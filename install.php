@@ -236,7 +236,10 @@ function upgrade() {
 						
 					}
 			endswitch;
-			$feeds['version']
+			global $data;
+			$data = $feeds;
+			$data['version'] = $lilina['feed-storage']['version'];
+			save_feeds();
 		}
 	} //end file_exists()
 
