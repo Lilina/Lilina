@@ -65,6 +65,8 @@ function available_templates() {
  * {{@internal Missing Long Description}}}
  */
 function available_locales() {
+	$locale_list = array();
+	$locales = array();
 	//Make sure we open it correctly
 	if ($handle = opendir(LILINA_INCPATH . '/locales/')) {
 		//Go through all entries
@@ -82,8 +84,11 @@ function available_locales() {
 		// ALWAYS remember to close what you opened
 		closedir($handle);
 	}
+	/** Special case for English */
+	$locales[]	= array('name' => 'en',
+						'file' => '');
 	foreach($locale_list as $locale) {
-	echo $locale;
+		echo $locale;
 		//Quick and dirty name
 		$locales[]	= array('name' => str_replace('.mo', '', $locale),
 							'file' => $locale);

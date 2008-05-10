@@ -65,14 +65,9 @@ admin_header();
 			<label for="lang">Language</label>
 			<select id="lang" name="lang">
 				<?php
-				echo '<option';
-				if('en' == $settings['lang']) {
-					echo ' selected="selected"';
-				}
-				echo ' value="en">English (default)</option>';
 				foreach(available_locales() as $locale) {
 					echo '<option';
-					if($locale['name'] === $settings['lang']) {
+					if($locale['name'] === $settings['locale']) {
 						echo ' selected="selected"';
 					}
 					echo '>', $locale['name'], '</option>';
@@ -81,7 +76,7 @@ admin_header();
 			</select>
 		</p>
 	</fieldset>
-	<input type="submit" value="<?php _e('Save Settings'); echo ' (Not yet functional)'; ?>" disabled="disabled" />
+	<input type="submit" value="<?php _e('Save Settings'); ?> (Not yet functional)" disabled="disabled" />
 </form>
 <h3>Troubleshooting</h3>
 <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings&amp;action=diagnostic">Run diagnostic test</a>

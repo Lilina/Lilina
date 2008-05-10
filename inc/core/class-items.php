@@ -37,6 +37,43 @@ class Lilina_Items {
 	}
 
 	/**
+	 * load() - {@internal Short Description Missing}}
+	 *
+	 * {@internal Long Description Missing}}
+	 * @todo Document
+	 */
+	function load() {
+		global $lilina;
+
+		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+
+		$feed = new SimplePie();
+		$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
+		$feed->set_stupidly_fast(true);
+		$feed->set_cache_location(LILINA_PATH . '/cache');
+		$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
+		$feed = apply_filters('simplepie-config', $feed);
+
+		foreach($input['feeds'] as $the_feed)
+			$feed_list[] = $the_feed['feed'];
+
+		$feed->set_feed_url($feed_list);
+		$feed->init();
+
+		/** We need this so we have something to work with. */
+		$feed->get_items();
+
+		if(!isset($feed->data['ordered_items'])) {
+			$feed->data['ordered_items'] = $feed->data['items'];
+		}
+		/** Let's force sorting */
+		usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
+		usort($feed->data['items'], array(&$feed, 'sort_items'));
+
+		$this->simplepie = $feed;
+	}
+
+	/**
 	 * get_items() - {@internal Short Description Missing}}
 	 *
 	 * {@internal Long Description Missing}}

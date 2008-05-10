@@ -150,7 +150,7 @@ function admin_header() {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery-1.2.1.pack.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/fat.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
