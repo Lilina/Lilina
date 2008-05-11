@@ -1,4 +1,10 @@
 $(document).ready(function() {
+	$("#navigation li.current").hover(function() {
+		$("#navigation").addClass("hover");
+	}, function(){
+		$("#navigation").removeClass("hover");
+	});
+
 	$("#changer").hide();
 	$("#changer_id").hide();
 	$(".change_link").click(function() {

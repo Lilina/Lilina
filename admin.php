@@ -97,10 +97,10 @@ $admin_pages = array(
 	'home' => '/pages/admin-home.php',
 );
 
-if(isset($admin_pages[$page]))
-	require_once(LILINA_INCPATH . $admin_pages[$page]);
-else
-	require_once(LILINA_INCPATH . $admin_pages['home']);
+if(!isset($admin_pages[$page]))
+	$page = 'home';
+
+require_once(LILINA_INCPATH . $admin_pages[$page]);
 
 
 switch($action){
@@ -140,6 +140,8 @@ switch($action){
 }
 
 function admin_header() {
+	global $admin_pages, $page;
+	$current_page = strtolower(basename($admin_pages[$page]));
 	header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -162,27 +164,20 @@ function admin_header() {
 		<ul id="mainnavigation">
 <?php
 	$navigation = array(
-		array(_r('Home'), 'admin-home.php', ''),
+		array(_r('Dashboard'), 'admin-home.php', ''),
 		array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
 		array(_r('Settings'), 'admin-settings.php', 'settings'),
 	);
-	$subnavigation = apply_filters('navigation', $navigation);
+	$navigation = apply_filters('navigation', $navigation);
 	foreach($navigation as $nav_item) {
-		if($out_page == $nav_item[1]) {
-			/** Hack */
-			if(!isset($current_page))
-				$current_page = $nav_item[2];
-			$nav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
-		}
-		else
-			$nav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		echo '<li' . ($current_page == $nav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a></li>";
 	}
-	echo implode("</li>\n", $nav_items);
-?></li>
+?>
 			<li id="page_item_logout" class="seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
 		</ul>
 <?php
-	$subnavigation = array(
+
+	$subnavigation = apply_filters('subnavigation', array(
 		'admin-home.php' => array(
 			array(_r('Home'), 'admin-home.php', ''),
 		),
@@ -192,17 +187,16 @@ function admin_header() {
 		'admin-settings.php' => array(
 			array(_r('General'), 'admin-settings.php', 'settings'),
 		),
-	);
-	$subnavigation = apply_filters('subnavigation', $subnavigation, $navigation, $current_page);
-	if( isset($subnavigation[ strtolower($current_page) ]) && !empty($subnavigation[ strtolower($current_page) ]) ) {
-		echo '<ul id="subnavigation">';
-		foreach($subnavigation[strtolower($current_page)] as $subnav_item) {
-			if($out_page == $subnav_item[1])
-				$subnav_items[] = "<li class='current'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
-			else
-				$subnav_items[] = "<li><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+	), $subnavigation, $navigation, $current_page);
+
+	if( isset($subnavigation[$current_page]) && !empty($subnavigation[$current_page]) ) {
+
+?>
+		<ul id="dropmenu">
+<?php
+		foreach($subnavigation[$current_page] as $subnav_item) {
+			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a></li>";
 		}
-		echo implode("</li>\n", $subnav_items), '</li></ul>';
 	}
 ?>
 	</div>

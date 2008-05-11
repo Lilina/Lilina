@@ -2,113 +2,86 @@
  * Cast: (in order of appearance)
  */
 
-body, html {
-	/*font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;*/
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: 0.9em;
+body {
+	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+	font-size: 62.5%;
 	margin: 0;
 	background: #FFF url("admin-background.png");
 }
-/*
-Lilina Navigation Styles
-Based on http://htmlpurifier.org/
-Thanks to Edward Z. Yang (Ambush Commander) for giving permission to reuse this
-Mostly Copyright (c) Edward Z. Yang
-*/
 
 #header {
-	font-size:0.8em;
-}
-#header #sitetitle {
-	background: #2E91D0;
-	background-position: right 0.2em;
-	margin: 0;
-	padding: 0;
-	text-align: left;
-	color: #FFF;
+	line-height: 1.7em;
+	font-size: 1.1em;
 	width: 100%;
-	font-size: 1em;
+	height: 4em;
+
+	background: #2d2d2d;
+	border-bottom: 1px solid #000;
+
+	padding: 0;
+	margin: 0;
+
+	position: fixed;
+	top: 0;
 }
-#header #sitetitle a {
+#sitetitle {
+	margin: 0 30%;
+	padding: 0;
+	color: #FFF;
+	float: right;
+	font-size: 1.4em;
+}
+#sitetitle a {
 	margin: 0;
 	padding: 0.5em 5%;
 	color: #FFF;
 	text-decoration: none;
-	font-family: Georgia, serif;
 	font-weight: normal;
-	font-variant: small-caps;
-	letter-spacing: 0.2em;
-	font-size: 1.9em;
 	line-height: 2em;
-	border-bottom: none;
 }
-#header #sitetitle a:hover {
+#sitetitle a:hover {
 	color: #E0E2E6;
 	border-bottom: none;
 }
-
-/* navigation */
-
 #navigation {
 	text-align: left;
-	width: 100%;
+	padding: 1em 5% 3px;
 }
 #navigation h2 {
 	float: right;
 	text-indent: -9000px;
 }
-#navigation ul {
-	margin: 0;
-	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
-	display: block;
-}
 #mainnavigation {
-	padding: 0 5% 3px;
-	background: #2E91D0;
-	border-bottom: 1px solid #000;
-}
-#subnavigation {
-	padding: 4px 5% 4px;
-	background: #fff;
-	border-bottom: 1px solid #CCC;
+	margin: 0;
+	display: block;
+	padding: 0;
+	margin: 0;
 }
 #navigation li {
 	display: inline;
-	line-height: 1.7em;
-	margin: 0 0.6em 0 0;
-	font-size: 1.1em;
-}
-#subnavigation li {
-	font-size: 1.2em;
+	margin: 0;
+	padding: 0;
 }
 #navigation li a {
 	color: #FFF;
 	text-decoration:none;
 	padding: 0.6em;
 }
-#subnavigation li a {
-	color: #2E91D0;
-}
 #navigation li a:hover {
 	background-color: #FFF;
 	color: #662;
 }
-#subnavigation li a:hover {
-	background: none;
-}
-#mainnavigation li.current a {
+#navigation li.current a:hover {
+	background-image: url("dropdown-hover.png");
 	background-color: #FFF;
 	color: #662;
-	border: 1px solid #FFF;
 }
-#subnavigation li.current a {
-	font-weight: bold;
+#navigation li.current a {
+	background: #0ca2ff url("dropdown.png") no-repeat 90% center;
+	padding-right: 26px;
 }
-#navigation .seperator {
-	margin-left: 2em;
-}
-#navigation #page_item_logout {
-	font-weight: bold;
+#dropmenu {
+	display: none;
 }
 
 #alert {
@@ -122,7 +95,7 @@ Mostly Copyright (c) Edward Z. Yang
 }
 
 #main {
-	margin: 15px 5%;
+	margin: 5em 5%;
 	padding: 1em;
 	clear: both;
 	font-size: 1.1em;
