@@ -26,7 +26,7 @@ if(file_exists(LILINA_PATH . '/cache/' . md5($_GET['i']) . '.spi')) {
     SimplePie_Misc::display_cached_file($_GET['i'], LILINA_PATH . '/cache', 'spi');
 }
 else {
-    header('Location: inc/templates/' . $settings['template'] . '/feed-icon.png');
+    header('Location: ' . $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/feed-icon.png');
 }
 
 ?>
