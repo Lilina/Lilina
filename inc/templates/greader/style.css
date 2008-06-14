@@ -1,0 +1,131 @@
+/*
+Name: greader
+Real Name: Apple-style template for Lilina
+Author: Jon Hicks (adapted for Lilina by Ryan McCue)
+Description: Based on Jon Hicks' gReader styles for Google Reader
+*/
+
+body { 
+	font-family: Lucida Grande, Helvetica, Arial, sans-serif;
+	font-size: 62.5%;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	text-decoration: none; 
+}
+
+#navigation {
+	top: 0;
+	padding: 8px 0 0 0  !important;
+	overflow: hidden;
+	right: 0;
+	left: 470px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: right;
+	position:absolute;
+	z-index: 10;
+	color: #666 !important;
+	font-size: 11px;
+}
+
+#navigation .site-name {
+	font-weight: bold;
+}
+
+#navigation a {
+	margin: 0 3px;
+	color: #333 !important;
+	text-shadow: 2px 2px 1px #fff;
+	padding: 0 4px;
+	line-height: 15px;
+}
+
+#navigation a:hover {
+	background: #999;
+	color: #fff;
+}
+
+#logo { 
+	display: block;
+	width: auto;
+	background: #dddddc url("bar-grey.png")  repeat-x 0 -2px;
+	padding: 4px 0 0 10px !important;
+	z-index: 1 !important;
+	height: 26px;
+	border-bottom: 1px solid #999;
+}
+
+#logo a {
+	position: absolute;
+	left: 8px;
+	width: 470px;
+	text-align: right;
+}
+
+#page-title {
+	padding: 7px 5px 5px 8px;
+	margin: 0;
+	color: #fff;
+	font-size: 1.4em;
+	background: #0000ff url("bar-blue.gif") repeat-x;
+}
+
+#main {
+	margin-left: -242px;
+	width: 100%;
+	float: right;
+	overflow:auto;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+#content {
+	margin-left: 240px;
+	border-left: 1px solid #939393;
+}
+
+#sidebar {
+	/* The reason we use pixels is because we can't use margin-left: 24% + 1px */
+	width: 240px;
+	background-color: #E5EDF7;
+	border-right: 1px solid #939393;
+	/*overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: relative;*/
+	height: 100%;
+}
+
+#sidebar>ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#sidebar li {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#footer {
+	clear: both;
+	width: 100%;
+	height: 0;
+	background: url("footer-bar.gif") repeat-x;
+	border-top: 1px solid #cacaca;
+	color: #333;
+}
+
+#footer p {
+	margin: 0;
+}
