@@ -1,6 +1,6 @@
 /*
 Name: greader
-Real Name: Apple-style template for Lilina
+Real Name: Red Delicious
 Author: Jon Hicks (adapted for Lilina by Ryan McCue)
 Description: Based on Jon Hicks' gReader styles for Google Reader
 */
@@ -10,6 +10,7 @@ body {
 	font-size: 62.5%;
 	margin: 0;
 	padding: 0;
+	height: 100%;
 }
 
 a {
@@ -90,19 +91,21 @@ a {
 #sidebar {
 	/* The reason we use pixels is because we can't use margin-left: 24% + 1px */
 	width: 240px;
-	background-color: #E5EDF7;
-	border-right: 1px solid #939393;
 	/*overflow: auto;
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: relative;*/
 	height: 100%;
+	margin-top: -31px;
+	padding-top: 31px;
 }
 
 #sidebar>ul {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
+	background-color: #E5EDF7;
+	border-right: 1px solid #939393;
 }
 
 #sidebar ul {
@@ -115,17 +118,4 @@ a {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-}
-
-#footer {
-	clear: both;
-	width: 100%;
-	height: 0;
-	background: url("footer-bar.gif") repeat-x;
-	border-top: 1px solid #cacaca;
-	color: #333;
-}
-
-#footer p {
-	margin: 0;
 }

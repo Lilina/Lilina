@@ -98,25 +98,21 @@ else {
 	</div>
 </div>
 
-<?php
-if(has_feeds()) {
-	?>
+
 <div id="sidebar">
 	<ul>
-		<li><h3>Sources:</h3>
+		<?php if( has_feeds() ): ?>
+		<li><h3>Sources</h3>
 			<ul>
 				<?php list_feeds('format=<li><a href="%1$s"><img class="icon" src="%2$s" />%3$s</a></li>'); ?>
 			</ul>
 		</li>
+		<?php endif; ?>
+		<li>Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a></li>
 	</ul>
 </div>
-<?php
-}
-	?>
-<div id="footer">
-<p><?php echo get_option('sitename'); ?> is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a></p>
-<!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
+
 <?php template_footer(); ?>
-</div>
+<!-- Generated in: <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
 </body>
 </html>

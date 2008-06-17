@@ -1,6 +1,6 @@
 
 function resize_faux_frame() {
-	$('#main').height( ($(window).height() - 51));
+	$('#main').height( ($(window).height() - 30));
 }
 
 $(document).ready(function() {

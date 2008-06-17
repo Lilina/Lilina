@@ -4,12 +4,17 @@
  * @package Lilina
  * @subpackage Classes
  */
-class Lilina_Items {
+class LilinaItems {
 	/**
 	 * Our SimplePie object to work with
 	 * @var SimplePie
 	 */
 	var $simplepie;
+	
+	/**
+	 * @var array|string
+	 */
+	var $feeds;
 
 	/**
 	 * Our items array, obtained from $simplepie->get_items()
@@ -18,22 +23,34 @@ class Lilina_Items {
 	var $simplepie_items;
 
 	/**
-	 *
+	 * @var int
 	 */
-	var $offset;
+	var $offset = 0;
 
 	/**
-	 * Lilina_Items() - Initialiser for the class
+	 * LilinaItems() - Initialiser for the class
 	 *
 	 * Sets our used properties with user input
 	 * @param SimplePie
 	 */
-	function Lilina_Items($sp = null) {
-		if(!$sp)
-			$sp = lilina_load_feeds(get_option('files', 'feeds'));
-		$this->simplepie = $sp;
-		$this->simplepie_items = apply_filters('simplepie_items', $sp->get_items());
-		$this->offset = 0;
+	function LilinaItems($sp = null) {
+		if($sp !== null) {
+			$this->simplepie = $sp;
+			/** Free up memory just in case */
+			unset($sp);
+			$this->init();
+		}
+	}
+	
+	/**
+	 *
+	 */
+	function init() {
+		if(is_null($this->simplepie))
+			$this->load();
+
+		$sp = &$this->simplepie;
+		$this->simplepie_items = $sp->get_items();
 	}
 
 	/**
@@ -54,10 +71,7 @@ class Lilina_Items {
 		$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 		$feed = apply_filters('simplepie-config', $feed);
 
-		foreach($input['feeds'] as $the_feed)
-			$feed_list[] = $the_feed['feed'];
-
-		$feed->set_feed_url($feed_list);
+		$feed->set_feed_url($this->feeds);
 		$feed->init();
 
 		/** We need this so we have something to work with. */
@@ -66,11 +80,15 @@ class Lilina_Items {
 		if(!isset($feed->data['ordered_items'])) {
 			$feed->data['ordered_items'] = $feed->data['items'];
 		}
+
 		/** Let's force sorting */
 		usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
 		usort($feed->data['items'], array(&$feed, 'sort_items'));
 
 		$this->simplepie = $feed;
+
+		/** Free up memory just in case */
+		unset($feed);
 	}
 
 	/**
@@ -101,5 +119,9 @@ class Lilina_Items {
 	 */
 	function reset_iterator() {
 		$this->offset = 0;
+	}
+	
+	function has_items() {
+		return isset($this->simplepie_items[ $this->offset ]);
 	}
 }
