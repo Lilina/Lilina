@@ -17,10 +17,10 @@ defined('LILINA_PATH') or die('Restricted access');
  */
 function lilina_check_installed() {
 	if(!lilina_is_installed()) {
-		lilina_nice_die('<p>Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a></p>');
+		lilina_nice_die('<p>Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a></p>', 'Installation');
 	}
 	if(!lilina_settings_current()) {
-		lilina_nice_die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>');
+		lilina_nice_die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>', 'Upgrading');
 	}
 }
 
