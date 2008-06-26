@@ -72,12 +72,11 @@ function install($sitename, $username, $password) {
 		$guessurl .= '/';
 	}
 	?>
-<p>Now saving settings to conf/settings.php - Stand by...</p>
 <?php
 		flush();
 		$raw_php		= "<?php
 // What you want to call your Lilina installation
-\$settings['sitename'] = '$sitename';
+\$settings['sitename'] = '" . addslashes($sitename) . "';
 
 // The URL to your server
 \$settings['baseurl'] = '$guessurl';
@@ -99,17 +98,15 @@ function install($sitename, $username, $password) {
 			|| !($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+'))
 			|| !is_resource($settings_file) ) {
 			?>
-			<p>Please make sure that the conf directory is writable and that I can create <code>conf/settings.php</code></p>
-			<p>You can also try saving the following as <code>conf/settings.php</code></p>
-<pre>
-<?php highlight_string($raw_php); ?>
-</pre>
+			<h1>Uh oh!</h1>
+			<p>Something happened and <code><?php echo LILINA_PATH; ?>conf/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
 			<form action="<?php /** @todo This is unsafe. Convert */ echo $_SERVER['PHP_SELF']; ?>" method="post">
 			<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 			<input type="hidden" name="username" value="<?php echo $username; ?>" />
 			<input type="hidden" name="password" value="<?php echo $password; ?>" />
 			<input type="hidden" name="page" value="2">
-			<input type="submit" value="Try again?" />
+			<input class="submit" type="submit" value="Try again?" />
+			<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
 			</form>
 			<?php
 			return false;
@@ -124,13 +121,15 @@ function install($sitename, $username, $password) {
 				$sdata	= base64_encode(serialize($data)) ;
 				if(!$feeds_file) {
 					?>
-					An error occurred when saving to <code><?php echo LILINA_PATH; ?>/conf/feeds.data</code> and your data may not have been saved. Please make sure the server can write to it.
+					<h1>Uh oh!</h1>
+					<p>Something happened and <code><?php echo LILINA_PATH; ?>/conf/feeds.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
 					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 					<input type="hidden" name="username" value="<?php echo $username; ?>" />
 					<input type="hidden" name="password" value="<?php echo $password; ?>" />
 					<input type="hidden" name="page" value="2">
-					<input type="submit" value="Try again" />
+					<input type="submit" value="Try again?" />
+					<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
 					</form>
 					<?php
 					return false;
@@ -164,14 +163,15 @@ function install($sitename, $username, $password) {
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
 ?>
-<p>Lilina has been set up on your server and is ready to run. Open <a href="index.php">your home page</a> and get reading!</p>
+<h1>Installation Complete!</h1>
+<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it won't be shown again!</p>
 <dl>
-	<dt>Username</dt>
-	<dd><?php echo $username;?></dd>
-	<dt>Password</dt>
-	<dd><?php echo $password;?></dd>
+	<dt>Your username is</dt>
+	<dd id="username"><?php echo $username;?></dd>
+	<dt>and your password is</dt>
+	<dd id="password"><?php echo $password;?></dd>
 </dl>
-<p>Were you expecting more steps? Sorry to disappoint. All done! :)</p>
+<p>We can <a href="admin.php?page=first-run">help you get started</a>, or if you know what you're doing, <a href="admin.php">head straight for the admin panel</a>.</p>
 <?php
 		return true;
 }
@@ -292,7 +292,7 @@ function upgrade() {
 	else {
 		/** What the hell? We should never end up here. */
 	}
-	lilina_nice_die('Successfully upgraded settings and feeds. <a href="index.php">Get reading!</a>', 'Upgrade successful');
+	lilina_nice_die('Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a>', 'Upgrade Successful');
 }
 
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
@@ -326,51 +326,35 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 	</head>
 	<body>
 		<div id="container">
-			<div id="header">
-				<img src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
-				<h1>Lilina News Aggregator</h1>
-				<h2>Installation Step <?php echo $page;?></h2>
-			</div>
-			<div id="menu">
-				<ul>
-					<li><a href="http://getlilina.org/">Lilina Website</a></li>
-					<li><a href="http://getlilina.org/forums/">Forums</a></li>
-					<li><a href="http://getlilina.org/docs/">Documentation</a></li>
-				</ul>
-			</div>
-			<div id="content">
 <?php
 switch($page) {
 	case 1:
 		if($error) {
 		}
 ?>
-<p>Let's get started on the installation!</p>
+<h1>Setting Up</h1>
+<p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-	<table style="width:100%">
-		<tr><td colspan="2"><h2>General Settings</h2></td></tr>
-		<tr<?php if(!$sitename) echo ' class="highlight"';?>>
-			<td class="label"><label for="sitename"><span class="label">Name of site</span></label></td>
-			<td class="formw"><input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" size="40" /></td>
-		</tr>
-		<tr><td colspan="2"><h2>Security Settings</h2></td></tr>
-		<tr<?php if(!$username) echo ' class="highlight"';?>>
-			<td class="label"><label for="username"><span class="label">Admin Username</span></label></td>
-			<td class="formw"><input type="text" value="<?php echo (!$username) ? 'admin' : $username;?>" name="username" id="username" size="40" /></td>
-		</tr>
-		<tr<?php if(!$password) echo ' class="highlight"';?>>
-			<td class="label"><label for="password"><span class="label">Admin Password</span></label></td>
-			<td class="formw"><input type="text" value="<?php echo (!$password) ? generate_password() : $password;?>" name="password" id="password" size="40" /></td>
-		</tr>	
-		<tr>
-			<td colspan="2"><span class="formw">
-				<input type="hidden" value="2" name="page" id="page" />
-				<input type="submit" value="Next &raquo;" style="width:50%;font-size:2em;" />
-			</span>
-			</td>
-		</tr>
-	</table>
-	<div style="clear:both;">&nbsp;</div>
+	<fieldset id="general">
+		<legend>General Settings</legend>
+		<div class="row<?php if(!$sitename) echo ' highlight';?>">
+			<label for="sitename">Name of site</label>
+			<input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
+		</div>
+	</fieldset>
+	<fieldset id="security">
+		<legend>Security Settings</legend>
+		<div class="row<?php if(!$username) echo ' highlight';?>">
+			<label for="username">Admin Username</label>
+			<input type="text" value="<?php echo (!$username) ? 'admin' : $username;?>" name="username" id="username" class="input" size="40" />
+		</div>
+		<div class="row<?php if(!$password) echo ' highlight';?>">
+			<label for="password">Admin Password</label>
+			<input type="text" value="<?php echo (!$password) ? generate_password() : $password;?>" name="password" id="password" class="input" size="40" />
+		</div>
+	</fieldset>
+	<input type="hidden" value="2" name="page" id="page" />
+	<input type="submit" value="Next &raquo;" class="submit" />
 </form>
 <?php
 		break;
@@ -381,16 +365,17 @@ switch($page) {
 	case false:
 	default:
 ?>
+<h1>Installation</h1>
 <p>Welcome to Lilina installation. We're now going to start installing. Make sure that both the <code>conf/</code> and <code>cache/</code> directories exist and are <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
-<input type="submit" value="Install &raquo;" style="width: 50%; font-size: 2em;" />
+<input type="submit" value="Install &raquo;" class="submit" />
 </form>
 <?php
 		break;
 }
 ?>
-			</div>
+			<img id="logo" src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>

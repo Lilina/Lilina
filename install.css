@@ -4,134 +4,93 @@ Lilina News Aggregator
 Installation Style Sheet
 Licensed under the GNU General Public License
 Copyright 2007 Ryan McCue
-
-Todo: redesign
 */
 
-/*************
-It's elemental
-*************/
-
-* html body #menu {
-/* Only IE6 sees this */
-	margin-bottom: 3em;
-}
+/* General styles for all error pages and installation */
 html, body {
-	background: #E5E5E5;
-	color: #000000;
+	color: #333333;
 }
 body {
-	font-family: Verdana, Geneva, sans-serif;
-	font-size: 80%;
-	line-height: 150%;
+	font-family: Arial, sans-serif;
+	font-size: 62.5%;
+	line-height: 2.2em;
+}
+h1 {
+	font-weight: normal;
+	font-size: 2em;
+	margin: 0.6em 0;
+}
+h2 {
+	font-weight: normal;
+	font-size: 1.8em;
+	margin: 0.8em 0;
 }
 p {
+	font-size: 1.5em;
+	margin-top: 1em;
 }
-input {
-	border: 1px solid #B2B2B2;
-	font-size: 1.3em;
-}
-
-/*****************
-May I see your ID?
-*****************/
-#header {
-    background-color: #fff;
-	height: 60px;
-
-}
-#header img{
-	margin: 0;
-	padding: 12px;
-	border: none;
-	float: left;
-}
-#header h1 { 
-	font-family: Georgia, Verdana, Times, serif;
-	font-size: 2em;
-	font-weight: 300;
-	color: #000;
-	margin-top: 16px;
-	margin-left: 200px;
-	letter-spacing: 2px;
-}
-#header h2 { 
-	font-family: Georgia, Verdana, Sans-Serif;
-	font-size: 1.4em;
-	font-weight: normal;
-	color: #434343;
-	margin-left: 200px;
-}
-#menu {
-	background-color: #E3E3E3;
-	font-family: verdana, "Microsoft Sans Serif", Times, serif;
-	font-size: 8pt;
-	height:27px;
-	border-bottom: 1px solid #999;
-	clear: both;
-}
-#menu ul {
-	margin: 0 0 0 190px;
-	padding: 0;
-	list-style: none;
-}
-#menu li {
-	display: inline;
-}
-#menu a {
-	float: left;
-	display: inline;
-	padding: 6px 12px 7px 12px;
-	text-transform: uppercase;
+a {
 	text-decoration: none;
-	color: #444;
-	text-align: center;
-}
-#menu a:hover {
-	background: #FFF;
-	color: #000;
-	padding-bottom: 7px;
+	color: #2e91d0;
+	font-weight: bold;
 }
 #container {
-	background: #FFF;
-	margin: 20px auto;
-  	width: 900px;
-  	overflow: hidden;
-	border: 1px solid #999;
-	/*background: #FFEACA;
-	clear: both;
-	margin-left: auto;
-	margin-right: auto;
-	width: 45em;
-	border: solid #A3A3A3 0.2em;
-	padding: 0.4em;*/
+	margin: 10em auto 0;
+	width: 60%;
+	max-width: 700px;
 }
-#content {
-	padding: 2%;
+#logo {
+	margin-top: 2em;
 }
-/*#content * {
+
+/* Readme only */
+#header-logo {
+	float: right;
 }
-#content form h2 {
-	clear: both;
-}*/
-#content form td.label {
-	/*float: left;*/
-	width: 33%;
-	text-align: right;
-	font-size: 1.1em;
-	font-family: Helvetica, Verdana;
+
+/* Installation only */
+dl {
+	font-size: 1.5em;
+}
+dd#username, dd#password {
+	font-weight: bold;
+}
+
+/* Forms */
+fieldset {
+	border: none;
+	margin-top: 1em;
+	padding: 0;
+}
+legend {
+	font-size: 1.8em;
+	margin: 0.8em 0;
+}
+form label {
+	font-size: 1.5em;
 	padding: 0.5em;
+	float: left;
 }
-#content form td.formw {
+form .input {
+	float: right;
+	padding: 0.6em
+}
+.row {
+	width: 80%;
+	clear: both;
+}
+form td.formw {
 	/*float: right;*/
 	width: 66%;
 	text-align: left;
 	font-size: 1.3em;
 	padding: 0.5em;
 }
-#footer {
-	margin-left: auto;
-	margin-right: auto;
-	width: 45em;
-	text-align: center;
+
+.submit {
+	width: 20%;
+	margin: 0 auto;
+	font-size: 1.6em;
+	background: #eee;
+	border: 1px solid #CCC;
 }

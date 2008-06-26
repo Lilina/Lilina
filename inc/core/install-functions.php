@@ -17,10 +17,10 @@ defined('LILINA_PATH') or die('Restricted access');
  */
 function lilina_check_installed() {
 	if(!lilina_is_installed()) {
-		lilina_nice_die('<p>Lilina doesn\'t appear to be installed. Try <a href="install.php">installing it</a></p>', 'Installation');
+		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='install.php'>install it now</a></p>", 'Not Installed');
 	}
 	if(!lilina_settings_current()) {
-		lilina_nice_die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>', 'Upgrading');
+		lilina_nice_die("<p>Looks like Lilina is out of date! No worries, just <a href='install.php?action=upgrade'>go ahead and update</a></p>", 'Out of Date');
 	}
 }
 
@@ -68,13 +68,13 @@ function lilina_settings_current() {
  *
  * {{@internal Missing Long Description}}}
  */
-function lilina_nice_die($message, $title = 'Error') {
+function lilina_nice_die($message, $title = 'Whoops!') {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $title; ?> - Lilina News Aggregator</title>
+		<title><?php echo $title; ?> &mdash; Lilina News Aggregator</title>
 		<style type="text/css">
 			@import "install.css";
 		</style>
@@ -82,21 +82,9 @@ function lilina_nice_die($message, $title = 'Error') {
 	</head>
 	<body>
 		<div id="container">
-			<div id="header">
-				<img src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
-				<h1>Lilina News Aggregator</h1>
-				<h2><?php echo $title; ?></h2>
-			</div>
-			<div id="menu">
-				<ul>
-					<li><a href="http://getlilina.org/">Lilina Website</a></li>
-					<li><a href="http://getlilina.org/forums/">Forums</a></li>
-					<li><a href="http://getlilina.org/docs/">Documentation</a></li>
-				</ul>
-			</div>
-			<div id="content">
-				<?php echo $message; ?>
-			</div>
+			<h1><?php echo $title; ?></h1>
+			<?php echo $message; ?>
+			<img id="logo" src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>

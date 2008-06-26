@@ -29,7 +29,7 @@ lilina_check_installed();
 
 $authed		= false;
 $result		= '';
-$page		= (isset($_GET['page'])? $_GET['page'] : '');
+$page		= (isset($_REQUEST['page'])? $_REQUEST['page'] : '');
 $page		= htmlspecialchars($page);
 
 //Add variables
