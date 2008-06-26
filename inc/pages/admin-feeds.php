@@ -97,7 +97,7 @@ else {
 				<input type="text" name="change_name" id="change_name" />
 			</p>
 			<p class="option">
-				<span class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news</span>
+				<span class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</span>
 				<label for="change_url"><?php _e('Feed address (URL)'); ?>:</label>
 				<input type="text" name="change_url" id="change_url" />
 			</p>
