@@ -23,9 +23,23 @@ class LilinaItems {
 	var $simplepie_items;
 
 	/**
+	 * @access protected
 	 * @var int
 	 */
 	var $offset = 0;
+	
+	/**
+	 * @var SimplePie_Item
+	 */
+	var $current_item;
+	
+	/**
+	 * Store metadata for the current item
+	 *
+	 * Erased to a blank array on get_item()
+	 * @var array
+	 */
+	var $current_metadata = array();
 
 	/**
 	 * LilinaItems() - Initialiser for the class
@@ -43,7 +57,9 @@ class LilinaItems {
 	}
 	
 	/**
+	 * init() - Initialize our class and load the items in
 	 *
+	 * {@internal Long Description Missing}}
 	 */
 	function init() {
 		if(is_null($this->simplepie))
@@ -54,7 +70,7 @@ class LilinaItems {
 	}
 
 	/**
-	 * load() - {@internal Short Description Missing}}
+	 * load() - Load $this->feeds into a new SimplePie object
 	 *
 	 * {@internal Long Description Missing}}
 	 * @todo Document
@@ -102,19 +118,25 @@ class LilinaItems {
 	}
 
 	/**
-	 * get_item() - {@internal Short Description Missing}}
-	 * {@internal Long Description Missing}}
+	 * get_item() - Get the current item
+	 *
+	 * Return the current item
 	 */
 	function get_item() {
+		/** Remove this first */
+		$this->current_meta = array();
+
 		if( !isset($this->simplepie_items[ $this->offset ]) )
 			return false;
-		$item = $this->simplepie_items[$this->offset];
+
+		$this->current_item = $this->simplepie_items[$this->offset];
 		$this->offset++;
-		return $item;
+		return $this->current_item;
 	}
 
 	/**
 	 * reset_iterator() - {@internal Short Description Missing}}
+	 *
 	 * {@internal Long Description Missing}}
 	 */
 	function reset_iterator() {
@@ -124,4 +146,40 @@ class LilinaItems {
 	function has_items() {
 		return isset($this->simplepie_items[ $this->offset ]);
 	}
+
+	/**
+	 * has_enclosure() - Whether an item has an enclosure or not
+	 *
+	 * Checks to make sure an item has an enclosure and that that enclosure
+	 * has a link to use. Caches in $this->current_meta
+	 * @return bool
+	 */
+	function has_enclosure() {
+		if(isset($this->current_meta['has_enclosure']))
+			return $this->current_meta['has_enclosure'];
+
+		$current = $this->current_item;
+		$enclosure = $this->current_meta['enclosure'] = $current->get_enclosure();
+
+		if(!$enclosure) {
+			$this->current_meta['has_enclosure'] = false;
+			return false;
+		}
+
+		$this->current_meta['enclosure_link'] = $enclosure->get_link();
+		return $this->current_meta['has_enclosure'] = !empty($this->current_meta['enclosure_link']);		
+	}
+
+	/**
+	 * get_enclosure() - Get the enclosure for the current item
+	 */
+	function get_enclosure() {
+		has_enclosure();
+		
+		return $this->current_meta['enclosure_link'];
+	}
+	
+	/**
+	 *
+	 */
 }
