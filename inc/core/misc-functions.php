@@ -312,4 +312,44 @@ function add_notice($message) {
 function add_tech_notice($message) {
 	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . str_replace( '\'', '\\\'', $message) . '</span></p>\';'));
 }
+
+/**
+ * shorten() - Cut a specified string down to $length characters
+ *
+ * Removes all HTML tags (not entities), shortens to $length characters and
+ * returns the new string with an elipsis (plain text ...) appended
+ * @param string $string String to shorten
+ * @param int length Length to shorten to (in characters)
+ * @return string Shortened string
+ * @author <http://simplepie.org/wiki/tutorial/shorten_titles_and_descriptions>
+ */
+function shorten($string, $length) {
+	/** Short-circuit if no shortening is needed */
+	if(!isset($string{$length + 1})) return $string;
+
+	// By default, an ellipsis will be appended to the end of the text.
+	$suffix = '...';
+
+	// Convert 'smart' punctuation to 'dumb' punctuation, strip the HTML tags,
+	// and convert all tabs and line-break characters to single spaces.
+	$short_desc = trim(str_replace(array("\r","\n", "\t"), ' ', strip_tags($string)));
+
+	// Cut the string to the requested length, and strip any extraneous spaces 
+	// from the beginning and end.
+	$desc = trim(substr($short_desc, 0, $length));
+
+	// Find out what the last displayed character is in the shortened string
+	$lastchar = substr($desc, -1, 1);
+
+	// If the last character is a period, an exclamation point, or a question 
+	// mark, clear out the appended text.
+	if ($lastchar == '.' || $lastchar == '!' || $lastchar == '?') $suffix='';
+
+	// Append the text.
+	$desc .= $suffix;
+
+	// Send the new description back to the page.
+	return $desc;
+}
+
 ?>

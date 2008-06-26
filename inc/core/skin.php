@@ -331,9 +331,9 @@ function the_title() {
 /**
  * @todo Document
  */
-function the_summary() {
+function the_summary($chars = 150) {
 	global $item;
-	echo apply_filters('the_summary', $item->get_description());
+	echo apply_filters('the_summary', shorten($item->get_description(), $chars) );
 }
 
 /**
