@@ -88,6 +88,20 @@ a {
 	border-left: 1px solid #939393;
 }
 
+#content>ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.item {
+	color: #666666;
+}
+
+.item .title-bar {
+	
+}
+
 #sidebar {
 	/* The reason we use pixels is because we can't use margin-left: 24% + 1px */
 	width: 240px;

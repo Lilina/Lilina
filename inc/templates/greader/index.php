@@ -58,23 +58,25 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 <div id="main">
 	<div id="content">
 		<h1 id="page-title"><?php /*the_page_title();*/ ?>Hello</h1>
+		<div id="content-quicklinks"><?php /* Nothing yet */ ?></div>
 		<ul>
 <?php
 // We call it with false as a parameter to avoid incrementing the item number
 if(has_items(false)) {
 		while(has_items()): the_item();
 ?>
-			<li class="feed-<?php the_feed_id(); ?>" id="item-<?php the_id(); ?>">
-				<a class="title" id="title-<?php the_id(); ?>" title="Click to expand/collapse item" href="javascript:void(0)"><?php the_title(); ?></a>
-				<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
-				<a href="<?php the_link(); ?>" class="source">Read original post</a>
+			<li class="feed-<?php the_feed_id(); ?> item collapsed" id="item-<?php the_id(); ?>">
+				<div class="title-bar">
+					<a class="title" id="title-<?php the_id(); ?>" title="Click to expand/collapse item" href="javascript:void(0)"><?php the_title(); ?></a>
+					<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
+					<a href="<?php the_link(); ?>" class="sourcelink">Read original post</a>
+				</div>
 				<div class="excerpt" id="excerpt-<?php the_id(); ?>">
 					<?php the_content(); ?>
-					<?php if( has_enclosure() ){
-						echo '<hr />', the_enclosure();
-					} ?>
 				</div>
-				<?php do_action('river_entry'); ?>
+				<div class="action-bar">
+					<?php do_action('river_entry'); ?>
+					<?php the_enclosure(); ?>
 			</li><?php
 		endwhile;
 }
