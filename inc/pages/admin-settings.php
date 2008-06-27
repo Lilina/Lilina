@@ -8,32 +8,12 @@
  */
 
 defined('LILINA_PATH') or die('Restricted access');
-/**
- * @todo Document
- */
-function diagnostic() {
-	echo 'Now starting diagnostic test...';
-	if(version_compare('4.3', phpversion(), '<')) {
-		echo 'Your server is running PHP version ' . phpversion() . ' but Lilina needs 4.3 or newer<br />';
-		$diag_errors++;
-	}
-	if(ini_get('display_errors') != '1') {
-		echo 'Errors are currently set to not output to the browser <br />';
-		$diag_warnings++;
-	}
-	echo 'Testing throwing of non-fatal errors: <br />';
-	trigger_error('Testing E_USER_WARNING', E_USER_WARNING);
-	trigger_error('Testing E_USER_NOTICE', E_USER_NOTICE);
-	echo '<code>register_globals</code> is currently ' . ini_get('register_globals') ? 'on' : 'off';
-	echo '<code>magic_quotes_gpc</code> is currently ' . get_magic_quotes_gpc() ? 'on' : 'off';
-	echo '<code>magic_quotes_runtime</code> is currently ' . get_magic_quotes_runtime() ? 'on' : 'off';
-}
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header();
 ?>
 <h2><?php _e('Settings'); ?></h2>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 	<fieldset id="general">
 		<legend><?php _e('General Settings'); ?></legend>
 		<p class="option">
@@ -76,9 +56,15 @@ admin_header();
 			</select>
 		</p>
 	</fieldset>
-	<input type="submit" value="<?php _e('Save Settings'); ?> (Not yet functional)" disabled="disabled" />
+	<input type="hidden" name="page" value="feeds" />
+	<input type="submit" value="<?php _e('Save Settings'); ?> (Not yet functional)" />
 </form>
-<h3>Troubleshooting</h3>
-<a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings&amp;action=diagnostic">Run diagnostic test</a>
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+	<fieldset id="plugins">
+		<legend><?php _e('Plugin Management'); ?>
+		
 <h3>Reset</h3>
 <p>This will delete your settings.php and you will need to run install.php again. <a href="<?php echo $_SERVER['PHP_SELF'];?>?page=settings&amp;action=reset">Proceed?</a></p>
+<?php
+admin_footer();
+?>

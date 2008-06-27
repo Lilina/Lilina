@@ -160,7 +160,7 @@ function admin_header() {
 <div id="header">
 	<h1 id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></h1>
 	<div id="navigation">
-	    <h2>Navigation</h2>
+		<a href="#main" id="skip">Skip to main content</a>
 		<ul id="mainnavigation">
 <?php
 	$navigation = array(

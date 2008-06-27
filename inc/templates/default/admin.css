@@ -3,53 +3,48 @@
  */
 
 body {
-	font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+	/* Simple and keeps us constant */
+	font-family: Arial, sans-serif;
 	font-size: 62.5%;
 	margin: 0;
-	background: #FFF url("admin-background.png");
+	background: #FFFFFF;
 }
 
 #header {
 	line-height: 1.7em;
 	font-size: 1.1em;
-	width: 100%;
+	width: 90%;
 	height: 4em;
 
 	background: #2d2d2d;
 	border-bottom: 1px solid #000;
 
-	padding: 0;
+	padding: 0 5%;
 	margin: 0;
 
 	position: fixed;
 	top: 0;
 }
 #sitetitle {
-	margin: 0 30%;
+	margin: 0.7em 0;
 	padding: 0;
 	color: #FFF;
 	float: right;
 	font-size: 1.4em;
 }
 #sitetitle a {
-	margin: 0;
-	padding: 0.5em 5%;
 	color: #FFF;
 	text-decoration: none;
 	font-weight: normal;
-	line-height: 2em;
 }
 #sitetitle a:hover {
-	color: #E0E2E6;
-	border-bottom: none;
+	text-decoration: underline;
 }
 #navigation {
-	text-align: left;
-	padding: 1em 5% 3px;
+	padding: 1em 0;
 }
-#navigation h2 {
-	float: right;
-	text-indent: -9000px;
+#skip {
+	display: none;
 }
 #mainnavigation {
 	margin: 0;
@@ -95,6 +90,8 @@ body {
 }
 
 #main {
+	width: 60%;
+	max-width: 700px;
 	margin: 5em 5%;
 	padding: 1em;
 	clear: both;

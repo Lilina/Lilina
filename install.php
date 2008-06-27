@@ -63,6 +63,26 @@ function generate_password ($length = 8) {
 	return $password;
 }
 
+/**
+ * compatibility_test() - Check that the system can run Lilina
+ *
+ * {@internal Missing Long Description}}
+ * @author SimplePie
+ */
+function compatibility_test() {
+	$error = array();
+	$xml_ok = extension_loaded('xml');
+	$pcre_ok = extension_loaded('pcre');
+	$curl_ok = function_exists('curl_exec');
+	$zlib_ok = extension_loaded('zlib');
+	$mbstring_ok = extension_loaded('mbstring');
+	$iconv_ok = extension_loaded('iconv');
+	if($xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $curl_ok && $zlib_ok)
+		return;
+	if(!$xml_ok)
+		$error[] = '<strong>XML:</strong> Your PHP installation doesn\'t support XML parsing. You';
+}
+
 function install($sitename, $username, $password) {
 	require_once(LILINA_INCPATH . '/core/version.php');
 
@@ -329,8 +349,7 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 <?php
 switch($page) {
 	case 1:
-		if($error) {
-		}
+		compatibility_test();
 ?>
 <h1>Setting Up</h1>
 <p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>

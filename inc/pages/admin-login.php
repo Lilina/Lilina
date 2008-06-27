@@ -9,6 +9,7 @@
 
 defined('LILINA_PATH') or die('Restricted access');
 
+global $page;
 $body = '';
 
 if(isset($error) && $error == 'error')
