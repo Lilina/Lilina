@@ -83,8 +83,8 @@ if(!defined('LOADED_SETTINGS')) {
 	/**
 	 * Unserialize any settings which were serialized, e.g. objects
 	 */
-	foreach($settings as &$the_setting) {
-		$the_setting = maybe_unserialize($the_setting);
+	foreach($settings as $key => $the_setting) {
+		$settings[$key] = maybe_unserialize($the_setting);
 	}
 	
 	/**
