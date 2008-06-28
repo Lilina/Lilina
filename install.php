@@ -16,7 +16,7 @@ require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 
 if(version_compare('4.3', phpversion(), '>'))
-	lilina_nice_die('Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer<br />');
+	lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer</p>');
 
 //Make sure Lilina's not installed
 if(lilina_is_installed()) {
@@ -70,17 +70,55 @@ function generate_password ($length = 8) {
  * @author SimplePie
  */
 function compatibility_test() {
-	$error = array();
+	$errors = array();
+	$warnings = array();
+	$output = "<p>The following errors were found with your installation:</p>";
 	$xml_ok = extension_loaded('xml');
 	$pcre_ok = extension_loaded('pcre');
-	$curl_ok = function_exists('curl_exec');
 	$zlib_ok = extension_loaded('zlib');
 	$mbstring_ok = extension_loaded('mbstring');
 	$iconv_ok = extension_loaded('iconv');
-	if($xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $curl_ok && $zlib_ok)
+	if($xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $zlib_ok)
 		return;
 	if(!$xml_ok)
-		$error[] = '<strong>XML:</strong> Your PHP installation doesn\'t support XML parsing. You';
+		$errors[] = "<strong>XML:</strong> Your PHP installation doesn't support XML parsing.";
+	if(!$pcre_ok)
+		$errors[] = "<strong>PCRE:</strong> Your PHP installation doesn't support Perl-Compatible Regular Expressions.";
+	if(!$iconv_ok && !$mbstring_ok)
+		$errors[] = "<strong>mbstring and iconv</strong>: You do not have either of these extensions installed. Lilina requires at least one of these in order to function properly.";
+	elseif(!$iconv_ok)
+		$warnings[] = "<strong>iconv:</strong> <code>mbstring</code> is installed, but <code>iconv</code> is not. This means that not all character encodings or translations will be supported.";
+	elseif(!$mbstring_ok)
+		$warnings[] = "<strong>mbstring:</strong> <code>iconv</code> is installed, but <code>mbstring</code> is not. This means that not all character encodings or translations will be supported.";
+	if(!$zlib_ok)
+		$warnings[] = "<strong>Zlib:</strong> The <code>Zlib</code> extension is not available. You will not be able to use feeds with GZIP compression.";
+
+	if(!empty($errors)) {
+		$output .= "\n<h2>Errors</h2>\n<ul>\n<li>";
+		$output .= implode(" <em>Looks like Lilina won't run.</em></li>\n<li>", $errors);
+		$output .= "</li>\n</ul>\n";
+	}
+
+	if(!empty($warnings)) {
+		$output .= "\n<h2>Warnings</h2>\n<ul>\n<li>";
+		$output .= implode(" <em>This might cause some problems with some feeds.</em></li>\n<li>", $warnings);
+		$output .= "</li>\n</ul>\n";
+	}
+
+	if(empty($errors)) {
+		$output .= "<p>These warnings might cause some feeds not to be read properly, however <em>you will be able to run Lilina.</em></p>\n";
+		$output .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
+		$output .= '<input type="hidden" name="page" value="1" /><input type="hidden" name="skip" value="1" />';
+		$output .= '<input class="submit" type="submit" value="Continue" /></form>';
+		$output .= "<p id='footnote-quote'>Danger, Will Robinson! &mdash; <em>Lost in Space</em></p>";
+		lilina_nice_die($output, 'Whoops!');
+	}
+
+	else {
+		$output .= '<p>These errors mean that <em>you will not be able to run Lilina.</em></p>';
+		$output .= "<p id='footnote-quote'>Kosa moja haliachi mke &mdash; <em>Swahili proverb ('One mistake isn't reason enough to leave your wife')</em></p>";
+		lilina_nice_die($output, 'Uh oh!');
+	}
 }
 
 function install($sitename, $username, $password) {
@@ -119,7 +157,7 @@ function install($sitename, $username, $password) {
 			|| !is_resource($settings_file) ) {
 			?>
 			<h1>Uh oh!</h1>
-			<p>Something happened and <code><?php echo LILINA_PATH; ?>conf/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
+			<p>Something happened and <code><?php echo LILINA_PATH; ?>/conf/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
 			<form action="<?php /** @todo This is unsafe. Convert */ echo $_SERVER['PHP_SELF']; ?>" method="post">
 			<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 			<input type="hidden" name="username" value="<?php echo $username; ?>" />
@@ -218,8 +256,8 @@ function upgrade() {
 
 
 	if(@file_exists(LILINA_PATH . '/conf/feeds.data')) {
-		$feeds = file_get_contents(LILINA_PATH . '/conf/feeds.data') ;
-		$feeds = unserialize( base64_decode($feeds) ) ;
+		$feeds = file_get_contents(LILINA_PATH . '/conf/feeds.data');
+		$feeds = unserialize( base64_decode($feeds) );
 
 		/** Are we pre-versioned? */
 		if(!isset($feeds['version'])){
@@ -247,6 +285,14 @@ function upgrade() {
 				save_feeds();
 			}
 
+			/** The feeds are up to date, but we don't have a version */
+			else {
+				global $data;
+				$data = $feeds;
+				$data['version'] = $lilina['feed-storage']['version'];
+				save_feeds();
+			}
+
 		}
 		elseif($feeds['version'] != $lilina['feed-storage']['version']) {
 			switch($feeds['version']):
@@ -261,17 +307,18 @@ function upgrade() {
 			$data['version'] = $lilina['feed-storage']['version'];
 			save_feeds();
 		}
+		else {
+		}
 	} //end file_exists()
 
 
-	if(@file_exists(LILINA_PATH . '/conf/settings.php')) {
-		/** Just in case... */
-		unset($BASEURL);
-		require(LILINA_PATH . '/conf/settings.php');
+	/** Just in case... */
+	unset($BASEURL);
+	require(LILINA_PATH . '/conf/settings.php');
 
-		if(isset($BASEURL) && !empty($BASEURL)) {
-			// 0.7 or below
-			$raw_php		= "<?php
+	if(isset($BASEURL) && !empty($BASEURL)) {
+		// 0.7 or below
+		$raw_php		= "<?php
 // What you want to call your Lilina installation
 \$settings['sitename'] = '$SITETITLE';\n
 // The URL to your server
@@ -286,33 +333,29 @@ function upgrade() {
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>";
 
-			if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
-				lilina_nice_die('Failed to upgrade settings: Saving conf/settings.php failed', 'Upgrade failed');
-			}
-			fputs($settings_file, $raw_php);
-			fclose($settings_file);
+		if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
+			lilina_nice_die('<p>Failed to upgrade settings: Saving conf/settings.php failed</p>', 'Upgrade failed');
 		}
-		elseif(!isset($settings['settings_version'])) {
-			// Between 0.7 and r147
-			// Fine to just use existing settings
-			$raw_php		= file_get_contents(LILINA_PATH . '/conf/settings.php');
-			$raw_php		= str_replace('?>', "// Version of these settings; don't change this\n" .
-								"\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>", $raw_php);
+		fputs($settings_file, $raw_php);
+		fclose($settings_file);
+	}
+	elseif(!isset($settings['settings_version'])) {
+		// Between 0.7 and r147
+		// Fine to just use existing settings
+		$raw_php		= file_get_contents(LILINA_PATH . '/conf/settings.php');
+		$raw_php		= str_replace('?>', "// Version of these settings; don't change this\n" .
+							"\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>", $raw_php);
 
-			if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
-				lilina_nice_die('Failed to upgrade settings: Saving conf/settings.php failed', 'Upgrade failed');
-			}
-			fputs($settings_file, $raw_php);
-			fclose($settings_file);
+		if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
+			lilina_nice_die('<p>Failed to upgrade settings: Saving conf/settings.php failed</p>', 'Upgrade failed');
 		}
-		elseif($settings['settings_version'] != $lilina['settings-storage']['version']) {
-			
-		}
+		fputs($settings_file, $raw_php);
+		fclose($settings_file);
 	}
-	else {
-		/** What the hell? We should never end up here. */
+	elseif($settings['settings_version'] != $lilina['settings-storage']['version']) {
+		
 	}
-	lilina_nice_die('Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a>', 'Upgrade Successful');
+	lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
 }
 
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
@@ -333,6 +376,9 @@ $sitename				= isset($_POST['sitename']) ? $_POST['sitename'] : false;
 $username				= isset($_POST['username']) ? $_POST['username'] : false;
 $password				= isset($_POST['password']) ? $_POST['password'] : false;
 $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ? true : false;
+
+if($page === "1" && !isset($_REQUEST['skip']))
+	compatibility_test();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -349,7 +395,6 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 <?php
 switch($page) {
 	case 1:
-		compatibility_test();
 ?>
 <h1>Setting Up</h1>
 <p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>

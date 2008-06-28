@@ -55,6 +55,10 @@ dl {
 dd#username, dd#password {
 	font-weight: bold;
 }
+#footnote-quote {
+	color: #999;
+	text-align: right;
+}
 
 /* Forms */
 fieldset {
