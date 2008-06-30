@@ -68,7 +68,7 @@ function lilina_settings_current() {
  *
  * {{@internal Missing Long Description}}}
  */
-function lilina_nice_die($message, $title = 'Whoops!') {
+function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -80,7 +80,7 @@ function lilina_nice_die($message, $title = 'Whoops!') {
 		</style>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	</head>
-	<body>
+	<body<?php if($class !== false) echo ' class="' . $class . '"'; ?>>
 		<div id="container">
 			<h1><?php echo $title; ?></h1>
 			<?php echo $message; ?>

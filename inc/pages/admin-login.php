@@ -17,17 +17,28 @@ if(isset($error) && $error == 'error')
 
 $body .= '
 	<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
-		<div class="row">
-			<label for="user">' . _r('Username') . ':</label>
-			<input type="text" name="user" id="user" />
-		</div>
-		<div class="row">
-			<label for="pass">' . _r('Password') . ':</label>
-			<input type="password" name="pass" id="pass" />
-		</div>
+		<fieldset id="login">
+			<div class="row">
+				<label for="user">' . _r('Username') . ':</label>
+				<input type="text" name="user" id="user" class="input" />
+			</div>
+			<div class="row">
+				<label for="pass">' . _r('Password') . ':</label>
+				<input type="password" name="pass" id="pass" class="input" />
+			</div>
+		</fieldset>
 		<input type="hidden" name="page" value="' . (isset($page) ? $page : '') . '" />
-		<input type="submit" value="' . _r('Login') . '" />
-	</form>';
+		<input type="submit" value="' . _r('Login') . '" class="submit" />
+	</form>
+	<script type="text/javascript" src="' .  get_option('baseurl') . 'inc/js/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			setTimeout("hideAlert()", 700);
+		});
+		function hideAlert() {
+			$(".alert").fadeOut(2000);
+		}
+	</script>';
 
-lilina_nice_die($body, 'Login');
+lilina_nice_die($body, 'Login', 'login');
 ?>

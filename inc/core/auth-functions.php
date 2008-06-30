@@ -89,7 +89,6 @@ function lilina_check_user_pass($un, $pw) {
 function lilina_login_form($user, $pass) {
 	if(($error = lilina_auth($user, $pass)) === 'error' || $error == false) {
 		require_once(LILINA_INCPATH . '/pages/admin-login.php');
-		die();
 	}
 }
 ?>

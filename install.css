@@ -29,6 +29,9 @@ p, ul, pre {
 	font-size: 1.5em;
 	margin-top: 1em;
 }
+ul ul {
+	font-size: 1em;
+}
 a {
 	text-decoration: none;
 	color: #2e91d0;
@@ -46,6 +49,24 @@ a {
 /* Readme only */
 #header-logo {
 	float: right;
+}
+
+/* Login only */
+.login #container {
+	width: 40%;
+}
+.alert {
+	position: absolute;
+	top: 0;
+	width: 40%;
+	left: 30%;
+	right: 30%;
+	background: #8CC63F;
+	padding: 1.5em;
+	margin: 0;
+	-moz-border-radius-bottomleft: 8px;
+	-moz-border-radius-bottomright: 8px;
+	color: #FFF;
 }
 
 /* Installation only */
@@ -82,6 +103,7 @@ form .input {
 .row {
 	width: 80%;
 	clear: both;
+	overflow: hidden;
 }
 form td.formw {
 	/*float: right;*/
@@ -92,6 +114,7 @@ form td.formw {
 }
 
 .submit {
+	clear: both;
 	width: 20%;
 	margin: 0 auto;
 	font-size: 1.6em;
