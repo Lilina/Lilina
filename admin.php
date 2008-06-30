@@ -96,6 +96,7 @@ $admin_pages = array(
 	'settings' => '/pages/admin-settings.php',
 	'home' => '/pages/admin-home.php',
 );
+$admin_pages = apply_filters('admin_pages', $admin_pages, $page);
 
 if(!isset($admin_pages[$page]))
 	$page = 'home';
@@ -156,9 +157,9 @@ function admin_header() {
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/fat.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
-<body id="admin-<?php echo $out_page; ?>" class="admin-page">
+<body id="admin-<?php echo $page; ?>" class="admin-page">
 <div id="header">
-	<h1 id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></h1>
+	<p id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></p>
 	<div id="navigation">
 		<a href="#main" id="skip">Skip to main content</a>
 		<ul id="mainnavigation">
@@ -179,10 +180,10 @@ function admin_header() {
 
 	$subnavigation = apply_filters('subnavigation', array(
 		'admin-home.php' => array(
-			array(_r('Home'), 'admin-home.php', ''),
+			array(_r('Home'), 'admin-home.php', 'home'),
 		),
 		'admin-feeds.php' => array(
-			array(_r('Manage'), 'admin-feeds.php', ''),
+			array(_r('Manage'), 'admin-feeds.php', 'feeds'),
 		),
 		'admin-settings.php' => array(
 			array(_r('General'), 'admin-settings.php', 'settings'),
@@ -190,12 +191,11 @@ function admin_header() {
 	), $subnavigation, $navigation, $current_page);
 
 	if( isset($subnavigation[$current_page]) && !empty($subnavigation[$current_page]) ) {
-
 ?>
 		<ul id="dropmenu">
 <?php
 		foreach($subnavigation[$current_page] as $subnav_item) {
-			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a></li>";
+			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$subnav_item[2]}'>{$subnav_item[0]}</a></li>";
 		}
 	}
 ?>
@@ -207,7 +207,7 @@ function admin_header() {
 		echo '<div id="alert" class="fade">' . $result . '</div>';
 	}
 	do_action('admin_header');
-	do_action("admin_header-$out_page");
+	do_action("admin_header-$page");
 	do_action('send_headers');
 }
 
