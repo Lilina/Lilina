@@ -35,18 +35,18 @@ $page		= htmlspecialchars($page);
 //Add variables
 
 //Change variables
-$change_name	= (isset($_GET['change_name']))? $_GET['change_name'] : '';
+$change_name	= (isset($_REQUEST['change_name']))? $_REQUEST['change_name'] : '';
 $change_name	= htmlspecialchars($change_name);
-$change_url	= (isset($_GET['change_url']))? $_GET['change_url'] : '';
-$change_id	= (isset($_GET['change_id']))? $_GET['change_id'] : '';
+$change_url	= (isset($_REQUEST['change_url']))? $_REQUEST['change_url'] : '';
+$change_id	= (isset($_REQUEST['change_id']))? $_REQUEST['change_id'] : '';
 $change_id	= htmlspecialchars($change_id);
 
 //Remove variables
-$remove_id	= (isset($_GET['remove']))? $_GET['remove'] : '';
+$remove_id	= (isset($_REQUEST['remove']))? $_REQUEST['remove'] : '';
 $remove_id	= htmlspecialchars($remove_id);
 
 //Import variable
-$import_url	= (isset($_GET['import_url']))? $_GET['import_url'] : '';
+$import_url	= (isset($_REQUEST['import_url']))? $_REQUEST['import_url'] : '';
 $import_url	= htmlspecialchars($import_url);
 
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
@@ -81,7 +81,7 @@ else {
 	lilina_login_form('', '');
 }
 
-if(isset($_GET['logout']) && $_GET['logout'] == 'logout') {
+if(isset($_REQUEST['logout']) && $_REQUEST['logout'] == 'logout') {
 	lilina_logout();
 	die();
 }
@@ -105,17 +105,6 @@ require_once(LILINA_INCPATH . $admin_pages[$page]);
 
 
 switch($action){
-	case 'remove':
-		$removed = $data['feeds'][$remove_id];
-		unset($data['feeds'][$remove_id]);
-		$data['feeds'] = array_values($data['feeds']);
-		$sdata	= base64_encode(serialize($data)) ;
-		$fp		= fopen(get_option('files', 'feeds'),'w') ;
-		if(!$fp) { echo 'Error';}
-		fputs($fp,$sdata) ;
-		fclose($fp) ;
-		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
-	break;
 	case 'change':
 		$data['feeds'][$change_id]['feed'] = $change_url;
 		if(!empty($change_name)) {
@@ -154,7 +143,8 @@ function admin_header() {
 <link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/fat.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
 <body id="admin-<?php echo $page; ?>" class="admin-page">
@@ -188,7 +178,7 @@ function admin_header() {
 		'admin-settings.php' => array(
 			array(_r('General'), 'admin-settings.php', 'settings'),
 		),
-	), $subnavigation, $navigation, $current_page);
+	), $navigation, $current_page);
 
 	if( isset($subnavigation[$current_page]) && !empty($subnavigation[$current_page]) ) {
 ?>

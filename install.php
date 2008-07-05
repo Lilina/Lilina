@@ -398,7 +398,7 @@ switch($page) {
 ?>
 <h1>Setting Up</h1>
 <p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 	<fieldset id="general">
 		<legend>General Settings</legend>
 		<div class="row<?php if(!$sitename) echo ' highlight';?>">
@@ -431,7 +431,7 @@ switch($page) {
 ?>
 <h1>Installation</h1>
 <p>Welcome to Lilina installation. We're now going to start installing. Make sure that both the <code>conf/</code> and <code>cache/</code> directories exist and are <a href="readme.html#permissions">writable</a>.</p>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
 <input type="submit" value="Install &raquo;" class="submit" />
 </form>

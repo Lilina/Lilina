@@ -105,13 +105,6 @@ form .input {
 	clear: both;
 	overflow: hidden;
 }
-form td.formw {
-	/*float: right;*/
-	width: 66%;
-	text-align: left;
-	font-size: 1.3em;
-	padding: 0.5em;
-}
 
 .submit {
 	clear: both;

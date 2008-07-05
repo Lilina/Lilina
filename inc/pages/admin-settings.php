@@ -12,22 +12,22 @@ defined('LILINA_PATH') or die('Restricted access');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header();
 ?>
-<h2><?php _e('Settings'); ?></h2>
+<h1><?php _e('Settings'); ?></h1>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 	<fieldset id="general">
 		<legend><?php _e('General Settings'); ?></legend>
-		<p class="option">
+		<div class="row">
 			<label for="sitename"><?php _e('Site name'); ?>:</label>
 			<input type="text" name="sitename" id="sitename" value="<?php echo $settings['sitename']; ?>" />
-		</p>
-		<p class="option">
+		</div>
+		<div class="row">
 			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
 			<input type="text" name="baseurl" id="baseurl" value="<?php echo $settings['baseurl']; ?>" />
-		</p>
+		</div>
 	</fieldset>
 	<fieldset id="views">
 		<legend><?php _e('Viewing Settings'); ?></legend>
-		<p class="option">
+		<div class="row">
 			<label for="template"><?php _e('Template'); ?>:</label>
 			<select id="template" name="template">
 				<?php
@@ -40,8 +40,8 @@ admin_header();
 				}
 				?>
 			</select>
-		</p>
-		<p class="option">
+		</div>
+		<div class="row">
 			<label for="lang">Language</label>
 			<select id="lang" name="lang">
 				<?php
@@ -54,16 +54,16 @@ admin_header();
 				}
 				?>
 			</select>
-		</p>
+		</div>
 	</fieldset>
-	<input type="hidden" name="page" value="feeds" />
-	<input type="submit" value="<?php _e('Save Settings'); ?> (Not yet functional)" />
+	<input type="hidden" name="page" value="settings" />
+	<input type="submit" value="<?php _e('Save') ?>" class="submit" disabled="disabled" />
 </form>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 	<fieldset id="plugins">
 		<legend><?php _e('Plugin Management'); ?>
 		
-<h3>Reset</h3>
+<h2>Reset</h2>
 <p>This will delete your settings.php and you will need to run install.php again. <a href="<?php echo $_SERVER['PHP_SELF'];?>?page=settings&amp;action=reset">Proceed?</a></p>
 <?php
 admin_footer();
