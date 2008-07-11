@@ -496,7 +496,8 @@ function atom_enclosure() {
 function date_equals($args='') {
 	global $item, $item_number, $list, $total_items;
 	$defaults = array(
-		'equalto' => 'previous'
+		'equalto' => 'previous',
+		'format' => 'l d F, Y'
 	);
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
@@ -510,7 +511,7 @@ function date_equals($args='') {
 	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$temp_item = $list->get_item( $equalto );
-	$equals = $item->get_date( 'l d F, Y' ) == $temp_item->get_date( 'l d F, Y' );
+	$equals = $item->get_date( $format ) == $temp_item->get_date( $format );
 	return apply_filters('date_equals', $equals, $equalto);
 }
 
@@ -632,8 +633,12 @@ if(!function_exists('template_file_load')) {
 }
 if(!function_exists('template_directory')) {
 	function template_directory() {
-		global $settings;
-		echo get_option('baseurl') . 'inc/templates/' . get_option('template');
+		echo get_template_directory();
+	}
+}
+if(!function_exists('get_template_directory')) {
+	function get_template_directory() {
+		return get_option('baseurl') . 'inc/templates/' . get_option('template');
 	}
 }
 ?>
