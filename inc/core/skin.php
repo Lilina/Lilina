@@ -417,7 +417,9 @@ function the_feed_url() {
 function get_the_feed_favicon() {
 	global $item;
 	$temp_item = $item->get_feed();
-	return apply_filters( 'the_feed_favicon', $temp_item->get_favicon() );
+	if(!$return = $temp_item->get_favicon())
+		$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
+	return apply_filters( 'the_feed_favicon', $return );
 	
 }
 

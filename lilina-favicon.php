@@ -22,11 +22,12 @@ if(!isset($_GET['i']))
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
-if(file_exists(LILINA_PATH . '/cache/' . md5($_GET['i']) . '.spi')) {
+if($_GET['i'] != 'default' && file_exists(LILINA_PATH . '/cache/' . $_GET['i'] . '.spi')) {
     SimplePie_Misc::display_cached_file($_GET['i'], LILINA_PATH . '/cache', 'spi');
 }
 else {
-    header('Location: ' . $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/feed-icon.png');
+	require_once(LILINA_INCPATH . '/core/template-loader.php');
+    header('Location: ' . $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/feed.png');
 }
 
 ?>
