@@ -16,6 +16,9 @@ defined('LILINA_PATH') or die('Restricted access');
  * {{@internal Missing Long Description}}}
  */
 function lilina_check_installed() {
+	if(version_compare('5.2', phpversion(), '>'))
+		lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
+
 	if(!lilina_is_installed()) {
 		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='install.php'>install it now</a></p>", 'Not Installed');
 	}
