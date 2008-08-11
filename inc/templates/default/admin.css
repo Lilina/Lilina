@@ -8,16 +8,16 @@ body {
 	font-size: 62.5%;
 	line-height: 2.2em;
 	margin: 0;
-	background: #FFFFFF;
+	background: #FFF;
 	color: #333;
 }
 h1 {
-	font-weight: normal;
+	font-weight: 400;
 	font-size: 2em;
 	margin: 0.6em 0;
 }
 h2 {
-	font-weight: normal;
+	font-weight: 400;
 	font-size: 1.8em;
 	margin: 0.8em 0;
 }

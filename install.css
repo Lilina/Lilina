@@ -8,7 +8,7 @@ Copyright 2007 Ryan McCue
 
 /* General styles for all error pages and installation */
 html, body {
-	color: #333333;
+	color: #333;
 }
 body {
 	font-family: Arial, sans-serif;
@@ -16,12 +16,12 @@ body {
 	line-height: 2.2em;
 }
 h1 {
-	font-weight: normal;
+	font-weight: 400;
 	font-size: 2em;
 	margin: 0.6em 0;
 }
 h2 {
-	font-weight: normal;
+	font-weight: 400;
 	font-size: 1.8em;
 	margin: 0.8em 0;
 }
@@ -35,7 +35,7 @@ ul ul {
 a {
 	text-decoration: none;
 	color: #2e91d0;
-	font-weight: bold;
+	font-weight: 700;
 }
 #container {
 	margin: 10em auto 0;
@@ -74,7 +74,7 @@ dl {
 	font-size: 1.5em;
 }
 dd#username, dd#password {
-	font-weight: bold;
+	font-weight: 700;
 }
 #footnote-quote {
 	color: #999;

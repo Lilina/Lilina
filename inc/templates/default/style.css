@@ -1,8 +1,8 @@
 /*
-Name: watchorn
-Real Name: Watchorn
+Theme Name: Classic Theme
+Theme URI: http://getlilina.org/
 Author: Ryan McCue
-Description: So fresh you could eat it (Note: Watchorn is not edible)
+Description: The default Lilina theme, originally from 0.7.
 */
 
 
@@ -13,7 +13,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	background: #ffffff;
+	background: #fff;
 	/* hide from IE5 mac \*/
  	height: 100%;
  	/* end hack */
@@ -23,8 +23,8 @@ html, body {
 html, body, p, ul, input {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 11px;
-	color: #000000;
-	font-weight: normal;
+	color: #000;
+	font-weight: 400;
 	}
 img, a {
 	border: 0;
@@ -35,7 +35,7 @@ img, a {
 	background: #fff;
 }
 .c2 {
-	background: #eeeeee;
+	background: #eee;
 }
 
 /* Topbar */
@@ -58,7 +58,7 @@ img, a {
 	position: relative;
 	float: right;
 	display: block;
-	margin: 0px;
+	margin: 0;
 	padding: 0 12px 0 5px;
 	background: #fff;
 	color: #6f6f6f;
@@ -67,7 +67,7 @@ img, a {
 	}
 #topbar, #topbar a {
 	color: #000;
-	font-weight: bold;
+	font-weight: 400;
 	text-decoration: none;
 	}
 #times li {
@@ -75,7 +75,7 @@ img, a {
 	margin-top: 3px;
 	margin-left: 3px;
 	display: inline ;
-	border-right:1px solid #AAAAAA;
+	border-right:1px solid #aaa;
 	padding-right:3px;
 	}
 #times li.last {
@@ -93,7 +93,7 @@ img, a {
 	margin-top: 2px;
 	}
 #times ul li.admin a {
-	color: #990000;
+	color: #900;
 	margin-left: 3px;
 	}
 
@@ -104,21 +104,21 @@ img, a {
 }
 
 h1 { /* Date */
-	margin: 0px 0px 0px 0px;
+	margin: 0;
 	padding: 4px 0 4px 15px;
-	border-top: 1px solid #00005c ;
+	border-top: 1px solid #00005c;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: 700;
 	color: #fff;
 	/*background: #9E9488;*/
 	background: #CBDFEB;
 	clear: both;
 	}
 .item {
-	margin: 0px 0px 0px 0px;
+	margin: 0;
 	font-size: 12px;
-	border-top: 1px solid #aac ;
-	padding-bottom: 2px ;
+	border-top: 1px solid #aac;
+	padding-bottom: 2px;
 	padding-left: 15px;
 	/* Make sure nothing ruins our layout - Lifehacker, we're looking at you :P */
 	clear: both;
@@ -130,12 +130,12 @@ h1 { /* Date */
 	
 	}
 .time { /* Time Posted */
-	margin: 0 4px 0 4px;
+	margin: 0 4px;
 	font-style: italic;
-	color: #999999;
+	color: #999;
 	}
 .title { /* Title */
-	font-weight: bold;
+	font-weight: 700;
 	color: #555;
 	text-decoration: none;
 	cursor: pointer;
@@ -144,7 +144,7 @@ h1 { /* Date */
 	}
 .source a {
 	margin: 0 0 0 10px;
-	color: #990000;
+	color: #900;
 	text-decoration: none;
 	}
 .excerpt { /* Excerpted content from feed */
@@ -157,21 +157,21 @@ h1 { /* Date */
 /* Google */
 
 .google {
-	margin: 0 0 0 0 ;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	/* background: #ffffff ; */
 
 }
 .google p { 
 	display: block; 
-	margin-bottom: 0 ;
-	margin-top: 0 ;
-	color: #555555 ;
+	margin-bottom: 0;
+	margin-top: 0;
+	color: #555;
 }
 
 /* del.icio.us */
 .delicious_tags {
-	display: inline ;
+	display: inline;
 	text-align: right;
 	padding: 0 0 0 10px;
 }
@@ -183,7 +183,7 @@ h1 { /* Date */
 	top: 20px;
 	right: 2px ;
 	padding: 10px;
-	background: #eeeeee ;
+	background: #eee;
 	color: #6f6f6f;
 	width: 200px;
 	display: block;
@@ -202,17 +202,17 @@ h1 { /* Date */
 	}
 #sources h3 {
 	display: block;
-	margin: 0 0 10px 0;
+	margin: 0 0 10px;
 	border-bottom: 1px #CBDFEB dotted;
 	font-size: 12px;
-	font-weight: bold;
+	font-weight: 700;
 	text-align: center;
 	width: 98%;
 	}
 #sources ul {
 	list-style-type: square;
 	margin: 10px;
-	padding: 0px;
+	padding: 0;
 	}
 #sources li {
 	display: inline;
@@ -247,7 +247,7 @@ h1 { /* Date */
 /* Footer */
 
 #footer {
-	margin: 0px;
+	margin: 0;
 	padding-top: 5px;
 	border-top: 1px #C7D0EB solid;
 	font-size: 10px;
@@ -258,9 +258,9 @@ h1 { /* Date */
 #main {
 	display: block;
 	clear: both;
-	margin-right: 0px;
-	border-right: 0px #aaa solid;
-	background-color: #EEEEEE;
+	margin-right: 0;
+	border-right: 0 #aaa solid;
+	background-color: #eee;
 }
 li.feed_list_1 {
 	padding-top: 5px;
@@ -276,14 +276,14 @@ li.feed_list_0 {
 
 li.feed_list_1 span {
 	background: #0079A5;
-	color: #FFFFFF;
+	color: #fff;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
 li.feed_list_0 span {
-	background: #FFFFFF;
-	color: #000000;
+	background: #fff;
+	color: #000;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
@@ -294,7 +294,7 @@ li.feed_list_0 span {
   width:100%
   }
   body {
-  background: white;
+  background: #fff;
   font-size: 12pt;
   }
   img {
@@ -309,9 +309,9 @@ li.feed_list_0 span {
   }
   /* Link Management */
   a:link, a:visited {
-  color: #FF0000;
+  color: red;
   background: transparent;
-  font-weight: bold;
+  font-weight: 700;
   text-decoration: underline;
   }
 }
