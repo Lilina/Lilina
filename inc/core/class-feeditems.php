@@ -5,8 +5,6 @@
  * @subpackage Classes
  */
 
-require_once('class-items.php');
-
 /**
  * A singleton implementation of LilinaItems
  *
