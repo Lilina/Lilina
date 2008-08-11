@@ -14,9 +14,10 @@ header('Content-Type: text/html; charset=UTF-8');
 
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
+lilina_level_playing_field();
 
-if(version_compare('4.3', phpversion(), '>'))
-	lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 4.3 or newer</p>');
+if(version_compare('5.2', phpversion(), '>'))
+	lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
 
 //Make sure Lilina's not installed
 if(lilina_is_installed()) {
@@ -357,9 +358,6 @@ function upgrade() {
 	}
 	lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
 }
-
-require_once(LILINA_INCPATH . '/core/misc-functions.php');
-lilina_level_playing_field();
 
 //Initialize variables
 if(!empty($_POST['page'])) {
