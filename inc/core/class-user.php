@@ -5,8 +5,15 @@
  * @subpackage Classes
  */
 class User {
+	/**
+	 * Contains the supplied username
+	 */
 	var $user;
 	var $info;
+	
+	/**
+	 * Contains the (hashed) supplied password
+	 */
 	var $password;
 
 	/**
@@ -94,6 +101,17 @@ class User {
 	 */
 	function set_cookies() {
 		setcookie ( 'lilina_user', $this->user, time() + 1209600 );
-		setcookie ( 'lilina_pass',  $this->password, time() + 1209600 );
+		setcookie ( 'lilina_pass', $this->password, time() + 1209600 );
+	}
+
+	/**
+	 * destroy_cookies() - Removes authentication cookies
+	 *
+	 * Removes cookies by setting value to a blank string and setting the expiry time in the past.
+	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
+	 */
+	function destroy_cookies() {
+		setcookie ( 'lilina_user', '', time() - 31536000 );
+		setcookie ( 'lilina_pass', '', time() - 31536000 );
 	}
 }
