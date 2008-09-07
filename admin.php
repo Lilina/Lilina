@@ -144,6 +144,7 @@ function admin_header() {
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.json.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
@@ -193,8 +194,8 @@ function admin_header() {
 </div>
 <div id="main">
 <?php
-	if($result = apply_filters( 'alert_box', $result )) {
-		echo '<div id="alert" class="fade">' . $result . '</div>';
+	if($result = implode('</p><p>', MessageHandler::get())) {
+		echo '<div id="alert" class="fade"><p>' . $result . '</p></div>';
 	}
 	do_action('admin_header');
 	do_action("admin_header-$page");
