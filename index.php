@@ -39,19 +39,6 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 //Templating functions
 require_once(LILINA_INCPATH . '/core/skin.php');
 
-/**
- * Attempt to load the class before PHP fails with an error.
- *
- * This method is called automatically in case you are trying to use a class which hasn't been defined yet.
- * @param string $class_name Class called by the user
- */
-function __autoload($class_name) {
-	$class_file = strtolower($class_name) . '.php';
-	if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
-		require_once(LILINA_INCPATH . '/core/class-' . $class_file);
-	}
-}
-
 spl_autoload_register('__autoload');
 
 Templates::load();

@@ -26,8 +26,9 @@ if($_GET['i'] != 'default' && file_exists(LILINA_PATH . '/cache/' . $_GET['i'] .
     SimplePie_Misc::display_cached_file($_GET['i'], LILINA_PATH . '/cache', 'spi');
 }
 else {
-	require_once(LILINA_INCPATH . '/core/template-loader.php');
-    header('Location: ' . $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/feed.png');
+	require_once(LILINA_INCPATH . '/core/class-templates.php');
+	require_once(LILINA_INCPATH . '/core/l10n.php');
+    header(sprintf('Location: %s', Templates::path_to_url( Templates::get_file('feed.png') )));
 }
 
 ?>

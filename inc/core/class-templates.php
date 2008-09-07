@@ -37,10 +37,42 @@ class Templates {
 	}
 
 	/**
-	 * Returns the current template directory
+	 * Returns the path to a specified file
+	 *
+	 * Uses content negotiation to find the best suitable match for $file_name
+	 * @param string $file_name Filename to attempt to find
+	 * @return string|boolean Path to file found, false if none found
+	 */
+	public static function get_file($file_name) {
+		$current = Templates::get_current();
+		
+		if (file_exists($current['Stylesheet Dir'] . '/' . $file_name))
+			return $current['Stylesheet Dir'] . '/' . $file_name;
+		
+		elseif (file_exists($current['Template Dir'] . '/' . $file_name))
+			return $current['Template Dir'] . '/' . $file_name;
+		
+		elseif (file_exists(Templates::get_template_root() . '/default/' . $file_name))
+			return Templates::get_template_root() . '/default/' . $file_name;
+		
+		else
+			return false;
+	}
+
+	/**
+	 * Convert a template path to a URL
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public static function path_to_url($path) {
+		return str_replace(Templates::get_template_root(), get_option('baseurl') . 'inc/templates', $path);
+	}
+
+	/**
+	 * Returns the template root directory
 	 *
 	 * @return string
-	 * @see get_option
 	 */
 	public static function get_template_root() {
 		return LILINA_INCPATH . '/templates';
@@ -50,7 +82,6 @@ class Templates {
 	 * Returns the current template directory
 	 *
 	 * @return string
-	 * @see get_option
 	 */
 	public static function get_template_dir() {
 		return LILINA_INCPATH . '/templates/' . get_option('template');
@@ -82,7 +113,7 @@ class Templates {
 			'Theme URI' => '',
 			'Version' => ''
 		);
-		$theme_data = implode( '', file( $theme_file ) );
+		$theme_data = file_get_contents( $theme_file );
 		$theme_data = str_replace ( '\r', '\n', $theme_data );
 		
 		foreach (array('Author', 'Author URI', 'Description', 'Parent', 'Theme Name', 'Theme URI', 'Version') as $key) {
