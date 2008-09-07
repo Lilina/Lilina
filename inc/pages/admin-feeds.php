@@ -87,10 +87,10 @@ elseif($action == 'remove') {
 }
 if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {
 	do_action('send_headers');
-	die(apply_filters( 'alert_box', $result ));
+	die( implode( '', MessageHandler::get() ) );
 }
 elseif(isset($_REQUEST['list']) && isset($_REQUEST['ajax'])) {
-	die(feed_list_table());
+	die( feed_list_table() );
 }
 
 

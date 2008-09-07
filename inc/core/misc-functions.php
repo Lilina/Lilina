@@ -299,7 +299,8 @@ function lilina_level_playing_field() {
  * @param string $message Notice to add
  */
 function add_notice($message) {
-	add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . str_replace( '\'', '\\\'', $message) . '</p>\';'));
+	MessageHandler::add($message);
+	//add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . str_replace( '\'', '\\\'', ) . '</p>\';'));
 }
 
 /**
@@ -310,7 +311,8 @@ function add_notice($message) {
  * @param string $message Notice to add
  */
 function add_tech_notice($message) {
-	add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . str_replace( '\'', '\\\'', $message) . '</span></p>\';'));
+	MessageHandler::add($message);
+	//add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . str_replace( '\'', '\\\'', $message) . '</span></p>\';'));
 }
 
 /**
