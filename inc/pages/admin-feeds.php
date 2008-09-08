@@ -56,6 +56,7 @@ function feed_list_table() {
 }
 
 $action = (isset($_REQUEST['action'])? $_REQUEST['action'] : '');
+$importing = false;
 
 /** Make sure we're actually adding */
 if($action == 'add') {
@@ -72,7 +73,7 @@ elseif($action == 'import') {
 	if(!isset($_REQUEST['import_url']))
 		add_notice(_r('No URL specified to import OPML from'));
 	else
-		import_opml($_REQUEST['import_url']);
+		$importing = import_opml($_REQUEST['import_url']);
 }
 elseif($action == 'remove') {
 	$removed = $data['feeds'][$remove_id];
@@ -181,5 +182,14 @@ admin_header();
 	</fieldset>
 </form>
 <?php
+if($importing) {
+?>
+<script type="text/javascript">
+var feeds_to_import = <?php
+	echo json_encode($importing);
+?>;
+</script>
+<?php
+}
 admin_footer();
 ?>
