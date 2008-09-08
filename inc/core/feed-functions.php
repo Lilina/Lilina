@@ -99,7 +99,10 @@ function add_feed($url, $name = '', $cat = 'default') {
 	/** Fix users' kludges; They'll thank us for it */
 	$url	= str_replace(array('feed://http://', 'feed://http//', 'feed://', 'feed:http://', 'feed:'), 'http://', $url);
 	if(empty($url)) {
-		add_notice(_r("Couldn't add feed: No feed URL supplied"));
+		if(function_exists('_r'))
+			add_notice(_r("Couldn't add feed: No feed URL supplied"));
+		else
+			add_notice("Couldn't add feed: No feed URL supplied");
 		return false;
 	}
 
@@ -120,7 +123,6 @@ function add_feed($url, $name = '', $cat = 'default') {
 		else
 			add_notice("Couldn't add feed: $url is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.");
 
-		add_tech_notice($feed_error, $url);
 		return false;
 	}
 
@@ -171,58 +173,33 @@ function save_feeds() {
  * {{@internal Missing Long Description}}}
  */
 function import_opml($opml_url) {
-	if(!empty($opml_url)) {
-		$imported_feeds = parse_opml($opml_url);
-		if(is_array($imported_feeds)) {
-			$feeds_num = 0;
-			foreach($imported_feeds as $imported_feed) {
-				if(!isset($imported_feed['TYPE'])) {
-					//This is just so we are nice to our ancestors, like 0.7
-					if(isset($imported_feed['XMLURL']) && !empty($imported_feed['XMLURL'])) {
-						$imported_feed['TYPE'] = 'rss';
-					}
-				}
-				elseif($imported_feed['TYPE'] != 'rss' && $imported_feed['TYPE'] != 'atom') {
-					continue;
-				}
-				//Make sure we blank it
-				$this_feed = array('url' => '', 'title' => '');
-				if(!isset($imported_feed['XMLURL']) || empty($imported_feed['XMLURL'])) {
-					if(!isset($imported_feed['HTMLURL']) || empty($imported_feed['HTMLURL'])) {
-						//Can't live without a URL
-						continue;
-					}
-					else {
-						$this_feed['url'] = $imported_feed['HTMLURL'];
-					}
-				}
-				else {
-					$this_feed['url'] = $imported_feed['XMLURL'];
-				}
-				if(!isset($imported_feed['TEXT']) || empty($imported_feed['TEXT'])) {
-					if(!isset($imported_feed['TITLE']) || empty($imported_feed['TITLE'])) {
-						//We'll need to get it via Magpie later
-						$this_feed['title'] = '';
-					}
-					else {
-						$this_feed['title'] = $imported_feed['TITLE'];
-					}
-				}
-				else {
-					$this_feed['title'] = $imported_feed['TEXT'];
-				}
-				add_feed($this_feed['url'], $this_feed['title']);
+	if(empty($opml_url)) {
+		add_notice(sprintf(_r('No OPML specified')));
+		return false;
+	}
+
+	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+	$opml = new SimplePie_File($opml_url);
+	$opml = new OPML($opml->body);
+
+	if(!empty($opml->error) || empty($opml->data)) {
+		add_notice(sprintf(_r('The OPML file could not be read. The parser said: %s'), $imported_feeds->error));
+		return false;
+	}
+	$feeds_num = 0;
+	foreach($opml->data as $cat => $feed) {
+		if(!isset($feed['xmlurl']) && isset($feed[0]['xmlurl'])) {
+			foreach($feed as $subfeed) {
+				$feeds[] = array('url' => $subfeed['xmlurl'], 'title' => $subfeed['title'], 'cat' => $cat);
 				++$feeds_num;
 			}
-			add_notice(sprintf(_r('Added %d feed(s)'), $feeds_num));
+			continue;
 		}
-		else {
-			add_notice(_r('The OPML file could not be read.'));
-			add_tech_notice(_r('The parser said: ') . $imported_feeds);
-		}
+
+		$feeds[] = array('url' => $feed['xmlurl'], 'title' => $feed['title'], 'cat' => '');
+		++$feeds_num;
 	}
-	else {
-		add_notice(sprintf(_r('No OPML specified')));
-	}
+	add_notice(sprintf(_r('Adding %d feed(s)'), $feeds_num));
+	return $feeds;
 }
 ?>
