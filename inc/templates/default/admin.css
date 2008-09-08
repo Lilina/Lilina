@@ -173,6 +173,7 @@ legend {
 	padding: 0.6em;
 	margin-bottom: 1em;
 	font-size: 1.5em;
+	font-family: Arial, sans-serif;
 }
 .row .sidenote {
 	clear: both;
@@ -207,35 +208,45 @@ legend {
 
 /* Humanised Messages */
 .humanMsg {
-	font: normal 1em/5em Helvetica, Arial, Sans-Serif;
-	letter-spacing: -1px;
+	font: normal 12px Helvetica, Arial, Sans-Serif;
 	position: fixed;
-	top: 4em;
-	left: 25%;
-	width: 50%;
+	top: 40px;
+	left: 10px;
+	width: 30%;
+	max-width: 300px;
 	color: white;
-	background-color: black;
-	text-align: center; 
+	text-align: left;
+	z-index: 900;
 	display: none;
-	opacity: 0;
-	z-index: 100000;
+	padding: 0px;
 }
 
-.humanMsg .round {
-    border-left: solid 2px white;
-	border-right: solid 2px white;
-    font-size: 1px; height: 2px;
-	}
+body.login .humanMsg {
+	top: 10px;
+}
+
+.humanMsg .imsgs .msg {
+	padding: 10px;
+	background-color: black;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-box-shadow: 0px 1px 5px #333;
+	margin-bottom: 5px;
+}
 
 .humanMsg p {
-	padding: .3em;
-	display: inline; 
-	}
+	display: inline;
+}
 
-.humanMsg a {
+.humanMsg p a {
+	color: #19a5d1;
+}
+
+.humanMsg .imsgs .msg {
 	display: none;
-	}
-	
+	opacity: 0;
+}
+
 #humanMsgLog {
 	font: normal 10px Helvetica, Arial, Sans-Serif;
 	color: white;
@@ -246,9 +257,14 @@ legend {
 	max-height: 200px;
 	display: none;
 	z-index: 10000;
-	}
+}
+
+#humanMsgLog p:hover {
+	opacity: 1;
+}
 
 #humanMsgLog p {
+	opacity: .3;
 	position: relative;
 	left: 50%;
 	width: 200px;
@@ -260,11 +276,15 @@ legend {
 	text-align: center;
 	white-space: pre;
 	cursor: pointer;
-	}
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-topleft: 5px;
+}
 
-#humanMsgLog p:hover {
-	background: #222;
-	}
+#humanMsgLog.logisopen p {
+	opacity: 1;
+}
 
 #humanMsgLog ul {
 	background: #eee url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAARCAIAAACaSvE/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAE1JREFUeNqEjVEKACAIQ516Ee//5wVNCjIjaB/iY5vC3YkoIgDkVDOjQ5pqLCI3r2bLFzNzyydvM4uKqfJPKN4vyl9LO/7o3/6PhwADAIWkFPjc5eRrAAAAAElFTkSuQmCC) repeat-x;
@@ -274,7 +294,7 @@ legend {
 	max-height: 180px;
 	overflow: auto;
 	display: none;
-	}
+}
 
 #humanMsgLog ul li {
 	color: #555;
@@ -287,19 +307,19 @@ legend {
 	position: relative;
 	overflow: hidden;
 	white-space: pre;
-	}
+}
 
 #humanMsgLog ul li:hover {
 	background: #f2f2f2;
-	}
+}
 
 #humanMsgLog ul li:first-child {
 	margin-top: 1px;
-	}
-	
+}
+
 #humanMsgLog ul li .error {
 	color: orangered;
-	}
+}
 
 #humanMsgLog ul li .indent {
 	position: absolute;
@@ -307,4 +327,4 @@ legend {
 	left: 100px;
 	margin-right: 200px;
 	height: inherit;
-	}
+}
