@@ -185,7 +185,7 @@ admin_header();
 if($importing) {
 ?>
 <script type="text/javascript">
-var feeds_to_import = <?php
+var feeds_to_add = <?php
 	echo json_encode($importing);
 ?>;
 </script>

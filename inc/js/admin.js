@@ -91,6 +91,9 @@ var feeds = {
 		$.get("admin.php", {ajax: true, list: true, page: 'feeds'}, function (data) {
 			$("#feeds_list tbody").html(data);
 		});
+	},
+	process: function () {
+		
 	}
 };
 
