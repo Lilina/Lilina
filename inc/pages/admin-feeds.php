@@ -87,8 +87,9 @@ elseif($action == 'remove') {
 	add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
 }
 if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {
-	do_action('send_headers');
-	die( implode( '', MessageHandler::get() ) );
+	save_feeds();
+	echo json_encode(array('errors' => MessageHandler::get_errors(), 'messages' => MessageHandler::get_messages()));
+	die();
 }
 elseif(isset($_REQUEST['list']) && isset($_REQUEST['ajax'])) {
 	die( feed_list_table() );

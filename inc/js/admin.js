@@ -15,10 +15,6 @@ var admin = {
 			$("#changer").slideDown();
 			return false;
 		});
-		$("#alert .tech_notice a.note_link").click(function () {
-			$(this).siblings(".actual_notice").show();
-			$(this).remove();
-		});
 		$("#add_form").submit(function () {
 			feeds.add();
 			return false;
@@ -35,6 +31,12 @@ var admin = {
 		$("#alert").effect("highlight", { 
 			color: "red" 
 		}, 3000);
+		
+		$("#navigation li.has-submenu").hover(function() {
+			$(this).addClass('hovering');
+		}, function() {
+			$(this).removeClass('hovering');
+		});
 	}
 };
 
@@ -51,14 +53,24 @@ var feeds = {
 			add_name: $("#add_name").val(),
 			add_url: $("#add_url").val()
 		}, function (data) {
-			humanMsg.displayMsg(data);
+			console.log(data);
+			if(data.errors.length == 0) {
+				// Clear the values
+				$("#add_url").val('');
+				$("#add_name").val('');
 
-			// Clear the values
-			$("#add_url").val('');
-			$("#add_name").val('');
-
-			feeds.reload_table();
-		});
+				jQuery.each(data.messages, function (message) {
+					humanMsg.displayMsg(message['message']);
+				});
+				feeds.reload_table();
+				return;
+			}
+			jQuery.each(data.errors, function(error) {
+				humanMsg.displayMsg(error['message'], 'error');
+			});
+		},
+		"json"
+		);
 	},
 	change: function () {
 		if( !$("#change_url").val() ) {
@@ -85,7 +97,9 @@ var feeds = {
 			$("#change_id").val('');
 
 			admin.reload_table();
-		});
+		},
+		"json"
+		);
 	},
 	reload_table: function () {
 		$.get("admin.php", {ajax: true, list: true, page: 'feeds'}, function (data) {

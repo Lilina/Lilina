@@ -38,16 +38,18 @@ var humanMsg = {
 		)
 	},
 
-	displayMsg: function(msg) {
+	displayMsg: function(msg, cssClass) {
 		if (msg == '')
 			return;
+		if (cssClass == undefined)
+			cssClass = 'message';
 
 		clearTimeout(humanMsg.t2);
 		humanMsg.msgcount++;
 
 		// Inject message
 		$('#'+humanMsg.msgID).show();
-		$('<div class="msg" id="msgid_' + humanMsg.msgcount + '"><p>' + msg + '</p></div>')
+		$('<div class="msg ' + cssClass + '" id="msgid_' + humanMsg.msgcount + '"><p>' + msg + '</p></div>')
 		.appendTo('#'+humanMsg.msgID+' .imsgs')
 		.show().animate({ opacity: humanMsg.msgOpacity}, 200, function() {
 			jQuery('#'+humanMsg.logID)
@@ -63,7 +65,7 @@ var humanMsg = {
 		})
 
 		// Watch for mouse & keyboard in .5s
-	//	humanMsg.t1 = setTimeout("humanMsg.bindEvents()", 700)
+		humanMsg.t1 = setTimeout("humanMsg.bindEvents()", 700)
 		// Remove message after 5s
 		humanMsg.t2 = setTimeout("humanMsg.removeMsg()", 5000)
 	},
