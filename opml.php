@@ -40,7 +40,9 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
 
 header('Content-Type: application/xml; charset=utf-8');
-?><opml version="1.1">
+echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
+
+<opml version="1.1">
 	<head>
 		<title><?php echo get_option('sitename'); ?></title>
 		<dateModified><?php /** This is unclean */ echo date('D, j M Y G:i:s O'); ?></dateModified>
