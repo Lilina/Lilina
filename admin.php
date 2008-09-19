@@ -144,31 +144,21 @@ function admin_header() {
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.json.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
+<!--<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.json.js"></script>-->
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
 </head>
 <body id="admin-<?php echo $page; ?>" class="admin-page">
 <div id="header">
 	<p id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></p>
-	<div id="navigation">
-		<a href="#main" id="skip">Skip to main content</a>
-		<ul id="mainnavigation">
+	<ul id="navigation">
 <?php
 	$navigation = array(
 		array(_r('Dashboard'), 'admin-home.php', ''),
 		array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
 		array(_r('Settings'), 'admin-settings.php', 'settings'),
 	);
-	$navigation = apply_filters('navigation', $navigation);
-	foreach($navigation as $nav_item) {
-		echo '<li' . ($current_page == $nav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a></li>";
-	}
-?>
-			<li id="page_item_logout" class="seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
-		</ul>
-<?php
-
 	$subnavigation = apply_filters('subnavigation', array(
 		'admin-home.php' => array(
 			array(_r('Home'), 'admin-home.php', 'home'),
@@ -181,16 +171,33 @@ function admin_header() {
 		),
 	), $navigation, $current_page);
 
-	if( isset($subnavigation[$current_page]) && !empty($subnavigation[$current_page]) ) {
-?>
-		<ul id="dropmenu">
-<?php
-		foreach($subnavigation[$current_page] as $subnav_item) {
+	$navigation = apply_filters('navigation', $navigation);
+
+	foreach($navigation as $nav_item) {
+		$class = 'item';
+		if($nav_item[1] == $current_page) {
+			$class .= ' current';
+		}
+		if(isset($subnavigation[$current_page]))
+			$class .= ' has-submenu';
+
+		echo "<li class='$class'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		
+		if(!isset($subnavigation[$nav_item[1]])) {
+			echo "</li>";
+			continue;
+		}
+		
+		echo '<ul class="submenu">';
+		foreach($subnavigation[$nav_item[1]] as $subnav_item) {
 			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$subnav_item[2]}'>{$subnav_item[0]}</a></li>";
 		}
+		echo '</ul>';
+		
 	}
 ?>
-	</div>
+			<li id="page_item_logout" class="seperator"><a href="admin.php?logout=logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
+	</ul>
 </div>
 <div id="main">
 <?php

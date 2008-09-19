@@ -60,44 +60,74 @@ ul ul {
 #sitetitle a:hover {
 	text-decoration: underline;
 }
-#navigation {
-	padding: 1em 0;
-}
 #skip {
 	display: none;
 }
-#mainnavigation {
-	margin: 0;
-	display: block;
+#navigation {
+	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	font-size: 1em;
 }
 #navigation li {
-	display: inline;
+	display: block;
+	float: left;
 	margin: 0;
 	padding: 0;
+	position: relative;
+	white-space: nowrap;
 }
 #navigation li a {
 	color: #FFF;
 	text-decoration:none;
 	padding: 0.6em;
+	line-height: 3em;
 }
-#navigation li a:hover {
+#navigation > li.current > a {
+	background: #0ca2ff;
+}
+#navigation > li > a:hover {
 	background-color: #FFF;
-	color: #662;
+	color: #2d2d2d;
 }
-#navigation li.current a:hover {
-	background-image: url("dropdown-hover.png");
-	background-color: #FFF;
-	color: #662;
+#navigation > li.hovering > .submenu {
+	display: block !important;
 }
-#navigation li.current a {
-	background: #0ca2ff url("dropdown.png") no-repeat 90% center;
-	padding-right: 26px;
+#navigation > li.has-submenu > a:after {
+	content: " \25BC";
 }
-#dropmenu {
+#navigation li ul {
+	min-width: 100%;
+	background: #eee;
+	border: 1px solid #ccc;
+	border-top: 0;
+	/* Inter-browser cooperation - *sigh* */
+	-moz-border-radius: 0 0 3px 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	-khtml-border-bottom-left-radius: 3px;
+	-khtml-border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
 	display: none;
+	margin: 1px 0 0;
+	padding: 0;
+	overflow: auto;
+	position: absolute;
+}
+#navigation li li {
+	float: none;
+	display: block;
+	position: relative;
+}
+#navigation li li a {
+	display: block;
+	color: #2d2d2d;
+}
+#navigation li li.current a {
+}
+#navigation li li a:hover {
+	color: #0CA2FF;
 }
 
 #alert {
@@ -208,7 +238,7 @@ legend {
 
 /* Humanised Messages */
 .humanMsg {
-	font: normal 12px Helvetica, Arial, Sans-Serif;
+	font: normal 1.2em Helvetica, Arial, Sans-Serif;
 	position: fixed;
 	top: 40px;
 	left: 10px;
@@ -245,6 +275,15 @@ body.login .humanMsg {
 .humanMsg .imsgs .msg {
 	display: none;
 	opacity: 0;
+}
+
+.humanMsg .imsgs .message {
+	color: #aaa;
+	background-color: #eee !important;
+	font-size: 0.8em;
+}
+
+.humanMsg .imsgs .error {
 }
 
 #humanMsgLog {
