@@ -82,6 +82,14 @@ class LilinaItems {
 
 		$sp = &$this->simplepie;
 		$this->simplepie_items = $sp->get_items();
+		
+		/** Run through each item at least once */
+		while($this->has_items()) {
+			$this->get_item();
+			$this->has_enclosure();
+			$this->get_favicon();
+		}
+		$this->reset_iterator();
 	}
 	
 	/**
@@ -96,7 +104,7 @@ class LilinaItems {
 		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 
 		$feed = new SimplePie();
-		$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
+		$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 		$feed->set_stupidly_fast(true);
 		$feed->set_cache_location(LILINA_PATH . '/cache');
 		$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
@@ -199,9 +207,7 @@ class LilinaItems {
 	 * get_favicon() - Get the favicon for the current item's feed
 	 */
 	function get_favicon() {
-		$feed = $this->current_feed;
-
-		if(!$return = $feed->get_favicon())
+		if(!$return = $this->current_feed->get_favicon())
 			$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
 
 		$this->current_metadata['favicon'] = $return;
@@ -213,13 +219,7 @@ class LilinaItems {
 	/**
 	 * get_feed_id() - Get the ID for the current item's feed
 	 */
-	function get_feed_id($id = -1) {
-		if($id >= 0) {
-			$item = $this->get_item( $id );
-			$current_feed = $item->get_feed();
-		}
-		else
-			$current_feed = $this->current_feed;
-		return apply_filters( 'get_feed_id', md5($current_feed->get_link() . $current_feed->get_title()) );
+	function get_feed_id() {
+		return apply_filters( 'get_feed_id', md5($this->current_feed->get_link() . $this->current_feed->get_title()) );
 	}
 }

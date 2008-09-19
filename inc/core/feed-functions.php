@@ -22,7 +22,7 @@ function lilina_return_items($input) {
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 
 	$feed = new SimplePie();
-	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; '.get_option('baseurl'));
+	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(LILINA_PATH . '/cache');
 	$feed->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
@@ -108,7 +108,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$feed_info = new SimplePie();
-	$feed_info->set_useragent( 'Lilina/' . $lilina['core-sys']['version'].'; ' . get_option('baseurl') );
+	$feed_info->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 	$feed_info->set_stupidly_fast( true );
 	$feed_info->enable_cache(false);
 	$feed_info->set_feed_url( $url );
