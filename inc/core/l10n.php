@@ -7,6 +7,9 @@
  * @subpackage i18n
  */
 
+require_once(LILINA_INCPATH . '/contrib/gettext.php');
+require_once(LILINA_INCPATH . '/contrib/streams.php');
+
 /**
  * get_locale() - Gets the current locale
  *

@@ -11,32 +11,53 @@ class Locale {
 	private static $locale;
 
 	/**
-	 * Sets the locale for Habari.
+	 * Sets the locale for Lilina
+	 *
+	 * Loads the .mo file in LANGDIR constant path from Lilina root.
+	 * The translated (.mo) file is named based off of the locale.
 	 * 
-	 * @param string $locale A language code like 'en', 'en-au' or 'x-sneddy'
-	 **/
-	public static function set( $locale = false ) {
-		if (!$locale) {
-			return;
-		}
-		self::$locale = strtolower( $locale );
-		self::$uselocale = self::load_domain( 'habari' );
+	 * @param string $locale A language code like 'en' or 'en-us' or 'x-sneddy', will be lowercased
+	 */
+	public static set($locale) {
+		self::$locale = strtolower($locale);
+		self::load('default', LILINA_PATH . LANGDIR . "/$locale.mo");
 	}
 
 	/**
-	 * Load translations for a given domain and base directory for a pluggable object.
-	 * Translations are stored in gettext-style .mo files.
-	 * The internal workings of the file format are not entirely meant to be understood.
-	 * 
-	 * @link http://www.gnu.org/software/gettext/manual/html_node/gettext_136.html GNU Gettext Manual: Description of the MO file format
-	 * @param string $domain the domain to load
-	 * @param string $base_dir the base directory in which to find the translation files
-	 * @return boolean TRUE if data was successfully loaded, FALSE otherwise
-	 **/
-	public static function load_domain( $domain, $base_dir = LILINA_PATH . '/inc/' )
-	{
-		$file= $base_dir . '/locale/' . self::$locale . '/LC_MESSAGES/' . $domain . '.mo';
-		return self::load_file( $domain, $file );
+	 * Gets the current locale
+	 *
+	 * If the locale is set, then it will filter the locale
+	 * in the 'locale' filter hook and return the value.
+	 *
+	 * If the locale is not set already, then the locale
+	 * option is used if it is defined. Then it is filtered
+	 * through the 'locale' filter hook and the value for the
+	 * locale global set and the locale is returned.
+	 *
+	 * The process to get the locale should only be done once
+	 * but the locale will always be filtered using the
+	 * 'locale' hook.
+	 *
+	 * @since 1.0
+	 * @uses apply_filters() Calls 'locale' hook on locale value
+	 * @uses $locale Gets the locale stored in the global
+	 *
+	 * @return string The locale of the blog or from the 'locale' hook
+	 */
+	public static get() {
+		if (isset(self::$locale))
+			return apply_filters( 'locale', self::$locale );
+
+		if (get_option('locale'))
+			$locale = get_option('locale');
+
+		if (empty($locale))
+			$locale = '';
+
+		$locale = apply_filters('locale', $locale);
+
+		self::set($locale);
+		return $locale;
 	}
 
 	/**
@@ -45,11 +66,10 @@ class Locale {
 	 * If the domain already exists, the inclusion will fail. If the
 	 * MO file is not readable, the inclusion will fail.
 	 *
-	 * On success, the mofile will be placed in the $l10n global by
+	 * On success, the mofile will be placed in the $messages array by
 	 * $domain and will be an gettext_reader object.
 	 *
 	 * @since 1.0
-	 * @uses $l10n Gets list of domain translated string (gettext_reader) objects
 	 * @uses CacheFileReader Reads the MO file
 	 * @uses gettext_reader Allows for retrieving translated strings
 	 *
@@ -57,10 +77,8 @@ class Locale {
 	 * @param string $mofile Path to the .mo file
 	 * @return null On failure returns null and also on success returns nothing.
 	 */
-	function load_textdomain($domain, $mofile) {
-		global $l10n;
-
-		if (isset($l10n[$domain]))
+	public static load($domain, $mofile) {
+		if (isset(self::$messages[$domain]))
 			return;
 
 		if ( is_readable($mofile))
@@ -68,330 +86,226 @@ class Locale {
 		else
 			return;
 
-		$l10n[$domain] = new gettext_reader($input);
-	}
-}
-
-/**
- * Habari Locale Class
- *
- * Provides translation services.
- * 
- * @package Habari
- */
-class Locale
-{
-	private static $uselocale= FALSE;
-	private static $messages= array();
-	private static $locale;
-
-	/**
-	 * Sets the locale for Habari.
-	 * 
-	 * @param string $locale A language code like 'en' or 'en-us' or 'x-klingon', will be lowercased
-	 **/
-	public static function set( $locale= NULL )
-	{
-		if ( $locale == NULL ) {
-			return;
-		}
-
-		self::$locale= strtolower( $locale );
-		self::$uselocale= self::load_domain( 'habari' );
+		self::$messages[$domain] = new gettext_reader($input);
 	}
 
 	/**
-	 * Load translations for a given domain and base directory for a pluggable object.
-	 * Translations are stored in gettext-style .mo files.
-	 * The internal workings of the file format are not entirely meant to be understood.
-	 * 
-	 * @link http://www.gnu.org/software/gettext/manual/html_node/gettext_136.html GNU Gettext Manual: Description of the MO file format
-	 * @param string $domain the domain to load
-	 * @param string $base_dir the base directory in which to find the translation files
-	 * @return boolean TRUE if data was successfully loaded, FALSE otherwise
-	 **/
-	public static function load_pluggable_domain( $domain, $base_dir )
-	{
-		$file= $base_dir . '/locale/' . self::$locale . '/LC_MESSAGES/' . $domain . '.mo';
-		return self::load_file( $domain, $file );
-	}
-
-	/**
-	 * Load translations for a given domain.
-	 * Translations are stored in gettext-style .mo files.
-	 * The internal workings of the file format are not entirely meant to be understood.
-	 * 
-	 * @link http://www.gnu.org/software/gettext/manual/html_node/gettext_136.html GNU Gettext Manual: Description of the MO file format
-	 * @param string $domain the domain to load
-	 * @return boolean TRUE if data was successfully loaded, FALSE otherwise
-	 **/
-	private static function load_domain( $domain )
-	{
-		$file= HABARI_PATH . '/system/locale/' . self::$locale . '/LC_MESSAGES/' . $domain . '.mo';
-
-		return self::load_file( $domain, $file );
-	}
-
-	/**
-	 * Load translations from a given file.
-	 * 
-	 * @param string $domain the domain to load the data into
-	 * @param string $file the file name
-	 * @return boolean TRUE if data was successfully loaded, FALSE otherwise
+	 * Loads the plugin's translated strings
+	 *
+	 * If the path is not given then it will be the root of the plugin
+	 * directory. The .mo file should be named based on the domain with a
+	 * dash followed by a dash, and then the locale exactly.
+	 *
+	 * The plugin may place all of the .mo files in another folder and set
+	 * the $path based on the relative location from ABSPATH constant. The
+	 * plugin may use the constant PLUGINDIR and/or plugin_basename() to
+	 * get path of the plugin and then add the folder which holds the .mo
+	 * files.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $domain Unique identifier for retrieving translated strings
+	 * @param string $path Optional. Path of the folder where the .mo files reside.
 	 */
-	private static function load_file( $domain, $file ) {
-		if ( ! file_exists( $file ) ) {
-			Error::raise( sprintf( _t('No translations found for locale %s, domain %s!'), self::$locale, $domain ) );
-			return FALSE;
-		}
-		if ( filesize( $file ) < 24 ) {
-			Error::raise( sprintf( _t('Invalid .MO file for locale %s, domain %s!'), self::$locale, $domain ) );
-			return FALSE;
-		}
+	public static function load_plugin_textdomain($domain, $path = false) {
+		$locale = get_locale();
+		if ( empty($locale) )
+			$locale = 'en';
 
-		$fp= fopen( $file, 'rb' );
-		$data= fread( $fp, filesize( $file ) );
-		fclose( $fp );
+		if ( false === $path )
+			$path = PLUGINDIR;
 
-		// determine endianness
-		$little_endian= TRUE;
-
-		list(,$magic)= unpack( 'V1', substr( $data, 0, 4 ) );
-		switch ( $magic & 0xFFFFFFFF ) {
-			case (int)0x950412de:
-				$little_endian= TRUE;
-				break;
-			case (int)0xde120495:
-				$little_endian= FALSE;
-				break;
-			default:
-				Error::raise( sprintf( _t('Invalid magic number 0x%08x in %s!'), $magic, $file ) );
-				return FALSE;
-		}
-
-		$revision= substr( $data, 4, 4 );
-		if ( $revision != 0 ) {
-			Error::raise( sprintf( _t('Unknown revision number %d in %s!'), $revision, $file ) );
-			return FALSE;
-		}
-
-		$l= $little_endian ? 'V' : 'N';
-
-		if ( $data && strlen( $data ) >= 20 ) {
-			$header= substr( $data, 8, 12 );
-			$header= unpack( "{$l}1msgcount/{$l}1msgblock/{$l}1transblock", $header );
-
-			if ( $header['msgblock'] + ($header['msgcount'] - 1 ) * 8 > filesize( $file ) ) {
-				Error::raise( sprintf( _t('Message count (%d) out of bounds in %s!'), $header['msgcount'], $file ) );
-				return FALSE;
-			}
-
-			$lo= "{$l}1length/{$l}1offset";
-
-			for ( $msgindex= 0; $msgindex < $header['msgcount']; $msgindex++ ) {
-				$msginfo= unpack( $lo, substr( $data, $header['msgblock'] + $msgindex * 8, 8 ) );
-				$msgids= explode( "\0", substr( $data, $msginfo['offset'], $msginfo['length'] ) );
-				$transinfo= unpack( $lo, substr( $data, $header['transblock'] + $msgindex * 8, 8 ) );
-				$transids= explode( "\0", substr( $data, $transinfo['offset'], $transinfo['length'] ) );
-				self::$messages[$domain][$msgids[0]]= array(
-					$msgids,
-					$transids,
-				);
-			}
-		}
-
-		// setup plural functionality
-		self::$plural_function= self::get_plural_function( self::$messages[$domain][''][1][0] );
-
-		// only use locale if we actually read something
-		return ( count( self::$messages ) > 0 );
-	}
-
-	private static function get_plural_function( $header )
-	{
-		if (preg_match('/plural-forms: (.*?)$/i', $header, $matches) && preg_match('/^\s*nplurals\s*=\s*(\d+)\s*;\s*plural=(.*)$/', $matches[1], $matches)) {
-			// sanitize
-			$nplurals= preg_replace( '@[^0-9]@', '', $matches[1] );
-			$plural= preg_replace( '@[^n0-9:\(\)\?\|\&=!<>+*/\%-]@', '', $matches[2] );
-
-			$body= str_replace(
-				array('plural',  'n',  '$n$plurals', ),
-				array('$plural', '$n', '$nplurals', ),
-				'nplurals='. $nplurals . '; plural=' . $plural
-			);
-
-			// add parens
-			// important since PHP's ternary evaluates from left to right
-			$body.= ';';
-			$res= '';
-			$p= 0;
-			for ($i= 0; $i < strlen($body); $i++) {
-				$ch= $body[$i];
-				switch ($ch) {
-					case '?':
-						$res.= ' ? (';
-						$p++;
-						break;
-					case ':':
-						$res.= ') : (';
-						break;
-					case ';':
-						$res.= str_repeat( ')', $p) . ';';
-						$p= 0;
-						break;
-					default:
-						$res.= $ch;
-				}
-			}
-
-			$body= $res . 'return ($plural>=$nplurals?$nplurals-1:$plural);';
-			$fn= create_function(
-				'$n',
-				$body
-			);
-		}
-		else {
-			// default: one plural form for all cases but n==1 (english)
-			$fn= create_function(
-				'$n',
-				'$nplurals=2;$plural=($n==1?0:1);return ($plural>=$nplurals?$nplurals-1:$plural);'
-			);
-		}
-
-		return $fn;
+		$mofile = LILINA_PATH . "$path/$domain-$locale.mo";
+		self::load($domain, $mofile);
 	}
 
 	/**
-	 * DO NOT USE THIS FUNCTION.
-	 * This function is only to be used by the test case for the Locale class!
+	 * Includes theme's translated strings for the theme
+	 *
+	 * If the current locale exists as a .mo file in the theme's root directory, it
+	 * will be included in the translated strings by the $domain.
+	 *
+	 * The .mo files must be named based on the locale exactly.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $domain Unique identifier for retrieving translated strings
 	 */
-	public static function __run_plural_test( $header )
-	{
-		$fn= self::get_plural_function( $header );
-		$res= '';
-		for ($n= 0; $n < 200; $n++) {
-			$res.= $fn($n);
-		}
+	public static function load_theme_textdomain($domain) {
+		$locale = get_locale();
+		if ( empty($locale) )
+			$locale = 'en_US';
 
-		return $res;
+		$mofile = get_template_directory() . "/$locale.mo";
+		self::load($domain, $mofile);
 	}
 
 	/**
-	 * DO NOT USE THIS FUNCTION.
-	 * This function is only to be used by the test case for the Locale class!
+	 * Retrieve the translated text
+	 *
+	 * If the domain is set in the $messages array, then the text is run
+	 * through the domain's translate method. After it is passed to
+	 * the 'gettext' filter hook, along with the untranslated text as
+	 * the second parameter.
+	 *
+	 * If the domain is not set, the $text is just returned.
+	 *
+	 * @since 1.0
+	 * @uses apply_filters() Calls 'gettext' on domain translated text
+	 *		with the untranslated text as second parameter
+	 *
+	 * @param string $text Text to translate
+	 * @param string $domain Domain to retrieve the translated text
+	 * @return string Translated text
 	 */
-	public static function __run_loadfile_test( $filename )
-	{
-		return self::load_file( 'test', $filename );
-	}
+	public static function translate($string, $domain = 'default') {
+		$text = apply_filters('pre_gettext', $text, $domain);
 
-	/**
-	 * Echo a version of the string translated into the current locale
-	 * @param string $text The text to echo translated
-	 * @param string $domain (optional) The domain to search for the message	 
-	 **/
-	public static function _e( $text, $domain= 'habari' )
-	{
-		echo self::_t( $text, $domain );
-	}
-
-	/**
-	 * Return a version of the string translated into the current locale
-	 * 
-	 * @param string $text The text to echo translated
-	 * @param string $domain (optional) The domain to search for the message	 
-	 * @return string The translated string
-	 **/
-	public static function _t( $text, $domain= 'habari' )
-	{
-		if ( isset( self::$messages[$domain][$text] ) ) {
-			return self::$messages[$domain][$text][1][0];
-		}
-		else {
+		if (isset($messages[$domain]))
+			return apply_filters('gettext', $messages[$domain]->translate($text), $text, $domain);
+		else
 			return $text;
+	}
+	
+	/**
+	 * Retrieve the plural or single form based on the amount
+	 *
+	 * If the domain is not set in the $messages list, then a comparsion
+	 * will be made and either $plural or $single parameters returned.
+	 *
+	 * If the domain does exist, then the parameters $single, $plural,
+	 * and $number will first be passed to the domain's ngettext method.
+	 * Then it will be passed to the 'ngettext' filter hook along with
+	 * the same parameters. The expected type will be a string.
+	 *
+	 * @since 1.0
+	 * @uses apply_filters() Calls 'ngettext' hook on domains text returned,
+	 *		along with $single, $plural, and $number parameters. Expected to return string.
+	 *
+	 * @param string $single The text that will be used if $number is 1
+	 * @param string $plural The text that will be used if $number is not 1
+	 * @param int $number The number to compare against to use either $single or $plural
+	 * @param string $domain Optional. The domain identifier the text should be retrieved in
+	 * @return string Either $single or $plural translated text
+	 */
+	public static function ngettext($single, $plural, $number, $domain = 'default') {
+		if (isset(self::$messages[$domain])) {
+			return apply_filters('ngettext', self::$messages[$domain]->ngettext($single, $plural, $number), $single, $plural, $number);
+		} else {
+			if ($number != 1)
+				return $plural;
+			else
+				return $single;
 		}
 	}
+}
 
-	/**
-	 * Echo singular or plural version of the string, translated into the current locale, based on the count provided
-	 * 
-	 * @param string $singular The singular form
-	 * @param string $plural The plural form
-	 * @param string $count The count
-	 * @param string $domain (optional) The domain to search for the message	 
-	 **/
-	public static function _ne( $singular, $plural, $count, $domain= 'habari' )
-	{
-		echo self::_n( $singular, $plural, $count, $domain );
+/**
+ * Retrieve a translated string
+ *
+ * _r() is a convenience function which retrieves the translated
+ * string from the translate().
+ *
+ * @see Locale::translate() An alias of translate()
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ * @return string Translated text
+ */
+function _r($text, $domain = 'default') {
+	return Locale::translate($text, $domain);
+}
+
+/**
+ * Display a translated string
+ *
+ * _e() is a convenience function which displays the returned
+ * translated text from translate().
+ *
+ * @see Locale::translate() Echos returned translate() string
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ */
+function _e($text, $domain = 'default') {
+	echo Locale::translate($text, $domain);
+}
+
+/**
+ * Retrieve context translated string
+ *
+ * Quite a few times, there will be collisions with similar
+ * translatable text found in more than two places but with
+ * different translated context.
+ *
+ * In order to use the separate contexts, the _c() function
+ * is used and the translatable string uses a pipe ('|')
+ * which has the context the string is in.
+ *
+ * When the translated string is returned, it is everything
+ * before the pipe, not including the pipe character. If
+ * there is no pipe in the translated text then everything
+ * is returned.
+ *
+ * @since 1.0
+ *
+ * @param string $text Text to translate
+ * @param string $domain Optional. Domain to retrieve the translated text
+ * @return string Translated context string without pipe
+ */
+function _c($text, $domain = 'default') {
+	$whole = Locale::translate($text, $domain);
+	$last_bar = strrpos($whole, '|');
+	if ( false == $last_bar ) {
+		return $whole;
+	} else {
+		return substr($whole, 0, $last_bar);
 	}
-
-	/**
-	 * Return a singular or plural string translated into the current locale based on the count provided
-	 * 
-	 * @param string $singular The singular form
-	 * @param string $plural The plural form
-	 * @param string $count The count
-	 * @param string $domain (optional) The domain to search for the message	 
-	 * @return string The appropriately translated string
-	 **/       
-	public static function _n($singular, $plural, $count, $domain= 'habari')
-	{
-		if ( isset( self::$messages[$domain][$singular] ) ) {
-			// XXX workaround, but direct calling doesn't work
-			$fn= self::$plural_function;
-			$n= $fn($count);
-			if ( isset( self::$messages[$domain][$singular][1][$n] ) ) {
-				return self::$messages[$domain][$singular][1][$n];
-			}
-		}
-		// fall-through else for both cases
-		return ( $count == 1 ? $singular : $plural );
-	}
 }
 
 /**
- * Echo a version of the string translated into the current locale, alias for Locale::_e() 
- * 
- * @param string $text The text to translate
- **/
-function _e( $text, $domain= 'habari' )
-{
-	return Locale::_e( $text, $domain );
+ * Display a translated string
+ *
+ * __ngettext() is a convenience function which displays the returned
+ * translated text from Locale::ngettext().
+ *
+ * @see Locale::ngettext() Echos returned Locale::ngettext() string
+ * @since 1.0
+ *
+ * @param string $single The text that will be used if $number is 1
+ * @param string $plural The text that will be used if $number is not 1
+ * @param int $number The number to compare against to use either $single or $plural
+ * @param string $domain Optional. The domain identifier the text should be retrieved in
+ * @return string Either $single or $plural translated text
+ */
+function __ngettext($single, $plural, $number, $domain = 'default') {
+	Locale::ngettext($single, $plural, $number, $domain);
 }
 
 /**
- * function _ne
- * Echo singular or plural version of the string, translated into the current locale, based on the count provided,
- * alias for Locale::_ne()
- * @param string $singular The singular form
- * @param string $plural The plural form
- * @param string $count The count
- **/
-function _ne( $singular, $plural, $count, $domain= 'habari' )
-{
-	return Locale::_ne( $singular, $plural, $count, $domain );
-}
-
-/**
- * Return a version of the string translated into the current locale, alias for Locale::_t()
- *  
- * @param string $text The text to translate
- * @return string The translated string
- **/
-function _t( $text, $domain= 'habari' )
-{
-	return Locale::_t( $text, $domain );
-}
-
-/**
- * Return a singular or plural string translated into the current locale based on the count provided
- * 
- * @param string $singular The singular form
- * @param string $plural The plural form
- * @param string $count The count
- * @return string The appropriately translated string
- **/       
-function _n( $singular, $plural, $count, $domain= 'habari' )
-{
-	return Locale::_n( $singular, $plural, $count, $domain );
+ * __ngettext_noop() - register plural strings in POT file, but don't translate them
+ *
+ * Used when you want do keep structures with translatable plural strings and
+ * use them later.
+ *
+ * Example:
+ *  $messages = array(
+ *  	'post' => ngettext_noop('%s post', '%s posts'),
+ *  	'page' => ngettext_noop('%s pages', '%s pages')
+ *  );
+ *  ...
+ *  $message = $messages[$type];
+ *  $usable_text = sprintf(__ngettext($message[0], $message[1], $count), $count);
+ *
+ * @since 1.0
+ * @param $single Single form to be i18ned
+ * @param $plural Plural form to be i18ned
+ * @param $number Not used, here for compatibility with __ngettext, optional
+ * @param $domain Not used, here for compatibility with __ngettext, optional
+ * @return array array($single, $plural)
+ */
+function __ngettext_noop($single, $plural, $number=1, $domain = 'default') {
+	return array($single, $plural);
 }
