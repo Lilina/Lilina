@@ -23,6 +23,7 @@ function lilina_return_items($input) {
 
 	$feed = new SimplePie();
 	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
+	/** This disables sorting too, we handle that ourselves later */
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(LILINA_PATH . '/cache');
 	$feed->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
@@ -38,10 +39,11 @@ function lilina_return_items($input) {
 
 	if(!isset($feed->data['ordered_items'])) {
 		$feed->data['ordered_items'] = $feed->data['items'];
-		/** Let's force sorting */
-		usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
-		usort($feed->data['items'], array(&$feed, 'sort_items'));
 	}
+	/** We disable sorting previously; so we force it here */
+	usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
+	usort($feed->data['items'], array(&$feed, 'sort_items'));
+	//var_dump($feed);
 	return apply_filters('return_items', $feed);
 }
 
@@ -97,7 +99,6 @@ function lilina_parse_html($val_array){
 function add_feed($url, $name = '', $cat = 'default') {
 	global $data, $lilina;
 	/** Fix users' kludges; They'll thank us for it */
-	$url	= str_replace(array('feed://http://', 'feed://http//', 'feed://', 'feed:http://', 'feed:'), 'http://', $url);
 	if(empty($url)) {
 		if(function_exists('_r'))
 			add_notice(_r("Couldn't add feed: No feed URL supplied"));
@@ -119,9 +120,9 @@ function add_feed($url, $name = '', $cat = 'default') {
 	if(!empty($feed_error)) {
 		//No feeds autodiscovered;
 		if(function_exists('_r'))
-			add_notice( sprintf( _r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ) );
+			MessageHandler::add_error(sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ));
 		else
-			add_notice("Couldn't add feed: $url is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.");
+			MessageHandler::add_error("Couldn't add feed: $url is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.");
 
 		return false;
 	}
@@ -138,9 +139,9 @@ function add_feed($url, $name = '', $cat = 'default') {
 		'cat'	=> $cat,
 	);
 	if(function_exists('_r'))
-		add_notice( sprintf( _r('Added feed "%1$s"'), $name ) );
+		MessageHandler::add( sprintf( _r('Added feed "%1$s"'), $name ) );
 	else
-		add_notice( "Added feed \"$name\"");
+		MessageHandler::add( "Added feed \"$name\"");
 
 	add_action( 'send_headers', 'save_feeds' );
 	return true;
