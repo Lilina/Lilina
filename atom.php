@@ -60,7 +60,8 @@ echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 	<link rel="self" type="application/atom+xml" href="<?php echo get_option('baseurl'); ?>atom.php" />
 
 	<?php do_action('atom_head'); ?>
-	<?php 
+	<?php
+	query_setup('showtime=1');
 	if(has_items(false)) {
 		while(has_items()): the_item();
 	?>

@@ -128,10 +128,10 @@ function template_times(){
  * @todo Document
  * @todo Implement items_per_page, feed_include, feed_exclude
  */
-function query_setup($override = true) {
+function query_setup($args, $override = true) {
 	global $data, $item, $list, $item_number, $showtime, $total_items;
 	$defaults = array(
-		'show_since' => -1,
+		'showtime' => -1,
 		'items_per_page' => 5,
 		'max_items' => -1,
 
@@ -146,25 +146,23 @@ function query_setup($override = true) {
 	extract($args, EXTR_SKIP);
 
 	/** Default setup */
-	if($show_since < 0) {
-		if(!isset($showtime)) {
-			if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
-				if( -1 == $_REQUEST['hours'])
-					$showtime = 0;
-				else
-					$showtime = ((int) $_REQUEST['hours'] * 60 * 60);
-			}
-			else {
-				global $settings;
-				$showtime = ((int) $settings['interface']['times'][0] * 60 * 60);
-			}
-
-			$showtime = apply_filters('showtime', $showtime);
+	if($args['showtime'] < 0) {
+		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
+			if( -1 == $_REQUEST['hours'])
+				$showtime = 0;
+			else
+				$showtime = time() - ((int) $_REQUEST['hours'] * 60 * 60);
 		}
-		$show_since = $showtime;
+		else {
+			global $settings;
+			$showtime = time() - ((int) $settings['interface']['times'][0] * 60 * 60);
+		}
+
+		$showtime = apply_filters('showtime', $showtime);
 	}
-	$showtime = time() - $show_since;
-	
+	else
+		$showtime = apply_filters('showtime', $args['showtime']);
+
 	if($items_per_page < 0)
 		// Do nothing for now
 
@@ -178,7 +176,7 @@ function query_setup($override = true) {
 
 	if($feed_exclude < 0)
 		// Do nothing for now
-		
+
 	if($page_num > 0)
 		$offset += ($items_per_page * $page_num);
 
