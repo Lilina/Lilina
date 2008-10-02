@@ -152,24 +152,24 @@ ul ul {
 }
 
 /* Feeds only */
-#feeds_list {
+.item-table {
 	border-collapse: collapse;
 	border-spacing: 1px;
 	width: 100%;
 	border: 1px solid #CCC;
 	font-size: 1.3em;
 }
-#feeds_list thead {
+.item-table thead {
 	background: #0CA2FF;
 	color: #FFF;
 }
-#feeds_list tbody tr {
+.item-table tbody tr {
 	border-bottom: 1px solid #CCC;
 }
-#feeds_list .change-col, #feeds_list .remove-col {
+.item-table .change-col, .item-table .remove-col {
 	text-align: center;
 }
-#feeds_list th, #feeds_list td {
+.item-table th, .item-table td {
 	text-align: left;
 	vertical-align: top;
 	padding: 1.2em 0.6em;

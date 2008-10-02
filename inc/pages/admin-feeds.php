@@ -100,7 +100,7 @@ admin_header();
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
-<table id="feeds_list">
+<table id="feeds_list" class="item-table">
 	<thead>
 		<tr>
 		<th>#</th>
