@@ -91,19 +91,22 @@ if(!defined('LOADED_SETTINGS')) {
 	 * Stores the location of the language directory. First looks for language folder in wp-content
 	 * and uses that folder if it exists. Or it uses the "languages" folder in LILINA_INCPATH.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 */
 	if ( !defined('LANGDIR'))
 		define('LANGDIR', '/inc/locales');
 
-	//Settings that use other settings variables, can not be overriden
-	$settings['cachedir']				= $settings['path'] . '/cache/';
-	$settings['files']					= array(
-												'feeds'		=> $settings['path'] . '/conf/feeds.data',
-												'times'		=> $settings['path'] . '/conf/time.data',
-												'settings'	=> $settings['path'] . '/conf/settings.php',
-												'plugins'	=> $settings['path'] . '/conf/plugins.data'
-												);
+	//Settings that use other settings variables
+	if(!isset($settings['cachedir']))
+		$settings['cachedir'] = $settings['path'] . '/cache/';
+
+	if(!isset($settings['files']))
+		$settings['files'] = array(
+			'feeds'		=> $settings['path'] . '/conf/feeds.data',
+			'times'		=> $settings['path'] . '/conf/time.data',
+			'settings'	=> $settings['path'] . '/conf/settings.php',
+			'plugins'	=> $settings['path'] . '/conf/plugins.data'
+		);
 
 	$plugins							= '';
 }

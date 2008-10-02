@@ -321,17 +321,31 @@ function the_item() {
 /**
  * @todo Document
  */
-function the_title() {
+function get_the_title() {
 	global $item;
-	echo apply_filters('the_title', $item->get_title());
+	return apply_filters( 'the_title', $item->get_title() );
+}
+
+/**
+ * @todo Document
+ */
+function the_title() {
+	echo get_the_title();
+}
+
+/**
+ * @todo Document
+ */
+function get_the_summary($chars = 150) {
+	global $item;
+	return apply_filters('the_summary', shorten($item->get_description(), $chars) );
 }
 
 /**
  * @todo Document
  */
 function the_summary($chars = 150) {
-	global $item;
-	echo apply_filters('the_summary', shorten($item->get_description(), $chars) );
+	echo get_the_summary($chars);
 }
 
 /**
@@ -345,9 +359,16 @@ function the_content() {
 /**
  * @todo Document
  */
-function the_link() {
+function get_the_link() {
 	global $item;
-	echo apply_filters( 'the_link', $item->get_link() );
+	return apply_filters( 'the_link', $item->get_link() );
+}
+
+/**
+ * @todo Document
+ */
+function the_link() {
+	echo get_the_link();
 }
 
 /**
