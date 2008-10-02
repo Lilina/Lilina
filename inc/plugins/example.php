@@ -1,55 +1,49 @@
 <?php
 /*
-Plugin Name: CSS Naked Day
-Plugin URI: http://getlilina.org/docs/plugins:naked
-Description: Disables style sheets for CSS Naked Day. See the plugin URI for more info.
+Plugin Name: (Word)Press It
+Plugin URI: http://getlilina.org/docs/plugins:wordpress_it
+Description: Adds a Press It link to each entry to post to a WordPress blog
 Author: Ryan McCue
 Version: 1.0
 Min Version: 1.0
 Author URI: http://cubegames.net
 License: GPL
 */
-if($_GET['action'] !== 'style') {
-	defined('LILINA_PATH') or die('Restricted access');
-	/**
-	 * Replaces built in stylesheet loader
-	 */
-	function template_file_load($file) {
-		global $settings;
-		if(strstr($file, '.css') && is_naked_day()) {
-			return $settings['baseurl'] . 'inc/plugins/example.php?action=style';
-		}
-		return $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file;
-	}
-	/**
-	 * From the CSS Naked Day website
-	 * @author Dustin Diaz
-	 * @link http://naked.dustindiaz.com/
-	 */
-	function is_naked_day() {
-		$start = date('U', mktime(-12,0,0,04,05,date('Y')));
-		$end = date('U', mktime(36,0,0,04,05,date('Y')));
-		$z = date('Z') * -1;
-		$now = time() + $z;	
-		if ( $now >= $start && $now <= $end ) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Display a notice to the users why the styles are disabled
-	 */
-	function naked_notice() {
-		echo '<h3>What happened to the design?</h3> <p>To know more about why styles are disabled on this website visit the <a href="http://naked.dustindiaz.com" title="Web Standards Naked Day Host Website">Annual CSS Naked Day</a> website for more information.</p>';
-	}
-	/**
-	 * Register our plugin
-	 */
-	register_plugin('example.php','CSS Naked Day');
-	register_action('body_top', 'naked_notice');
+function pressit_js() {
+?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".pressit_button").click(function() {
+			console.log($(this).attr('href'));
+			var result = window.open($(this).attr('href'),'t','toolbar=0,resizable=0,scrollbars=1,status=1,width=700,height=500');
+			if(!result)
+				return true;
+			return false;
+		});
+	});
+</script>
+<?php
 }
-else {
-	header('Content-Type: text/css; charset=utf-8');
-	echo '/* Don\'t you know? It\'s CSS Naked Day today. Check it out at http://naked.dustindiaz.com/ */';
+
+function pressit_options() {
+	global $wp_url;
+	$wp_url = new DataHandler();
+	$wp_url = $wp_url->load('pressit.data');
+	$wp_url = 'http://<MY WORDPRESS DOMAIN>/wp-admin/bookmarklet-advanced.php?&popupurl=%1$s&popuptitle=%2$s';
+	$wp_url = 'http://getlilina.org/wordpress/wp-admin/press-this.php?u=%1$s&t=%2$s&s=%3$s';
 }
+/**
+ * Display a notice to the users why the styles are disabled
+ */
+function pressit_button() {
+	global $wp_url;
+	$press_url = sprintf($wp_url, urlencode(get_the_link()), urlencode(get_the_title()), urlencode(get_the_summary()));
+?>
+	<a href="<?php echo $press_url ?>" class="pressit_button">Press It</a>
+<?php
+}
+
+add_action('init', 'pressit_options');
+add_action('template_header', 'pressit_js');
+add_action('river_entry', 'pressit_button');
 ?>

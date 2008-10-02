@@ -64,36 +64,6 @@ function do_action($action_name){
 }
 
 /**
-* Register plugin with system
-*
-* Adds plugin file to $registered_plugins array so we can load it later
-*
-* @param string $file Plugin file
-* @param string $name Plugin name
-*/
-function register_plugin($file, $name) {
-	global $registered_plugins;
-	$registered_plugins[$name]	= array(
-										'file'	=> $file
-										);
-}
-
-/**
-* Register plugin function with system
-*
-* Adds plugin function to $hooked_plugins under the specified hook
-*
-* @param string $function Plugin function to register
-* @param string $hook Hook to register function under
-*/
-function register_plugin_function($function, $hook) {
-	global $hooked_plugins;
-	$hooked_plugins[$hook][]	= array(
-										'func'	=> $function
-										);
-}
-
-/**
 * Register plugin function with system
 *
 * Adds plugin function to $hooked_plugins under the specified hook
@@ -146,18 +116,6 @@ function add_action($action, $function, $priority = 0, $num_args=0) {
 }
 
 /**
-* Activate plugin
-*
-* Adds plugin to $activated_plugins. Must call {@link update_plugins_info} afterwards
-*
-* @param string $plugin Plugin name to activate
-*/
-function activate_plugin($plugin) {
-	global $activated_plugins;
-	$activated_plugins[] 		= $plugin;
-}
-
-/**
 * Get plugins and load them
 *
 * Gets all activated plugins and require_once()s their files
@@ -175,7 +133,7 @@ function get_plugins() {
  * Thanks to Wordpress, admin-functions.php, lines 1525-1534
  * @author Wordpress Development Team
  * @param string $plugin_file Plugin file to search for metadata
- * @return array Plugin metadata
+ * @return object Plugin metadata
  */
 function plugins_meta($plugin_file) {
 	$plugin_data = implode('', file($plugin_file));
@@ -202,15 +160,15 @@ function plugins_meta($plugin_file) {
 		//...Otherwise assume it's the current version of Lilina
 		$min_version = 1.0;
 	}
-	//Set the $plugin array for returning
-	$plugin					= array();
-	$plugin['name']			= $plugin_name[1];
-	$plugin['uri']			= $plugin_uri[1];
-	$plugin['description']	= $description[1];
-	$plugin['author']		= $author_name[1];
-	$plugin['author_uri']	= $author_uri[1];
-	$plugin['version']		= $version[1];
-	$plugin['min_version']	= $min_version[1];
+	//Set the $plugin object for returning
+	$plugin = new stdClass;
+	$plugin->name = $plugin_name[1];
+	$plugin->uri = $plugin_uri[1];
+	$plugin->description = $description[1];
+	$plugin->author = $author_name[1];
+	$plugin->author_uri = $author_uri[1];
+	$plugin->version = $version;
+	$plugin->min_version = $min_version;
 	return $plugin;
 }
 
@@ -254,13 +212,65 @@ function lilina_plugins_list($directory){
  *
  */
 function lilina_plugins_init() {
-	$current_plugins = get_option('activated_plugins');
-	if ( is_array($current_plugins) ) {
-		foreach ($current_plugins as $plugin) {
-			if ('' != $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
-				include_once(LILINA_INCPATH . '/plugins/' . $plugin);
-		}
+	$data = new DataHandler();
+	$plugins = $data->load('plugins.data');
+	if($plugins === null)
+		return;
+
+	$plugins = unserialize($plugins);
+	
+	if(!is_array($plugins) || empty($plugins))
+		return;
+
+	foreach ($plugins as $plugin) {
+		if ('' !== $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
+			include_once(LILINA_INCPATH . '/plugins/' . $plugin);
 	}
+
+	global $current_plugins;
+	$current_plugins = $plugins;
 }
+
+/**
+ * Validate a plugin filename
+ *
+ * Checks that the file exists and {@link validate_file() is valid file}. If
+ * it either condition is not met, returns false and adds an error to the
+ * {@see MessageHandler} stack.
+ *
+ * @since 1.0
+ *
+ * @param $filename Path to plugin
+ * @return bool True if file exists and is valid, else false
+ */
+function validate_plugin($filename) {
+	switch(validate_file($filename)) {
+		case 1:
+		case 2:
+			MessageHandler::add_error(_r('Invalid plugin path.'));
+			break;
+
+		default:
+			if(file_exists(get_plugin_dir() . $plugin))
+				return true;
+			else
+				MessageHandler::add_error(_r('Plugin file was not found.'));
+	}
+
+	return false;
+}
+
+/**
+ * Get the plugin storage directory
+ *
+ * @since 1.0
+ *
+ * @return string Path to plugin directory
+ */
+function get_plugin_dir() {
+	return LILINA_INCPATH . '/plugins/';
+}
+
 lilina_plugins_init();
+require_once(LILINA_INCPATH . '/core/default-actions.php');
 ?>
