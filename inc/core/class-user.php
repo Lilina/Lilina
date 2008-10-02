@@ -7,14 +7,22 @@
 class User {
 	/**
 	 * Contains the supplied username
+	 * @var string
 	 */
 	var $user;
 	var $info;
-	
+
 	/**
 	 * Contains the (hashed) supplied password
+	 * @var string
 	 */
 	var $password;
+
+	/**
+	 * Contains the unhashed supplied password
+	 * @var string
+	 */
+	var $raw;
 
 	/**
 	 * User() - Constructor for the class
@@ -27,6 +35,7 @@ class User {
 			$password = isset($_POST['password']) ? $_POST['password'] : false;
 
 		$this->user = $user;
+		$this->raw = $password;
 		$this->password = $this->hash($password);
 	}
 
@@ -65,6 +74,38 @@ class User {
 
 		/** Uh oh! */
 		return false;
+	}
+
+	/**
+	 * Generates a cryptographic hash of supplied string
+	 *
+	 * Generates the correct hash
+	 */
+	function hash($password) {
+		// Check for MD5
+		if(strlen(get_option('auth', 'pass')) === 32)
+			return hash('md5', $password);
+		
+		return hash('sha512', get_option('salt') . $password);
+	}
+
+	/**
+	 * Upgrades the password from MD5 to SHA512
+	 *
+	 * Checks the
+	 * @param string $u Overriding username
+	 * @param string $p Overriding password
+	 * @return bool
+	 */
+	function upgrade() {
+		if(strlen($pass) !== 32)
+			return true;
+
+		if($this->password !== get_option('auth', 'pass'))
+			return false;
+
+		$this->new_password = hash('sha512', get_option('salt') . $this->raw);
+		return true;
 	}
 
 	/**
