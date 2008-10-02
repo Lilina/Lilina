@@ -98,7 +98,7 @@ if(!defined('LOADED_SETTINGS')) {
 
 	//Settings that use other settings variables
 	if(!isset($settings['cachedir']))
-		$settings['cachedir'] = $settings['path'] . '/cache/';
+		$settings['cachedir'] = $settings['path'] . '/content/system/cache/';
 
 	if(!isset($settings['files']))
 		$settings['files'] = array(
@@ -107,8 +107,6 @@ if(!defined('LOADED_SETTINGS')) {
 			'settings'	=> $settings['path'] . '/conf/settings.php',
 			'plugins'	=> $settings['path'] . '/conf/plugins.data'
 		);
-
-	$plugins							= '';
 }
 
 
