@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-defined('LILINA_PATH') or die('Restricted access');
+require_once('admin.php');
 
 global $page;
 $body = '';

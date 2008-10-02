@@ -93,7 +93,7 @@ if(has_items(false)) {
 }
 elseif(!has_feeds()) {
 ?>
-	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin.php">your admin panel</a></div>
+	<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">You haven't added any feeds yet. Add them from <a href="admin/">your admin panel</a></div>
 <?php
 }
 else {

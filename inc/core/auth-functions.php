@@ -88,7 +88,10 @@ function lilina_check_user_pass($un, $pw) {
  */
 function lilina_login_form($user, $pass) {
 	if(($error = lilina_auth($user, $pass)) === 'error' || $error == false) {
-		require_once(LILINA_INCPATH . '/pages/admin-login.php');
+		header('HTTP/1.1 301 Moved Permanently');
+		header('Location: ' . get_option('baseurl') . 'admin/login.php');
+		header('Connection: close');
+		die();
 	}
 }
 ?>

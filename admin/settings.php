@@ -6,8 +6,8 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+require_once('admin.php');
 
-defined('LILINA_PATH') or die('Restricted access');
 
 /**
  * Activate a plugin
@@ -65,10 +65,10 @@ elseif(isset($_REQUEST['deactivate_plugin'])) {
 
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
-admin_header();
+admin_header(_r('Settings'));
 ?>
 <h1><?php _e('Settings'); ?></h1>
-<form action="admin.php?page=settings" method="post">
+<form action="settings.php" method="post">
 	<fieldset id="general">
 		<legend><?php _e('General Settings'); ?></legend>
 		<div class="row">
@@ -114,7 +114,7 @@ admin_header();
 	<input type="hidden" name="page" value="settings" />
 	<input type="submit" value="<?php _e('Save') ?>" class="submit" disabled="disabled" />
 </form>
-<form action="admin.php?page=settings" method="post">
+<form action="settings.php" method="post">
 	<fieldset id="plugins">
 		<legend><?php _e('Plugin Management'); ?></legend>
 		<table class="item-table">
@@ -139,7 +139,7 @@ foreach(lilina_plugins_list(get_plugin_dir()) as $plugin):
 					<td><?php echo $plugin_meta->version ?></td>
 					<td><?php echo $plugin_meta->description ?></td>
 					<td><?php if(isset($current_plugins[md5($plugin_file)])) _e('Activated'); else _e('Deactivated'); ?></td>
-					<td><a href="admin.php?page=settings&amp;activate_plugin=<?php echo $plugin_file ?>"><?php if(isset($current_plugins[md5($plugin_file)])) _e('Dectivate'); else _e('Activate'); ?></a></td>
+					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>"><?php if(isset($current_plugins[md5($plugin_file)])) _e('Dectivate'); else _e('Activate'); ?></a></td>
 				</td>
 <?php
 endforeach;

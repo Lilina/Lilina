@@ -50,7 +50,7 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 
 <div id="navigation">
   	<span class="site-name"><?php template_sitename() ?></span> |
-	<a href="admin.php"><?php echo ($test ? 'Admin Panel' : 'Log In' ); ?></a> |
+	<a href="admin/"><?php echo ($test ? 'Admin Panel' : 'Log In' ); ?></a> |
 	<a href="atom.php">Subscribe to Feed</a> |
 	<a href="opml.php">OPML</a>
 </div>
