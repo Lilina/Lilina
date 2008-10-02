@@ -187,7 +187,7 @@ function get_temp_dir() {
 	if ( defined('LILINA_TEMP_DIR') )
 		return trailingslashit(LILINA_TEMP_DIR);
 
-	$temp = LILINA_PATH . '/cache';
+	$temp = LILINA_PATH . '/content/system/temp';
 	if ( is_dir($temp) && is_writable($temp) )
 		return $temp;
 

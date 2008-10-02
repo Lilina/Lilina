@@ -33,7 +33,11 @@ function lilina_check_installed() {
  * {{@internal Missing Long Description}}}
  */
 function lilina_is_installed() {
-	if(file_exists(LILINA_PATH . '/conf/settings.php')) {
+	if(file_exists(LILINA_PATH . '/content/system/config/settings.php')) {
+		return true;
+	}
+	elseif(file_exists(LILINA_PATH . '/conf/settings.php')) {
+		// Special case, for an old friend ;-)
 		return true;
 	}
 	return false;
@@ -47,6 +51,12 @@ function lilina_is_installed() {
  */
 function lilina_settings_current() {
 	global $settings;
+
+	// Need to check this again, due to the above function
+	if(!file_exists(LILINA_PATH . '/content/system/config/settings.php') && file_exists(LILINA_PATH . '/conf/settings.php')) {
+		return false;
+	}
+
 	require_once(LILINA_PATH . '/inc/core/conf.php');
 
 	global $lilina;
@@ -55,6 +65,10 @@ function lilina_settings_current() {
 	require_once(LILINA_PATH . '/inc/core/file-functions.php');
 
 	global $data;
+	
+	if(!file_exists($settings['files']['feeds']))
+		return false;
+
 	$data = lilina_load_feeds($settings['files']['feeds']);
 
 	if( isset($settings['settings_version'])

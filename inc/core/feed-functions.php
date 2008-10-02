@@ -25,7 +25,7 @@ function lilina_return_items($input) {
 	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 	/** This disables sorting too, we handle that ourselves later */
 	$feed->set_stupidly_fast(true);
-	$feed->set_cache_location(LILINA_PATH . '/cache');
+	$feed->set_cache_location(get_option('cachedir'));
 	$feed->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
 
 	foreach($input['feeds'] as $the_feed)
@@ -155,13 +155,19 @@ function add_feed($url, $name = '', $cat = 'default') {
 function save_feeds() {
 	global $data;
 	if(!is_writable(get_option('files', 'feeds'))) {
-		add_notice(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), get_option('files', 'feeds')));
+		if(function_exists('_r'))
+			add_notice(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), get_option('files', 'feeds')));
+		else
+			add_notice(sprintf('%s is not writable by the server. Please make sure the server can write to it', get_option('files', 'feeds')));
 		return false;
 	}
 	$sdata	= base64_encode(serialize($data)) ;
 	$fp		= fopen(get_option('files', 'feeds'),'w') ;
 	if(!$fp) {
-		add_notice(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), get_option('files', 'feeds')));
+		if(function_exists('_r'))
+			add_notice(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), get_option('files', 'feeds')));
+		else
+			add_notice(sprintf('An error occurred when saving to %s and your data may not have been saved', get_option('files', 'feeds')));
 		return false;
 	}
 	fputs($fp,$sdata) ;

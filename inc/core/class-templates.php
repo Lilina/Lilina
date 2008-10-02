@@ -26,14 +26,15 @@ class Templates {
 	 * @see get_option
 	 */
 	public static function load($view = 'chrono', $meta = '') {
-		lilina_cache_start();
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
+		$cache = new CacheHandler();
+		$cache->begin_caching($_SERVER['PHP_SELF']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
 			require_once($current['Template Dir'] . '/' . $view_file);
 		else
 			require_once($current['Template Dir'] . '/index.php');
-		lilina_cache_end();
+		$cache->end_caching($_SERVER['PHP_SELF']);
 	}
 
 	/**

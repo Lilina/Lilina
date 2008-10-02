@@ -17,10 +17,10 @@ $lilina			= array(
 							'version'	=> 146
 							),
 						'feed-storage' => array(
-							'version'	=> 147
+							'version'	=> 237
 							),
 						'settings-storage' => array(
-							'version'	=> 147
+							'version'	=> 237
 							),
 						);
 ?>

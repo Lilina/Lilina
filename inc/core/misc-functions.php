@@ -357,15 +357,12 @@ function shorten($string, $length) {
 /**
  * Get the path to the data directory
  *
- * This will be moved out of /cache/ when we uphaul the directories. Storing
- * it there is messy.
- *
  * @since 1.0
  * @uses get_option()
  *
  * @return string
  */
 function get_data_dir() {
-	return get_option('cachedir') . '/data';
+	return LILINA_DATA_DIR;
 }
 ?>

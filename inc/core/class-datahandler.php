@@ -90,7 +90,7 @@ class DataHandler {
 	 * @uses check() Check if cache file is still valid
 	 *
 	 * @param string $id Unique ID for content type, used to distinguish between different caches
-	 * @return bool|string Content of the cached file if valid, otherwise false
+	 * @return null|string Content of the cached file if valid, otherwise null
 	 */
 	public function load($filename) {
 		return $this->get($this->directory . $filename);

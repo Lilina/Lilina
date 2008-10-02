@@ -1,14 +1,14 @@
 <?php
 /**
- * @todo Move to admin/index.php
+ *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+require_once('admin.php');
 
-defined('LILINA_PATH') or die('Restricted access');
-admin_header();
+admin_header(_r('Home'));
 ?>
 <h2>Admin Panel</h2>
 <div class="home_container" id="contain_feeds">

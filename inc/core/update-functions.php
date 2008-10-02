@@ -44,8 +44,11 @@ function lilina_version_check() {
 		"Lilina/$lilina_version;  " . get_option('baseurl')
 	);
 
-	if ( !$request->success )
+	if ( !$request->success ) {
+		// Save it anyway
+		$data->save('core-update-check.data', serialize($new_option));
 		return false;
+	}
 
 	$body = trim( $request->body );
 	$body = str_replace(array("\r\n", "\r"), "\n", $body);

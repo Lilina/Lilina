@@ -15,9 +15,9 @@
  * All included files (external libraries excluded) must check for presence of
  * this define (using defined() ) to avoid the files being accessed directly
  */
-define('LILINA_ADMIN', 1) ;
-define('LILINA_PATH', dirname(__FILE__));
+define('LILINA_PATH', dirname(dirname(__FILE__)));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
+define('LILINA_ADMIN', 1) ;
 
 //Protect from register_globals
 $settings	= 0;
@@ -27,43 +27,14 @@ global $settings;
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 lilina_check_installed();
 
-$authed		= false;
-$result		= '';
-$page		= (isset($_REQUEST['page'])? $_REQUEST['page'] : '');
-$page		= htmlspecialchars($page);
-
-//Add variables
-
-//Change variables
-$change_name	= (isset($_REQUEST['change_name']))? $_REQUEST['change_name'] : '';
-$change_name	= htmlspecialchars($change_name);
-$change_url	= (isset($_REQUEST['change_url']))? $_REQUEST['change_url'] : '';
-$change_id	= (isset($_REQUEST['change_id']))? $_REQUEST['change_id'] : '';
-$change_id	= htmlspecialchars($change_id);
-
-//Remove variables
-$remove_id	= (isset($_REQUEST['remove']))? $_REQUEST['remove'] : '';
-$remove_id	= htmlspecialchars($remove_id);
-
-//Import variable
-$import_url	= (isset($_REQUEST['import_url']))? $_REQUEST['import_url'] : '';
-$import_url	= htmlspecialchars($import_url);
-
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
-//Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 
 do_action('admin_init');
 do_action('init');
 
-/**
- * Contains all feed names, URLs and (eventually) categories
- * @global array $data
- */
-$data		= file_get_contents(get_option('files', 'feeds')) ;
-$data		= unserialize( base64_decode($data) ) ;
 //Our current version
 require_once(LILINA_INCPATH . '/core/version.php');
 
@@ -90,65 +61,26 @@ if(isset($_REQUEST['logout']) && $_REQUEST['logout'] == 'logout') {
 /** This sanitises all input variables, so we don't have to worry about them later */
 lilina_level_playing_field();
 
+function admin_header($title, $parent_file = false) {
+	$self = preg_replace('|^.*/admin/|i', '', $_SERVER['PHP_SELF']);
+	$self = preg_replace('|^.*/plugins/|i', '', $self);
 
-
-$admin_pages = array(
-	'feeds' => '/pages/admin-feeds.php',
-	'settings' => '/pages/admin-settings.php',
-	'home' => '/pages/admin-home.php',
-);
-$admin_pages = apply_filters('admin_pages', $admin_pages, $page);
-
-if(!isset($admin_pages[$page]))
-	$page = 'home';
-
-require_once(LILINA_INCPATH . $admin_pages[$page]);
-
-
-switch($action){
-	case 'change':
-		$data['feeds'][$change_id]['feed'] = $change_url;
-		if(!empty($change_name)) {
-			$data['feeds'][$change_id]['name'] = $change_name;
-		}
-		else {
-			//Need to have a similar function to add_feed()
-		}
-		$sdata	= base64_encode(serialize($data)) ;
-		$fp		= fopen(get_option('files', 'feeds'),'w') ;
-		if(!$fp) { echo 'Error';}
-		fputs($fp,$sdata) ;
-		fclose($fp) ;
-		add_notice(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
-	break;
-	case 'import':
-	break;
-	case 'reset':
-		unlink(LILINA_PATH . '/conf/settings.php');
-		printf(_r('settings.php successfully removed. <a href="%s">Reinstall</a>'), $_SERVER['PHP_SELF']);
-		die();
-	break;
-}
-
-function admin_header() {
-	global $admin_pages, $page;
-	$current_page = strtolower(basename($admin_pages[$page]));
 	header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Admin Panel</title>
+<title><?php echo $title ?> &mdash; <?php echo get_option('sitename'); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="inc/templates/default/admin.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl'); ?>admin/admin.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
 <!--<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.json.js"></script>-->
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/admin.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
 </head>
 <body id="admin-<?php echo $page; ?>" class="admin-page">
 <div id="header">
@@ -156,42 +88,44 @@ function admin_header() {
 	<ul id="navigation">
 <?php
 	$navigation = array(
-		array(_r('Dashboard'), 'admin-home.php', ''),
-		array(_r('Feeds'), 'admin-feeds.php', 'feeds'),
-		array(_r('Settings'), 'admin-settings.php', 'settings'),
+		array(_r('Dashboard'), 'index.php', ''),
+		array(_r('Feeds'), 'feeds.php', 'feeds'),
+		array(_r('Settings'), 'settings.php', 'settings'),
 	);
-	$subnavigation = apply_filters('subnavigation', array(
-		'admin-home.php' => array(
-			array(_r('Home'), 'admin-home.php', 'home'),
-		),
-		'admin-feeds.php' => array(
-			array(_r('Manage'), 'admin-feeds.php', 'feeds'),
-		),
-		'admin-settings.php' => array(
-			array(_r('General'), 'admin-settings.php', 'settings'),
-		),
-	), $navigation, $current_page);
-
 	$navigation = apply_filters('navigation', $navigation);
+
+	$subnavigation = apply_filters('subnavigation', array(
+		'index.php' => array(
+			array(_r('Home'), 'index.php', 'home'),
+		),
+		'feeds.php' => array(
+			array(_r('Manage'), 'feeds.php', 'feeds'),
+			array(_r('Add'), 'feed-add.php', 'feeds'),
+		),
+		'settings.php' => array(
+			array(_r('General'), 'settings.php', 'settings'),
+		),
+	), $navigation, $self);
 
 	foreach($navigation as $nav_item) {
 		$class = 'item';
-		if($nav_item[1] == $current_page) {
+		if((strcmp($self, $nav_item[1]) == 0) || ($parent_file && ($nav_item[1] == $parent_file))) {
 			$class .= ' current';
 		}
-		if(isset($subnavigation[$current_page]))
+
+		if(isset($subnavigation[$nav_item[1]]) && count($subnavigation[$nav_item[1]]) > 1)
 			$class .= ' has-submenu';
 
-		echo "<li class='$class'><a href='admin.php?page={$nav_item[2]}'>{$nav_item[0]}</a>";
+		echo "<li class='$class'><a href='{$nav_item[1]}'>{$nav_item[0]}</a>";
 		
-		if(!isset($subnavigation[$nav_item[1]])) {
+		if(!isset($subnavigation[$nav_item[1]]) || count($subnavigation[$nav_item[1]]) < 2) {
 			echo "</li>";
 			continue;
 		}
 		
 		echo '<ul class="submenu">';
 		foreach($subnavigation[$nav_item[1]] as $subnav_item) {
-			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='admin.php?page={$subnav_item[2]}'>{$subnav_item[0]}</a></li>";
+			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='{$subnav_item[1]}'>{$subnav_item[0]}</a></li>";
 		}
 		echo '</ul>';
 		

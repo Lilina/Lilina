@@ -1,13 +1,14 @@
 <?php
 /**
  * Feeds page
- * @todo Move to admin/feeds.php
+ *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-defined('LILINA_PATH') or die('Restricted access');
+require_once('admin.php');
+
 require_once(LILINA_INCPATH . '/core/category-functions.php');
 
 /**
@@ -55,11 +56,23 @@ function feed_list_table() {
 	}
 }
 
+$change_name	= (isset($_REQUEST['change_name']))? $_REQUEST['change_name'] : '';
+$change_name	= htmlspecialchars($change_name);
+$change_url	= (isset($_REQUEST['change_url']))? $_REQUEST['change_url'] : '';
+$change_id	= (isset($_REQUEST['change_id']))? $_REQUEST['change_id'] : '';
+$change_id	= htmlspecialchars($change_id);
+
+//Remove variables
+$remove_id	= (isset($_REQUEST['remove']))? $_REQUEST['remove'] : '';
+$remove_id	= htmlspecialchars($remove_id);
+
+//Import variable
 $action = (isset($_REQUEST['action'])? $_REQUEST['action'] : '');
 $importing = false;
 
 /** Make sure we're actually adding */
-if($action == 'add') {
+switch($action) {
+	case 'add':
 	/** We need some sort of value here */
 	if( !isset($_REQUEST['add_name']) )
 		$_REQUEST['add_name'] = '';
@@ -68,23 +81,42 @@ if($action == 'add') {
 		add_notice(_r('No URL specified'));
 	else
 		add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
-}
-elseif($action == 'import') {
-	if(!isset($_REQUEST['import_url']))
-		add_notice(_r('No URL specified to import OPML from'));
-	else
-		$importing = import_opml($_REQUEST['import_url']);
-}
-elseif($action == 'remove') {
-	$removed = $data['feeds'][$remove_id];
-	unset($data['feeds'][$remove_id]);
-	$data['feeds'] = array_values($data['feeds']);
-	$sdata	= base64_encode(serialize($data)) ;
-	$fp		= fopen(get_option('files', 'feeds'),'w') ;
-	if(!$fp) { echo 'Error';}
-	fputs($fp,$sdata) ;
-	fclose($fp) ;
-	add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+	break;
+
+	case 'import':
+		if(!isset($_REQUEST['import_url']))
+			add_notice(_r('No URL specified to import OPML from'));
+		else
+			$importing = import_opml($_REQUEST['import_url']);
+		break;
+
+	case 'remove':
+		$removed = $data['feeds'][$remove_id];
+		unset($data['feeds'][$remove_id]);
+		$data['feeds'] = array_values($data['feeds']);
+		$sdata	= base64_encode(serialize($data)) ;
+		$fp		= fopen(get_option('files', 'feeds'),'w') ;
+		if(!$fp) { echo 'Error';}
+		fputs($fp,$sdata) ;
+		fclose($fp) ;
+		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+		break;
+
+	case 'change':
+		$data['feeds'][$change_id]['feed'] = $change_url;
+		if(!empty($change_name)) {
+			$data['feeds'][$change_id]['name'] = $change_name;
+		}
+		else {
+			//Need to have a similar function to add_feed()
+		}
+		$sdata	= base64_encode(serialize($data)) ;
+		$fp		= fopen(get_option('files', 'feeds'),'w') ;
+		if(!$fp) { echo 'Error';}
+		fputs($fp,$sdata) ;
+		fclose($fp) ;
+		add_notice(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
+	break;
 }
 if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {
 	save_feeds();
@@ -96,7 +128,7 @@ elseif(isset($_REQUEST['list']) && isset($_REQUEST['ajax'])) {
 }
 
 
-admin_header();
+admin_header(_r('Feeds'));
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
@@ -120,7 +152,7 @@ admin_header();
 	</tbody>
 </table>
 <div id="changer">
-	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" id="change_form">
+	<form action="feeds.php" method="get" id="change_form">
 		<fieldset id="change">
 			<legend><?php _e('Edit Feed'); ?></legend>
 			<div class="row">
@@ -142,7 +174,6 @@ admin_header();
 				?>
 				</select>
 			</div>
-			<input type="hidden" name="page" value="feeds" />
 			<input type="hidden" name="action" value="change" />
 			<div id="changer_id" class="row">
 				<label for="change_id"><?php _e('Feed ID'); ?>:</label>
@@ -152,7 +183,7 @@ admin_header();
 		</fieldset>
 	</form>
 </div>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" id="add_form">
+<form action="feeds.php" method="get" id="add_form">
 	<fieldset id="add">
 		<legend><?php _e('Add Feed'); ?></legend>
 		<div class="row">
@@ -165,19 +196,17 @@ admin_header();
 			<input type="text" name="add_url" id="add_url" />
 			<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
 		</div>
-		<input type="hidden" name="page" value="feeds" />
 		<input type="hidden" name="action" value="add" />
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
 	</fieldset>
 </form>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" id="import_form">
+<form action="feeds.php" method="get" id="import_form">
 	<fieldset id="import">
 		<legend><?php _e('Import Feeds'); ?></legend>
 		<div class="row">
 			<label for="import_url"><?php _e('OPML address (URL)'); ?>:</label>
 			<input type="text" name="import_url" id="import_url" />
 		</div>
-		<input type="hidden" name="page" value="feeds" />
 		<input type="hidden" name="action" value="import" />
 		<input type="submit" value="<?php _e('Import'); ?>" class="submit" />
 	</fieldset>

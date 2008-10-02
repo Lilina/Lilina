@@ -78,7 +78,7 @@ if(!defined('LOADED_SETTINGS')) {
 	 * Holds the new $settings variables which overwrites
 	 * all our old settings here.
 	 */
-	require_once(LILINA_PATH . '/conf/settings.php') ;
+	require_once(LILINA_PATH . '/content/system/config/settings.php') ;
 
 	/**
 	 * Unserialize any settings which were serialized, e.g. objects
@@ -97,16 +97,26 @@ if(!defined('LOADED_SETTINGS')) {
 		define('LANGDIR', '/inc/locales');
 
 	//Settings that use other settings variables
-	if(!isset($settings['cachedir']))
-		$settings['cachedir'] = $settings['path'] . '/content/system/cache/';
 
 	if(!isset($settings['files']))
 		$settings['files'] = array(
-			'feeds'		=> $settings['path'] . '/conf/feeds.data',
+			'feeds'		=> $settings['path'] . '/content/system/config/feeds.data',
 			'times'		=> $settings['path'] . '/conf/time.data',
 			'settings'	=> $settings['path'] . '/conf/settings.php',
 			'plugins'	=> $settings['path'] . '/conf/plugins.data'
 		);
+
+	if(!defined('LILINA_CONTENT_DIR'))
+		define('LILINA_CONTENT_DIR', LILINA_PATH . '/content');
+
+	if(!defined('LILINA_CACHE_DIR'))
+		define('LILINA_CACHE_DIR', LILINA_CONTENT_DIR . '/system/cache/');
+
+	if(!defined('LILINA_DATA_DIR'))
+		define('LILINA_DATA_DIR', LILINA_CONTENT_DIR . '/system/data/');
+
+	if(!isset($settings['cachedir']))
+		$settings['cachedir'] = LILINA_CACHE_DIR;
 }
 
 

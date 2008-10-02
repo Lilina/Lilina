@@ -21,7 +21,6 @@ if(version_compare('5.2', phpversion(), '>'))
 
 //Make sure Lilina's not installed
 if(lilina_is_installed()) {
-	require_once(LILINA_PATH . '/inc/core/conf.php');
 	if( !lilina_settings_current() ) {
 		if(isset($_GET['action']) && $_GET['action'] == 'upgrade') {
 			upgrade();
@@ -153,12 +152,12 @@ function install($sitename, $username, $password) {
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";
 ?>";
-		if( !is_writable(LILINA_PATH . '/conf/')
-			|| !($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+'))
+		if( !is_writable(LILINA_PATH . '/content/system/config/')
+			|| !($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+'))
 			|| !is_resource($settings_file) ) {
 			?>
 			<h1>Uh oh!</h1>
-			<p>Something happened and <code><?php echo LILINA_PATH; ?>/conf/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
+			<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
 			<form action="<?php /** @todo This is unsafe. Convert */ echo $_SERVER['PHP_SELF']; ?>" method="post">
 			<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 			<input type="hidden" name="username" value="<?php echo $username; ?>" />
@@ -170,11 +169,11 @@ function install($sitename, $username, $password) {
 			<?php
 			return false;
 		}
-		if(file_exists(LILINA_PATH . '/conf/feeds.data')) {
+		if(file_exists(LILINA_PATH . '/content/system/config/feeds.data')) {
 			echo "<p>Using existing feeds data</p>\n";
 		}
 		else {
-			$feeds_file = @fopen(LILINA_PATH . '/conf/feeds.data', 'w+');
+			$feeds_file = @fopen(LILINA_PATH . '/content/system/config/feeds.data', 'w+');
 			if(is_resource($feeds_file)) {
 				$data['version'] = $lilina['feed-storage']['version'];
 				$sdata	= base64_encode(serialize($data)) ;
@@ -197,23 +196,23 @@ function install($sitename, $username, $password) {
 				fclose($feeds_file);
 			}
 			else {
-				echo "<p>Couldn't create <code>conf/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
+				echo "<p>Couldn't create <code>content/system/config/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
 			}
 		}
 
 		/** Make sure it's writable now */
-		if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
+		if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
 			/** We'll try this first */
-			chmod(LILINA_PATH . '/conf/feeds.data', 0644);
-			if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
+			chmod(LILINA_PATH . '/content/system/config/feeds.data', 0644);
+			if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
 				/** Nope, let's give group permissions too */
-				chmod(LILINA_PATH . '/conf/feeds.data', 0664);
-				if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
+				chmod(LILINA_PATH . '/content/system/config/feeds.data', 0664);
+				if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
 					/** Still no dice, give write permissions to all */
-					chmod(LILINA_PATH . '/conf/feeds.data', 0666);
+					chmod(LILINA_PATH . '/content/system/config/feeds.data', 0666);
 					if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
 						/** OK, we can't make it writable ourselves. Tell the user this */
-						echo "<p>Couldn't make <code>conf/feeds.data</code> writable. Please ensure you make it writable yourself</p>\n";
+						echo "<p>Couldn't make <code>content/system/config/feeds.data</code> writable. Please ensure you make it writable yourself</p>\n";
 					}
 				}
 			}
@@ -249,15 +248,21 @@ function upgrade() {
 
 	/** Rename possible old files */
 	if(@file_exists(LILINA_PATH . '/.myfeeds.data'))
-		rename(LILINA_PATH . '/.myfeeds.data', LILINA_PATH . '/conf/feeds.data');
+		rename(LILINA_PATH . '/.myfeeds.data', LILINA_PATH . '/content/system/config/feeds.data');
 	elseif(@file_exists(LILINA_PATH . '/conf/.myfeeds.data'))
-		rename(LILINA_PATH . '/conf/.myfeeds.data', LILINA_PATH . '/conf/feeds.data');
+		rename(LILINA_PATH . '/conf/.myfeeds.data', LILINA_PATH . '/content/system/config/feeds.data');
 	elseif(@file_exists(LILINA_PATH . '/conf/.feeds.data'))
-		rename(LILINA_PATH . '/conf/.feeds.data', LILINA_PATH . '/conf/feeds.data');
+		rename(LILINA_PATH . '/conf/.feeds.data', LILINA_PATH . '/content/system/config/feeds.data');
+	elseif(@file_exists(LILINA_PATH . '/conf/feeds.data'))
+		rename(LILINA_PATH . '/conf/feeds.data', LILINA_PATH . '/content/system/config/feeds.data');
 
+	if(@file_exists(LILINA_PATH . '/conf/settings.php'))
+		rename(LILINA_PATH . '/conf/settings.php', LILINA_PATH . '/content/system/config/settings.php');
 
-	if(@file_exists(LILINA_PATH . '/conf/feeds.data')) {
-		$feeds = file_get_contents(LILINA_PATH . '/conf/feeds.data');
+	require_once(LILINA_PATH . '/inc/core/conf.php');
+
+	if(@file_exists(LILINA_PATH . '/content/system/config/feeds.data')) {
+		$feeds = file_get_contents(LILINA_PATH . '/content/system/config/feeds.data');
 		$feeds = unserialize( base64_decode($feeds) );
 
 		/** Are we pre-versioned? */
@@ -269,10 +274,6 @@ function upgrade() {
 				foreach($feeds['feeds'] as $new_feed) {
 					add_feed($new_feed);
 				}
-				global $data;
-				$data = $feeds;
-				$data['version'] = $lilina['feed-storage']['version'];
-				save_feeds();
 			}
 
 			/** We must be in between 0.7 and r147, when we started versioning */
@@ -280,42 +281,37 @@ function upgrade() {
 				foreach($feeds['feeds'] as $new_feed) {
 					add_feed($new_feed['feed'], $new_feed['name']);
 				}
-				global $data;
-				$data = $feeds;
-				$data['version'] = $lilina['feed-storage']['version'];
-				save_feeds();
 			}
 
 			/** The feeds are up to date, but we don't have a version */
 			else {
-				global $data;
-				$data = $feeds;
-				$data['version'] = $lilina['feed-storage']['version'];
-				save_feeds();
 			}
 
 		}
 		elseif($feeds['version'] != $lilina['feed-storage']['version']) {
-			switch($feeds['version']):
-				case 147:
+			/** Note the lack of breaks here, this means the cases cascade */
+			switch(true) {
+				case $feeds['version'] < 147:
 					/** We had a b0rked upgrader, so we need to make sure everything is okay */
 					foreach($feeds['feeds'] as $this_feed) {
 						
 					}
-			endswitch;
-			global $data;
-			$data = $feeds;
-			$data['version'] = $lilina['feed-storage']['version'];
-			save_feeds();
+				case $feeds['version'] < 237:
+					/** We moved stuff around this version, but we've handled that above. */
+			}
 		}
 		else {
 		}
+		global $data;
+		$data = $feeds;
+		$data['version'] = $lilina['feed-storage']['version'];
+		save_feeds();
 	} //end file_exists()
 
 
 	/** Just in case... */
 	unset($BASEURL);
-	require(LILINA_PATH . '/conf/settings.php');
+	require(LILINA_PATH . '/content/system/config/settings.php');
 
 	if(isset($BASEURL) && !empty($BASEURL)) {
 		// 0.7 or below
@@ -334,8 +330,8 @@ function upgrade() {
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>";
 
-		if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving conf/settings.php failed</p>', 'Upgrade failed');
+		if(!($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+')) || !is_resource($settings_file)) {
+			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
@@ -343,20 +339,48 @@ function upgrade() {
 	elseif(!isset($settings['settings_version'])) {
 		// Between 0.7 and r147
 		// Fine to just use existing settings
-		$raw_php		= file_get_contents(LILINA_PATH . '/conf/settings.php');
+		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
 		$raw_php		= str_replace('?>', "// Version of these settings; don't change this\n" .
 							"\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>", $raw_php);
 
 		if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving conf/settings.php failed</p>', 'Upgrade failed');
+			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
 	}
 	elseif($settings['settings_version'] != $lilina['settings-storage']['version']) {
-		
+		/** Note the lack of breaks here, this means the cases cascade */
+		switch(true) {
+			case $settings['settings_version'] < 237:
+				/** We moved stuff around this version, but we've handled that above. */
+		}
+
+		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
+		$raw_php		= str_replace(
+			"\$settings['settings_version'] = " . $settings['settings_version'] . ";",
+			"\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";",
+			$raw_php);
+
+		if(!($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+')) || !is_resource($settings_file)) {
+			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
+		}
+		fputs($settings_file, $raw_php);
+		fclose($settings_file);
 	}
-	lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
+
+	$string = '';
+	if(count(MessageHandler::get()) === 0) {
+		lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
+		return;
+	}
+	elseif(count(MessageHandler::get()) === 1) {
+		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
+	}
+	else
+		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
+
+	lilina_nice_die($string . implode('</li><li>', MessageHandler::get()) . '</li></ul>', 'Upgrade failed');
 }
 
 //Initialize variables

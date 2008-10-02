@@ -46,10 +46,9 @@ var feeds = {
 			humanMsg.displayMsg('No feed URL supplied');
 			return false;
 		}
-		$.post("admin.php", {
+		$.post("feeds.php", {
 			action: "add",
 			ajax: true,
-			page: "feeds",
 			add_name: $("#add_name").val(),
 			add_url: $("#add_url").val()
 		}, function (data) {
@@ -81,28 +80,34 @@ var feeds = {
 			humanMsg.displayMsg('No feed ID supplied');
 			return false;
 		}
-		$.post("admin.php", {
+		$.post("feeds.php", {
 			action: "change",
 			ajax: true,
-			page: "feeds",
 			change_name: $("#change_name").val(),
 			change_id: $("#change_id").val(),
 			change_url: $("#change_url").val()
 		}, function (data) {
-			humanMsg.displayMsg(data);
+			console.log(data);
+			if(data.errors.length == 0) {
+				// Clear the values
+				$("#add_url").val('');
+				$("#add_name").val('');
 
-			// Clear the values
-			$("#change_url").val('');
-			$("#change_name").val('');
-			$("#change_id").val('');
-
-			admin.reload_table();
+				jQuery.each(data.messages, function (message) {
+					humanMsg.displayMsg(message['message']);
+				});
+				feeds.reload_table();
+				return;
+			}
+			jQuery.each(data.errors, function(error) {
+				humanMsg.displayMsg(error['message'], 'error');
+			});
 		},
 		"json"
 		);
 	},
 	reload_table: function () {
-		$.get("admin.php", {ajax: true, list: true, page: 'feeds'}, function (data) {
+		$.get("feeds.php", {ajax: true, list: true}, function (data) {
 			$("#feeds_list tbody").html(data);
 		});
 	},

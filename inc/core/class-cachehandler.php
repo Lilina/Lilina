@@ -35,12 +35,45 @@ class CacheHandler extends DataHandler {
 	}
 
 	/**
+	 * Begin the caching process
+	 *
+	 * Loads the cache if valid. If not, begins the output buffer
+	 *
+	 * @since 1.0
+	 * @uses load()
+	 *
+	 * @param $id Unique ID for content type, used to distinguish between different caches
+	 */
+	public function begin_caching($id) {
+		if(apply_filters('cache_result', $content = $this->load($id)) !== null)
+			die(apply_filters('cache_pre_display', $content));
+
+		ob_start();
+	}
+
+	/**
+	 * End the caching process
+	 *
+	 * Gets the content from the output buffer and saves to the file
+	 *
+	 * @since 1.0
+	 * @uses save()
+	 *
+	 * @param $id Unique ID for content type, used to distinguish between different caches
+	 */
+	public function end_caching($id) {
+		$contents = apply_filters('cache_pre_save', ob_get_contents());
+		$this->save($id, $contents);
+	}
+
+	/**
 	 * Ends the output handler
 	 *
 	 * Saves output as a cached file and flushes the output cache to the display
 	 *
 	 * @since 1.0
 	 * @uses $directory
+	 * @uses put()
 	 *
 	 * @param string $id Unique ID for content type, used to distinguish between different caches
 	 * @param string $content Content to save to cache
@@ -64,7 +97,7 @@ class CacheHandler extends DataHandler {
 	 * @uses check() Check if cache file is still valid
 	 *
 	 * @param string $id Unique ID for content type, used to distinguish between different caches
-	 * @return bool|string Content of the cached file if valid, otherwise false
+	 * @return null|string Content of the cached file if valid, otherwise null
 	 */
 	public function load($id) {
 		return $this->get($this->directory . md5($id) . '.cache');

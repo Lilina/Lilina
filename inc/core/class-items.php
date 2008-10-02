@@ -106,7 +106,7 @@ class LilinaItems {
 		$feed = new SimplePie();
 		$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 		$feed->set_stupidly_fast(true);
-		$feed->set_cache_location(LILINA_PATH . '/cache');
+		$feed->set_cache_location(get_option('cachedir'));
 		$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 		$feed = apply_filters('simplepie-config', $feed);
 
