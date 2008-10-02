@@ -12,10 +12,14 @@ class MessageHandler {
 	/**
 	 * Add a generic message
 	 */
-	public static function add($message = 'Unknown message') {
+	public static function add($message = 'Unknown message', $uid = null) {
 		if(is_string($message))
 			$message = new Message($message);
-		self::$messages[] = $message;
+
+		if($uid !== null)
+			self::$messages[$uid] = $message;
+		else
+			self::$messages[] = $message;
 	}
 
 	/**
