@@ -36,8 +36,8 @@ ul ul {
 	width: 90%;
 	height: 3em;
 
-	background: #2d2d2d;
-	border-bottom: 1px solid #000;
+	background: #0CA2FF;
+	border-bottom: 1px solid #0B8AD9;
 
 	padding: 0 5%;
 	margin: 0;
@@ -68,9 +68,12 @@ ul ul {
 	padding: 0;
 	margin: 0;
 	font-size: 1em;
+	position: absolute;
+	top: 0.5em;
 }
 #navigation li {
-	display: block;
+	display: inline;
+	list-style-type: none;
 	float: left;
 	margin: 0;
 	padding: 0;
@@ -80,27 +83,40 @@ ul ul {
 #navigation li a {
 	color: #FFF;
 	text-decoration:none;
-	padding: 0.6em;
-	line-height: 3em;
+	padding: 0.3em 1em;
+	line-height: 200%;
+	display: block;
 }
-#navigation > li.current > a {
-	background: #0ca2ff;
+#navigation > li > a {
+	margin-left: 0.1em;
 }
-#navigation > li > a:hover {
-	background-color: #FFF;
+#navigation > li.current > a, #navigation > li.hovering > a {
+	background: #fff;
+	color: #2d2d2d;
+}
+#navigation > li > a:hover, #navigation > li.hovering > a {
+	background-color: #eee;
 	color: #2d2d2d;
 }
 #navigation > li.hovering > .submenu {
 	display: block !important;
 }
 #navigation > li.has-submenu > a:after {
+	content: " \25BD";
+}
+#navigation > li.current.has-submenu > a:after {
 	content: " \25BC";
 }
 #navigation li ul {
-	min-width: 100%;
+	min-width: 98%;
 	background: #eee;
-	border: 1px solid #ccc;
+	border: 1px solid #0B8AD9;
 	border-top: 0;
+	display: none;
+	margin: 0;
+	padding: 0.5em 0;
+	overflow: auto;
+	position: absolute;
 	/* Inter-browser cooperation - *sigh* */
 	-moz-border-radius: 0 0 3px 3px;
 	-webkit-border-bottom-left-radius: 3px;
@@ -109,11 +125,6 @@ ul ul {
 	-khtml-border-bottom-right-radius: 3px;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
-	display: none;
-	margin: 1px 0 0;
-	padding: 0;
-	overflow: auto;
-	position: absolute;
 }
 #navigation li li {
 	float: none;
@@ -124,10 +135,15 @@ ul ul {
 	display: block;
 	color: #2d2d2d;
 }
+#navigation li li a:hover {
+	background-color: #0CA2FF;
+	color: #fff;
+}
+#navigation li.current ul {
+}
 #navigation li li.current a {
 }
-#navigation li li a:hover {
-	color: #0CA2FF;
+#navigation li.current li a:hover {
 }
 
 #alert {
@@ -357,7 +373,7 @@ body.login .humanMsg {
 }
 
 #humanMsgLog ul li .error {
-	color: orangered;
+	color: #FF4500;
 }
 
 #humanMsgLog ul li .indent {
