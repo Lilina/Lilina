@@ -9,9 +9,8 @@
  * @author WordPress
  */
 function lilina_version_check() {
-	if ( !function_exists('fsockopen') || strpos($_SERVER['PHP_SELF'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
+	if ( strpos($_SERVER['PHP_SELF'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
 		return;
-
 	global $lilina;
 	//Just to make sure
 	require_once(LILINA_INCPATH . '/core/version.php');
@@ -19,7 +18,11 @@ function lilina_version_check() {
 	$lilina_version = $lilina['core-sys']['version'];
 	$php_version = phpversion();
 
-	$current = get_option('update_status');
+	$data = new DataHandler();
+	$current = $data->load('core-update-check.data');
+	if($current !== null)
+		$current = unserialize($current);
+
 	$locale = get_option('lang');
 
 	if (
@@ -34,25 +37,31 @@ function lilina_version_check() {
 	$new_option->version_checked = $lilina_version;
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-	$request = new SimplePie_File("http://api.getlilina.org/version-check/1.0/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
+	$request = new SimplePie_File("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
 		2, //Timeout
 		0, //No. of redirects allowed
 		$headers,
 		"Lilina/$lilina_version;  " . get_option('baseurl')
 	);
-	update_option('update_status', $new_option);
-	return var_dump($request);
 
-	if ( $request->success ) {
-		$body = trim( $request->body );
-		$body = str_replace(array("\r\n", "\r"), "\n", $body);
+	if ( !$request->success )
+		return false;
 
-		$returns = explode("\n", $body);
+	$body = trim( $request->body );
+	$body = str_replace(array("\r\n", "\r"), "\n", $body);
 
-		$new_option->response = $returns[0];
-		if ( isset( $returns[1] ) )
-			$new_option->url = $returns[1];
-	}
+	$returns = explode("\n", $body);
+
+	$new_option->response = $returns[0];
+	if ( isset( $returns[1] ) )
+		$new_option->url = $returns[1];
+	if ( isset( $returns[2] ) )
+		$new_option->version = $returns[2];
+	if ( isset( $returns[3] ) )
+		$new_option->download = $returns[3];
+
+	$data->save('core-update-check.data', serialize($new_option));
+	return $new_option;
 }
 
 /**
@@ -61,18 +70,20 @@ function lilina_version_check() {
  */
 function lilina_footer_version() {
 	global $lilina;
-	$cur = get_option('update_status');
-	if(!is_admin() || !is_object($cur)) {
-		echo $lilina['core-sys']['version'];
-	}
+	$data = new DataHandler();
+	$cur = $data->load('core-update-check.data');
+	if($cur === null)
+		return false;
+
+	$cur = unserialize($cur);
 
 	switch ( $cur->response ) {
 		case 'development' :
-			printf(' | '._r( 'You are using a development version (%s). Thanks! Make sure you <a href="%s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
+			printf(' | '._r( 'You are using a development version (%1$s). Thanks! Make sure you <a href="%2$s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
 		break;
 
 		case 'upgrade' :
-			printf(' | <strong>'._r( 'Your installation of Lilina (%s) is out of date. <a href="%s">Please update</a>.' ).'</strong>', $lilina['core-sys']['version'], $cur->url);
+			printf(' | <strong>'._r( '<a href="%1$s">Get Version %2$s</a>.' ).'</strong>', $cur->url, $cur->version);
 		break;
 
 		case 'latest' :
@@ -87,12 +98,17 @@ function lilina_footer_version() {
  * @author WordPress
  */
 function update_nag() {
-	$cur = get_option( 'update_status' );
-
-	if ( ! isset( $cur->response ) || $cur->response != 'upgrade' )
+	$data = new DataHandler();
+	$cur = $data->load('core-update-check.data');
+	if($cur === null)
 		return false;
 
-	$msg = sprintf(_r('A new version of Lilina is available! <a href="%s">Please update now</a>.'), $cur->url);
+	$cur = unserialize($cur);
+
+	if ( !isset( $cur->response ) || $cur->response != 'upgrade' )
+		return false;
+
+	$msg = sprintf(_r('Lilina %1$s is available! <a href="%2$s">Please update now</a>.'), $cur->version, $cur->url);
 
 	echo "<div id='update-nag'>$msg</div>";
 }
