@@ -41,5 +41,6 @@ require_once(LILINA_INCPATH . '/core/skin.php');
 
 spl_autoload_register('__autoload');
 
+do_action('init');
 Templates::load();
 ?>

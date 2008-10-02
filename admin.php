@@ -55,6 +55,7 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/l10n.php');
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 
+do_action('admin_init');
 do_action('init');
 
 /**
