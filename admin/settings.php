@@ -72,11 +72,13 @@ admin_header(_r('Settings'));
 		<legend><?php _e('General Settings'); ?></legend>
 		<div class="row">
 			<label for="sitename"><?php _e('Site name'); ?>:</label>
-			<input type="text" name="sitename" id="sitename" value="<?php echo $settings['sitename']; ?>" />
+			<input type="text" name="sitename" id="sitename" value="<?php echo get_option('sitename'); ?>" disabled="disabled" />
+			<p class="sidenote"><?php _e('This option must be changed in content/system/config/settings.php manually.'); ?></p>
 		</div>
 		<div class="row">
 			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
-			<input type="text" name="baseurl" id="baseurl" value="<?php echo $settings['baseurl']; ?>" />
+			<input type="text" name="baseurl" id="baseurl" value="<?php echo get_option('baseurl'); ?>" disabled="disabled" />
+			<p class="sidenote"><?php _e('This option must be changed in content/system/config/settings.php manually.'); ?></p>
 		</div>
 	</fieldset>
 	<fieldset id="views">
@@ -101,7 +103,7 @@ admin_header(_r('Settings'));
 				<?php
 				foreach(available_locales() as $locale) {
 					echo '<option';
-					if($locale['name'] === $settings['locale']) {
+					if($locale['name'] === get_option('locale')) {
 						echo ' selected="selected"';
 					}
 					echo '>', $locale['name'], '</option>';
@@ -139,7 +141,7 @@ foreach(lilina_plugins_list(get_plugin_dir()) as $plugin):
 					<td><?php echo $plugin_meta->description ?></td>
 					<td><?php if(isset($current_plugins[md5($plugin_file)])) _e('Activated'); else _e('Deactivated'); ?></td>
 					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>"><?php if(isset($current_plugins[md5($plugin_file)])) _e('Dectivate'); else _e('Activate'); ?></a></td>
-				</td>
+				</tr>
 <?php
 endforeach;
 ?>
@@ -147,8 +149,6 @@ endforeach;
 		</table>
 	</fieldset>
 </form>
-<h2>Reset</h2>
-<p>This will delete your settings.php and you will need to run install.php again. <a href="<?php echo $_SERVER['PHP_SELF'];?>?page=settings&amp;action=reset">Proceed?</a></p>
 <?php
 admin_footer();
 ?>

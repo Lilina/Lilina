@@ -127,7 +127,7 @@ function admin_header($title, $parent_file = false) {
 		foreach($subnavigation[$nav_item[1]] as $subnav_item) {
 			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='{$subnav_item[1]}'>{$subnav_item[0]}</a></li>";
 		}
-		echo '</ul>';
+		echo '</ul></li>';
 		
 	}
 ?>

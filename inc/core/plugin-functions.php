@@ -223,8 +223,8 @@ function lilina_plugins_init() {
 		return;
 
 	foreach ($plugins as $plugin) {
-		if ('' !== $plugin && file_exists(LILINA_INCPATH . '/plugins/' . $plugin))
-			include_once(LILINA_INCPATH . '/plugins/' . $plugin);
+		if ('' !== $plugin && file_exists(LILINA_CONTENT_DIR . '/plugins/' . $plugin))
+			include_once(LILINA_CONTENT_DIR . '/plugins/' . $plugin);
 	}
 
 	global $current_plugins;
@@ -268,7 +268,7 @@ function validate_plugin($filename) {
  * @return string Path to plugin directory
  */
 function get_plugin_dir() {
-	return LILINA_INCPATH . '/plugins/';
+	return LILINA_CONTENT_DIR . '/plugins/';
 }
 
 lilina_plugins_init();
