@@ -55,8 +55,7 @@ function deactivate_plugin($plugin_file) {
 }
 
 if(isset($_REQUEST['activate_plugin'])) {
-	var_dump(activate_plugin($_REQUEST['activate_plugin']));
-	echo 'maybe activated';
+	activate_plugin($_REQUEST['activate_plugin']);
 }
 elseif(isset($_REQUEST['deactivate_plugin'])) {
 	deactivate_plugin($_REQUES['activate_plugin']);

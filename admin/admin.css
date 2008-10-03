@@ -11,9 +11,12 @@ body {
 	background: #FFF;
 	color: #333;
 }
+h1, h2, legend {
+	font-family: Georgia, Times, serif;
+}
 h1 {
 	font-weight: 400;
-	font-size: 2em;
+	font-size: 2.2em;
 	margin: 0.6em 0;
 }
 h2 {
