@@ -86,6 +86,11 @@ function lilina_settings_current() {
  * {{@internal Missing Long Description}}}
  */
 function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
+	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
+	$guessurl = preg_replace('|/admin.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	if($guessurl[count($guessurl)-1] != '/') {
+		$guessurl .= '/';
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -93,7 +98,7 @@ function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 	<head>
 		<title><?php echo $title; ?> &mdash; Lilina News Aggregator</title>
 		<style type="text/css">
-			@import "install.css";
+			@import "<?php echo $guessurl ?>install.css";
 		</style>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	</head>
@@ -102,7 +107,7 @@ function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 			<h1><?php echo $title; ?></h1>
 			<?php echo $message; ?>
 
-			<img id="logo" src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
+			<img id="logo" src="<?php echo $guessurl ?>inc/templates/default/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>

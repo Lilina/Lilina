@@ -6,8 +6,15 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-
+define('LILINA_LOGIN', true);
 require_once('admin.php');
+
+if(defined('LILINA_AUTHED') && LILINA_AUTHED === true) {
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: ' . get_option('baseurl') . 'admin/index.php');
+	header('Connection: close');
+	die();
+}
 
 global $page;
 $body = '';
@@ -16,7 +23,7 @@ if(isset($error) && $error == 'error')
 	$body = '<p class="alert">' . _r('Your password or username is incorrect. Please make sure you have spelt it correctly.') . '</p>';
 
 $body .= '
-	<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
+	<form action="index.php" method="post">
 		<fieldset id="login">
 			<div class="row">
 				<label for="user">' . _r('Username') . ':</label>
