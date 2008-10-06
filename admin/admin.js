@@ -58,13 +58,13 @@ var feeds = {
 				$("#add_url").val('');
 				$("#add_name").val('');
 
-				jQuery.each(data.messages, function (message) {
+				jQuery.each(data.messages, function (index, message) {
 					humanMsg.displayMsg(message['message']);
 				});
 				feeds.reload_table();
 				return;
 			}
-			jQuery.each(data.errors, function(error) {
+			jQuery.each(data.errors, function(index, error) {
 				humanMsg.displayMsg(error['message'], 'error');
 			});
 		},
