@@ -87,12 +87,15 @@ function lilina_check_user_pass($un, $pw) {
  * @return bool True if logged in, false if not, however should never return false, since it should die()
  */
 function lilina_login_form($user, $pass) {
-	if(($error = lilina_auth($user, $pass)) === 'error' || $error == false && !defined('LILINA_LOGIN')) {
+	if(($error = lilina_auth($user, $pass)) === true) {
+		define('LILINA_AUTHED', true);
+		return;
+	}
+	if(!defined('LILINA_LOGIN')) {
 		header('HTTP/1.1 301 Moved Permanently');
 		header('Location: ' . get_option('baseurl') . 'admin/login.php');
 		header('Connection: close');
 		die();
 	}
-	define('LILINA_AUTHED', true);
 }
 ?>
