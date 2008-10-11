@@ -131,26 +131,26 @@ switch( $_REQUEST['action'] ) {
 		break;
 }
 
-$data = array(
+$output = array(
 		'errors' => MessageHandler::get_errors(),
 		'messages' => MessageHandler::get_messages()
 );
-$data[] = $extra_messages;
+$output[] = $extra_messages;
 
 /** Remove empty entries, such as 'errors' or 'messages' */
-foreach($data as $key => $entry) {
+foreach($output as $key => $entry) {
 	if(empty($entry))
-		unset($data[$key]);
+		unset($output[$key]);
 }
 
 /** Allow for different return types */
 switch($type) {
 	case 'raw':
-		implode("\n", $data);
+		implode("\n", $output);
 		break;
 
 	default:
-		echo json_encode($data);
+		echo json_encode($output);
 }
 
 /** End here, just for fun */

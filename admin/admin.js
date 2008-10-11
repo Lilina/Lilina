@@ -16,7 +16,7 @@ var admin = {
 			return false;
 		});
 		$("#add_form").submit(function () {
-			feeds.add($("#add_url").val(), $("#add_name").val());
+			feeds.add($("#add_url").val(), $("#add_name").val(), false, feeds.reload_table);
 			return false;
 		});
 		$("#change_form").submit(function () {
@@ -41,7 +41,12 @@ var admin = {
 };
 
 var feeds = {
-	add: function (url, name) {
+	count: 0,
+
+	add: function (url, name, errors_only, callback, callback2) {
+		if(errors_only == undefined)
+			errors_only = false;
+
 		if( !url ) {
 			humanMsg.displayMsg('No feed URL supplied');
 			return false;
@@ -58,18 +63,23 @@ var feeds = {
 				$("#add_url").val('');
 				$("#add_name").val('');
 
-				jQuery.each(data.messages, function (index, message) {
-					humanMsg.displayMsg(message['message']);
-				});
-				feeds.reload_table();
+				if(!errors_only) {
+					jQuery.each(data.messages, function (index, message) {
+						humanMsg.displayMsg(message['message']);
+					});
+				}
+				if(callback != undefined)
+					callback.call(null, data);
 				return;
 			}
 			jQuery.each(data.errors, function(index, error) {
-				humanMsg.displayMsg(error['message'], 'error');
+				humanMsg.displayMsg(error['message'], 'error', -1);
 			});
 		},
 		"json"
 		);
+		if(callback2 != undefined)
+			callback2.call(null, data);
 	},
 	change: function () {
 		if( !$("#change_url").val() ) {
@@ -112,12 +122,17 @@ var feeds = {
 			$("#feeds_list tbody").html(data);
 		});
 	},
-	process: function (feeds) {
-		jQuery.each(feeds, function (index, feed){
-			console.log('#' + index + ': ' + feed['title'] + ' - ' + feed['url']);
-			setTimeout(add_feed, 1000, feed['url'], feed['title']);
-		});
-	}
+	begin_processing: function (items) {
+		feeds.current_feeds = items;
+		console.log(feeds);
+		feeds.process();
+	},
+	process: function () {
+		feed = feeds.current_feeds.shift();
+		console.log('#' + feeds.count + ': ' + feed['title'] + ' - ' + feed['url']);
+		add_feed(feed['url'], feed['title'], true, undefined, feeds.log);
+		feeds.count++;
+	},
 };
 
 $(document).ready(function () {

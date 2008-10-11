@@ -26,6 +26,9 @@ if(isset($_REQUEST['submit'])) {
 admin_header(_r('Import Feeds'), 'feeds.php');
 ?>
 <h1><?php _e('Import Feeds'); ?></h1>
+<?php
+if(!$importing) {
+?>
 <form action="feed-import.php" method="get" id="import_form">
 	<fieldset id="import">
 		<legend><?php _e('Import Feeds'); ?></legend>
@@ -37,14 +40,22 @@ admin_header(_r('Import Feeds'), 'feeds.php');
 	</fieldset>
 </form>
 <?php
-if($importing) {
+}
+else {
 ?>
+<p><?php _e('Currently importing feeds. Please keep this page open in your browser until all feeds have been processed.'); ?></p>
+<ul id="log">
+</ul>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/importer.js"></script>
 <script type="text/javascript">
 var feeds_to_add = <?php
 	echo json_encode($importing);
 ?>;
 $(document).ready(function (){
-	feeds.process(feeds_to_add);
+	importer.init(feeds_to_add);
+	importer.end_callback = function () {
+		$("#main").append("<p><?php _e('Finished importing feeds.') ?></p>");
+	};
 });
 </script>
 <?php
