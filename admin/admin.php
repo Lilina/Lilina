@@ -99,8 +99,8 @@ function admin_header($title, $parent_file = false) {
 			array(_r('Home'), 'index.php', 'home'),
 		),
 		'feeds.php' => array(
-			array(_r('Manage'), 'feeds.php', 'feeds'),
-			array(_r('Add'), 'feed-add.php', 'feeds'),
+			array(_r('Add/Manage'), 'feeds.php', 'feeds'),
+			array(_r('Import'), 'feed-import.php', 'feeds'),
 		),
 		'settings.php' => array(
 			array(_r('General'), 'settings.php', 'settings'),
@@ -125,7 +125,7 @@ function admin_header($title, $parent_file = false) {
 		
 		echo '<ul class="submenu">';
 		foreach($subnavigation[$nav_item[1]] as $subnav_item) {
-			echo '<li' . ($current_page == $subnav_item[1] ? ' class="current"' : '') . "><a href='{$subnav_item[1]}'>{$subnav_item[0]}</a></li>";
+			echo '<li' . ((strcmp($self, $subnav_item[1]) == 0) ? ' class="current"' : '') . "><a href='{$subnav_item[1]}'>{$subnav_item[0]}</a></li>";
 		}
 		echo '</ul></li>';
 		

@@ -40,8 +40,8 @@ function feed_list_table() {
 			<td class="url-col"><?php echo $this_feed['feed']; ?></td>
 			<td class="cat-col"><?php echo $this_feed['cat']; ?></td>
 			<?php do_action('admin-feeds-infocol', $this_feed, $j); ?>
-			<td class="change-col"><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?page=feeds&amp;change=<?php echo  $j; ?>&amp;action=change" class="change_link"><?php _e('Change'); ?></a></td>
-			<td class="remove-col"><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?page=feeds&amp;remove=<?php echo  $j; ?>&amp;action=remove"><?php _e('Remove'); ?></a></td>
+			<td class="change-col"><a href="feeds.php?change=<?php echo  $j; ?>&amp;action=change" class="change_link"><?php _e('Change'); ?></a></td>
+			<td class="remove-col"><a href="feeds.php?remove=<?php echo  $j; ?>&amp;action=remove"><?php _e('Remove'); ?></a></td>
 			<?php do_action('admin-feeds-actioncol', $this_feed, $j); ?>
 		</tr>
 	<?php
@@ -68,7 +68,6 @@ $remove_id	= htmlspecialchars($remove_id);
 
 //Import variable
 $action = (isset($_REQUEST['action'])? $_REQUEST['action'] : '');
-$importing = false;
 
 /** Make sure we're actually adding */
 switch($action) {
@@ -83,13 +82,6 @@ switch($action) {
 		add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
 	break;
 
-	case 'import':
-		if(!isset($_REQUEST['import_url']))
-			add_notice(_r('No URL specified to import OPML from'));
-		else
-			$importing = import_opml($_REQUEST['import_url']);
-		break;
-
 	case 'remove':
 		$removed = $data['feeds'][$remove_id];
 		unset($data['feeds'][$remove_id]);
@@ -99,7 +91,7 @@ switch($action) {
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), htmlspecialchars($_SERVER['PHP_SELF']) . '?page=feeds&amp;action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), 'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
 		break;
 
 	case 'change':
@@ -200,26 +192,6 @@ admin_header(_r('Feeds'));
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
 	</fieldset>
 </form>
-<form action="feeds.php" method="get" id="import_form">
-	<fieldset id="import">
-		<legend><?php _e('Import Feeds'); ?></legend>
-		<div class="row">
-			<label for="import_url"><?php _e('OPML address (URL)'); ?>:</label>
-			<input type="text" name="import_url" id="import_url" />
-		</div>
-		<input type="hidden" name="action" value="import" />
-		<input type="submit" value="<?php _e('Import'); ?>" class="submit" />
-	</fieldset>
-</form>
 <?php
-if($importing) {
-?>
-<script type="text/javascript">
-var feeds_to_add = <?php
-	echo json_encode($importing);
-?>;
-</script>
-<?php
-}
 admin_footer();
 ?>

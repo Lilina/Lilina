@@ -16,7 +16,7 @@ var admin = {
 			return false;
 		});
 		$("#add_form").submit(function () {
-			feeds.add();
+			feeds.add($("#add_url").val(), $("#add_name").val());
 			return false;
 		});
 		$("#change_form").submit(function () {
@@ -41,19 +41,19 @@ var admin = {
 };
 
 var feeds = {
-	add: function () {
-		if( !$("#add_url").val() ) {
+	add: function (url, name) {
+		if( !url ) {
 			humanMsg.displayMsg('No feed URL supplied');
 			return false;
 		}
-		$.post("feeds.php", {
+		$.post("admin-ajax.php", {
 			action: "add",
-			ajax: true,
-			add_name: $("#add_name").val(),
-			add_url: $("#add_url").val()
+			type: "json",
+			name: name,
+			url: url
 		}, function (data) {
 			console.log(data);
-			if(data.errors.length == 0) {
+			if(!data.errors || data.errors.length == 0) {
 				// Clear the values
 				$("#add_url").val('');
 				$("#add_name").val('');
@@ -80,26 +80,27 @@ var feeds = {
 			humanMsg.displayMsg('No feed ID supplied');
 			return false;
 		}
-		$.post("feeds.php", {
+		$.post("admin-ajax.php", {
 			action: "change",
-			ajax: true,
-			change_name: $("#change_name").val(),
-			change_id: $("#change_id").val(),
-			change_url: $("#change_url").val()
+			type: "json",
+			feed_id: $("#change_id").val(),
+			name: $("#change_name").val(),
+			url: $("#change_url").val()
 		}, function (data) {
 			console.log(data);
 			if(data.errors.length == 0) {
 				// Clear the values
-				$("#add_url").val('');
-				$("#add_name").val('');
+				$("#change_url").val('');
+				$("#change_name").val('');
+				$("#change_id").val('');
 
-				jQuery.each(data.messages, function (message) {
+				jQuery.each(data.messages, function (index, message) {
 					humanMsg.displayMsg(message['message']);
 				});
 				feeds.reload_table();
 				return;
 			}
-			jQuery.each(data.errors, function(error) {
+			jQuery.each(data.errors, function(index, error) {
 				humanMsg.displayMsg(error['message'], 'error');
 			});
 		},
@@ -107,15 +108,23 @@ var feeds = {
 		);
 	},
 	reload_table: function () {
-		$.get("feeds.php", {ajax: true, list: true}, function (data) {
+		$.get("admin-ajax.php", {action: "list", type: "raw"}, function (data) {
 			$("#feeds_list tbody").html(data);
 		});
 	},
-	process: function () {
-		
+	process: function (feeds) {
+		jQuery.each(feeds, function (index, feed){
+			console.log('#' + index + ': ' + feed['title'] + ' - ' + feed['url']);
+			setTimeout(add_feed, 1000, feed['url'], feed['title']);
+		});
 	}
 };
 
 $(document).ready(function () {
 	admin.init();
 });
+
+//Alias for feeds.add
+function add_feed(url, title) {
+	return feeds.add(url, title);
+}
