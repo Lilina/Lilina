@@ -19,11 +19,11 @@ if(defined('LILINA_AUTHED') && LILINA_AUTHED === true) {
 global $page;
 $body = '';
 
-if(isset($error) && $error == 'error')
+if(defined('LILINA_AUTH_ERROR') && LILINA_AUTH_ERROR == 'error')
 	$body = '<p class="alert">' . _r('Your password or username is incorrect. Please make sure you have spelt it correctly.') . '</p>';
 
 $body .= '
-	<form action="index.php" method="post">
+	<form action="login.php" method="post">
 		<fieldset id="login">
 			<div class="row">
 				<label for="user">' . _r('Username') . ':</label>

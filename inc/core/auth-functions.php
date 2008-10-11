@@ -97,5 +97,6 @@ function lilina_login_form($user, $pass) {
 		header('Connection: close');
 		die();
 	}
+	define('LILINA_AUTH_ERROR', $error);
 }
 ?>
