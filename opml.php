@@ -27,9 +27,6 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
-//Caching to reduce loading times
-//require_once(LILINA_INCPATH . '/core/cache.php');
-
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 

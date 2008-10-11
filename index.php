@@ -24,9 +24,6 @@ $timer_start = lilina_timer_start();
 /** Current Version */
 require_once(LILINA_INCPATH . '/core/version.php');
 
-//Caching to reduce loading times
-require_once(LILINA_INCPATH . '/core/cache.php');
-
 //Localisation
 require_once(LILINA_INCPATH . '/core/l10n.php');
 
