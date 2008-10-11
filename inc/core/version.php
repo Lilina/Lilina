@@ -8,7 +8,7 @@
  */
 $lilina			= array(
 						'core-sys'		=> array(
-							'version'	=> '1.0-alpha-2'
+							'version'	=> '1.0-alpha-6'
 							),
 						'plugin-sys'	=> array(
 							'version'	=> 146
