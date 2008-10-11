@@ -87,7 +87,10 @@ function lilina_settings_current() {
  */
 function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	$guessurl = preg_replace('|/admin.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	$guessurl = $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	if(strpos('.', $_SERVER['REQUEST_URI']))
+		$guessurl = dirname($guessurl);
+	$guessurl = preg_replace('|/admin.*|i', '', $guessurl);
 	if($guessurl[count($guessurl)-1] != '/') {
 		$guessurl .= '/';
 	}
