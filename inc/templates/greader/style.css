@@ -110,8 +110,9 @@ a {
 	overflow-y: auto;
 	position: relative;*/
 	height: 100%;
-	margin-top: -31px;
-	padding-top: 31px;
+	position: relative;
+	top: -12px;
+	float: left;
 }
 
 #sidebar>ul {
@@ -132,4 +133,8 @@ a {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
+}
+
+#sidebar li h3 {
+	text-transform: uppercase;
 }
