@@ -327,7 +327,7 @@ function add_tech_notice($message) {
  */
 function shorten($string, $length) {
 	/** Short-circuit if no shortening is needed */
-	if(!isset($string{$length + 1})) return $string;
+	if(!isset($string[$length + 1])) return $string;
 
 	// By default, an ellipsis will be appended to the end of the text.
 	$suffix = '...';

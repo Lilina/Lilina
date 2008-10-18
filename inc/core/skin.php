@@ -598,7 +598,8 @@ function get_feeds() {
  */
 function list_feeds($args = '') {
 	$defaults = array(
-		'format' => '<a href="%1$s">%3$s</a> [<a href="%4$s">' . _r('Feed') . '</a>]'
+		'format' => '<a href="%1$s">%3$s</a> [<a href="%4$s">' . _r('Feed') . '</a>]',
+		'title_length' => 0
 	);
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
@@ -606,7 +607,8 @@ function list_feeds($args = '') {
 
 	if(has_feeds()) {
 		foreach(get_feeds() as $feed) {
-			printf($format, $feed['url'], /** This doesn't work yet: get_the_feed_favicon($feed['url']) */ '', $feed['name'], $feed['feed']);
+			$title = ($title_length > 0) ? shorten($feed['name'], $title_length) : $feed['name'];
+			printf($format, $feed['url'], /** This doesn't work yet: get_the_feed_favicon($feed['url']) */ Templates::path_to_url( Templates::get_file('feed.png') ), $title, $feed['feed']);
 		}
 	}
 }

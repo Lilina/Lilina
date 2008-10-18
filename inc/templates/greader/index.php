@@ -34,10 +34,6 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/style.css" media="screen"/>
 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-	
-	<script type="text/javascript" src="<?php template_siteurl() ?>inc/js/jquery.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/jquery.dimensions.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/scripting.js"></script>
 
 <?php
 	template_header();
@@ -56,47 +52,49 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 </div>
 
 <div id="main">
-	<div id="content">
-		<h1 id="page-title"><?php /*the_page_title();*/ ?>Hello</h1>
-		<div id="content-quicklinks"><?php /* Nothing yet */ ?></div>
-		<ul>
+	<div id="wrapper">
+		<div id="content">
+			<h1 id="page-title"><?php /*the_page_title();*/ ?>Hello</h1>
+			<div id="content-quicklinks"><?php /* Nothing yet */ ?></div>
+			<ul>
 <?php
 // We call it with false as a parameter to avoid incrementing the item number
 if(has_items(false)) {
 		while(has_items()): the_item();
 ?>
-			<li class="feed-<?php the_feed_id(); ?> item collapsed" id="item-<?php the_id(); ?>">
-				<div class="title-bar">
-					<a class="title" id="title-<?php the_id(); ?>" title="Click to expand/collapse item" href="javascript:void(0)"><?php the_title(); ?></a>
-					<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
-					<a href="<?php the_link(); ?>" class="sourcelink">Read original post</a>
-				</div>
-				<div class="excerpt" id="excerpt-<?php the_id(); ?>">
-					<?php the_content(); ?>
-				</div>
-				<div class="action-bar">
-					<?php do_action('river_entry'); ?>
-					<?php the_enclosure(); ?>
-			</li><?php
+				<li class="feed-<?php the_feed_id(); ?> item collapsed" id="item-<?php the_id(); ?>">
+					<div class="title-bar">
+						<a class="title" id="title-<?php the_id(); ?>" title="Click to expand/collapse item" href="javascript:void(0)"><?php the_title(); ?></a>
+						<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
+						<a href="<?php the_link(); ?>" class="sourcelink">Read original post</a>
+					</div>
+					<div class="excerpt" id="excerpt-<?php the_id(); ?>">
+						<?php the_content(); ?>
+					</div>
+					<div class="action-bar">
+						<?php do_action('river_entry'); ?>
+						<?php the_enclosure(); ?>
+				</li><?php
 		endwhile;
 }
 
 elseif(!has_feeds()) {
 ?>
-		<li>
-			<h2>Whoops!</h2>
-			<p>No feeds exist!</p>
-		</li>
+			<li>
+				<h2>Whoops!</h2>
+				<p>No feeds exist!</p>
+			</li>
 <?php
 }
 else {
 ?>
-		<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo get_offset(true); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
-		<div style="background: url('<?php template_directory(); ?>/spinner-back.png');margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/spinner.gif" alt="Loading..." /></div>
+			<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available from in the last <?php echo get_offset(true); ?> hour(s). Try <a href="index.php?hours=-1" id="viewallitems">viewing all items</a></div>
+			<div style="background: url('<?php template_directory(); ?>/spinner-back.png');margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/spinner.gif" alt="Loading..." /></div>
 <?php
 }
 ?>
-		</ul>
+			</ul>
+		</div>
 	</div>
 </div>
 
@@ -104,9 +102,9 @@ else {
 <div id="sidebar">
 	<ul>
 		<?php if( has_feeds() ): ?>
-		<li><h3>Sources</h3>
+		<li id="sources"><h3>Sources</h3>
 			<ul>
-				<?php list_feeds('format=<li><a href="%1$s"><img class="icon" src="%2$s" />%3$s</a></li>'); ?>
+				<?php list_feeds('title_length=35&format=<li><a href="%1$s"><img class="icon" src="%2$s" /><span class="title">%3$s</span></a></li>'); ?>
 			</ul>
 		</li>
 		<?php endif; ?>
