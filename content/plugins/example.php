@@ -35,15 +35,14 @@ function pressit_options() {
 /**
  * Display a notice to the users why the styles are disabled
  */
-function pressit_button() {
+function pressit_button($actions) {
 	global $wp_url;
 	$press_url = sprintf($wp_url, urlencode(get_the_link()), urlencode(get_the_title()), urlencode(get_the_summary()));
-?>
-	<a href="<?php echo $press_url ?>" class="pressit_button">Press It</a>
-<?php
+	$actions[] = '<a href="' . $press_url  . '" class="pressit_button">Press It</a>';
+	return $actions;
 }
 
 add_action('init', 'pressit_options');
 add_action('template_header', 'pressit_js');
-add_action('river_entry', 'pressit_button');
+add_filter('action_bar', 'pressit_button');
 ?>

@@ -78,25 +78,6 @@ function template_header(){
 	do_action('template_header');
 }
 
-/**
- * @todo Document
- * @deprecated Never used.
- */
-function template_end_errors($return='echo'){
-	global $end_errors;
-	if($return == 'echo') {
-		echo $end_errors;
-		return true;
-	}
-	elseif($return == 'var') {
-		return $end_errors;
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
-}
-
 
 /**
  * @todo Document
@@ -267,25 +248,6 @@ function has_items($increment = true) {
 }
 
 /**
-* Gets all items from all feeds and returns as an array
-*
-* @return array List of items and associated data
-*/
-function get_items() {
-	/*global $data, $list, $items, $settings;
-	if(empty($data)) {
-		$data = lilina_load_feeds($settings['files']['feeds']);
-	}
-	if(empty($list)) {
-		$list	= lilina_return_items($data);
-	}
-	if(empty($items)) {
-		$items	= lilina_return_output($list);
-	}
-	return apply_filters('get_items', $items);*/
-}
-
-/**
  * Gets the offset seconds from which the items are shown
  *
  * @global array Holds defaults
@@ -415,19 +377,25 @@ function the_id($id = -1) {
 /**
  * @todo Document
  */
-function the_feed_name() {
+function get_the_feed_name() {
 	global $item;
-	$temp_item = $item->get_feed();
-	echo apply_filters( 'the_feed_name', $temp_item->get_title() );
+	return apply_filters( 'the_feed_name', $item->get_feed()->get_title() );
+}
+
+function the_feed_name() {
+	echo get_the_feed_name();
 }
 
 /**
  * @todo Document
  */
-function the_feed_url() {
+function get_the_feed_url() {
 	global $item;
-	$temp_item = $item->get_feed();
-	echo apply_filters( 'the_feed_url', $temp_item->get_link() );
+	return apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+}
+
+function the_feed_url() {
+	echo get_the_feed_url();
 }
 
 /**
@@ -493,7 +461,7 @@ if(!function_exists('the_enclosure')) {
 			}
 		}
 
-		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '">' . _r('View podcast') . '</a>' . "\n" );
+		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '" rel="enclosure">' . _r('View podcast') . '</a>' . "\n" );
 	}
 }
 
@@ -611,6 +579,49 @@ function list_feeds($args = '') {
 			printf($format, $feed['url'], /** This doesn't work yet: get_the_feed_favicon($feed['url']) */ Templates::path_to_url( Templates::get_file('feed.png') ), $title, $feed['feed']);
 		}
 	}
+}
+
+/**
+ * Output all available "actions" for the current item
+ *
+ */
+function action_bar($args = '') {
+	$defaults = array(
+		'header' => '<ul>',
+		'footer' => '</ul>',
+		'before' => '<li class="action">',
+		'after' => '</li>'
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+
+	$actions = apply_filters('action_bar', array());
+
+	if(!empty($actions)) {
+		echo $header;
+
+		foreach ($actions as $action) {
+			echo $before . $action . $after;
+		}
+
+		echo $footer;
+	}
+
+	do_action('river_entry');
+}
+
+/**
+ * Output the URL to a specified template file
+ *
+ * Converts filename to URL after finding location and then outputs it
+ *
+ * @since 1.0
+ *
+ * @param string $file Filename to find, relative to template directory
+ */
+function template_file($file) {
+	echo Templates::path_to_url(Templates::get_file($file));
 }
 
 /**
