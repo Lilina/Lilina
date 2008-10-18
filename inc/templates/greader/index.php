@@ -72,8 +72,9 @@ if(has_items(false)) {
 						<?php the_content(); ?>
 					</div>
 					<div class="action-bar">
-						<?php do_action('river_entry'); ?>
+						<?php action_bar('before=&after= | '); ?>
 						<?php the_enclosure(); ?>
+					</div>
 				</li><?php
 		endwhile;
 }
