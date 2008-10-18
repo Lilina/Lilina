@@ -37,7 +37,7 @@ function available_templates() {
 			if ($dir != '.' && $dir != '..') {
 				if (is_dir(LILINA_INCPATH . '/templates/' . $dir)) {
 					if(file_exists(LILINA_INCPATH . '/templates/' . $dir . '/style.css')) {
-						$list[] = LILINA_INCPATH . '/templates/' . $dir . '/style.css';
+						$list[] = $dir;
 					}
 				} 
 			}
@@ -46,12 +46,11 @@ function available_templates() {
 		closedir($handle);
 	}
 	foreach($list as $the_template) {
-		$temp_data = implode('', file($the_template));
-		preg_match("|Name:(.*)|i", $temp_data, $name);
-		preg_match("|Real Name:(.*)|i", $temp_data, $real_name);
+		$temp_data = implode('', file(LILINA_INCPATH . '/templates/' . $the_template . '/style.css'));
+		preg_match("|Name:(.*)|i", $temp_data, $real_name);
 		preg_match("|Description:(.*)|i", $temp_data, $desc);
 		$templates[]	= array(
-								'name' => trim($name[1]),
+								'name' => $the_template,
 								'real_name' => trim($real_name[1]),
 								'description' => trim($desc[1])
 								);
