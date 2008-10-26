@@ -9,44 +9,59 @@ class LilinaItems {
 	 * Our SimplePie object to work with
 	 * @var SimplePie
 	 */
-	var $simplepie;
-	
+	protected $simplepie;
+
 	/**
 	 * @var array|string
 	 */
-	var $feeds;
-	
+	public $feeds;
+
 	/**
 	 * Our items array, obtained from $simplepie->get_items()
 	 * @var array
 	 */
-	var $simplepie_items;
-	
+	protected $simplepie_items;
+
 	/**
 	 * @access protected
 	 * @var int
 	 */
-	var $offset = 0;
-	
+	protected $offset = 0;
+
 	/**
 	 * @var SimplePie_Item
 	 */
-	var $current_item;
-	
+	protected $current_item;
+
 	/**
 	 * @var SimplePie
 	 *
 	 */
-	var $current_feed;
-	
+	protected $current_feed;
+
+	/**
+	 * Store data outside of SimplePie_Item
+	 *
+	 * Stores item data in an stdClass object, independant of SimplePie
+	 * @var array
+	 */
+	public $item = array();
+
+	/**
+	 * List of all items
+	 *
+	 * @var array
+	 */
+	public $items = array();
+
 	/**
 	 * Store metadata for the current item
 	 *
 	 * Erased to a blank array on get_item()
 	 * @var array
 	 */
-	var $current_metadata = array();
-	
+	public $current_metadata = array();
+
 	/**
 	 * Store metadata for all items
 	 *
@@ -54,15 +69,15 @@ class LilinaItems {
 	 * through the loop
 	 * @var array
 	 */
-	var $all_metadata = array();
-	
+	public $all_metadata = array();
+
 	/**
-	 * LilinaItems() - Initialiser for the class
+	 * Object constructor
 	 *
 	 * Sets our used properties with user input
 	 * @param SimplePie
 	 */
-	function LilinaItems($sp = null) {
+	public function __construct($sp = null) {
 		if($sp !== null) {
 			$this->simplepie = $sp;
 			/** Free up memory just in case */
@@ -70,13 +85,13 @@ class LilinaItems {
 			$this->init();
 		}
 	}
-	
+
 	/**
-	 * init() - Initialize our class and load the items in
+	 * Initialize our class and load the items in
 	 *
 	 * {@internal Long Description Missing}}
 	 */
-	function init() {
+	public function init() {
 		if(is_null($this->simplepie))
 			$this->load();
 
@@ -85,20 +100,19 @@ class LilinaItems {
 		
 		/** Run through each item at least once */
 		while($this->has_items()) {
-			$this->get_item();
-			$this->has_enclosure();
-			$this->get_favicon();
+			$this->current_item();
 		}
 		$this->reset_iterator();
 	}
 	
 	/**
-	 * load() - Load $this->feeds into a new SimplePie object
+	 * Create a new SimplePie object
 	 *
-	 * {@internal Long Description Missing}}
-	 * @todo Document
+	 * Creates an instance of SimplePie with LilinaItems::$feeds
+	 *
+	 * @since 1.0
 	 */
-	function load() {
+	public function load() {
 		global $lilina;
 
 		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
@@ -131,54 +145,115 @@ class LilinaItems {
 	}
 	
 	/**
-	 * get_items() - {@internal Short Description Missing}}
+	 * Return all items
 	 *
-	 * {@internal Long Description Missing}}
-	 * @todo Document
+	 * @since 1.0
+	 *
+	 * @return array All items from the feed
 	 */
-	function get_items() {
+	public function get_items() {
 		return $this->simplepie_items;
 	}
 	
 	/**
-	 * get_item() - Get the current item
+	 * Return a specific item
 	 *
-	 * Return the current item
+	 * Retrieves a specific item and returns it, if it exists. If it does not
+	 * exist, returns false.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $offset Item index to retrieve
+	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
 	 */
-	function get_item() {
-		$this->all_metadata[$this->offset] = $this->current_metadata;
-		$this->current_metadata = array();
-
-		if( !isset($this->simplepie_items[ $this->offset ]) )
+	public function get_item($offset) {
+		if( !isset($this->items[ $offset ]) )
 			return false;
 
-		$item =$this->current_item = $this->simplepie_items[$this->offset];
-		$this->current_feed = $item->get_feed();
-		$this->offset++;
-		return $this->current_item;
+		$item = $this->items[$offset];
+		return $item;
 	}
-	
+
+	/**
+	 * Returns the current item
+	 *
+	 * @since 1.0
+	 *
+	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
+	 */
+	public function current_item() {
+		$this->all_metadata[$this->offset] = $this->current_metadata;
+		$this->current_metadata = array();
+		$this->item = '';
+
+		$item = $this->get_item($this->offset);
+		if(!$item)
+			return false;
+
+		$this->current_item = $this->items[$this->offset];
+		$this->current_feed = $this->current_item->get_feed();
+
+		/** Initialise metadata */
+		$this->has_enclosure();
+		$this->get_favicon();
+
+		$this->item = (object) array(
+			'hash'      => $this->current_item->get_id(true),
+			'timestamp' => $this->current_item->get_date('U'),
+			'title'     => $this->current_item->get_title(),
+			'content'   => $this->current_item->get_content(),
+			'summary'   => $this->current_item->get_description(),
+			'permalink' => $this->current_item->get_permalink(),
+			'metadata'  => (object) array(
+				'enclosure' => $this->get_enclosure()
+			),
+			'author'    => (object) array(
+				'name' => $this->current_item->get_author()->get_name(),
+				'url' => $this->current_item->get_author()->get_link()
+			),
+			'feed'      => $this->get_feed_id()
+		);
+		$this->item = apply_filters('item_data', $this->item);
+		$this->items[ $this->current_item->get_id(true) ] = &$this->item;
+
+		$this->offset++;
+		return $item;
+	}
+
+	/**
+	 * Reset the item index iterator
+	 *
+	 * Resets LilinaItems::$offset to 0
+	 *
+	 * @since 1.0
+	 */
+	public function reset_iterator() {
+		$this->offset = 0;
+	}
+
 	/**
 	 * reset_iterator() - {@internal Short Description Missing}}
 	 *
 	 * {@internal Long Description Missing}}
 	 */
-	function reset_iterator() {
-		$this->offset = 0;
-	}
-	
-	function has_items() {
+	public function has_items() {
 		return isset($this->simplepie_items[ $this->offset ]);
 	}
 	
 	/**
-	 * has_enclosure() - Whether an item has an enclosure or not
+	 * Check whether the current item has an enclosure or not
 	 *
 	 * Checks to make sure an item has an enclosure and that that enclosure
 	 * has a link to use. Caches in $this->current_metadata
+	 *
+	 * @since 1.0
+	 *
 	 * @return bool
 	 */
-	function has_enclosure() {
+	public function has_enclosure() {
+		if(isset($this->item->metadata->enclosure))
+			return $this->item->metadata->enclosure;
+
 		if(isset($this->current_metadata['has_enclosure']))
 			return $this->current_metadata['has_enclosure'];
 
@@ -195,31 +270,57 @@ class LilinaItems {
 	}
 	
 	/**
-	 * get_enclosure() - Get the enclosure for the current item
+	 * Return the enclosure for the current item
+	 *
+	 * @since 1.0
+	 *
+	 * @return string Absolute URL to the enclosure
 	 */
-	function get_enclosure() {
-		has_enclosure();
-		
+	public function get_enclosure() {
+		if(isset($this->item->metadata->enclosure))
+			return $this->item->metadata->enclosure;
+
+		if(!$this->has_enclosure())
+			return false;
+
 		return $this->current_metadata['enclosure_link'];
 	}
 	
 	/**
-	 * get_favicon() - Get the favicon for the current item's feed
+	 * Return the favicon for the current feed
+	 *
+	 * @since 1.0
+	 *
+	 * @return string Absolute URL to the favicon
 	 */
-	function get_favicon() {
+	public function get_favicon() {
 		if(!$return = $this->current_feed->get_favicon())
 			$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
 
-		$this->current_metadata['favicon'] = $return;
+		return $this->current_metadata['favicon'] = $return;
+	}
 
-		return apply_filters( 'the_feed_favicon', $return );
-		
+	/**
+	 * Return the ID for the current item
+	 *
+	 * @since 1.0
+	 *
+	 * @return string MD5 hash
+	 */
+	public function get_id() {
+		if(isset($this->item->hash))
+			return $this->item->hash;
+		return $this->current_item->get_id(true);
 	}
 	
 	/**
-	 * get_feed_id() - Get the ID for the current item's feed
+	 * Return the ID for the current feed
+	 *
+	 * @since 1.0
+	 *
+	 * @return string MD5 hash
 	 */
-	function get_feed_id() {
-		return apply_filters( 'get_feed_id', md5($this->current_feed->get_link() . $this->current_feed->get_title()) );
+	public function get_feed_id() {
+		return md5($this->current_feed->get_link() . $this->current_feed->get_title());
 	}
 }
