@@ -23,19 +23,12 @@ class LilinaItems {
 	protected $simplepie_items;
 
 	/**
-	 * @access protected
-	 * @var int
-	 */
-	protected $offset = 0;
-
-	/**
 	 * @var SimplePie_Item
 	 */
 	protected $current_item;
 
 	/**
-	 * @var SimplePie
-	 *
+	 * @var string
 	 */
 	protected $current_feed;
 
@@ -53,23 +46,6 @@ class LilinaItems {
 	 * @var array
 	 */
 	public $items = array();
-
-	/**
-	 * Store metadata for the current item
-	 *
-	 * Erased to a blank array on get_item()
-	 * @var array
-	 */
-	public $current_metadata = array();
-
-	/**
-	 * Store metadata for all items
-	 *
-	 * Only contains metadata from items which have already been processed
-	 * through the loop
-	 * @var array
-	 */
-	public $all_metadata = array();
 
 	/**
 	 * Object constructor
@@ -95,16 +71,47 @@ class LilinaItems {
 		if(is_null($this->simplepie))
 			$this->load();
 
-		$sp = &$this->simplepie;
-		$this->simplepie_items = $sp->get_items();
-		
+		$this->simplepie_items = &$this->simplepie->get_items();
+
 		/** Run through each item at least once */
-		while($this->has_items()) {
-			$this->current_item();
+		foreach($this->simplepie_items as $item) {
+			$new_item = $this->normalise($item);
+			$this->items[ $new_item->hash ] = $new_item;
 		}
-		$this->reset_iterator();
+
+		$this->simplepie->__destruct();
+		unset($this->simplepie);
+		unset($this->simplepie_items);
 	}
-	
+
+	/**
+	 * Normalise a SimplePie_Item into a stdClass
+	 *
+	 * Converts a SimplePie_Item into a new-style stdClass
+	 */
+	protected function normalise($item) {
+		if($enclosure = $item->get_enclosure()) {
+			$enclosure = $enclosure->get_link();
+		}
+		$new_item = (object) array(
+			'hash'      => $item->get_id(true),
+			'timestamp' => $item->get_date('U'),
+			'title'     => $item->get_title(),
+			'content'   => $item->get_content(),
+			'summary'   => $item->get_description(),
+			'permalink' => $item->get_permalink(),
+			'metadata'  => (object) array(
+				'enclosure' => $enclosure
+			),
+			'author'    => (object) array(
+				'name' => $item->get_author()->get_name(),
+				'url' => $item->get_author()->get_link()
+			),
+			'feed'      => md5($item->get_feed()->get_link() . $item->get_feed()->get_title())
+		);
+		return apply_filters('item_data', $new_item);
+	}
+
 	/**
 	 * Create a new SimplePie object
 	 *
@@ -163,10 +170,10 @@ class LilinaItems {
 	 *
 	 * @since 1.0
 	 *
-	 * @param int $offset Item index to retrieve
+	 * @param int $hash Item index to retrieve
 	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
 	 */
-	public function get_item($offset) {
+	public function get_item($hash) {
 		if( !isset($this->items[ $offset ]) )
 			return false;
 
@@ -182,41 +189,15 @@ class LilinaItems {
 	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function current_item() {
-		$this->all_metadata[$this->offset] = $this->current_metadata;
-		$this->current_metadata = array();
 		$this->item = '';
 
-		$item = $this->get_item($this->offset);
+		$item = each($this->items);
 		if(!$item)
 			return false;
 
-		$this->current_item = $this->items[$this->offset];
-		$this->current_feed = $this->current_item->get_feed();
+		$this->current_item = $item;
+		$this->current_feed = $item->feed;
 
-		/** Initialise metadata */
-		$this->has_enclosure();
-		$this->get_favicon();
-
-		$this->item = (object) array(
-			'hash'      => $this->current_item->get_id(true),
-			'timestamp' => $this->current_item->get_date('U'),
-			'title'     => $this->current_item->get_title(),
-			'content'   => $this->current_item->get_content(),
-			'summary'   => $this->current_item->get_description(),
-			'permalink' => $this->current_item->get_permalink(),
-			'metadata'  => (object) array(
-				'enclosure' => $this->get_enclosure()
-			),
-			'author'    => (object) array(
-				'name' => $this->current_item->get_author()->get_name(),
-				'url' => $this->current_item->get_author()->get_link()
-			),
-			'feed'      => $this->get_feed_id()
-		);
-		$this->item = apply_filters('item_data', $this->item);
-		$this->items[ $this->current_item->get_id(true) ] = &$this->item;
-
-		$this->offset++;
 		return $item;
 	}
 
@@ -228,7 +209,7 @@ class LilinaItems {
 	 * @since 1.0
 	 */
 	public function reset_iterator() {
-		$this->offset = 0;
+		reset($this->items);
 	}
 
 	/**
@@ -237,36 +218,21 @@ class LilinaItems {
 	 * {@internal Long Description Missing}}
 	 */
 	public function has_items() {
-		return isset($this->simplepie_items[ $this->offset ]);
+		return !!current($this->items);
 	}
 	
 	/**
 	 * Check whether the current item has an enclosure or not
 	 *
 	 * Checks to make sure an item has an enclosure and that that enclosure
-	 * has a link to use. Caches in $this->current_metadata
+	 * has a link to use.
 	 *
 	 * @since 1.0
 	 *
 	 * @return bool
 	 */
 	public function has_enclosure() {
-		if(isset($this->item->metadata->enclosure))
-			return $this->item->metadata->enclosure;
-
-		if(isset($this->current_metadata['has_enclosure']))
-			return $this->current_metadata['has_enclosure'];
-
-		$current = $this->current_item;
-		$enclosure = $this->current_metadata['enclosure'] = $current->get_enclosure();
-
-		if(!$enclosure) {
-			$this->current_metadata['has_enclosure'] = false;
-			return false;
-		}
-
-		$this->current_metadata['enclosure_link'] = $enclosure->get_link();
-		return $this->current_metadata['has_enclosure'] = !empty($this->current_metadata['enclosure_link']);		
+		return !!$this->item->metadata->enclosure;	
 	}
 	
 	/**
@@ -277,27 +243,7 @@ class LilinaItems {
 	 * @return string Absolute URL to the enclosure
 	 */
 	public function get_enclosure() {
-		if(isset($this->item->metadata->enclosure))
-			return $this->item->metadata->enclosure;
-
-		if(!$this->has_enclosure())
-			return false;
-
-		return $this->current_metadata['enclosure_link'];
-	}
-	
-	/**
-	 * Return the favicon for the current feed
-	 *
-	 * @since 1.0
-	 *
-	 * @return string Absolute URL to the favicon
-	 */
-	public function get_favicon() {
-		if(!$return = $this->current_feed->get_favicon())
-			$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
-
-		return $this->current_metadata['favicon'] = $return;
+		return $this->item->metadata->enclosure;
 	}
 
 	/**
@@ -308,19 +254,6 @@ class LilinaItems {
 	 * @return string MD5 hash
 	 */
 	public function get_id() {
-		if(isset($this->item->hash))
-			return $this->item->hash;
-		return $this->current_item->get_id(true);
-	}
-	
-	/**
-	 * Return the ID for the current feed
-	 *
-	 * @since 1.0
-	 *
-	 * @return string MD5 hash
-	 */
-	public function get_feed_id() {
-		return md5($this->current_feed->get_link() . $this->current_feed->get_title());
+		return $this->item->hash;
 	}
 }

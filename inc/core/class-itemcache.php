@@ -41,7 +41,7 @@ class ItemCache extends LilinaItems {
 		$this->data = new DataHandler();
 		$current = $this->data->load('items.data');
 		if($current !== null)
-			$this->cached_items = unserialize($current);
+			$this->cached_items = $this->items = unserialize($current);
 
 		parent::__construct($sp);
 	}
@@ -70,17 +70,27 @@ class ItemCache extends LilinaItems {
 		if(is_null($this->simplepie))
 			$this->load();
 
-		$sp = &$this->simplepie;
-		$this->simplepie_items = $sp->get_items();
+		$this->simplepie_items = &$this->simplepie->get_items();
 
-		$this->items = $this->cached_items;
-		/** Run through each item at least once */
-		while($this->has_items()) {
-			$this->current_item();
-			$this->check_item();
+		$updated = false;
+
+		foreach($this->simplepie_items as $item) {
+			$new_item = $this->normalise($item);
+			$this->items[ $new_item->hash ] = $new_item;
+			//$updated = $updated || $this->check_item($new_item);
+			if($this->check_item($new_item)) {
+				$updated = true;
+				var_dump($new_item);
+			}
 		}
-		$this->reset_iterator();
-		$this->save_cache();
+
+		if($updated)
+			$this->save_cache();
+
+		$this->simplepie->__destruct();
+		unset($this->simplepie);
+		unset($this->simplepie_items);
+		unset($this->cached_items);
 	}
 
 	/**
@@ -91,20 +101,25 @@ class ItemCache extends LilinaItems {
 	 * update_item().
 	 *
 	 * @since 1.0
+	 *
+	 * @param stdClass $item Item to check
 	 */
-	protected function check_item() {
-		if(!isset( $this->cached_items[ $this->item->hash ] )) {
-			$this->update_item();
-			do_action('insert_item', $this->item);
-			return;
+	protected function check_item($item) {
+		if(!isset( $this->cached_items[ $item->hash ] )) {
+			$this->update_item($item);
+			do_action('insert_item', $item);
+			return true;
 		}
 
-		$cached_item = $this->cached_items[ $this->get_id() ];
-		if($cached_item->timestamp !== $this->item->timestamp || $cached_item->hash !== $this->item->hash) {
-			$old_item = $this->cached_items[ $this->get_id() ];
-			$this->update_item();
-			do_action('update_item', $this->item, $old_item);
+		$cached_item = $this->cached_items[ $item->hash ];
+		if($cached_item->timestamp !== $item->timestamp || $cached_item->hash !== $item->hash) {
+			$old_item = $this->cached_items[ $item->hash ];
+			$this->update_item($item);
+			do_action('update_item', $item, $old_item);
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -115,9 +130,11 @@ class ItemCache extends LilinaItems {
 	 *
 	 * @since 1.0
 	 * @deprecated Use {@see update_item()} instead.
+	 *
+	 * @param stdClass $item Item to insert into database
 	 */
-	protected function insert_item() {
-		$this->update_item();
+	protected function insert_item($item) {
+		$this->update_item($item);
 	}
 
 	/**
@@ -127,9 +144,11 @@ class ItemCache extends LilinaItems {
 	 * current item.
 	 *
 	 * @since 1.0
+	 *
+	 * @param stdClass $item Item to update
 	 */
-	protected function update_item() {
-		$this->cached_items[ $this->get_id() ] = $this->item;
+	protected function update_item($item) {
+		$this->cached_items[ $item->hash ] = $item;
 	}
 
 	/**
