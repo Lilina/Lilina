@@ -29,12 +29,12 @@ class Templates {
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
 		$cache = new CacheHandler();
-		$cache->begin_caching($_SERVER['PHP_SELF']);
+		$cache->begin_caching($_SERVER['REQUEST_URI']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
 			require_once($current['Template Dir'] . '/' . $view_file);
 		else
 			require_once($current['Template Dir'] . '/index.php');
-		$cache->end_caching($_SERVER['PHP_SELF']);
+		$cache->end_caching($_SERVER['REQUEST_URI']);
 	}
 
 	/**

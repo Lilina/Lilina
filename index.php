@@ -18,6 +18,8 @@ require_once(LILINA_INCPATH . '/core/install-functions.php');
 lilina_check_installed();
 
 require_once(LILINA_INCPATH . '/core/conf.php');
+lilina_fix_request_uri();
+
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 $timer_start = lilina_timer_start();
 
