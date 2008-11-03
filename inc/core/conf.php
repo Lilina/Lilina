@@ -132,4 +132,6 @@ function __autoload($class_name) {
 		require_once(LILINA_INCPATH . '/core/class-' . $class_file);
 	}
 }
+
+spl_autoload_register('__autoload');
 ?>
