@@ -60,7 +60,7 @@ echo '<?xml version="1.0" encoding="'.get_option('encoding').'"?'.'>';
 	<item>
 		<title><![CDATA[<?php the_title(); ?>]]></title>
 		<link><?php the_link(); ?></link>
-		<pubDate><?php the_date('format=D, d M Y H:i:s +0000'); ?></pubDate>
+		<pubDate><?php the_date(array('format' => 'D, d M Y H:i:s +0000')); ?></pubDate>
 		<?php //Not entirely accurate; uses the feed name, not the author ?>
 		<dc:creator><?php the_feed_name(); ?></dc:creator>
 

@@ -61,7 +61,9 @@ echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 
 	<?php do_action('atom_head'); ?>
 	<?php
-	query_setup('showtime=1');
+	//query_setup('showtime=0');
+	global $showtime;
+	$showtime = 0;
 	if(has_items(false)) {
 		while(has_items()): the_item();
 	?>
