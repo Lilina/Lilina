@@ -21,20 +21,27 @@ class Templates {
 	/**
 	 * Returns the current template directory
 	 *
-	 * @todo This is dirrrty dirrrty code. Fix ASAP.
-	 * @return string
+	 * @since 1.0
 	 * @see get_option
+	 * @todo This is dirrrty dirrrty code. Fix ASAP.
+	 *
+	 * @param string $view Name of the current view
+	 * @param string $prefix String to prefix to the cache ID, defaults to template name
+	 * @return string
 	 */
-	public static function load($view = 'chrono', $meta = '') {
+	public static function load($view = 'chrono', $prefix = '') {
+		if(empty($prefix))
+			$prefix = get_option('template');
+
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
 		$cache = new CacheHandler();
-		$cache->begin_caching($_SERVER['REQUEST_URI']);
+		$cache->begin_caching($prefix . $_SERVER['REQUEST_URI']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
 			require_once($current['Template Dir'] . '/' . $view_file);
 		else
 			require_once($current['Template Dir'] . '/index.php');
-		$cache->end_caching($_SERVER['REQUEST_URI']);
+		$cache->end_caching($prefix . $_SERVER['REQUEST_URI']);
 	}
 
 	/**
