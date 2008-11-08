@@ -22,10 +22,8 @@ defined('LILINA_PATH') or die('Restricted access');
  */
 function lilina_auth($u,$p) {
 	session_start();
-	if (isset( $_SESSION['is_logged_in'] ) &&
-		isset( $_COOKIE['lilina_user'] ) &&
+	if (isset( $_COOKIE['lilina_user'] ) &&
 		isset( $_COOKIE['lilina_pass'] ) &&
-		$_SESSION['is_logged_in'] === true &&
 		$_COOKIE['lilina_user'] === get_option('auth', 'user') &&
 		$_COOKIE['lilina_pass'] === get_option('auth', 'pass')) {
 
