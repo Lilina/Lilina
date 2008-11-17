@@ -38,8 +38,8 @@ function feed_list_table() {
 			<td class="url-col"><?php echo $this_feed['feed']; ?></td>
 			<td class="cat-col"><?php echo $this_feed['cat']; ?></td>
 			<?php do_action('admin-feeds-infocol', $this_feed, $j); ?>
-			<td class="change-col"><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?page=feeds&amp;change=<?php echo  $j; ?>&amp;action=change" class="change_link"><?php _e('Change'); ?></a></td>
-			<td class="remove-col"><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?page=feeds&amp;remove=<?php echo  $j; ?>&amp;action=remove"><?php _e('Remove'); ?></a></td>
+			<td class="change-col"><a href="feeds.php?change=<?php echo  $j; ?>&amp;action=change" class="change_link"><?php _e('Change'); ?></a></td>
+			<td class="remove-col"><a href="feeds.php?remove=<?php echo  $j; ?>&amp;action=remove"><?php _e('Remove'); ?></a></td>
 			<?php do_action('admin-feeds-actioncol', $this_feed, $j); ?>
 		</tr>
 	<?php
