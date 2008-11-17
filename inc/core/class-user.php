@@ -56,15 +56,6 @@ class User {
 			return true;
 		}
 
-		/** Sessions: Bleh **/
-		session_start();
-		if (isset( $_SESSION['is_logged_in'] ) && $_SESSION['is_logged_in'] === true) {
-			$this->authed = true;
-			/** Upgrade to cookies! */
-			$this->set_cookies();
-			return true;
-		}
-
 		/** /me smells a newb. */
 		if( $this->authenticate() ) {
 			$this->authed = true;

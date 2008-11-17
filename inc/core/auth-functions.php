@@ -23,20 +23,15 @@ defined('LILINA_PATH') or die('Restricted access');
 function lilina_auth($u,$p) {
 	session_start();
 	if (isset( $_COOKIE['lilina_user'] ) &&
-		isset( $_COOKIE['lilina_pass'] ) &&
-		$_COOKIE['lilina_user'] === get_option('auth', 'user') &&
-		$_COOKIE['lilina_pass'] === get_option('auth', 'pass')) {
-
-		session_regenerate_id();
+	  isset( $_COOKIE['lilina_pass'] ) &&
+	  $_COOKIE['lilina_user'] === get_option('auth', 'user') &&
+	  $_COOKIE['lilina_pass'] === get_option('auth', 'pass')) {
 		return true;
 	}
 	elseif(is_array( $check = lilina_check_user_pass($u, $p) )) {
-			//All details good to go, lets
-			//indicate we are logged in
-			$_SESSION['is_logged_in'] = true;
-			setcookie ( 'lilina_user', $check['u'], time() + 1209600 );
-			setcookie ( 'lilina_pass',  $check['p'], time() + 1209600 );
-			return true;
+		setcookie ( 'lilina_user', $check['u'], time() + 1209600 );
+		setcookie ( 'lilina_pass',  $check['p'], time() + 1209600 );
+		return true;
 	}
 	return $check;
 }
@@ -52,7 +47,6 @@ function lilina_logout() {
 	if (isset($_COOKIE[session_name()])) {
 		setcookie(session_name(), '', time()-42000, '/');
 	}
-    session_destroy();
 	header('Location: '. get_option('baseurl'));
 }
 
