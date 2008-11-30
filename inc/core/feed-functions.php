@@ -187,10 +187,10 @@ function import_opml($opml_url) {
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$opml = new SimplePie_File($opml_url);
-	$opml = new OPML($opml->body);
+	$opml = new OPML($opml->body, $opml_url);
 
 	if(!empty($opml->error) || empty($opml->data)) {
-		add_notice(sprintf(_r('The OPML file could not be read. The parser said: %s'), $imported_feeds->error));
+		add_notice(sprintf(_r('The OPML file could not be read. The parser said: %s'), $opml->error));
 		return false;
 	}
 	$feeds_num = 0;
