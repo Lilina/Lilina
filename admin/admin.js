@@ -3,6 +3,8 @@ var admin = {
 		/** Hide some stuff */
 		$("#changer").hide();
 		$("#changer_id").hide();
+		$("form#add_form").append('<p class="loading">Adding feed...</p>');
+		$("form#change_form").append('<p class="loading">Changing feed...</p>');
 		
 		/** Set up events */
 		$(".change_link").click(function () {
@@ -16,7 +18,11 @@ var admin = {
 			return false;
 		});
 		$("#add_form").submit(function () {
+			admin.disable_button(this);
+			
 			feeds.add($("#add_url").val(), $("#add_name").val(), false, feeds.reload_table);
+			
+			admin.enable_button(this);
 			return false;
 		});
 		$("#change_form").submit(function () {
@@ -37,6 +43,14 @@ var admin = {
 		}, function() {
 			$(this).removeClass('hovering');
 		});
+	},
+	disable_button: function (selector) {
+		$(selector).children("input.submit").attr('disabled', 'disabled');
+		$(selector).children(".loading").show();
+	},
+	enable_button: function (selector) {
+		$(selector).children("input.submit").attr('disabled', '');
+		$(selector).children(".loading").hide();
 	}
 };
 
@@ -57,7 +71,6 @@ var feeds = {
 			name: name,
 			url: url
 		}, function (data) {
-			console.log(data);
 			if(!data.errors || data.errors.length == 0) {
 				// Clear the values
 				$("#add_url").val('');
@@ -97,7 +110,6 @@ var feeds = {
 			name: $("#change_name").val(),
 			url: $("#change_url").val()
 		}, function (data) {
-			console.log(data);
 			if(data.errors.length == 0) {
 				// Clear the values
 				$("#change_url").val('');

@@ -29,46 +29,20 @@ if(!defined('LOADED_SETTINGS')) {
 	global $settings, $default_settings;
 	$settings							= array();
 
-	//Must be in seconds
-	$settings['cachetime']				= 600;
-
-	/*
-	GZip output
-	Make sure this is disabled if your PHP version is less than
-	4.0.5 or if you have zlib.output_compression enabled in your
-	php.ini
-	*/
-	$settings['gzip']					= false;
-	//Magpie cache time is default
-	$settings['magpie']					= array('cachetime' => 3600);
-
 	$settings['baseurl']				= 'http://localhost/';
-	//No need to change this really
-	$settings['path']					= LILINA_PATH;
 	//Name of template
 	$settings['template']				= 'default';
 	$settings['sitename']				= 'Lilina News Aggregator';
 	$settings['auth']					= array('user' => 'username', 'pass' => 'password');
-	$settings['owner']					= array('name' => 'Bob Smith', 'email' => 'bsmith@example.com');
 	$settings['locale']					= 'en';
-	//Maximum number of items from each feed, 0 is unlimited
-	$settings['feeds']					= array('items' => '25');
 	//Default time is always the first time
 	//Numbers for hours or 'week' for a week
 	//'all' is automatically added
 	$settings['interface']				= array('times' => array(24,48,'week'));
-	//Output types
-	$settings['output']					= array(
-												'rss' => true,
-												'html' => true,
-												'atom' => true
-												);
 	//Timezone offset
 	//Note: difference between your time and your server's time
 	$settings['offset']					= 0;
 	$settings['encoding']				= 'utf-8';
-	//Debug mode?
-	$settings['debug']					= 'false';
 	//Just in case we need to check against them
 	$default_settings = $settings;
 
@@ -88,23 +62,15 @@ if(!defined('LOADED_SETTINGS')) {
 	}
 	
 	/**
-	 * Stores the location of the language directory. First looks for language folder in wp-content
+	 * Stores the location of the language directory. First looks for language folder in content
 	 * and uses that folder if it exists. Or it uses the "languages" folder in LILINA_INCPATH.
 	 *
 	 * @since 1.0
 	 */
 	if ( !defined('LANGDIR'))
-		define('LANGDIR', '/inc/locales');
+		define('LANGDIR', '/content/locales');
 
 	//Settings that use other settings variables
-
-	if(!isset($settings['files']))
-		$settings['files'] = array(
-			'feeds'		=> $settings['path'] . '/content/system/config/feeds.data',
-			'times'		=> $settings['path'] . '/conf/time.data',
-			'settings'	=> $settings['path'] . '/conf/settings.php',
-			'plugins'	=> $settings['path'] . '/conf/plugins.data'
-		);
 
 	if(!defined('LILINA_CONTENT_DIR'))
 		define('LILINA_CONTENT_DIR', LILINA_PATH . '/content');
@@ -117,6 +83,13 @@ if(!defined('LOADED_SETTINGS')) {
 
 	if(!isset($settings['cachedir']))
 		$settings['cachedir'] = LILINA_CACHE_DIR;
+
+	if(!isset($settings['files']))
+		$settings['files'] = array(
+			'feeds'		=> LILINA_CONTENT_DIR . '/system/config/feeds.data',
+			'settings'	=> LILINA_CONTENT_DIR . '/system/config/settings.php',
+			'plugins'	=> LILINA_CONTENT_DIR . '/system/config/plugins.data'
+		);
 }
 
 
