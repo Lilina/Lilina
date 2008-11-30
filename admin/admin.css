@@ -242,6 +242,11 @@ legend {
 	border: 1px solid #CCC;
 }
 
+.loading {
+	background: url("loading.gif") no-repeat center center;
+	display: none;
+}
+
 #footer {
 	margin: 0;
 	padding: 15px 5%;
