@@ -51,7 +51,7 @@ class OPML {
 		$this->raw = $raw_data;
 		// Create an XML parser
 		try {
-			$xml_parser = new SimpleXMLElement($this->raw);
+			$xml_parser = new SimpleXMLElement($this->raw, LIBXML_NOERROR);
 
 			foreach($xml_parser->body->outline as $element) {
 				if($element['type'] == 'rss' || isset($element['xmlUrl'])):

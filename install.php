@@ -375,9 +375,6 @@ function upgrade() {
 		lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
 		return;
 	}
-	elseif(count(MessageHandler::get()) === 1) {
-		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
-	}
 	else
 		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
 
