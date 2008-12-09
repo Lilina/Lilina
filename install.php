@@ -459,7 +459,7 @@ switch($page) {
 		break;
 }
 ?>
-			<img id="logo" src="inc/templates/default/logo-small.png" alt="Lilina Logo" />
+			<img id="logo" src="admin/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>

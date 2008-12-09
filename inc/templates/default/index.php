@@ -25,7 +25,7 @@ template_header();
 <body class="river-page">
 <div id="navigation">
   	<a href="<?php template_siteurl();?>">
-	<img src="<?php template_directory(); ?>/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
+	<img src="<?php template_siteurl() ?>admin/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 	</a>
 	<?php 
 	if(template_synd_links())

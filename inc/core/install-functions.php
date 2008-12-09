@@ -110,7 +110,7 @@ function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 			<h1><?php echo $title; ?></h1>
 			<?php echo $message; ?>
 
-			<img id="logo" src="<?php echo $guessurl ?>inc/templates/default/logo-small.png" alt="Lilina Logo" />
+			<img id="logo" src="<?php echo $guessurl ?>admin/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>
