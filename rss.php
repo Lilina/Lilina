@@ -32,7 +32,7 @@ require_once(LILINA_INCPATH . '/core/skin.php');
 require_once(LILINA_INCPATH . '/core/version.php');
 global $lilina;
 
-header('Content-Type: text/xml; charset=' . get_option('encoding'), true);
+header('Content-Type: application/rss+xml; charset=' . get_option('encoding'), true);
 echo '<?xml version="1.0" encoding="'.get_option('encoding').'"?'.'>';
 ?>
 
