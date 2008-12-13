@@ -10,7 +10,6 @@ class User {
 	 * @var string
 	 */
 	var $user;
-	var $info;
 
 	/**
 	 * Contains the (hashed) supplied password
@@ -25,18 +24,35 @@ class User {
 	var $raw;
 
 	/**
+	 * Path on $domain the cookie is valid for
+	 * @var string
+	 */
+	var $path;
+
+	/**
+	 * Domain the cookie is valid for
+	 * @var string|bool
+	 */
+	var $domain;
+
+	/**
 	 * User() - Constructor for the class
 	 */
-	function User($user = false, $password = false) {
+	function User($user = false, $password = false, $domain = false, $path = null) {
 		if(!$user)
 			$user = isset($_POST['user']) ? $_POST['user'] : false;
 
 		if(!$password)
-			$password = isset($_POST['password']) ? $_POST['password'] : false;
+			$password = isset($_POST['pass']) ? $_POST['pass'] : false;
+
+		if($path === null)
+			$path = preg_replace('|https?://[^/]+|i', '', get_option('baseurl') );
 
 		$this->user = $user;
 		$this->raw = $password;
 		$this->password = $this->hash($password);
+		$this->domain = $domain;
+		$this->path = $path;
 	}
 
 	/**
@@ -48,23 +64,20 @@ class User {
 	 * @return mixed Boolean true if logged in, otherwise passes the result of {@link lilina_check_user_pass()}} through
 	 */
 	function identify() {
-
-		/** Cookies: Nom nom nom! */
 		if(isset($_COOKIE['lilina_user']) && isset($_COOKIE['lilina_pass'])) {
-			if($this->check($_COOKIE['lilina_user'], $_COOKIE['lilina_user']) != 1)
-				return false;
+			if( ( $status = $this->authenticate($_COOKIE['lilina_user'], $_COOKIE['lilina_pass']) ) !== 1)
+				return $status;
 			return true;
 		}
 
-		/** /me smells a newb. */
-		if( $this->authenticate() ) {
+		if( ($status = $this->authenticate()) === 1 ) {
 			$this->authed = true;
 			$this->set_cookies();
 			return true;
 		}
 
 		/** Uh oh! */
-		return false;
+		return $status;
 	}
 
 	/**
@@ -117,7 +130,7 @@ class User {
 			return 0;
 		}
 
-		if ($this->user === get_option('auth', 'user') && ($password_hash = $this->password) === get_option('auth', 'pass')) {
+		if ($this->user === get_option('auth', 'user') && $this->password === get_option('auth', 'pass')) {
 			return 1;
 		}
 		else {
@@ -128,12 +141,12 @@ class User {
 	/**
 	 * set_cookies() - Sets the authentication cookies for next use
 	 *
-	 * Does what it says on the tin.
+	 * Does what it says on the tin. Uses HttpOnly for both cookies.
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
 	function set_cookies() {
-		setcookie ( 'lilina_user', $this->user, time() + 1209600 );
-		setcookie ( 'lilina_pass', $this->password, time() + 1209600 );
+		setcookie ( 'lilina_user', $this->user, time() + 1209600, $this->path, $this->domain, null, true );
+		setcookie ( 'lilina_pass', $this->password, time() + 1209600, $this->path, $this->domain, null, true );
 	}
 
 	/**
@@ -143,7 +156,7 @@ class User {
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
 	function destroy_cookies() {
-		setcookie ( 'lilina_user', '', time() - 31536000 );
-		setcookie ( 'lilina_pass', '', time() - 31536000 );
+		setcookie ( 'lilina_user', '', time() - 31536000, $this->path, $this->domain );
+		setcookie ( 'lilina_pass', '', time() - 31536000, $this->path, $this->domain );
 	}
 }
