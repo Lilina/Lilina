@@ -97,7 +97,7 @@ list_feeds('format=<li>
 <?php echo date('F d y h:m:s A') ?><br />
 <em>All times are UTC.</em><br />
 <br />
-Powered by <a href="http://getlilina.org/">Lilina</a>.
+Powered by <a href="http://getlilina.org/">Lilina</a>. <a href="admin/">Admin</a>.
 </p>
 
 <?php do_action('theme_sidebar'); ?>

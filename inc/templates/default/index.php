@@ -37,6 +37,8 @@ template_header();
 	<a href="opml.php">OPML</a>
 	|
 	<a href="#sources">List of sources</a>
+	|
+	<a href="admin/">Admin</a>
 </div>
 
 <div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
