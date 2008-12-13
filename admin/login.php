@@ -19,7 +19,7 @@ if(defined('LILINA_AUTHED') && LILINA_AUTHED === true) {
 global $page;
 $body = '';
 
-if(defined('LILINA_AUTH_ERROR') && LILINA_AUTH_ERROR == 'error')
+if(defined('LILINA_AUTH_ERROR') && LILINA_AUTH_ERROR === -1)
 	$body = '<p class="alert">' . _r('Your password or username is incorrect. Please make sure you have spelt it correctly.') . '</p>';
 
 $body .= '
