@@ -18,7 +18,7 @@ class Locale {
 	 * 
 	 * @param string $locale A language code like 'en' or 'en-us' or 'x-sneddy', will be lowercased
 	 */
-	public static set($locale) {
+	public static function set($locale) {
 		self::$locale = strtolower($locale);
 		self::load('default', LILINA_PATH . LANGDIR . "/$locale.mo");
 	}
@@ -44,7 +44,7 @@ class Locale {
 	 *
 	 * @return string The locale of the blog or from the 'locale' hook
 	 */
-	public static get() {
+	public static function get() {
 		if (isset(self::$locale))
 			return apply_filters( 'locale', self::$locale );
 
@@ -77,7 +77,7 @@ class Locale {
 	 * @param string $mofile Path to the .mo file
 	 * @return null On failure returns null and also on success returns nothing.
 	 */
-	public static load($domain, $mofile) {
+	public static function load($domain, $mofile) {
 		if (isset(self::$messages[$domain]))
 			return;
 
@@ -87,6 +87,24 @@ class Locale {
 			return;
 
 		self::$messages[$domain] = new gettext_reader($input);
+	}
+
+	/**
+	 * Loads default translated strings based on locale
+	 *
+	 * Loads the .mo file in LANGDIR constant path from root.
+	 * The translated (.mo) file is named based off of the locale.
+	 *
+	 * @since 1.0
+	 */
+	public static function load_default_textdomain() {
+		$locale = self::get();
+		if ( empty($locale) )
+			$locale = 'en';
+
+		$mofile = LILINA_PATH . LANGDIR . "/$locale.mo";
+
+		self::load('default', $mofile);
 	}
 
 	/**
@@ -158,7 +176,7 @@ class Locale {
 	 * @param string $domain Domain to retrieve the translated text
 	 * @return string Translated text
 	 */
-	public static function translate($string, $domain = 'default') {
+	public static function translate($text, $domain = 'default') {
 		$text = apply_filters('pre_gettext', $text, $domain);
 
 		if (isset($messages[$domain]))
@@ -292,8 +310,8 @@ function __ngettext($single, $plural, $number, $domain = 'default') {
  *
  * Example:
  *  $messages = array(
- *  	'post' => ngettext_noop('%s post', '%s posts'),
- *  	'page' => ngettext_noop('%s pages', '%s pages')
+ *  	'post' => __ngettext_noop('%s post', '%s posts'),
+ *  	'page' => __ngettext_noop('%s pages', '%s pages')
  *  );
  *  ...
  *  $message = $messages[$type];

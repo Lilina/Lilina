@@ -24,7 +24,9 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 $timer_start = lilina_timer_start();
 
 require_once(LILINA_INCPATH . '/core/version.php');
-require_once(LILINA_INCPATH . '/core/l10n.php');
+
+Locale::load_default_textdomain();
+
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');

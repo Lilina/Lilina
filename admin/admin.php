@@ -29,7 +29,8 @@ lilina_check_installed();
 
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 
-require_once(LILINA_INCPATH . '/core/l10n.php');
+//require_once(LILINA_INCPATH . '/core/l10n.php');
+Locale::load_default_textdomain();
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 
 do_action('admin_init');
@@ -149,8 +150,7 @@ function admin_footer() {
 </div>
 <p id="footer"><?php
 _e('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>');
-do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/<?php _e('en'); ?>:start"><?php _e('Documentation');
-?></a> and <a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums');?>"><?php _e('Support'); ?></a></p>
+do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/start"><?php _e('Documentation') ?></a> | <a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums') ?>"><?php _e('Support') ?></a></p>
 </body>
 </html>
 <?php

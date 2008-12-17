@@ -10,9 +10,9 @@ require_once('admin.php');
 
 admin_header(_r('Home'));
 ?>
-<h2>Admin Panel</h2>
+<h2><?php _e('Admin Panel') ?></h2>
 <div class="home_container" id="contain_feeds">
-	<h3>Current feeds</h3>
+	<h3><?php _e('Current feeds') ?></h3>
 	<ul>
 <?php
 /**
@@ -34,20 +34,20 @@ if(is_array($feed_list)) {
 		}
 		else {
 			echo '
-	<li><a href="' . $this_feed['feed'] . '">(No title specified)</a></li>';
+	<li><a href="' . $this_feed['feed'] . '">' . _r('(No title specified)') . '</a></li>';
 		}
 	}
 }
 else {
-	echo '<li>No feeds installed yet.</li>';
+	echo '<li>' . _r('No feeds installed yet.') . '</li>';
 }
 ?>
 	</ul>
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds">Add, remove and change feeds</a></h3>
+	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"><?php _e('Edit your feeds') ?></a></h3>
 </div>
 
 <div class="home_container" id="contain_settings">
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings">Change your settings</a></h3>
+	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"><?php _e('Change your settings') ?></a></h3>
 </div>
 <?php
 admin_footer();
