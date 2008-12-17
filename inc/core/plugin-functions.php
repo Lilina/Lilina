@@ -25,10 +25,16 @@ defined('LILINA_PATH') or die('Restricted access');
  */
 function apply_filters($filter_name, $string=''){
 	global $filters;
+	$args = func_get_args();
+
+	// Do 'all' actions first
+	if ( isset($filters['all']) ) {
+		_call_all_hook($args);
+	}
+
 	if(!isset($filters[$filter_name])) {
 		return $string;
 	}
-	$args = func_get_args();
 
 	ksort($filters[$filter_name]);
 
@@ -67,30 +73,6 @@ function do_action($action_name){
 * Register plugin function with system
 *
 * Adds plugin function to $hooked_plugins under the specified hook
-* @deprecated Use add_filter instead
-* @param string $function Plugin function to register
-* @param string $hook Hook to register function under
-*/
-function register_filter($filter, $function, $num_args=1) {
-	add_filter($filter, $function, 0, $num_args);
-}
-
-/**
-* Register plugin action with system
-*
-* Adds plugin function to $hooked_plugins under the specified hook
-* @deprecated Use add_action() instead
-* @param string $function Plugin function to register
-* @param string $function Hook to register function under
-*/
-function register_action($action, $function, $num_args=0) {
-	add_filter($action, $function, $num_args);
-}
-
-/**
-* Register plugin function with system
-*
-* Adds plugin function to $hooked_plugins under the specified hook
 *
 * @param string $function Plugin function to register
 * @param string $hook Hook to register function under
@@ -113,6 +95,39 @@ function add_filter($filter, $function, $priority = 0, $num_args=1) {
 */
 function add_action($action, $function, $priority = 0, $num_args=0) {
 	add_filter($action, $function, $priority, $num_args);
+}
+
+/**
+ * Calls the 'all' hook, which will process the functions hooked into it.
+ *
+ * The 'all' hook passes all of the arguments or parameters that were used for
+ * the hook, which this function was called for.
+ *
+ * This function is used internally for apply_filters(), do_action(), and
+ * do_action_ref_array() and is not meant to be used from outside those
+ * functions. This function does not check for the existence of the all hook, so
+ * it will fail unless the all hook exists prior to this function call.
+ *
+ * @package WordPress
+ * @subpackage Plugin
+ * @since 2.5
+ * @access private
+ *
+ * @uses $filters Used to process all of the functions in the 'all' hook
+ *
+ * @param array $args The collected parameters from the hook that was called.
+ * @param string $hook Optional. The hook name that was used to call the 'all' hook.
+ */
+function _call_all_hook($args) {
+	global $filters;
+
+	reset( $filters['all'] );
+	do {
+		foreach( (array) current($filters['all']) as $the_ )
+			if ( !is_null($the_['function']) )
+				call_user_func_array($the_['function'], $args);
+
+	} while ( next($filters['all']) !== false );
 }
 
 /**
