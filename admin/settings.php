@@ -58,7 +58,7 @@ if(isset($_REQUEST['activate_plugin'])) {
 	activate_plugin($_REQUEST['activate_plugin']);
 }
 elseif(isset($_REQUEST['deactivate_plugin'])) {
-	deactivate_plugin($_REQUES['activate_plugin']);
+	deactivate_plugin($_REQUEST['deactivate_plugin']);
 }
 	
 
@@ -140,7 +140,17 @@ foreach(lilina_plugins_list(get_plugin_dir()) as $plugin):
 					<td><?php echo $plugin_meta->version ?></td>
 					<td><?php echo $plugin_meta->description ?></td>
 					<td><?php if(isset($current_plugins[md5($plugin_file)])) _e('Activated'); else _e('Deactivated'); ?></td>
-					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>"><?php if(isset($current_plugins[md5($plugin_file)])) _e('Dectivate'); else _e('Activate'); ?></a></td>
+<?php
+if( isset($current_plugins[md5($plugin_file)]) ):
+?>
+					<td><a href="settings.php?deactivate_plugin=<?php echo $plugin_file ?>"><?php  _e('Dectivate') ?></a></td>
+<?php
+else:
+?>
+					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>"><?php  _e('Activate') ?></a></td>
+<?php
+endif;
+?>
 				</tr>
 <?php
 endforeach;
