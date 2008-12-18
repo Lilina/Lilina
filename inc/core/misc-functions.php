@@ -292,30 +292,6 @@ function lilina_level_playing_field() {
 }
 
 /**
- * Adds a notice to the top of the page
- *
- * Creates an anonymous function to concatenate $message to the alert_box filter
- * Note: this uses ugly code, but must to avoid escaping double quotes as well
- * @param string $message Notice to add
- */
-function add_notice($message) {
-	MessageHandler::add($message);
-	//add_filter('alert_box', create_function('$text', 'return $text . \'<p>' . str_replace( '\'', '\\\'', ) . '</p>\';'));
-}
-
-/**
- * Adds a technical notice to the top of the page
- *
- * Creates an anonymous function to concatenate $message to the alert_box filter
- * Note: this uses ugly code, but must to avoid escaping double quotes as well
- * @param string $message Notice to add
- */
-function add_tech_notice($message) {
-	MessageHandler::add($message);
-	//add_filter('alert_box', create_function('$text', 'return $text . \'<p class="tech_notice"><span class="actual_notice">' . str_replace( '\'', '\\\'', $message) . '</span></p>\';'));
-}
-
-/**
  * shorten() - Cut a specified string down to $length characters
  *
  * Removes all HTML tags (not entities), shortens to $length characters and

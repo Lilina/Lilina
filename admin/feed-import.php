@@ -18,7 +18,7 @@ $importing = false;
 /** Make sure we're actually adding */
 if(isset($_REQUEST['submit'])) {
 	if(!isset($_REQUEST['url']))
-		add_notice(_r('No URL specified to import OPML from'));
+		MessageHandler::add_error(_r('No URL specified to import OPML from'));
 	else
 		$importing = import_opml($_REQUEST['url']);
 }

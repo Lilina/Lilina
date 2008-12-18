@@ -51,35 +51,28 @@ function feed_list_table() {
 	}
 	else {
 	?>
-		<tr id="nofeeds"><td><?php _e('No feeds installed yet'); ?></td></tr>
+		<tr id="nofeeds"><td><?php _e('You don\'t currently have any feeds. Try <a href="#add_form">adding some</a>.'); ?></td></tr>
 	<?php
 	}
 }
 
-$change_name	= (isset($_REQUEST['change_name']))? $_REQUEST['change_name'] : '';
-$change_name	= htmlspecialchars($change_name);
-$change_url	= (isset($_REQUEST['change_url']))? $_REQUEST['change_url'] : '';
-$change_id	= (isset($_REQUEST['change_id']))? $_REQUEST['change_id'] : '';
-$change_id	= htmlspecialchars($change_id);
-
-//Remove variables
-$remove_id	= (isset($_REQUEST['remove']))? $_REQUEST['remove'] : '';
-$remove_id	= htmlspecialchars($remove_id);
-
-//Import variable
-$action = (isset($_REQUEST['action'])? $_REQUEST['action'] : '');
+$change_name	= ( isset($_REQUEST['change_name']) )	? htmlspecialchars($_REQUEST['change_name']) : '';
+$change_url		= ( isset($_REQUEST['change_url']) )	? $_REQUEST['change_url'] : '';
+$change_id		= ( isset($_REQUEST['change_id']) )		? htmlspecialchars($_REQUEST['change_id']) : '';
+$remove_id		= ( isset($_REQUEST['remove']) )		? htmlspecialchars($_REQUEST['remove']) : '';
+$action			= ( isset($_REQUEST['action'] ) )		? $_REQUEST['action'] : '';
 
 /** Make sure we're actually adding */
 switch($action) {
 	case 'add':
-	/** We need some sort of value here */
-	if( !isset($_REQUEST['add_name']) )
-		$_REQUEST['add_name'] = '';
+		/** We need some sort of value here */
+		if( !isset($_REQUEST['add_name']) )
+			$_REQUEST['add_name'] = '';
 
-	if(!isset($_REQUEST['add_url']))
-		add_notice(_r('No URL specified'));
-	else
-		add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
+		if(!isset($_REQUEST['add_url']))
+			MessageHandler::add_error(_r('No URL specified'));
+		else
+			add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
 	break;
 
 	case 'remove':
@@ -91,7 +84,7 @@ switch($action) {
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		add_notice(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), 'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+		MessageHandler::add(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), 'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
 		break;
 
 	case 'change':
@@ -107,7 +100,7 @@ switch($action) {
 		if(!$fp) { echo 'Error';}
 		fputs($fp,$sdata) ;
 		fclose($fp) ;
-		add_notice(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
+		MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
 	break;
 }
 if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {
