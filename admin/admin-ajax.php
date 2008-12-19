@@ -68,7 +68,7 @@ switch( $_REQUEST['action'] ) {
 		if(!isset($_REQUEST['url']) || empty($_REQUEST['url']))
 			MessageHandler::add_error( _r('No URL specified') );
 		else {
-			add_feed( htmlspecialchars($_REQUEST['url']), htmlspecialchars($_REQUEST['name']) );
+			add_feed( $_REQUEST['url'], htmlspecialchars($_REQUEST['name']) );
 			save_feeds();
 		}
 		break;
@@ -85,7 +85,7 @@ switch( $_REQUEST['action'] ) {
 			break;
 		}
 
-		$data['feeds'][ $id ]['feed'] = htmlspecialchars($_REQUEST['url']);
+		$data['feeds'][ $id ]['feed'] = $_REQUEST['url'];
 		if(isset($_REQUEST['name']) && !empty($_REQUEST['name'])) {
 			$data['feeds'][ $id ]['name'] = htmlspecialchars($_REQUEST['name']);
 		}

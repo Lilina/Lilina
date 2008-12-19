@@ -32,5 +32,6 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
 
 do_action('init');
-Templates::load();
+//Templates::load();
+Controller::instance()->process();
 ?>
