@@ -1,3 +1,30 @@
+function setup_items() {
+	$('#main .item')
+		.children('.excerpt')
+			.hide()
+			.parent()
+				.addClass('c1')
+				.removeClass('c2')
+			.end()
+		.end()
+		.children('h1')
+			.css( {cursor:'pointer'} )
+			.click(function() {
+				$(this).next().slideToggle();
+			})
+		.end()
+		.children('.title')
+			.click(function() {
+				$(this)
+					.siblings('.excerpt')
+						.slideToggle()
+					.parent()
+						.toggleClass('c1')
+						.toggleClass('c2');
+				return false;
+			});
+}
+
 /* JQuery Stuff! */
 $(document).ready(function() {
 
@@ -29,17 +56,3 @@ $(document).ready(function() {
 	/* Per-item setup */
 	setup_items();
 });
-
-function setup_items() {
-	$('.river-page .excerpt').hide().parent().addClass('c1').removeClass('c2');
-	$('.river-page h1')
-		.css( {cursor:'pointer'} )
-		.click(function() {
-			$(this).next().slideToggle();
-	});
-	$('.river-page .title').click(function() {
-		$(this).siblings('.excerpt').slideToggle();
-		$(this).parent().toggleClass('c1').toggleClass('c2');
-		return false;
-	});
-}
