@@ -125,7 +125,7 @@ function array_diff_assoc_recursive($array1, $array2) {
  * @param mixed $new_value New value to set <tt>$option</tt> to
  */
 function update_option($option, $new_value) {
-	if($option === 'auth' || $option === 'sitename' || $option === 'siteurl' || $option === 'files')
+	if($option === 'auth' || $option === 'sitename' || $option === 'baseurl' || $option === 'files')
 		return false;
 
 	global $options;
@@ -144,7 +144,7 @@ function get_option($option, $suboption = '') {
 	global $settings;
 	
 	/** Hardcoded settings in settings.php */
-	if($option === 'auth' || $option === 'sitename' || $option === 'siteurl' || $option === 'files') {
+	if($option === 'auth' || $option === 'sitename' || $option === 'baseurl' || $option === 'files') {
 		if(!isset($settings[$option]))
 			return false;
 		
