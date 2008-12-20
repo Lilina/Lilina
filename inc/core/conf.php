@@ -72,8 +72,6 @@ if(!defined('LOADED_SETTINGS')) {
 	if(!defined('LILINA_DATA_DIR'))
 		define('LILINA_DATA_DIR', LILINA_CONTENT_DIR . '/system/data/');
 
-	if(!isset($settings['cachedir']))
-		$settings['cachedir'] = LILINA_CACHE_DIR;
 
 	if(!isset($settings['files']))
 		$settings['files'] = array(
@@ -93,7 +91,12 @@ if(!defined('LOADED_SETTINGS')) {
 	$options['offset']					= 0;
 	$options['encoding']				= 'utf-8';
 	$options['interface']				= array('times' => array(24,48,'week'));
-	$options['locale']					= 'en';
+	if(!isset($options['template']))
+		$options['locale'] = 'default';
+	if(!isset($options['locale']))
+		$options['locale'] = 'en';
+	if(!isset($options['cachedir']))
+		$options['cachedir'] = LILINA_CACHE_DIR;
 }
 
 
