@@ -84,7 +84,7 @@ if(!defined('LOADED_SETTINGS')) {
 	global $options;
 	$data = new DataHandler();
 	$options = $data->load('options.data');
-	if($current !== null)
+	if($options !== null)
 		$options = unserialize($options);
 	else
 		$options = array();
@@ -92,7 +92,7 @@ if(!defined('LOADED_SETTINGS')) {
 	$options['encoding']				= 'utf-8';
 	$options['interface']				= array('times' => array(24,48,'week'));
 	if(!isset($options['template']))
-		$options['locale'] = 'default';
+		$options['template'] = 'default';
 	if(!isset($options['locale']))
 		$options['locale'] = 'en';
 	if(!isset($options['cachedir']))

@@ -80,25 +80,6 @@ function template_footer(){
 
 /**
  * @todo Document
- */
-function template_times(){
-	foreach(get_option('interface', 'times') as $current_time){
-		if(is_int($current_time)){
-			echo '<li><a href="index.php?hours='.$current_time.'">'.$current_time . _r('h') . '</a></li>' . "\n";
-		}
-		else {
-			switch($current_time) {
-				case 'week':
-					echo '<li><a href="index.php?hours=168">' . _r('week') . '</a></li>' . "\n";
-					break;
-			}
-		}
-	}
-	echo '<li class="last"><a href="index.php?hours=-1"><span>' . _r('all') . '</span></a></li>' . "\n";
-}
-
-/**
- * @todo Document
  * @todo Implement items_per_page, feed_include, feed_exclude
  */
 function query_setup($args, $override = true) {

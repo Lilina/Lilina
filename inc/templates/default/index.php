@@ -44,9 +44,10 @@ template_header();
 <div style="text-align: right; padding-top: 0em; padding-right: 2em;" id="times">
 	<p style="font-size: 0.8em;">Show posts from the last:</p>
 	<ul>
-	<?php
-	template_times();
-	?>
+		<li><a href="index.php?hours=24"><?php printf(_r('%d hours'), 24) ?></a></li>
+		<li><a href="index.php?hours=48"><?php printf(_r('%d hours'), 48) ?></a></li>
+		<li><a href="index.php?hours=168"><?php _e('week') ?></a></li>
+		<li class="last"><a href="index.php?hours=-1"><span><?php _r('Show all') ?></span></a></li>
 	</ul>
 </div>
 
