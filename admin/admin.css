@@ -163,24 +163,29 @@ ul ul {
 }
 
 #main {
-	width: 70%;
-	max-width: 700px;
+	width: 90%;
+	max-width: 960px;
 	margin: 5em auto;
 	padding: 1em;
 	clear: both;
+}
+.dialog {
+	width: 70%;
+	max-width: 700px;
 }
 
 /* Feeds only */
 .item-table {
 	border-collapse: collapse;
 	border-spacing: 1px;
-	width: 100%;
 	border: 1px solid #CCC;
 	font-size: 1.3em;
+	margin: 1em auto;
 }
 .item-table thead {
 	background: #0CA2FF;
 	color: #FFF;
+	white-space: nowrap;
 }
 .item-table tbody tr {
 	border-bottom: 1px solid #CCC;

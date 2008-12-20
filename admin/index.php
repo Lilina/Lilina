@@ -43,11 +43,11 @@ else {
 }
 ?>
 	</ul>
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=feeds"><?php _e('Edit your feeds') ?></a></h3>
+	<h3><a href="feeds.php"><?php _e('Edit your feeds') ?></a></h3>
 </div>
 
 <div class="home_container" id="contain_settings">
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=settings"><?php _e('Change your settings') ?></a></h3>
+	<h3><a href="settings.php"><?php _e('Change your settings') ?></a></h3>
 </div>
 <?php
 admin_footer();

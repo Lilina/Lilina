@@ -229,7 +229,8 @@ function install($sitename, $username, $password) {
 	<dt>and your password is</dt>
 	<dd id="password"><?php echo $password;?></dd>
 </dl>
-<p>We can <a href="admin/first-run.php">help you get started</a>, or if you know what you're doing, <a href="admin/">head straight for the admin panel</a>.</p>
+<!--<p>We can <a href="admin/first-run.php">help you get started</a>, or if you know what you're doing, <a href="admin/">head straight for the admin panel</a>.</p>-->
+<p><a href="admin/">Head for the admin panel</a> and start adding feeds!</p>
 <?php
 		return true;
 }
