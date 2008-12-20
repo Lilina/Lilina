@@ -124,26 +124,9 @@ function recursive_array_code($vars) {
  *
  */
 function save_settings() {
-	global $settings, $default_settings;
-	$vars = array_diff_assoc_recursive($settings, $default_settings);
-	/** We want to ignore these, as they are set in conf.php */
-	unset($vars['cachedir'], $vars['files']);
-	$content = '<' . '?php';
-
-	global $level_count; $level_count = 1;
-	foreach($vars as $var => $value) {
-		if(is_array($value)) {
-			$content .= "\n\$settings['{$var}'] = array(";
-			$content .= recursive_array_code($value);
-			$content .= "\n);";
-		}
-		elseif(is_object($value)) {
-			$content .= "\n\$settings['{$var}'] = '" . base64_encode(serialize($value)) . "';";
-		}
-		else
-			$content .= "\n\$settings['{$var}'] = '{$value}';";
-	}
-	var_dump($content);
+	global $options;
+	$data = new DataHandler();
+	$data->save('options.data', serialize($options));
 }
 
 /**

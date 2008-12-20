@@ -34,15 +34,6 @@ if(!defined('LOADED_SETTINGS')) {
 	$settings['template']				= 'default';
 	$settings['sitename']				= 'Lilina News Aggregator';
 	$settings['auth']					= array('user' => 'username', 'pass' => 'password');
-	$settings['locale']					= 'en';
-	//Default time is always the first time
-	//Numbers for hours or 'week' for a week
-	//'all' is automatically added
-	$settings['interface']				= array('times' => array(24,48,'week'));
-	//Timezone offset
-	//Note: difference between your time and your server's time
-	$settings['offset']					= 0;
-	$settings['encoding']				= 'utf-8';
 	//Just in case we need to check against them
 	$default_settings = $settings;
 
@@ -87,9 +78,22 @@ if(!defined('LOADED_SETTINGS')) {
 	if(!isset($settings['files']))
 		$settings['files'] = array(
 			'feeds'		=> LILINA_CONTENT_DIR . '/system/config/feeds.data',
+			'options'	=> LILINA_CONTENT_DIR . '/system/config/options.data',
 			'settings'	=> LILINA_CONTENT_DIR . '/system/config/settings.php',
 			'plugins'	=> LILINA_CONTENT_DIR . '/system/config/plugins.data'
 		);
+
+	global $options;
+	$data = new DataHandler();
+	$options = $data->load('options.data');
+	if($current !== null)
+		$options = unserialize($options);
+	else
+		$options = array();
+	$options['offset']					= 0;
+	$options['encoding']				= 'utf-8';
+	$options['interface']				= array('times' => array(24,48,'week'));
+	$options['locale']					= 'en';
 }
 
 

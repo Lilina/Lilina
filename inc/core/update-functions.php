@@ -23,7 +23,7 @@ function lilina_version_check() {
 	if($current !== null)
 		$current = unserialize($current);
 
-	$locale = get_option('lang');
+	$locale = get_option('locale');
 
 	if (
 		isset( $current->last_checked ) &&
