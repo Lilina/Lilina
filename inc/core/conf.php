@@ -82,19 +82,12 @@ if(!defined('LOADED_SETTINGS')) {
 		);
 
 	global $options;
-	$data = new DataHandler();
+	$data = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 	$options = $data->load('options.data');
 	if($options !== null)
 		$options = unserialize($options);
 	else
 		$options = array();
-	$options['offset']					= 0;
-	$options['encoding']				= 'utf-8';
-	$options['interface']				= array('times' => array(24,48,'week'));
-	if(!isset($options['template']))
-		$options['template'] = 'default';
-	if(!isset($options['locale']))
-		$options['locale'] = 'en';
 	if(!isset($options['cachedir']))
 		$options['cachedir'] = LILINA_CACHE_DIR;
 }

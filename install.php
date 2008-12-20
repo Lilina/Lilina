@@ -180,7 +180,7 @@ function install($sitename, $username, $password) {
 				if(!$feeds_file) {
 					?>
 					<h1>Uh oh!</h1>
-					<p>Something happened and <code><?php echo LILINA_PATH; ?>/conf/feeds.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
+					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/feeds.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
 					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 					<input type="hidden" name="username" value="<?php echo $username; ?>" />
@@ -220,6 +220,26 @@ function install($sitename, $username, $password) {
 
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
+		
+		default_options();
+		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
+		$options_file = new DataHandler(LILINA_PATH . '/content/system/config/');
+
+		if(!$options_file->save('options.data', serialize($options))) {
+			?>
+					<h1>Uh oh!</h1>
+					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/options.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
+					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
+					<input type="hidden" name="username" value="<?php echo $username; ?>" />
+					<input type="hidden" name="password" value="<?php echo $password; ?>" />
+					<input type="hidden" name="page" value="2">
+					<input type="submit" value="Try again?" />
+					<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
+					</form>
+			<?php
+			return false;
+		}
 ?>
 <h1>Installation Complete!</h1>
 <p>Lilina has been installed and is now ready to go. Please note your username and password below, as it won't be shown again!</p>
@@ -356,6 +376,8 @@ function upgrade() {
 		switch(true) {
 			case $settings['settings_version'] < 237:
 				/** We moved stuff around this version, but we've handled that above. */
+			case $settings['settings_version'] < 297:
+				default_options();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -369,6 +391,13 @@ function upgrade() {
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
+
+		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
+		$options_file = new DataHandler(LILINA_PATH . '/content/system/config/');
+		
+		if(!$options_file->save('options.data', serialize($options))) {
+			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
+		}
 	}
 
 	$string = '';
@@ -380,6 +409,16 @@ function upgrade() {
 		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
 
 	lilina_nice_die($string . implode('</li><li>', MessageHandler::get()) . '</li></ul>', 'Upgrade failed');
+}
+
+function default_options() {
+	global $options;
+	$options['offset']					= 0;
+	$options['encoding']				= 'utf-8';
+	if(!isset($options['template']))
+		$options['template'] = 'default';
+	if(!isset($options['locale']))
+		$options['locale'] = 'en';
 }
 
 //Initialize variables
