@@ -130,7 +130,7 @@ function update_option($option, $new_value) {
 
 	global $options;
 	$options[$option] = $new_value;
-	save_settings();
+	return save_settings();
 }
 
 /**

@@ -125,8 +125,8 @@ function recursive_array_code($vars) {
  */
 function save_settings() {
 	global $options;
-	$data = new DataHandler();
-	$data->save('options.data', serialize($options));
+	$data = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
+	return $data->save('options.data', serialize($options));
 }
 
 /**
@@ -152,7 +152,7 @@ function generate_nonce() {
 function check_nonce($nonce) {
 	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . get_option('auth', 'user') . get_option('auth', 'pass]'));
+	$current_nonce = md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
 	if($nonce !== $current_nonce) {
 		return false;
 	}

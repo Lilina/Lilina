@@ -60,8 +60,17 @@ if(isset($_REQUEST['activate_plugin'])) {
 elseif(isset($_REQUEST['deactivate_plugin'])) {
 	deactivate_plugin($_REQUEST['deactivate_plugin']);
 }
-	
 
+
+if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['_nonce'])) {
+	if(!check_nonce($_POST['_nonce']))
+		lilina_nice_die('Nonces do not match.');
+	/** Needs better validation */
+	if(!empty($_POST['template']))
+		update_option('template', $_REQUEST['template']);
+	if(!empty($_POST['locale']))
+		update_option('locale', $_REQUEST['locale']);
+}
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header(_r('Settings'));
@@ -89,7 +98,7 @@ admin_header(_r('Settings'));
 				<?php
 				foreach(available_templates() as $template) {
 					echo '<option value="', $template['name'];
-					if($template['name'] === $settings['template']) {
+					if($template['name'] === get_option('template')) {
 						echo '" selected="selected';
 					}
 					echo '">', $template['real_name'], '</option>';
@@ -98,8 +107,8 @@ admin_header(_r('Settings'));
 			</select>
 		</div>
 		<div class="row">
-			<label for="lang"><?php _e('Language') ?></label>
-			<select id="lang" name="lang">
+			<label for="locale"><?php _e('Language') ?></label>
+			<select id="locale" name="locale">
 				<?php
 				foreach(available_locales() as $locale) {
 					echo '<option';
@@ -112,8 +121,9 @@ admin_header(_r('Settings'));
 			</select>
 		</div>
 	</fieldset>
-	<input type="hidden" name="page" value="settings" />
-	<input type="submit" value="<?php _e('Save') ?>" class="submit" disabled="disabled" />
+	<input type="hidden" name="action" value="settings" />
+	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
+	<input type="submit" value="<?php _e('Save') ?>" class="submit" />
 </form>
 <form action="settings.php" method="post">
 	<fieldset id="plugins">
