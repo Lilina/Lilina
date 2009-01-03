@@ -92,6 +92,7 @@ if(has_items(false)) {
 					} ?>
 				</div>
 				<?php do_action('river_entry'); ?>
+				<?php action_bar('before=&after= | '); ?>
 			</div><?php
 
 	endwhile;

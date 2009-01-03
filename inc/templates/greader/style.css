@@ -54,8 +54,9 @@ a {
 	display: block;
 	width: auto;
 	background: #dddddc url("bar-grey.png")  repeat-x 0 -2px;
-	padding: 4px 0 0 10px !important;
-	z-index: 1 !important;
+	padding: 4px 0 0 10px;
+	z-index: 1;
+	position: relative;
 	height: 26px;
 	border-bottom: 1px solid #999;
 }
@@ -119,7 +120,6 @@ a {
 	position: relative;*/
 	margin-top: -31px;
 	height: 100%;
-	position: relative;
 	float: left;
 	z-index: -1;
 	background-color: #E5EDF7;
