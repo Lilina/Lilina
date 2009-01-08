@@ -10,8 +10,13 @@ require_once('admin.php');
 
 admin_header(_r('Home'));
 ?>
-<h2><?php _e('Admin Panel') ?></h2>
-<div class="home_container" id="contain_feeds">
+<h1><?php _e('Admin Panel') ?></h1>
+<p>Welcome to your administration panel for Lilina! You can do a few things here:</p>
+<ul>
+	<li><a href="feeds.php"><?php _e('Edit your feeds') ?></a></li>
+	<li><a href="settings.php"><?php _e('Change your settings') ?></a></li>
+</ul>
+<div class="dashbox" id="contain_feeds">
 	<h3><?php _e('Current feeds') ?></h3>
 	<ul>
 <?php
@@ -46,7 +51,7 @@ else {
 	<h3><a href="feeds.php"><?php _e('Edit your feeds') ?></a></h3>
 </div>
 
-<div class="home_container" id="contain_settings">
+<div class="dashbox" id="contain_settings">
 	<h3><a href="settings.php"><?php _e('Change your settings') ?></a></h3>
 </div>
 <?php

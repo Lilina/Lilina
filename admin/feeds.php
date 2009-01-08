@@ -169,6 +169,8 @@ admin_header(_r('Feeds'));
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
 	</fieldset>
 </form>
+<h2>Bookmarklet</h2>
+<p>Use this bookmarlet to subscribe to feeds straight from your browser: <a href="javascript:void(sp=window.open(<?php echo get_option('baseurl') ?>/admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,width=800,height=600,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));">Subscribe</a></p>
 <?php
 admin_footer();
 ?>
