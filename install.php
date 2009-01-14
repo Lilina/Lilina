@@ -14,6 +14,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
+require_once(LILINA_INCPATH . '/core/file-functions.php');
 lilina_level_playing_field();
 
 if(version_compare('5.2', phpversion(), '>'))
@@ -223,9 +224,8 @@ function install($sitename, $username, $password) {
 		
 		default_options();
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
-		$options_file = new DataHandler(LILINA_PATH . '/content/system/config/');
 
-		if(!$options_file->save('options.data', serialize($options))) {
+		if(save_options()) {
 			?>
 					<h1>Uh oh!</h1>
 					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/options.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
@@ -377,7 +377,9 @@ function upgrade() {
 			case $settings['settings_version'] < 237:
 				/** We moved stuff around this version, but we've handled that above. */
 			case $settings['settings_version'] < 297:
-				default_options();
+				new_options_297();
+			case $settings['settings_version'] < 302:
+				new_options_302();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -393,9 +395,7 @@ function upgrade() {
 		fclose($settings_file);
 
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
-		$options_file = new DataHandler(LILINA_PATH . '/content/system/config/');
-		
-		if(!$options_file->save('options.data', serialize($options))) {
+		if(save_options()) {
 			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
 		}
 	}
@@ -412,13 +412,21 @@ function upgrade() {
 }
 
 function default_options() {
+	new_options_297();
+	new_options_302();
+}
+function new_options_297() {
 	global $options;
 	$options['offset']					= 0;
 	$options['encoding']				= 'utf-8';
-	if(!isset($options['template']))
+	if(empty($options['template']))
 		$options['template'] = 'default';
-	if(!isset($options['locale']))
+	if(empty($options['locale']))
 		$options['locale'] = 'en';
+}
+function new_options_302() {
+	global $options;
+	$options['timezone'] = 'UTC';
 }
 
 //Initialize variables
