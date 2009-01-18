@@ -20,7 +20,7 @@ $lilina			= array(
 							'version'	=> 237
 							),
 						'settings-storage' => array(
-							'version'	=> 297
+							'version'	=> 302
 							),
 						);
 ?>

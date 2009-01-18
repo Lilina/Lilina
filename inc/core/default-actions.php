@@ -11,3 +11,5 @@ add_action('template_header', 'template_synd_header');
 add_action('admin_header', 'update_nag');
 
 add_action('admin_footer', 'lilina_footer_version');
+
+add_filter('timestamp', 'timezone_apply');

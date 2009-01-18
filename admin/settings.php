@@ -70,6 +70,8 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 		update_option('template', $_REQUEST['template']);
 	if(!empty($_POST['locale']))
 		update_option('locale', $_REQUEST['locale']);
+	if(!empty($_POST['timezone']))
+		update_option('timezone', $_REQUEST['timezone']);
 }
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
@@ -116,6 +118,20 @@ admin_header(_r('Settings'));
 						echo ' selected="selected"';
 					}
 					echo '>', $locale['name'], '</option>';
+				}
+				?>
+			</select>
+		</div>
+		<div class="row">
+			<label for="timezone"><?php _e('Timezone'); ?>:</label>
+			<select id="timezone" name="timezone">
+				<?php
+				foreach(timezone_identifiers_list() as $tz) {
+					echo '<option';
+					if($tz === get_option('timezone')) {
+						echo ' selected="selected"';
+					}
+					echo '>', $tz, '</option>';
 				}
 				?>
 			</select>

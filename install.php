@@ -429,6 +429,10 @@ function new_options_302() {
 	$options['timezone'] = 'UTC';
 }
 
+function create_settings_file() {
+	
+}
+
 //Initialize variables
 if(!empty($_POST['page'])) {
 	$page				= htmlspecialchars($_POST['page']);

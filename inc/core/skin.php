@@ -211,7 +211,7 @@ function has_items($increment = true) {
 			return apply_filters('has_items', false, $showtime, $total_items);
 		}
 	}
-	if($temp_item->get_date('U') && $temp_item->get_date('U') < $showtime)
+	if(apply_filters('timestamp', $temp_item->get_date('U')) && apply_filters('timestamp', $temp_item->get_date('U')) < $showtime)
 		return apply_filters('has_items', false, $showtime, $total_items);
 
 	if($item_number < $total_items)
@@ -311,7 +311,8 @@ function the_link() {
  */
 function get_the_date($format='U') {
 	global $item;
-	return apply_filters( 'get_the_date', $item->get_date( $format ) );
+	$ts = apply_filters('timestamp', $item->get_date('U'));
+	return apply_filters( 'get_the_date', date($format, $ts), $ts, $format );
 }
 
 /**
@@ -473,7 +474,10 @@ function date_equals($args='') {
 	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
 		return false;
 	$temp_item = $list->get_item( $equalto );
-	$equals = $item->get_date( $format ) == $temp_item->get_date( $format );
+
+	$current_ts =  apply_filters('timestamp', $item->get_date('U'));
+	$other_ts =  apply_filters('timestamp', $temp_item->get_date('U'));
+	$equals = date($format, $current_ts) == date($format, $current_ts);
 	return apply_filters('date_equals', $equals, $equalto);
 }
 

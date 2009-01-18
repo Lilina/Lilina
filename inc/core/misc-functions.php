@@ -139,8 +139,9 @@ function update_option($option, $new_value) {
  * This exists for when we want to introduce MySQL capability
  * @global array <tt>$settings</tt> contains whatever option we are getting
  * @param string $option Option key to get
+ * @param mixed $default Value to default to if none is found. Alternatively used as a "subkey" option for the hardcoded settings
  */
-function get_option($option, $suboption = '') {
+function get_option($option, $default = null) {
 	global $settings;
 	
 	/** Hardcoded settings in settings.php */
@@ -148,10 +149,10 @@ function get_option($option, $suboption = '') {
 		if(!isset($settings[$option]))
 			return false;
 		
-		if($suboption) {
-			if(!isset($settings[$option][$suboption]))
+		if($default) {
+			if(!isset($settings[$option][$default]))
 				return false;
-			return $settings[$option][$suboption];
+			return $settings[$option][$default];
 		}
 		return $settings[$option];
 	}
@@ -159,7 +160,7 @@ function get_option($option, $suboption = '') {
 	/** New-style options in options.data */
 	global $options;
 	if(!isset($options[$option]))
-		return false;
+		return $default;
 
 	return $options[$option];
 }
@@ -353,5 +354,40 @@ function shorten($string, $length) {
  */
 function get_data_dir() {
 	return LILINA_DATA_DIR;
+}
+
+/**
+ * Applies a timezone offset to a Unix timestamp
+ *
+ * @param int $timestamp
+ * @return int
+ */
+function timezone_apply($timestamp) {
+	$timezone = get_option('timezone', 'UTC');
+	return $timestamp + ( timezone_get_gmt_offset($timezone) * 3600);
+}
+
+/**
+ * Calculates a GMT offset from a zoneinfo timezone string
+ *
+ * @param string|int $timezone Zone to calculate offset from
+ * @return bool|int Offset from
+ */
+function timezone_get_gmt_offset($timezone) {
+	if (empty($timezone))
+		return false;
+
+	/** If we're supplied with an integer, assume it's a GMT offset */
+	if (is_int($timezone))
+		return $timezone;
+
+	if (class_exists('DateTime')) {
+		$dtz = new DateTimeZone($timezone);
+		$dt = new DateTime();
+		$offset = $dtz->getOffset($dt);
+		// convert to hours
+		$offset = $offset / 3600;
+		return $offset;
+	}
 }
 ?>
