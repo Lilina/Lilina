@@ -225,7 +225,7 @@ function install($sitename, $username, $password) {
 		default_options();
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 
-		if(save_options()) {
+		if(save_settings()) {
 			?>
 					<h1>Uh oh!</h1>
 					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/options.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
