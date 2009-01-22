@@ -10,6 +10,7 @@
  */
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
+define('LILINA_CONTENT_DIR', LILINA_PATH . '/content');
 header('Content-Type: text/html; charset=UTF-8');
 
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
