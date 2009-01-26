@@ -2,7 +2,7 @@
 /**
  * RSS 2.0 feed generator
  *
- * Generates a RS feed from the available items.
+ * Generates a RSS feed from the available items.
  * Based on Wordpress' feed-rss2.php
  *
  * @author Ryan McCue <cubegames@gmail.com>

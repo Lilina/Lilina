@@ -30,7 +30,12 @@ if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi'
 else {
 	require_once(LILINA_INCPATH . '/core/class-templates.php');
 	require_once(LILINA_INCPATH . '/core/l10n.php');
-    header(sprintf('Location: %s', Templates::path_to_url( Templates::get_file('feed.png') )));
+
+	header('Content-Type: image/png');
+	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
+
+	echo file_get_contents(Templates::get_file('feed.png'));
+	die();
 }
 
 ?>

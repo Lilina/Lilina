@@ -34,7 +34,7 @@ function feed_list_table() {
 	if(is_array($feeds) && !empty($feeds)) {
 		foreach($feeds as $this_feed) {
 	?>
-		<tr id="feed-<?php echo $j ?>" class="<?php echo $alt; ?>">
+		<tr id="feed-<?php echo $j ?>" class="<?php echo ($j % 2) ? 'alt' : ''; ?>">
 			<td class="name-col"><?php echo stripslashes($this_feed['name']); ?></td>
 			<td class="url-col"><?php echo $this_feed['feed']; ?></td>
 			<td class="cat-col"><?php echo $this_feed['cat']; ?></td>
@@ -44,7 +44,6 @@ function feed_list_table() {
 			<?php do_action('admin-feeds-actioncol', $this_feed, $j); ?>
 		</tr>
 	<?php
-			$alt = empty($alt) ? 'alt' : '';
 			++$j;
 		}
 	}
@@ -117,10 +116,10 @@ admin_header(_r('Feeds'));
 		<th><?php _e('Feed Name'); ?></th>
 		<th><?php _e('URL'); ?></th>
 		<th><?php _e('Category'); ?></th>
-		<?php do_action('admin-feeds-infocol-description', $this_feed, $j); ?>
+		<?php do_action('admin-feeds-infocol-description'); ?>
 		<th class="change-col"><?php _e('Change Feed'); ?></th>
 		<th class="remove-col"><?php _e('Remove Feed'); ?></th>
-		<?php do_action('admin-feeds-actioncol-description', $this_feed, $j); ?>
+		<?php do_action('admin-feeds-actioncol-description'); ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -169,8 +168,6 @@ admin_header(_r('Feeds'));
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
 	</fieldset>
 </form>
-<h2>Bookmarklet</h2>
-<p>Use this bookmarlet to subscribe to feeds straight from your browser: <a href="javascript:void(sp=window.open(<?php echo get_option('baseurl') ?>/admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,width=800,height=600,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));">Subscribe</a></p>
 <?php
 admin_footer();
 ?>

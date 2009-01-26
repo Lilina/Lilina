@@ -45,7 +45,11 @@ function ht_calculate($content) {
 
 function ht_display($actions) {
 	global $ht_current_topics;
+	if(empty($ht_current_topics)) {
+		return;
+	}
 	$actions[] = 'Topics: ' . implode(', ', array_keys($ht_current_topics));
+	$ht_current_topics = array();
 	return $actions;
 }
 

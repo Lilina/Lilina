@@ -141,7 +141,7 @@ function admin_header($title, $parent_file = false) {
 		echo '<div id="alert" class="fade"><p>' . $result . '</p></div>';
 	}
 	do_action('admin_header');
-	do_action("admin_header-$page");
+	do_action("admin_header-$self");
 	do_action('send_headers');
 }
 
