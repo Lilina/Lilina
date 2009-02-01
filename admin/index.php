@@ -11,7 +11,7 @@ require_once('admin.php');
 admin_header(_r('Home'));
 ?>
 <h1><?php _e('Admin Panel') ?></h1>
-<p>Welcome to your administration panel for Lilina! You can do a few things here:</p>
+<p><?php _e('Welcome to your administration panel for Lilina! You can do a few things here:') ?></p>
 <ul>
 	<li><a href="feeds.php"><?php _e('Edit your feeds') ?></a></li>
 	<li><a href="settings.php"><?php _e('Change your settings') ?></a></li>
