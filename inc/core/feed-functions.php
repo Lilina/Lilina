@@ -187,40 +187,4 @@ function save_feeds() {
 	fputs($fp,$sdata) ;
 	fclose($fp) ;
 }
-
-/**
- * import_opml() - {{@internal Missing Short Description}}}
- *
- * {{@internal Missing Long Description}}}
- */
-function import_opml($opml_url) {
-	if(empty($opml_url)) {
-		MessageHandler::add_error(sprintf(_r('No OPML specified')));
-		return false;
-	}
-
-	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-	$opml = new SimplePie_File($opml_url);
-	$opml = new OPML($opml->body);
-
-	if(!empty($opml->error) || empty($opml->data)) {
-		MessageHandler::add_error(sprintf(_r('The OPML file could not be read. The parser said: %s'), $opml->error));
-		return false;
-	}
-	$feeds_num = 0;
-	foreach($opml->data as $cat => $feed) {
-		if(!isset($feed['xmlurl']) && isset($feed[0]['xmlurl'])) {
-			foreach($feed as $subfeed) {
-				$feeds[] = array('url' => $subfeed['xmlurl'], 'title' => $subfeed['title'], 'cat' => $cat);
-				++$feeds_num;
-			}
-			continue;
-		}
-
-		$feeds[] = array('url' => $feed['xmlurl'], 'title' => $feed['title'], 'cat' => '');
-		++$feeds_num;
-	}
-	MessageHandler::add(sprintf(__ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
-	return $feeds;
-}
 ?>
