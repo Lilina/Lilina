@@ -64,33 +64,34 @@ function available_templates() {
  * {{@internal Missing Long Description}}}
  */
 function available_locales() {
-	$locale_list = array();
+	$locale_list = array_map('basename', glob(LILINA_PATH . LANGDIR . '/*.mo'));
+	$locale_list = apply_filters('locale_files', $locale_list);
 	$locales = array();
-	//Make sure we open it correctly
-	if ($handle = opendir(LILINA_INCPATH . '/locales/')) {
-		//Go through all entries
-		while (false !== ($file = readdir($handle))) {
-			// just skip the reference to current and parent directory
-			if ($file != '.' && $file != '..') {
-				if (!is_dir(LILINA_INCPATH . '/locales/' . $file)) {
-					//Only add plugin files
-					if(strpos($file,'.mo') !== FALSE) {
-						$locale_list[] = $file;
-					}
-				}
-			}
-		}
-		// ALWAYS remember to close what you opened
-		closedir($handle);
-	}
+
 	/** Special case for English */
 	$locales[]	= array('name' => 'en',
 						'file' => '');
+
 	foreach($locale_list as $locale) {
-		echo $locale;
-		//Quick and dirty name
-		$locales[]	= array('name' => str_replace('.mo', '', $locale),
-							'file' => $locale);
+		$locale = basename($locale, '.mo');
+
+		if(file_exists( $locale . '.txt' )) {
+			$locale_metadata = file_get_contents(LILINA_PATH . LANGDIR . $locale . '.txt');
+
+			preg_match("|Name:(.*)|i", $locale_metadata, $name);
+
+			$locales[$locale] = array(
+				'name' => $name,
+				'file' => $locale . '.mo'
+			);
+		}
+
+		else {
+			$locales[$locale] = array(
+				'name' => $locale,
+				'file' => $locale . '.mo'
+			);
+		}
 	}
 	return $locales;
 }
