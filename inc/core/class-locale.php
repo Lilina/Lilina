@@ -182,7 +182,7 @@ class Locale {
 		if (isset($messages[$domain]))
 			return apply_filters('gettext', $messages[$domain]->translate($text), $text, $domain);
 		else
-			return $text;
+			return apply_filters('gettext', $text, $text, $domain);
 	}
 	
 	/**
