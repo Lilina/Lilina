@@ -85,10 +85,10 @@ else {
 	<tbody>
 <?php
 $count = 0;
-foreach($lilina_importers as $importer) {
+foreach($lilina_importers as $id => $importer) {
 ?>
-		<tr id="importer-<?php echo $importer[0] ?>" class="<?php echo ($count % 2) ? 'alt' : ''; ?>">
-			<td><?php echo $importer[0] ?></td>
+		<tr id="importer-<?php echo $id ?>" class="<?php echo ($count % 2) ? 'alt' : ''; ?>">
+			<td><a href="feed-import.php?service=<?php echo $id ?>"><?php echo $importer[0] ?></a></td>
 			<td><?php echo $importer[1] ?></td>
 		</tr>
 <?php
