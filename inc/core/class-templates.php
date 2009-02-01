@@ -110,6 +110,8 @@ class Templates {
 	/**
 	 * Get theme metadata for a specific file
 	 *
+	 * Based on code from WordPress
+	 * @author WordPress
 	 * @param string $theme_file Absolute location of file to retrieve metadata from
 	 * @return array Metadata
 	 */
@@ -144,11 +146,9 @@ class Templates {
 	/**
 	 * Retrieve all template data and names
 	 *
-	 * Based on code from WordPress
 	 * @return array Template metadata
-	 * @author WordPress
 	 */
-	public function get_templates($get_single = false) {
+	public static function get_templates($get_single = false) {
 		if (!empty(Templates::$templates) )
 			return Templates::$templates;
 
@@ -176,7 +176,13 @@ class Templates {
 		return Templates::$templates;
 	}
 
-	public function get_template_data($template) {
+	/**
+	 * Get template data for a single template
+	 *
+	 * @param string $template Template to retrieve data for
+	 * @return array Template data
+	 */
+	public static function get_template_data($template) {
 		$template_root = Templates::get_template_root();
 
 		if ( !is_readable("$template_root/$template/") ) {
@@ -217,12 +223,10 @@ class Templates {
 		$stylesheet_dir = glob("$template_root/$template/*.*");
 		if ( !empty($stylesheet_dir) ) {
 			foreach($stylesheet_dir as &$file) {
-				if ( !preg_match('|^\.+$|', $file) ) {
-					if ( preg_match('|\.css$|', $file) )
-						$stylesheet_files[] = $file;
-					elseif ( preg_match('|\.php$|', $file) )
-						$template_files[] = $file;
-				}
+				if ( preg_match('|\.css$|', $file) )
+					$stylesheet_files[] = $file;
+				elseif ( preg_match('|\.php$|', $file) )
+					$template_files[] = $file;
 			}
 		}
 
