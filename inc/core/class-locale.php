@@ -5,6 +5,9 @@
  * @subpackage Localisation
  */
 
+require_once(LILINA_INCPATH . '/contrib/gettext.php');
+require_once(LILINA_INCPATH . '/contrib/streams.php');
+
 class Locale {
 	private static $messages = array();
 	private static $plural_function;
@@ -75,18 +78,19 @@ class Locale {
 	 *
 	 * @param string $domain Unique identifier for retrieving translated strings
 	 * @param string $mofile Path to the .mo file
-	 * @return null On failure returns null and also on success returns nothing.
+	 * @return bool Successfulness of loading textdomain
 	 */
 	public static function load($domain, $mofile) {
 		if (isset(self::$messages[$domain]))
-			return;
+			return false;
 
 		if ( is_readable($mofile))
 			$input = new CachedFileReader($mofile);
 		else
-			return;
+			return false;
 
 		self::$messages[$domain] = new gettext_reader($input);
+		return true;
 	}
 
 	/**
@@ -126,7 +130,7 @@ class Locale {
 	 * @param string $path Optional. Path of the folder where the .mo files reside.
 	 */
 	public static function load_plugin_textdomain($domain, $path = false) {
-		$locale = get_locale();
+		$locale = self::get();
 		if ( empty($locale) )
 			$locale = 'en';
 
@@ -150,7 +154,7 @@ class Locale {
 	 * @param string $domain Unique identifier for retrieving translated strings
 	 */
 	public static function load_theme_textdomain($domain) {
-		$locale = get_locale();
+		$locale = self::get();
 		if ( empty($locale) )
 			$locale = 'en_US';
 
@@ -179,8 +183,8 @@ class Locale {
 	public static function translate($text, $domain = 'default') {
 		$text = apply_filters('pre_gettext', $text, $domain);
 
-		if (isset($messages[$domain]))
-			return apply_filters('gettext', $messages[$domain]->translate($text), $text, $domain);
+		if (isset(self::$messages[$domain]))
+			return apply_filters('gettext', self::$messages[$domain]->translate($text), $text, $domain);
 		else
 			return apply_filters('gettext', $text, $text, $domain);
 	}
