@@ -266,7 +266,7 @@ function validate_plugin($filename) {
 			break;
 
 		default:
-			if(file_exists(get_plugin_dir() . $plugin))
+			if(file_exists(get_plugin_dir() . $filename))
 				return true;
 			else
 				MessageHandler::add_error(_r('Plugin file was not found.'));

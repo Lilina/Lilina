@@ -1,26 +1,26 @@
 <?php
 /**
- * @todo Document
+ * This holds the version number in a separate file so we can bump it without cluttering the SVN
+ *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-$lilina			= array(
-						'core-sys'		=> array(
-							'version'	=> '1.0-alpha-6'
-							),
-						'plugin-sys'	=> array(
-							'version'	=> 146
-							),
-						'template-sys'	=> array(
-							'version'	=> 146
-							),
-						'feed-storage' => array(
-							'version'	=> 237
-							),
-						'settings-storage' => array(
-							'version'	=> 302
-							),
-						);
+
+define('LILINA_CORE_VERSION', '1.0-alpha-6');
+define('LILINA_SETTINGS_VERSION', 302);
+define('LILINA_FEEDSTORAGE_VERSION', 237);
+
+$lilina = array(
+	'core-sys'		=> array(
+		'version'	=> LILINA_CORE_VERSION,
+	),
+	'feed-storage' => array(
+		'version'	=> LILINA_FEEDSTORAGE_VERSION,
+	),
+	'settings-storage' => array(
+		'version'	=> LILINA_SETTINGS_VERSION,
+	),
+);
 ?>

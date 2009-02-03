@@ -36,6 +36,7 @@ function lilina_version_check() {
 	$new_option->last_checked = time(); // this gets set whether we get a response or not, so if something is down or misconfigured it won't delay the page load for more than 3 seconds, twice a day
 	$new_option->version_checked = $lilina_version;
 
+	$headers = apply_filters('update_http_headers', array());
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$request = new SimplePie_File("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
 		2, //Timeout
