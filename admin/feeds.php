@@ -8,9 +8,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 require_once('admin.php');
-
-require_once(LILINA_INCPATH . '/core/category-functions.php');
-
 /**
  * 
  * @global array
