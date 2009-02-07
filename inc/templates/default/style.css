@@ -12,24 +12,16 @@ Description: The default Lilina theme, originally from 0.7.
 html, body {
 	margin: 0;
 	padding: 0;
-	border: 0;
 	background: #fff;
-	/* hide from IE5 mac \*/
- 	height: 100%;
- 	/* end hack */
-	height: auto;
-	width: 100%;
-	}
-html, body, p, ul, input {
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 11px;
+	font: 11px/1.5em Helvetica, Arial, sans-serif;
 	color: #000;
 	font-weight: 400;
-	}
-img, a {
+}
+
+a img {
 	border: 0;
 	vertical-align: text-bottom;
-	}
+}
 
 .c1 {
 	background: #fff;
@@ -97,21 +89,14 @@ img, a {
 	margin-left: 3px;
 	}
 
-/* Feed */
-
-.feed { /* Container for items coming from the same feed */ 
-	/* Add styling if you want consequent items from the same feed to look "grouped" */
-}
-
-h1 { /* Date */
+/* Date */
+h1 {
 	margin: 0;
 	padding: 4px 0 4px 15px;
-	border-top: 1px solid #00005c;
 	font-size: 12px;
 	font-weight: 700;
 	color: #fff;
-	/*background: #9E9488;*/
-	background: #CBDFEB;
+	background: #01A0C7;
 	clear: both;
 	}
 .item {
@@ -153,29 +138,6 @@ h1 { /* Date */
 	width: 90%;
 	}
 
-
-/* Google */
-
-.google {
-	margin: 0;
-	padding: 0;
-	/* background: #ffffff ; */
-
-}
-.google p { 
-	display: block; 
-	margin-bottom: 0;
-	margin-top: 0;
-	color: #555;
-}
-
-/* del.icio.us */
-.delicious_tags {
-	display: inline;
-	text-align: right;
-	padding: 0 0 0 10px;
-}
-
 /* Panel */
 
 #panel {
@@ -199,6 +161,7 @@ h1 { /* Date */
 	background: #CBDFEB;
 	/* Make sure nothing ruins our layout - Lifehacker, we're looking at you :P */
 	clear: both;
+	text-align: center;
 	}
 #sources h3 {
 	display: block;
@@ -215,9 +178,10 @@ h1 { /* Date */
 	padding: 0;
 	}
 #sources li {
-	display: inline;
-	padding-left: 1em;
-	padding-bottom: 2px;
+	padding: 0.2em 0 0.3em;
+	display: block;
+	float: left;
+	width: 20%;
 	}
 #sources ul li img {
 	display: inline;
@@ -230,6 +194,9 @@ h1 { /* Date */
 	border-bottom: 1px dotted ;
 }
 
+.clearer {
+	clear: both;
+}
 
 
 /* Edit */
@@ -261,57 +228,4 @@ h1 { /* Date */
 	margin-right: 0;
 	border-right: 0 #aaa solid;
 	background-color: #eee;
-}
-li.feed_list_1 {
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 2px;
-}
-
-li.feed_list_0 {
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 2px;
-}
-
-li.feed_list_1 span {
-	background: #0079A5;
-	color: #fff;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-li.feed_list_0 span {
-	background: #fff;
-	color: #000;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-@media print{
-  /* Basic Structure */
-  HTML {
-  width:100%
-  }
-  body {
-  background: #fff;
-  font-size: 12pt;
-  }
-  img {
-  border: 0;
-  }
-  /* Hide Various Elements when printing */
-  .hiddenitem, #navigation, #times {
-  display: none;
-  }
-  #navigation img {
-  display: inline;
-  }
-  /* Link Management */
-  a:link, a:visited {
-  color: red;
-  background: transparent;
-  font-weight: 700;
-  text-decoration: underline;
-  }
 }

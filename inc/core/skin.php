@@ -594,11 +594,26 @@ function action_bar($args = '') {
  * Converts filename to URL after finding location and then outputs it
  *
  * @since 1.0
+ * @see get_template_file
  *
  * @param string $file Filename to find, relative to template directory
  */
 function template_file($file) {
-	echo Templates::path_to_url(Templates::get_file($file));
+	echo get_template_file($file);
+}
+
+/**
+ * Return the URL to a specified template file
+ *
+ * Converts filename to URL after finding location and then returns it
+ *
+ * @since 1.0
+ *
+ * @param string $file Filename to find, relative to template directory
+ * @return string Absolute URL to the file
+ */
+function get_template_file($file) {
+	return Templates::path_to_url(Templates::get_file($file));
 }
 
 /**

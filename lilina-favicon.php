@@ -25,7 +25,7 @@ require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 function faux_hash($input) { return $input; }
 
 if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi')) {
-    SimplePie_Misc::display_cached_file($_GET['i'], LILINA_CONTENT_DIR . '/system/cache', 'spi', 'SimplePie_Cache', 'faux_hash');
+	SimplePie_Misc::display_cached_file($_GET['i'], LILINA_CONTENT_DIR . '/system/cache', 'spi', 'SimplePie_Cache', 'faux_hash');
 }
 else {
 	require_once(LILINA_INCPATH . '/core/class-templates.php');

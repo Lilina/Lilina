@@ -117,9 +117,10 @@ else {
 if(has_feeds()) {
 	?>
 <div id="sources">
-	<strong>Sources:</strong>
-	<ul><?php list_feeds('format=<li><a href="%1$s">%3$s</a> [<a href="%4$s">' . _r('Feed') . "</a>]</li>\n"); ?>
+	<h3>Sources:</h3>
+	<ul><?php list_feeds('format=<li><a href="%1$s">%3$s</a> <a href="%4$s" class="feed-link">(' . _r('Feed') . ")</a></li>\n"); ?>
 	</ul>
+	<div class="clearer">&nbsp;</div>
 </div>
 <?php
 }
