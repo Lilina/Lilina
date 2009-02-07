@@ -357,6 +357,13 @@ function get_data_dir() {
 }
 
 /**
+ * Resets the system timezone to UTC
+ */
+function timezone_default() {
+	date_default_timezone_set('UTC');
+}
+
+/**
  * Applies a timezone offset to a Unix timestamp
  *
  * @param int $timestamp

@@ -477,7 +477,7 @@ function date_equals($args='') {
 
 	$current_ts =  apply_filters('timestamp', $item->get_date('U'));
 	$other_ts =  apply_filters('timestamp', $temp_item->get_date('U'));
-	$equals = date($format, $current_ts) == date($format, $current_ts);
+	$equals = date($format, $current_ts) == date($format, $other_ts);
 	return apply_filters('date_equals', $equals, $equalto);
 }
 
