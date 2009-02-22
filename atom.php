@@ -42,6 +42,8 @@ require_once(LILINA_INCPATH . '/core/skin.php');
 require_once(LILINA_INCPATH . '/core/version.php');
 global $lilina;
 
+do_action('init');
+
 header('Content-type: application/atom+xml; charset=' . get_option('encoding'), true);
 echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
 <feed xmlns="http://www.w3.org/2005/Atom"
