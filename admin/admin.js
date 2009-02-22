@@ -6,13 +6,7 @@ var admin = {
 		$("form#change_form").append('<p class="loading">Changing feed...</p>');
 		
 		/** Set up events */
-		$(".change_link").click(function () {
-			$("#change_url").val( $(this).parent().siblings(".url-col").text() );
-			$("#change_name").val( $(this).parent().siblings(".name-col").text() );
-			$("#change_id").val( $(this).parents("tr:first").attr("id").split("-")[1] );
-			$("#changer").slideDown();
-			return false;
-		});
+		$(".change_link").click(admin.setup_change_js);
 		$("#add_form").submit(function () {
 			admin.disable_button(this);
 			
@@ -37,6 +31,13 @@ var admin = {
 			$(this).removeClass('hovering');
 		});
 	},
+	setup_change_js: function() {
+		$("#change_url").val( $(this).parent().siblings(".url-col").text() );
+		$("#change_name").val( $(this).parent().siblings(".name-col").text() );
+		$("#change_id").val( $(this).parents("tr:first").attr("id").split("-")[1] );
+		$("#changer").slideDown();
+		return false;
+	}
 	disable_button: function (selector) {
 		$(selector)
 			.children("input.submit")
@@ -130,6 +131,7 @@ var feeds = {
 	reload_table: function () {
 		$.get("admin-ajax.php", {action: "list", type: "raw"}, function (data) {
 			$("#feeds_list tbody").html(data);
+			$(".change_link").click(admin.setup_change_js);
 		});
 	},
 	begin_processing: function (items) {

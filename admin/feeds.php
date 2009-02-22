@@ -82,7 +82,7 @@ switch($action) {
 		$change_id		= ( !empty($_REQUEST['change_id']) )	? (int) $_REQUEST['change_id'] : null;
 
 		if(empty($_REQUEST['change_id']) || empty($_REQUEST['change_url']))
-			MessageHandler::add_error(_r('No feed ID or URL specified'));
+			MessageHandler::add_error(_r('No URL or feed ID specified'));
 		else {
 			$data['feeds'][$change_id]['feed'] = $change_url;
 			if(!empty($change_name)) {
@@ -114,7 +114,7 @@ admin_header(_r('Feeds'));
 		<th><?php _e('URL'); ?></th>
 		<th><?php _e('Category'); ?></th>
 		<?php do_action('admin-feeds-infocol-description'); ?>
-		<th class="change-col"><?php _e('Change Feed'); ?></th>
+		<th class="change-col"><?php _e('Edit Feed'); ?></th>
 		<th class="remove-col"><?php _e('Remove Feed'); ?></th>
 		<?php do_action('admin-feeds-actioncol-description'); ?>
 		</tr>

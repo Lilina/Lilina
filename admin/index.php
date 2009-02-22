@@ -17,7 +17,7 @@ admin_header(_r('Home'));
 	<li><a href="settings.php"><?php _e('Change your settings') ?></a></li>
 </ul>
 <div class="dashbox" id="contain_feeds">
-	<h3><?php _e('Current feeds') ?></h3>
+	<h3><?php _e('Current Feeds') ?></h3>
 	<ul>
 <?php
 /**

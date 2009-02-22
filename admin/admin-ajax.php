@@ -134,7 +134,9 @@ $output = array(
 		'errors' => MessageHandler::get_errors(),
 		'messages' => MessageHandler::get_messages()
 );
-$output[] = $extra_messages;
+
+if(!empty($extra_messages))
+	$output[] = $extra_messages;
 
 /** Remove empty entries, such as 'errors' or 'messages' */
 foreach($output as $key => $entry) {
