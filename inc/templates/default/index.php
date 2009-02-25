@@ -85,11 +85,15 @@ if(has_items(false)) {
 				<span class="time"><?php the_date('format=H:i'); ?></span>
 				<span class="title" id="TITLE<?php the_id(); ?>" title="Click to expand/collapse item"><?php the_title(); ?></span>
 				<span class="source"><a href="<?php the_link(); ?>">&#187; Post from <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="Visit off-site link" /></a></span>
+<?php
+				if( has_enclosure() ){
+?>
+				<span class="enclosure"><?php the_enclosure(); ?></span>
+<?php
+				}
+?>
 				<div class="excerpt" id="ICONT<?php the_id(); ?>">
 					<?php the_content(); ?>
-					<?php if( has_enclosure() ){
-						echo '<hr />', the_enclosure();
-					} ?>
 				</div>
 				<?php do_action('river_entry'); ?>
 				<?php action_bar('before=&after= | '); ?>
