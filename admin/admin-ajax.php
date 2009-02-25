@@ -32,7 +32,7 @@ function feed_list_table() {
 	if(is_array($feeds) && !empty($feeds)) {
 		foreach($feeds as $this_feed) {
 	?>
-		<tr id="feed-<?php echo $j ?>" class="<?php echo $alt; ?>">
+		<tr id="feed-<?php echo $j ?>" class="<?php echo ($j % 2) ? 'alt' : ''; ?>">
 			<td class="name-col"><?php echo stripslashes($this_feed['name']); ?></td>
 			<td class="url-col"><?php echo $this_feed['feed']; ?></td>
 			<td class="cat-col"><?php echo $this_feed['cat']; ?></td>
@@ -42,7 +42,6 @@ function feed_list_table() {
 			<?php do_action('admin-feeds-actioncol', $this_feed, $j); ?>
 		</tr>
 	<?php
-			$alt = empty($alt) ? 'alt' : '';
 			++$j;
 		}
 	}
@@ -52,7 +51,6 @@ function feed_list_table() {
 	<?php
 	}
 }
-
 if(!isset($_REQUEST['action']))
 	die('No action specified');
 

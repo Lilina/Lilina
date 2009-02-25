@@ -429,13 +429,11 @@ if(!function_exists('the_enclosure')) {
 	 */
 	function the_enclosure() {
 		global $item, $enclosure;
-		if(empty($enclosure)) {
-			if(!has_enclosure()) {
-				return false;
-			}
+		if(empty($enclosure) && !has_enclosure()) {
+			return false;
 		}
 
-		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '" rel="enclosure">' . _r('View podcast') . '</a>' . "\n" );
+		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '" rel="enclosure">' . _r('Listen to podcast') . '</a>' . "\n" );
 	}
 }
 

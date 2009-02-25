@@ -87,7 +87,7 @@ endif;
 ?>
 
 	<div id="footer">
-		<span id="generator-link"><a href="http://getlilina.org/" title="<?php _e('Lilina', 'watchorn'); ?>" rel="generator"><?php _e('Lilina', 'watchorn'); ?></a></span>
+		<span id="generator-link"><a href="http://getlilina.org/" title="Lilina" rel="generator">Lilina</a></span>
 		<span class="meta-sep">|</span>
 		<span id="theme-link"><a href="http://getlilina.org/docs/template:watchorn" title="<?php _e('Watchorn theme for Lilina', 'watchorn'); ?>" rel="designer"><?php _e('Watchorn', 'watchorn'); ?></a></span>
 		<span class="meta-sep">|</span>
