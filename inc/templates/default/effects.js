@@ -53,6 +53,8 @@ function keyboardWatcher(e) {
 		if (keyCode && (keyCode != 27 && (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') ) )
 			return;
 
+		console.log(keyCode);
+
 		switch(keyCode) {
 			//  "k" key
 			case 75:
@@ -77,6 +79,12 @@ function keyboardWatcher(e) {
 				else {
 					$('#item-' + Items.current).addClass('currentItem');
 				}
+				break;
+			// "v" key
+			case 86:
+				var newWindow = window.open($('#item-' + Items.current + ' .source a').attr('href'));
+				if(!newWindow)
+					alert('It looks like a popup blocker is preventing Lilina from opening this page. If you have a popup blocker, try disabling it for this page.');
 				break;
 			// "o" key
 			case 79:
