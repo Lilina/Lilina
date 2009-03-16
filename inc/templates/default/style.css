@@ -6,7 +6,6 @@ Description: The default Lilina theme, originally from 0.7.
 */
 
 
-
 /* Global Elements */
 
 html, body {
@@ -102,7 +101,8 @@ h1 {
 .item {
 	margin: 0;
 	font-size: 12px;
-	border-top: 1px solid #aac;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
 	padding-bottom: 2px;
 	padding-left: 15px;
 	/* Make sure nothing ruins our layout - Lifehacker, we're looking at you :P */
@@ -228,4 +228,9 @@ h1 {
 	margin-right: 0;
 	border-right: 0 #aaa solid;
 	background-color: #eee;
+}
+
+.currentItem {
+	border-top: 1px solid #00f;
+	border-bottom: 1px solid #00f;
 }
