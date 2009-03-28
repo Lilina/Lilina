@@ -1,13 +1,18 @@
 <?php
 /**
-* Data handler class
-*
-* @author Ryan McCue <cubegames@gmail.com>
-* @package Lilina
-* @version 1.0
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ * Handler for persistent data files
+ *
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
+/**
+ * Handler for persistent data files
+ *
+ * @package Lilina
+ */
 class DataHandler {
 	/**
 	 * Directory to store data.

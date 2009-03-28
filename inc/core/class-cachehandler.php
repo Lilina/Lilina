@@ -1,6 +1,6 @@
 <?php
 /**
- * Cache class
+ * Handler for persistent cache files
  *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
@@ -8,6 +8,11 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
+/**
+ * Handler for persistent cache files
+ *
+ * @package Lilina
+ */
 class CacheHandler extends DataHandler {
 	/**
 	 * Number of seconds to keep cache for.

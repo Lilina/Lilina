@@ -36,9 +36,9 @@ class User {
 	var $domain;
 
 	/**
-	 * User() - Constructor for the class
+	 * Constructor for the class
 	 */
-	function User($user = false, $password = false, $domain = false, $path = null) {
+	public function __construct($user = false, $password = false, $domain = false, $path = null) {
 		if(!$user)
 			$user = isset($_POST['user']) ? $_POST['user'] : false;
 
@@ -56,7 +56,7 @@ class User {
 	}
 
 	/**
-	 * identify() - Check user authentication
+	 * Check user authentication
 	 *
 	 * Checks the session variables and cookies to make sure the user is logged in. If they aren't, it
 	 * sets a username and password cookie and sets a session variable. The cookie is set to expire in
@@ -81,9 +81,10 @@ class User {
 	}
 
 	/**
-	 * Generates a cryptographic hash of supplied string
+	 * Generate a cryptographic hash of supplied string
 	 *
 	 * Generates the correct hash
+	 * @param string $password
 	 */
 	function hash($password) {
 		// Check for MD5
@@ -94,15 +95,15 @@ class User {
 	}
 
 	/**
-	 * Upgrades the password from MD5 to SHA512
+	 * Upgrade the password from MD5 to SHA512
 	 *
-	 * Checks the
+	 * Checks the password length to determine type
 	 * @param string $u Overriding username
 	 * @param string $p Overriding password
-	 * @return bool
+	 * @return bool True if password has been "upgraded", false otherwise
 	 */
 	function upgrade() {
-		if(strlen($pass) !== 32)
+		if(strlen($this->password) !== 32)
 			return true;
 
 		if($this->password !== get_option('auth', 'pass'))
@@ -113,7 +114,7 @@ class User {
 	}
 
 	/**
-	 * authenticate() - Check supplied credentials
+	 * Check supplied credentials
 	 *
 	 * Checks the supplied username and MD5'd password against the username and password stored in settings
 	 * @param string $u Overriding username
@@ -139,7 +140,7 @@ class User {
 	}
 
 	/**
-	 * set_cookies() - Sets the authentication cookies for next use
+	 * Set the authentication cookies for next use
 	 *
 	 * Does what it says on the tin. Uses HttpOnly for both cookies.
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
@@ -150,7 +151,7 @@ class User {
 	}
 
 	/**
-	 * destroy_cookies() - Removes authentication cookies
+	 * Remove authentication cookies
 	 *
 	 * Removes cookies by setting value to a blank string and setting the expiry time in the past.
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)

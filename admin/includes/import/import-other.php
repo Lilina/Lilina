@@ -1,5 +1,18 @@
 <?php
+/**
+ * OPML-to-Lilina importer
+ *
+ * @author Ryan McCue <cubegames@gmail.com>
+ * @package Lilina
+ * @version 1.0
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*/
 
+/**
+ * OPML-to-Lilina importer
+ *
+ * @package Lilina
+*/
 class OPML_Import {
 	public function dispatch() {
 		$step = ( !empty($_POST['step']) ? $_POST['step'] : 0 );
@@ -54,7 +67,7 @@ class OPML_Import {
 ?>
 <h1><?php _e('Other (OPML) Importer') ?></h1>
 <p><?php _e('If a feed reader you use allows you to export your links or subscriptions as OPML you may import them here.'); ?></p>
-<form action="feed-import.php" method="get" id="import_form">
+<form action="feed-import.php" method="post" id="import_form">
 	<fieldset id="import">
 		<legend><?php _e('Import Feeds'); ?></legend>
 		<div class="row">
@@ -62,7 +75,8 @@ class OPML_Import {
 			<input type="text" name="url" id="url" />
 		</div>
 		<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
-		<input type="hidden" name="step" value="1" class="submit" />
+		<input type="hidden" name="step" value="1" />
+		<input type="hidden" name="service" value="other" />
 	</fieldset>
 </form>
 <?php
@@ -70,7 +84,16 @@ class OPML_Import {
 	}
 
 	protected function import() {
-		//Must fix this.
+		if(empty($_POST['url'])) {
+			$_POST['step']--;
+			$this->dispatch();
+			return;
+		}
+
+		admin_header(_r('Other (OPML) Importer'));
+			$this->import_opml($_POST['url']);
+			admin_footer();
+			return;
 	}
 }
 

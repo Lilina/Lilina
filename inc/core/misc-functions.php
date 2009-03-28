@@ -9,9 +9,9 @@
 defined('LILINA_PATH') or die('Restricted access');
 
 /**
- * lilina_fix_request_uri() - Fixes the $_SERVER['REQUEST_URI'] variable on IIS
+ * Fix the $_SERVER['REQUEST_URI'] variable on IIS.
  *
- * {@internal Missing Long Description}}
+ * IIS does not set the $_SERVER['REQUEST_URI'] variable, so we need to generate it for it
  * @author WordPress
  */
 function lilina_fix_request_uri() {
@@ -45,38 +45,43 @@ function lilina_fix_request_uri() {
 }
 
 /**
- * lilina_timer_start() - {@internal Missing Short Description}
+ * "Start" the "timer".
  *
- * {@internal Missing Long Description}}
- * @todo Document
+ * Runs the lilina_timer_start action then returns the current timestamp
+ * which is used as a pseudo-timer.
+ * @see lilina_timer_end()
+ * @return float
  */
 function lilina_timer_start() {
-	//Start measuring execution time
-	$mtime = microtime();
-	$mtime = explode(" ",$mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$starttime = $mtime;
-	return $starttime;
+	do_action('lilina_timer_start');
+	return microtime(true);
 }
 /**
- * lilina_timer_end() - {@internal Missing Short Description}
+ * "End" the "timer".
  *
- * {@internal Missing Long Description}}
- * @todo Document
+ * Runs the lilina_timer_end action then returns the difference between the
+ * current timestamp and the supplied one. The supplied timestamp is usually
+ * the output of a {@link lilina_timer_start()}, as this simulates a timer.
+ *
+ * @see lilina_timer_start()
+ * @param float $starttime Timestamp returned by lilina_timer_start()
+ * @return float Difference between $starttime and the current timestamp
  */
 function lilina_timer_end($starttime) {
-	$mtime = microtime();
-	$mtime = explode(" ",$mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$endtime = $mtime;
+	$endtime = microtime(true);
 	$totaltime = ($endtime - $starttime);
 	$totaltime = round($totaltime, 2);
+	do_action('lilina_timer_end');
 	return $totaltime;
 }
 /**
- * is_admin() - {@internal Missing Short Description}
+ * Check if we're on an admin page.
  *
- * {@internal Missing Long Description}}
+ * Checks the LILINA_ADMIN constant to see if we're currently on an
+ * administration page. Note: this does not check if the user is an admin, it
+ * simply checks if the page is in the administration
+ *
+ * @return bool
  */
 function is_admin() {
 	if(defined('LILINA_ADMIN') && LILINA_ADMIN == true) {
@@ -86,60 +91,47 @@ function is_admin() {
 }
 
 /**
- * Checks differences between 2 arrays recursively
+ * Update the value of an option.
  *
- * Like running array_diff_assoc, except recursive and PHP <4.3.0 compatible
- * From the user contributed notes for array_diff_assoc at PHP.net
- * @author chinello at gmail dot com
- * @link http://au.php.net/manual/en/function.array-diff-assoc.php
- */
-function array_diff_assoc_recursive($array1, $array2) {
-	foreach($array1 as $key => $value) {
-		if(is_array($value)) {
-			  if(!isset($array2[$key])) {
-				  $difference[$key] = $value;
-			  }
-			  elseif(!is_array($array2[$key])) {
-				  $difference[$key] = $value;
-			  }
-			  else {
-				  $new_diff = array_diff_assoc_recursive($value, $array2[$key]);
-				  if($new_diff != FALSE) {
-						$difference[$key] = $new_diff;
-				  }
-			  }
-		  }
-		  elseif(!isset($array2[$key]) || $array2[$key] != $value) {
-			  $difference[$key] = $value;
-		  }
-	}
-	return !isset($difference) ? 0 : $difference;
-}
-
-/**
- * Sets setting <tt>$option</tt> to <tt>$new_value<tt>
+ * If the option does not exist, then the option will be added with the option
+ * value, but you will not be able to set whether it is autoloaded. If you want
+ * to set whether an option autoloaded, then you need to use the add_option().
+ * Any of the old $settings keys are ignored.
  *
- * This exists for when we want to introduce MySQL capability
+ * When the option is updated, then the filter named
+ * 'update_option_$option_name', with the $option_name as the $option_name
+ * parameter value, will be called. The hook should accept two parameters, the
+ * first is the new parameter and the second is the old parameter.
+ *
  * @global array <tt>$settings</tt> contains whatever option we are going to change
  * @param string $option Option key to change
- * @param mixed $new_value New value to set <tt>$option</tt> to
+ * @param mixed $new_value New value of <tt>$option</tt>
  */
-function update_option($option, $new_value) {
-	if($option === 'auth' || $option === 'sitename' || $option === 'baseurl' || $option === 'files')
+function update_option($option_name, $new_value) {
+	if($option_name === 'auth' || $option_name === 'sitename' || $option_name === 'baseurl' || $option_name === 'files')
 		return false;
 
 	global $options;
-	$options[$option] = $new_value;
-	return save_settings();
+	$options[$option_name] = apply_filters("update_option-$option_name", $new_value);
+	return save_options();
 }
 
 /**
- * Gets value of setting <tt>$option</tt>
+ * Retrieve option value based on setting name.
  *
- * This exists for when we want to introduce MySQL capability
- * @global array <tt>$settings</tt> contains whatever option we are getting
- * @param string $option Option key to get
+ * If the option does not exist or does not have a value, then the return value
+ * will be false. This is useful to check whether you need to install an option
+ * and is commonly used during installation of plugin options and to test
+ * whether upgrading is required.
+ *
+ * There is a filter called 'option_$option' with the $option being replaced
+ * with the option name. This gives the value as the only parameter.
+ *
+ * @uses $settings Old settings array for "auth", "sitename", "baseurl" and "files" options.
+ * @uses $options New options array
+ * @param string $option Name of option to retrieve.
  * @param mixed $default Value to default to if none is found. Alternatively used as a "subkey" option for the hardcoded settings
+ * @return mixed Value set for the option.
  */
 function get_option($option, $default = null) {
 	global $settings;
@@ -166,10 +158,15 @@ function get_option($option, $default = null) {
 }
 
 /**
- * lilina_parse_args() - {@internal Missing Short Description}
+ * Merge user defined arguments into defaults array.
  *
- * {@internal Missing Long Description}}
+ * This function is used throughout Lilina to allow for both string or array
+ * to be merged into another array.
+ *
  * @author WordPress
+ * @param string|array $args Value to merge with $defaults
+ * @param array $defaults Array that serves as the defaults.
+ * @return array Merged user defined values with defaults.
  */
 function lilina_parse_args( $args, $defaults = '' ) {
 	if ( is_object( $args ) )
@@ -185,10 +182,16 @@ function lilina_parse_args( $args, $defaults = '' ) {
 }
 
 /**
- * lilina_parse_str() - {@internal Missing Short Description}
+ * Parses a string into variables to be stored in an array.
  *
- * {@internal Missing Long Description}}
+ * Uses {@link http://www.php.net/parse_str parse_str()} and stripslashes if
+ * {@link http://www.php.net/magic_quotes magic_quotes_gpc} is on.
+ *
  * @author WordPress
+ * @uses apply_filters() for the 'lilina_parse_str' filter.
+ *
+ * @param string $string The string to be parsed.
+ * @param array $array Variables will be stored in this array.
  */
 function lilina_parse_str( $string, &$array ) {
 	parse_str( $string, $array );
@@ -197,12 +200,16 @@ function lilina_parse_str( $string, &$array ) {
 	$array = apply_filters( 'lilina_parse_str', $array );
 }
 
-if(!function_exists('stripslashes_deep')) {
 /**
- * stripslashes_deep() - {@internal Missing Short Description}
+ * Navigates through an array and removes slashes from the values.
  *
- * {@internal Missing Long Description}}
+ * If an array is passed, the array_map() function causes a callback to pass the
+ * value back to the function. The slashes from this value will removed.
+ *
  * @author WordPress
+ *
+ * @param array|string $value The array or string to be striped.
+ * @return array|string Stripped array (or string in the callback).
  */
 function stripslashes_deep($value) {
 	 $value = is_array($value) ?
@@ -211,15 +218,17 @@ function stripslashes_deep($value) {
 
 	 return $value;
 }
-}
-
-if(!function_exists('urlencode_deep')):
 
 /**
- * urlencode_deep() - {@internal Missing Short Description}
+ * Navigates through an array and encodes the values to be used in a URL.
  *
- * {@internal Missing Long Description}}
+ * Uses a callback to pass the value of the array back to the function as a
+ * string.
+ *
  * @author WordPress
+ *
+ * @param array|string $value The array or string to be encoded.
+ * @return array|string $value The encoded array (or string from the callback).
  */
 function urlencode_deep($value) {
 	 $value = is_array($value) ?
@@ -229,13 +238,13 @@ function urlencode_deep($value) {
 	 return $value;
 }
 
-endif; //function_exists('urlencode_deep)
-
 /**
- * maybe_unserialize() - Unserialize data only if it is serialized
+ * Unserialize value only if it was serialized.
  *
- * {@internal Missing Long Description}}
  * @author WordPress
+ *
+ * @param string $original Maybe unserialized original, if is needed.
+ * @return mixed Unserialized data can be any type.
  */
 function maybe_unserialize( $original ) {
 	if ( is_serialized( $original ) ) // don't attempt to unserialize data that wasn't serialized going in
@@ -245,10 +254,15 @@ function maybe_unserialize( $original ) {
 }
 
 /**
- * is_serialized() - Check if $data is serialized
+ * Check value to find if it was serialized.
  *
- * {@internal Missing Long Description}}
+ * If $data is not an string, then returned value will always be false.
+ * Serialized data is always a string.
+ *
  * @author WordPress
+ *
+ * @param mixed $data Value to check to see if was serialized.
+ * @return bool False if not serialized and true if it was.
  */
 function is_serialized( $data ) {
 	// if it isn't a string, it isn't serialized
@@ -277,10 +291,11 @@ function is_serialized( $data ) {
 }
 
 /**
- * Unregisters globals and reverts magic quotes
+ * Turn register globals off.
  *
- * This looks like ugly code.
- * @author WordPress
+ * @access private
+ * @since 2.1.0
+ * @return null Will return null if register_globals PHP directive was disabled
  */
 function lilina_level_playing_field() {
 	lilina_fix_request_uri();
@@ -306,14 +321,15 @@ function lilina_level_playing_field() {
 }
 
 /**
- * shorten() - Cut a specified string down to $length characters
+ * Cut a specified string down to $length characters
  *
  * Removes all HTML tags (not entities), shortens to $length characters and
  * returns the new string with an elipsis (plain text ...) appended
+ *
+ * @author <http://simplepie.org/wiki/tutorial/shorten_titles_and_descriptions>
  * @param string $string String to shorten
  * @param int length Length to shorten to (in characters)
  * @return string Shortened string
- * @author <http://simplepie.org/wiki/tutorial/shorten_titles_and_descriptions>
  */
 function shorten($string, $length) {
 	/** Short-circuit if no shortening is needed */

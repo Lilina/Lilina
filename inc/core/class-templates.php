@@ -1,10 +1,16 @@
 <?php
 /**
+ * Template handler
  *
  * @package Lilina
  * @subpackage Templates
  */
 
+/**
+ * Template handler
+ *
+ * @package Lilina
+ */
 class Templates {
 	/**
 	 * Holds all current theme names and data
