@@ -97,34 +97,20 @@ function available_locales() {
 }
 
 /**
- * recursive_array_code() - {{@internal Missing Short Description}}}
+ * Save options to options.data
  *
- * {{@internal Missing Long Description}}}
+ * Deprecated in favour of save_options
+ * @see save_options()
  */
-function recursive_array_code($vars) {
-	global $level_count;
-	foreach($vars as $var => $value) {
-		if(is_array($value)) {
-			$content .= "\n" . str_repeat("\t", $level_count) . 'array(';
-			$level_count++;
-			$content .= recursive_array_code($value);
-		}
-		else
-			$content .= "\n" . str_repeat("\t", $level_count) . "'$var' => '$value',";
-	}
-	while($level_count > 1) {
-		$level_count--;
-		$content .= "\n" . str_repeat("\t", $level_count) . '),';
-	}
-	return $content;
+function save_settings() {
+	echo '<h1>DEPRECATED FUNCTION: ' . __FUNCTION__ . '</h1>';
+	save_options();
 }
 
 /**
- * save_settings() - {@internal Missing Short Description}}
- *
- *
+ * Save options to options.data
  */
-function save_settings() {
+function save_options() {
 	global $options;
 	$data = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 	return $data->save('options.data', serialize($options));

@@ -36,226 +36,8 @@ if(lilina_is_installed()) {
 	}
 }
 
-/**
- * Generates a random password for the user
- *
- * Thanks goes to Jon Haworth for this function
- * @author Jon Haworth <jon@laughing-buddha.net>
- * @param int $length Length of generated password
- * @return string
- */
-function generate_password ($length = 8) {
-	// start with a blank password
-	$password = '';
-	// define possible characters
-	$possible = '0123456789bcdfghjkmnpqrstvwxyz';
-	// set up a counter
-	$i = 0;
-	// add random characters to $password until $length is reached
-	while ($i < $length) { 
-		// pick a random character from the possible ones
-		$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-		// we don't want this character if it's already in the password
-		if (!strstr($password, $char)) { 
-			$password .= $char;
-			++$i;
-		}
-	}
-	// done!
-	return $password;
-}
-
-/**
- * compatibility_test() - Check that the system can run Lilina
- *
- * {@internal Missing Long Description}}
- * @author SimplePie
- */
-function compatibility_test() {
-	$errors = array();
-	$warnings = array();
-	$output = "<p>The following errors were found with your installation:</p>";
-	$xml_ok = extension_loaded('xml');
-	$pcre_ok = extension_loaded('pcre');
-	$zlib_ok = extension_loaded('zlib');
-	$mbstring_ok = extension_loaded('mbstring');
-	$iconv_ok = extension_loaded('iconv');
-	if($xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $zlib_ok)
-		return;
-	if(!$xml_ok)
-		$errors[] = "<strong>XML:</strong> Your PHP installation doesn't support XML parsing.";
-	if(!$pcre_ok)
-		$errors[] = "<strong>PCRE:</strong> Your PHP installation doesn't support Perl-Compatible Regular Expressions.";
-	if(!$iconv_ok && !$mbstring_ok)
-		$errors[] = "<strong>mbstring and iconv</strong>: You do not have either of these extensions installed. Lilina requires at least one of these in order to function properly.";
-	elseif(!$iconv_ok)
-		$warnings[] = "<strong>iconv:</strong> <code>mbstring</code> is installed, but <code>iconv</code> is not. This means that not all character encodings or translations will be supported.";
-	elseif(!$mbstring_ok)
-		$warnings[] = "<strong>mbstring:</strong> <code>iconv</code> is installed, but <code>mbstring</code> is not. This means that not all character encodings or translations will be supported.";
-	if(!$zlib_ok)
-		$warnings[] = "<strong>Zlib:</strong> The <code>Zlib</code> extension is not available. You will not be able to use feeds with GZIP compression.";
-
-	if(!empty($errors)) {
-		$output .= "\n<h2>Errors</h2>\n<ul>\n<li>";
-		$output .= implode(" <em>Looks like Lilina won't run.</em></li>\n<li>", $errors);
-		$output .= "</li>\n</ul>\n";
-	}
-
-	if(!empty($warnings)) {
-		$output .= "\n<h2>Warnings</h2>\n<ul>\n<li>";
-		$output .= implode(" <em>This might cause some problems with some feeds.</em></li>\n<li>", $warnings);
-		$output .= "</li>\n</ul>\n";
-	}
-
-	if(empty($errors)) {
-		$output .= "<p>These warnings might cause some feeds not to be read properly, however <em>you will be able to run Lilina.</em></p>\n";
-		$output .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
-		$output .= '<input type="hidden" name="page" value="1" /><input type="hidden" name="skip" value="1" />';
-		$output .= '<input class="submit" type="submit" value="Continue" /></form>';
-		$output .= "<p id='footnote-quote'>Danger, Will Robinson! &mdash; <em>Lost in Space</em></p>";
-		lilina_nice_die($output, 'Whoops!');
-	}
-
-	else {
-		$output .= '<p>These errors mean that <em>you will not be able to run Lilina.</em></p>';
-		$output .= "<p id='footnote-quote'>Kosa moja haliachi mke &mdash; <em>Swahili proverb ('One mistake isn't reason enough to leave your wife')</em></p>";
-		lilina_nice_die($output, 'Uh oh!');
-	}
-}
-
-function install($sitename, $username, $password) {
-	require_once(LILINA_INCPATH . '/core/version.php');
-
-	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	$guessurl = preg_replace('|/install\.php.*|i', '', $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-	if($guessurl[count($guessurl)-1] != '/') {
-		$guessurl .= '/';
-	}
-	?>
-<?php
-		flush();
-		$raw_php		= "<?php
-// What you want to call your Lilina installation
-\$settings['sitename'] = '" . addslashes($sitename) . "';
-
-// The URL to your server
-\$settings['baseurl'] = '$guessurl';
-
-// Username and password to log into the administration panel
-// 'pass' is MD5ed
-\$settings['auth'] = array(
-							'user' => '$username',
-							'pass' => '" . md5($password) . "'
-							);
-
-// All the enabled plugins, stored in a serialized string
-\$settings['enabled_plugins'] = '';
-
-// Version of these settings; don't change this
-\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";
-?>";
-		if( !is_writable(LILINA_PATH . '/content/system/config/')
-			|| !($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+'))
-			|| !is_resource($settings_file) ) {
-			?>
-			<h1>Uh oh!</h1>
-			<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/settings.php</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
-			<form action="<?php /** @todo This is unsafe. Convert */ echo $_SERVER['PHP_SELF']; ?>" method="post">
-			<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
-			<input type="hidden" name="username" value="<?php echo $username; ?>" />
-			<input type="hidden" name="password" value="<?php echo $password; ?>" />
-			<input type="hidden" name="page" value="2">
-			<input class="submit" type="submit" value="Try again?" />
-			<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
-			</form>
-			<?php
-			return false;
-		}
-		if(file_exists(LILINA_PATH . '/content/system/config/feeds.data')) {
-			echo "<p>Using existing feeds data</p>\n";
-		}
-		else {
-			$feeds_file = @fopen(LILINA_PATH . '/content/system/config/feeds.data', 'w+');
-			if(is_resource($feeds_file)) {
-				$data['version'] = $lilina['feed-storage']['version'];
-				$sdata	= base64_encode(serialize($data)) ;
-				if(!$feeds_file) {
-					?>
-					<h1>Uh oh!</h1>
-					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/feeds.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
-					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
-					<input type="hidden" name="username" value="<?php echo $username; ?>" />
-					<input type="hidden" name="password" value="<?php echo $password; ?>" />
-					<input type="hidden" name="page" value="2">
-					<input type="submit" value="Try again?" />
-					<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
-					</form>
-					<?php
-					return false;
-				}
-				fputs($feeds_file, $sdata);
-				fclose($feeds_file);
-			}
-			else {
-				echo "<p>Couldn't create <code>content/system/config/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
-			}
-		}
-
-		/** Make sure it's writable now */
-		if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
-			/** We'll try this first */
-			chmod(LILINA_PATH . '/content/system/config/feeds.data', 0644);
-			if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
-				/** Nope, let's give group permissions too */
-				chmod(LILINA_PATH . '/content/system/config/feeds.data', 0664);
-				if(!is_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
-					/** Still no dice, give write permissions to all */
-					chmod(LILINA_PATH . '/content/system/config/feeds.data', 0666);
-					if(!is_writable(LILINA_PATH . '/conf/feeds.data')) {
-						/** OK, we can't make it writable ourselves. Tell the user this */
-						echo "<p>Couldn't make <code>content/system/config/feeds.data</code> writable. Please ensure you make it writable yourself</p>\n";
-					}
-				}
-			}
-		}
-
-		fputs($settings_file, $raw_php);
-		fclose($settings_file);
-		
-		default_options();
-		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
-
-		if(save_settings()) {
-			?>
-					<h1>Uh oh!</h1>
-					<p>Something happened and <code><?php echo LILINA_PATH; ?>/content/system/config/options.data</code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
-					<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-					<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
-					<input type="hidden" name="username" value="<?php echo $username; ?>" />
-					<input type="hidden" name="password" value="<?php echo $password; ?>" />
-					<input type="hidden" name="page" value="2">
-					<input type="submit" value="Try again?" />
-					<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
-					</form>
-			<?php
-			return false;
-		}
-?>
-<h1>Installation Complete!</h1>
-<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it won't be shown again!</p>
-<dl>
-	<dt>Your username is</dt>
-	<dd id="username"><?php echo $username;?></dd>
-	<dt>and your password is</dt>
-	<dd id="password"><?php echo $password;?></dd>
-</dl>
-<!--<p>We can <a href="admin/first-run.php">help you get started</a>, or if you know what you're doing, <a href="admin/">head straight for the admin panel</a>.</p>-->
-<p><a href="admin/">Head for the admin panel</a> and start adding feeds!</p>
-<?php
-		return true;
-}
-
+global $installer;
+$installer = new Installer();
 
 /**
  * upgrade() - Run upgrade processes on supplied data
@@ -396,7 +178,7 @@ function upgrade() {
 		fclose($settings_file);
 
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
-		if(save_settings()) {
+		if(save_options()) {
 			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
 		}
 	}
@@ -451,7 +233,7 @@ $password				= isset($_POST['password']) ? $_POST['password'] : false;
 $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ? true : false;
 
 if($page === "1" && !isset($_REQUEST['skip']))
-	compatibility_test();
+	$installer->compatibility_test();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -496,10 +278,8 @@ switch($page) {
 <?php
 		break;
 	case 2:
-		install($sitename, $username, $password);
+		$installer->install($sitename, $username, $password);
 		break;
-	case 0:
-	case false:
 	default:
 ?>
 <h1>Installation</h1>
