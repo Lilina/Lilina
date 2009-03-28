@@ -8,6 +8,8 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+
+/** */
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 define('LILINA_CONTENT_DIR', LILINA_PATH . '/content');

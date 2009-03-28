@@ -11,6 +11,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
+/** */
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 require_once(LILINA_INCPATH . '/core/conf.php');

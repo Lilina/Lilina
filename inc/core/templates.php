@@ -7,6 +7,10 @@
  * @subpackage Classes
  */
 
+/**
+ * {@internal Missing Description}
+ * @todo Document
+ */
 function get_item() {
 	$items = FeedItems::get_instance();
 	return $items->get_item();

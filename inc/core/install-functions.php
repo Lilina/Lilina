@@ -15,6 +15,8 @@ defined('LILINA_PATH') or die('Restricted access');
  *
  * Note: this class is outside of normal file structure, as it should only be
  * used in install.php
+ *
+ * @package Lilina
  */
 class Installer {
 	public function __construct() {
