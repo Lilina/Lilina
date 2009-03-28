@@ -29,7 +29,8 @@ require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 
-require_once(LILINA_INCPATH . '/core/l10n.php');
+//require_once(LILINA_INCPATH . '/core/l10n.php');
+Locale::load_default_textdomain();
 
 //Stuff for parsing Magpie output, etc
 require_once(LILINA_INCPATH . '/core/feed-functions.php');

@@ -25,7 +25,8 @@ lilina_check_installed();
 //Require our settings, must be first required file
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-require_once(LILINA_INCPATH . '/core/l10n.php');
+//require_once(LILINA_INCPATH . '/core/l10n.php');
+Locale::load_default_textdomain();
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
