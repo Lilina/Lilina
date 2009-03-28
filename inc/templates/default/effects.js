@@ -53,11 +53,9 @@ function keyboardWatcher(e) {
 		if (keyCode && (keyCode != 27 && (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') ) )
 			return;
 
-		console.log(keyCode);
-
 		switch(keyCode) {
-			//  "k" key
-			case 75:
+			//  "j" key
+			case 74:
 				$('#main .item.currentItem').removeClass('currentItem');
 				Items.current++;
 				if(Items.current == Items.count) {
@@ -67,9 +65,11 @@ function keyboardWatcher(e) {
 				else {
 					$('#item-' + Items.current).addClass('currentItem');
 				}
+				//$.scrollTo('#item-' + Items.current, 800);
+				window.location = '#item-' + Items.current;
 				break;
-			//  "j" key
-			case 74:
+			//  "k" key
+			case 75:
 				$('#main .item.currentItem').removeClass('currentItem');
 				Items.current--;
 				if( Items.current < 0 ) {
@@ -79,6 +79,8 @@ function keyboardWatcher(e) {
 				else {
 					$('#item-' + Items.current).addClass('currentItem');
 				}
+				//$.scrollTo('#item-' + Items.current, 400);
+				window.location = '#item-' + Items.current;
 				break;
 			// "v" key
 			case 86:
