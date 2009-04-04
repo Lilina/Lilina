@@ -1,13 +1,19 @@
 <?php
 /**
- *
+ * Localisation class
  * @package Lilina
  * @subpackage Localisation
  */
 
+/** */
 require_once(LILINA_INCPATH . '/contrib/gettext.php');
 require_once(LILINA_INCPATH . '/contrib/streams.php');
 
+/**
+ * Localisation class
+ * @package Lilina
+ * @subpackage Localisation
+ */
 class Locale {
 	private static $messages = array();
 	private static $plural_function;

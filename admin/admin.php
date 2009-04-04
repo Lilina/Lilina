@@ -1,7 +1,7 @@
 <?php
 /**
  * Administration page
- * @todo Major cleanup of everything contained within and move to own folder
+ *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
  * @version 1.0

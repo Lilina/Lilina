@@ -30,6 +30,7 @@ if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi'
 }
 else {
 	require_once(LILINA_INCPATH . '/core/class-templates.php');
+	Locale::load_default_textdomain();
 
 	header('Content-Type: image/png');
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
