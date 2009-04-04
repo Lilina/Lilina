@@ -132,7 +132,7 @@ function do_action($action_name){
  * @param int $num_args optional. The number of arguments the function accept (default 1).
  * @return boolean true
  */
-function add_filter($filter, $function, $priority = 0, $num_args=1) {
+function add_filter($filter, $function, $priority = 10, $num_args=1) {
 	global $filters;
 	$filters[$filter][$priority][$function]	= array(
 		'function'	=> $function,
@@ -158,7 +158,7 @@ function add_filter($filter, $function, $priority = 0, $num_args=1) {
  * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
  * @param int $num_args optional. The number of arguments the function accept (default 1).
  */
-function add_action($action, $function, $priority = 0, $num_args=0) {
+function add_action($action, $function, $priority = 10, $num_args=0) {
 	add_filter($action, $function, $priority, $num_args);
 }
 
