@@ -163,12 +163,15 @@ function add_feed($url, $name = '', $cat = 'default') {
 }
 
 /**
- * save_feeds() - Saves all feeds to the file specified in the settings
+ * Save feeds to a config file
  *
  * Serializes, then base 64 encodes
  */
 function save_feeds() {
 	global $data;
+	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
+	return $file->save('feeds.data', base64_encode(serialize($data)));
+/*
 	if(!is_writable(get_option('files', 'feeds'))) {
 		if(function_exists('_r'))
 			MessageHandler::add_error(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), get_option('files', 'feeds')));
@@ -176,7 +179,7 @@ function save_feeds() {
 			MessageHandler::add_error(sprintf('%s is not writable by the server. Please make sure the server can write to it', get_option('files', 'feeds')));
 		return false;
 	}
-	$sdata	= base64_encode(serialize($data)) ;
+	$sdata	=  base64_encode(serialize($data));
 	$fp		= fopen(get_option('files', 'feeds'),'w') ;
 	if(!$fp) {
 		if(function_exists('_r'))
@@ -186,6 +189,24 @@ function save_feeds() {
 		return false;
 	}
 	fputs($fp,$sdata) ;
-	fclose($fp) ;
+	fclose($fp) ;*/
+}
+
+/**
+ * Retrieve the custom name of a feed based on a URL
+ *
+ * @param string $name Default name to return if URL is not found
+ * @param string $url URL to lookup
+ * @return string Name of the feed
+ */
+function get_feed_name($name, $url) {
+	global $data;
+	foreach($data['feeds'] as $feed) {
+		if($feed['url'] === $url || strpos($feed['url'], $url)) {
+			$name = $feed['name'];
+			break;
+		}
+	}
+	return $name;
 }
 ?>
