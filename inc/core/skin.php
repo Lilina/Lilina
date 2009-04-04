@@ -109,7 +109,8 @@ function query_setup($args, $override = true) {
 		}
 		else {
 			global $settings;
-			$showtime = time() - ((int) $settings['interface']['times'][0] * 60 * 60);
+			$times = get_option('interface', 'times');
+			$showtime = time() - ((int) $times[0] * 60 * 60);
 		}
 
 		$showtime = apply_filters('showtime', $showtime);
@@ -227,7 +228,7 @@ function has_items($increment = true) {
  * @global string Holds offset time
  */
 function get_offset($as_hours = false) {
-	global $settings, $offset_time;
+	global $offset_time;
 
 	if(!isset($offset_time)) {
 		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
@@ -508,9 +509,9 @@ function feed_equals($args='') {
 * @return boolean Are feeds available?
 */
 function has_feeds() {
-	global $data, $settings;
+	global $data;
 	if(empty($data))
-		$data = lilina_load_feeds($settings['files']['feeds']);
+		$data = lilina_load_feeds(get_option('files', 'feeds'));
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
@@ -529,9 +530,9 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
-	global $data, $settings;
+	global $data;
 	if(empty($data)) {
-		$data = lilina_load_feeds($settings['files']['feeds']);
+		$data = lilina_load_feeds(get_option('files', 'feeds'));
 	}
 	return apply_filters('get_feeds', $data['feeds']);
 }
@@ -624,8 +625,7 @@ if(!function_exists('template_file_load')) {
 	 * @deprecated Deprecated in favour of {@see{template_directory()}
 	 */
 	function template_file_load($file) {
-		global $settings;
-		return apply_filters('template_file_load', $settings['baseurl'] . 'inc/templates/' . $settings['template'] . '/' . $file, $file);
+		return apply_filters('template_file_load', get_option('baseurl') . 'inc/templates/' . get_option('template') . '/' . $file, $file);
 	}
 }
 if(!function_exists('template_directory')) {

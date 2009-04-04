@@ -27,6 +27,7 @@ function lilina_return_items($input) {
 	$feed->set_stupidly_fast(true);
 	$feed->set_cache_location(get_option('cachedir'));
 	$feed->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
+	$feed = apply_filters('simplepie-config', $feed);
 
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
