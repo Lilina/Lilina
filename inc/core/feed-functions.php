@@ -171,25 +171,6 @@ function save_feeds() {
 	global $data;
 	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 	return $file->save('feeds.data', base64_encode(serialize($data)));
-/*
-	if(!is_writable(get_option('files', 'feeds'))) {
-		if(function_exists('_r'))
-			MessageHandler::add_error(sprintf(_r('%s is not writable by the server. Please make sure the server can write to it'), get_option('files', 'feeds')));
-		else
-			MessageHandler::add_error(sprintf('%s is not writable by the server. Please make sure the server can write to it', get_option('files', 'feeds')));
-		return false;
-	}
-	$sdata	=  base64_encode(serialize($data));
-	$fp		= fopen(get_option('files', 'feeds'),'w') ;
-	if(!$fp) {
-		if(function_exists('_r'))
-			MessageHandler::add_error(sprintf(_r('An error occurred when saving to %s and your data may not have been saved'), get_option('files', 'feeds')));
-		else
-			MessageHandler::add_error(sprintf('An error occurred when saving to %s and your data may not have been saved', get_option('files', 'feeds')));
-		return false;
-	}
-	fputs($fp,$sdata) ;
-	fclose($fp) ;*/
 }
 
 /**
@@ -201,12 +182,26 @@ function save_feeds() {
  */
 function get_feed_name($name, $url) {
 	global $data;
-	foreach($data['feeds'] as $feed) {
-		if($feed['url'] === $url || strpos($feed['url'], $url)) {
-			$name = $feed['name'];
-			break;
-		}
+	if($feed = feed_exists($url)) {
+		$name = $feed['name'];
 	}
 	return $name;
+}
+
+/**
+ * Check for the existence of a feed based on a URL
+ *
+ * Checks whether the supplied feed is in the feed list
+ * @param string $url URL to lookup
+ * @return array|bool Returns the feed array if found, false otherwise
+ */
+function feed_exists($url) {
+	global $data;
+	foreach($data['feeds'] as $feed) {
+		if($feed['url'] === $url || strpos($feed['url'], $url)) {
+			return $feed;
+		}
+	}
+	return false;
 }
 ?>
