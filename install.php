@@ -165,6 +165,8 @@ function upgrade() {
 				new_options_297();
 			case $settings['settings_version'] < 302:
 				new_options_302();
+			case $settings['settings_version'] < 339:
+				new_options_339();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -180,7 +182,7 @@ function upgrade() {
 		fclose($settings_file);
 
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
-		if(save_options()) {
+		if(!save_options()) {
 			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
 		}
 	}
@@ -212,6 +214,14 @@ function new_options_297() {
 function new_options_302() {
 	global $options;
 	$options['timezone'] = 'UTC';
+}
+/**
+ * It appears we missed this at some point
+ */
+function new_options_339() {
+	global $options;
+	if(empty($options['encoding']))
+		$options['encoding'] = 'utf-8';
 }
 
 function create_settings_file() {

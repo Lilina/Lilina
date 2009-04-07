@@ -38,7 +38,7 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
 
 header('Content-Type: application/xml; charset=utf-8');
-echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
+echo '<?xml version="1.0" encoding="' . get_option('encoding', 'utf-8') . '"?'.'>'; ?>
 
 <opml version="1.1">
 	<head>

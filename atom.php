@@ -45,8 +45,8 @@ global $lilina;
 
 do_action('init');
 
-header('Content-type: application/atom+xml; charset=' . get_option('encoding'), true);
-echo '<?xml version="1.0" encoding="', get_option('encoding'), '"?'.'>'; ?>
+header('Content-type: application/atom+xml; charset=' . get_option('encoding', 'utf-8'), true);
+echo '<?xml version="1.0" encoding="', get_option('encoding', 'utf-8') '"?'.'>'; ?>
 <feed xmlns="http://www.w3.org/2005/Atom"
 	xmlns:thr="http://purl.org/syndication/thread/1.0"
 	xml:lang="<?php echo get_option('lang'); ?>"
