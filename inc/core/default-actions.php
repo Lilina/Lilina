@@ -7,6 +7,7 @@
 add_action('admin_init', 'lilina_version_check');
 
 add_action('template_header', 'template_synd_header');
+add_action('template_footer', 'gsfn_feedback_widget');
 
 add_action('admin_header', 'update_nag');
 
