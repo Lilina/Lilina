@@ -139,7 +139,7 @@ function query_setup($args, $override = true) {
 		$item_number = ($offset - 1);
 		
 	if(empty($data))
-		$data = lilina_load_feeds(get_option('files', 'feeds'));
+		load_feeds();
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
@@ -176,7 +176,7 @@ function has_items($increment = true) {
 	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
 
 	if(empty($data)) {
-		$data = lilina_load_feeds(get_option('files', 'feeds'));
+		load_feeds();
 	}
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
@@ -449,7 +449,7 @@ function atom_enclosure() {
 	if(!has_enclosure())
 		return false;
 
-	echo apply_filters('atom_enclosure', '<link href="' . $enclosure->get_link() . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->length() . '" />' . "\n");
+	echo apply_filters('atom_enclosure', '<link href="' . $enclosure->get_link() . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->get_type() . '" />' . "\n");
 }
 
 /**
@@ -511,7 +511,7 @@ function feed_equals($args='') {
 function has_feeds() {
 	global $data;
 	if(empty($data))
-		$data = lilina_load_feeds(get_option('files', 'feeds'));
+		load_feeds();
 
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
@@ -532,7 +532,7 @@ function has_feeds() {
 function get_feeds() {
 	global $data;
 	if(empty($data)) {
-		$data = lilina_load_feeds(get_option('files', 'feeds'));
+		load_feeds();
 	}
 	return apply_filters('get_feeds', $data['feeds']);
 }

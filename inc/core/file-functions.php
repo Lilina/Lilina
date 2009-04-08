@@ -10,20 +10,6 @@
 defined('LILINA_PATH') or die('Restricted access');
 
 /**
- * lilina_load_feeds() - {{@internal Missing Short Description}}}
- *
- * {{@internal Missing Long Description}}}
- */
-function lilina_load_feeds($data_file) {
-	$data = file_get_contents($data_file) ;
-	$data = unserialize( base64_decode($data) ) ;
-	if(!$data || !is_array($data)) {
-		$data = array();
-	}
-	return $data;
-}
-
-/**
  * available_templates() - {{@internal Missing Short Description}}}
  *
  * {{@internal Missing Long Description}}}

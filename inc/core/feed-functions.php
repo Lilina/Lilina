@@ -10,7 +10,7 @@
 defined('LILINA_PATH') or die('Restricted access');
 
 /**
- * lilina_return_items() - Takes an array of feeds and returns all channels and all items from them
+ * Generates a SimplePie object from a list of feeds
  *
  * Takes an input array and parses it using the SimplePie library. Returns a SimplePie object.
  * @param array $input Input array of user specified feeds
@@ -49,54 +49,45 @@ function lilina_return_items($input) {
 }
 
 /**
- * lilina_parse_html() - Parses HTML with HTML Purifier using filters
+ * Sanitize HTML code
  *
- * Wrapper function for HTML Purifier; sets our settings such as the cache directory and purifies
- * both arrays and strings
+ * Wrapper function for HTML Purifier; sets our settings such as the cache
+ * directory and purifies both arrays and strings
  *
  * @since 1.0
  * @todo Make really recursive instead of faux recursing
  *
- * @uses $purifier HTMLPurifier object to save memory
- *
- * @param mixed $val_array Array or string to parse/purify
- * @return mixed Array or string of purified HTML
+ * @param string|array $input HTML to purify
+ * @return string|array Purified HTML
  */
-function lilina_parse_html($val_array){
-	if(empty($val_array))
-		return $val_array;
+function lilina_parse_html($input) {
+	static $purifier;
+	if(empty($input))
+		return $input;
 
 	require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
-	global $purifier;
 	if(!isset($purifier) || !is_a($purifier, 'HTMLPurifier')) {
 		$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core', 'Encoding', get_option('encoding')); //replace with your encoding
-		$config->set('Core', 'XHTML', true); //replace with false if HTML 4.01
+		$config->set('Core', 'Encoding', get_option('encoding'));
+		$config->set('Core', 'XHTML', true);
 		$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
 		$config->set('Cache', 'SerializerPath', get_option('cachedir'));
-		apply_filters('htmlpurifier_config', $config);
+		$config = apply_filters('htmlpurifier_config', $config);
 		$purifier = new HTMLPurifier($config);
 	}
 
-	if(!is_array($val_array)) {
-		return apply_filters('parse_html', $purifier->purify($val_array));
+	if(!is_array($input)) {
+		return apply_filters('parse_html', $purifier->purify($input));
 	}
+	
+	array_walk_recursive($input, 'lilina_parse_html');
 
-	foreach($val_array as $this_array) {
-		if(is_array($this_array)) {
-			$purified_array[] = $purifier->purifyArray($this_array);
-		}
-		else {
-			$purified_array[] = $purifier->purify($this_array);
-		}
-	}
-
-	return apply_filters('parse_html', $purified_array);
+	return apply_filters('parse_html', $input);
 }
 
 
 /**
- * add_feed() - Adds a new feed
+ * Add a new feed to the database
  *
  * Adds the specified feed name and URL to the global <tt>$data</tt> array. If no name is set
  * by the user, it fetches one from the feed. If the URL specified is a HTML page and not a
@@ -104,7 +95,6 @@ function lilina_parse_html($val_array){
  *
  * @since 1.0
  * @uses $data Contains all feeds, this is what we add the new feed to
- * @uses $lilina Contains current version number
  *
  * @param string $url URL to feed or website (if autodiscovering)
  * @param string $name Title/Name of feed
@@ -112,7 +102,7 @@ function lilina_parse_html($val_array){
  * @return bool True if succeeded, false if failed
  */
 function add_feed($url, $name = '', $cat = 'default') {
-	global $data, $lilina;
+	global $data;
 	/** Fix users' kludges; They'll thank us for it */
 	if(empty($url)) {
 		if(function_exists('_r'))
@@ -124,10 +114,10 @@ function add_feed($url, $name = '', $cat = 'default') {
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$feed_info = new SimplePie();
-	$feed_info->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
-	$feed_info->set_stupidly_fast( true );
+	$feed_info->set_useragent('Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
+	$feed_info->set_stupidly_fast(true);
 	$feed_info->enable_cache(false);
-	$feed_info->set_feed_url( $url );
+	$feed_info->set_feed_url($url);
 	$feed_info->init();
 	$feed_error = $feed_info->error();
 	$feed_url = $feed_info->subscribe_url();
@@ -163,9 +153,29 @@ function add_feed($url, $name = '', $cat = 'default') {
 }
 
 /**
+ * Load feeds into global $data
+ *
+ * @uses $data
+ * @return array
+ */
+function load_feeds() {
+	global $data;
+
+	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
+	$data = $file->load('feeds.data');
+	if($data !== null)
+		$data = unserialize(base64_decode($data));
+	else
+		$data = array();
+
+	return $data;
+}
+
+/**
  * Save feeds to a config file
  *
- * Serializes, then base 64 encodes
+ * Serializes, then base 64 encodes.
+ * @return bool True if feeds were successfully saved, false otherwise
  */
 function save_feeds() {
 	global $data;
