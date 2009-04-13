@@ -15,4 +15,6 @@ add_action('admin_footer', 'lilina_footer_version');
 
 add_filter('init', 'timezone_default');
 add_filter('timestamp', 'timezone_apply');
+
 add_filter('the_feed_name', 'get_feed_name', 10, 2);
+add_filter('the_content', 'lilina_parse_html');

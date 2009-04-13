@@ -69,7 +69,7 @@ function lilina_parse_html($input) {
 	if(!isset($purifier) || !is_a($purifier, 'HTMLPurifier')) {
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', get_option('encoding'));
-		$config->set('Core', 'XHTML', true);
+		$config->set('HTML', 'XHTML', true);
 		$config->set('HTML', 'Doctype', 'XHTML 1.0 Transitional');
 		$config->set('Cache', 'SerializerPath', get_option('cachedir'));
 		$config = apply_filters('htmlpurifier_config', $config);
