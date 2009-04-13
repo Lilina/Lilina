@@ -16,37 +16,22 @@ defined('LILINA_PATH') or die('Restricted access');
  * @deprecated Use get_option('sitename') instead
  */
  //Define all the functions for our skins
-function template_sitename($return='echo'){
-	if($return == 'echo') {
-		echo get_option('sitename');
-		return true;
-	}
-	elseif($return == 'var') {
-		return get_option('sitename');
-	}
-	else {
-		echo 'Error: return type '.$return.' is not valid';
-		return false;
-	}
+function template_sitename(){
+	echo get_option('sitename');
 }
 
 /**
  * @todo Document
  * @deprecated Use get_option('baseurl') instead
  */
-function template_siteurl($return=false){
-	global $settings;
-	if($return == false) {
-		echo get_option('baseurl');
-		return true;
-	}
-	return get_option('baseurl');
+function template_siteurl(){
+	echo get_option('baseurl');
 }
 
 /**
  * @todo Document
  */
-function template_synd_header($return='echo'){
+function template_synd_header(){
 	$header = '<link rel="alternate" type="application/rss+xml" title="' . _r('RSS Feed') . '" href="rss.php" />';
 	$header = '<link rel="alternate" type="application/atom+xml" title="' . _r('Atom Feed') . '" href="atom.php" />';
 	echo apply_filters('template_synd_header', $header);
@@ -56,11 +41,8 @@ function template_synd_header($return='echo'){
  * @todo Document
  */
 function template_synd_links(){
-	$rss = _r('RSS Feed');
-	$atom = _r('Atom Feed');
-	echo _r('RSS'), ': <a href="rss.php"><img src="', template_file_load('feed.png'), '" alt="', $rss, '" title="', $rss, '" /></a> ';
-	echo _r('Atom'), ': <a href="atom.php"><img src="', template_file_load('feed.png'), '" alt="', $atom, '" title="', $atom, '" /></a>';
-	return true;
+	echo '<a href="rss.php">' . _r('RSS Feed') . '</a> ';
+	echo '<a href="atom.php">' . _r('Atom Feed') . '</a>';
 }
 
 /**
@@ -287,9 +269,17 @@ function the_summary($chars = 150) {
 /**
  * @todo Document
  */
+function get_the_content() {
+	global $item;
+	return apply_filters('the_content', $item->get_content());
+}
+
+/**
+ * @todo Document
+ */
 function the_content() {
 	global $item;
-	echo apply_filters('the_content', $item->get_content());
+	echo get_the_content();
 }
 
 /**
