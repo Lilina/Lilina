@@ -76,7 +76,7 @@ class OPML_Import {
 		</div>
 		<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
 		<input type="hidden" name="step" value="1" />
-		<input type="hidden" name="service" value="other" />
+		<input type="hidden" name="service" value="opml" />
 	</fieldset>
 </form>
 <?php
@@ -91,9 +91,9 @@ class OPML_Import {
 		}
 
 		admin_header(_r('Other (OPML) Importer'));
-			$this->import_opml($_POST['url']);
-			admin_footer();
-			return;
+		import($this->import_opml($_POST['url']));
+		admin_footer();
+		return;
 	}
 }
 
