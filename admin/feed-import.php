@@ -58,6 +58,8 @@ foreach(glob(LILINA_PATH . '/admin/includes/import/*.php') as $file) {
 	require_once($file);
 }
 
+$lilina_importers = apply_filters('importer', $lilina_importers);
+
 /** Run the importer */
 if(!empty($service) && isset($lilina_importers[$service])) {
 	call_user_func($lilina_importers[$service][2]);
