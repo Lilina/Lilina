@@ -165,6 +165,7 @@ var feeds = {
 			return false;
 		}
 		admin.ajax.post('change', {feed_id: $("#change_id").val(), name: $("#change_name").val(), url: $("#change_url").val()}, feeds.add_callback);
+	},
 	change_callback: function (data) {
 		if(!data.errors || data.errors.length == 0) {
 			// Clear the values
