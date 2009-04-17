@@ -18,7 +18,6 @@ header('Content-Type: text/html; charset=utf-8');
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script language="JavaScript" type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
 <script language="JavaScript" type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.scrollTo.js"></script>
-<script language="JavaScript" type="text/javascript" src="<?php template_directory(); ?>/jquery.hotkeys.js"></script>
 <script language="JavaScript" type="text/javascript" src="<?php template_directory(); ?>/effects.js"></script>
 <?php
 template_header();
