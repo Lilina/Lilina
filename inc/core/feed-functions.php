@@ -238,12 +238,16 @@ function load_feeds() {
  * Save feeds to a config file
  *
  * Serializes, then base 64 encodes.
+ * @param array $feeds Data to save to config. If not specified, taken from global $data variable.
  * @return bool True if feeds were successfully saved, false otherwise
  */
-function save_feeds() {
-	global $data;
+function save_feeds($feeds = null) {
+	if(empty($feeds)) {
+		global $data;
+		$feeds = $data;
+	}
 	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-	return $file->save('feeds.data', base64_encode(serialize($data)));
+	return $file->save('feeds.data', base64_encode(serialize($feeds)));
 }
 
 /**
