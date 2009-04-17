@@ -117,7 +117,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 	$feed_info->set_useragent('Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
 	$feed_info->set_stupidly_fast(true);
 	$feed_info->enable_cache(false);
-	$feed_info->set_feed_url($url);
+	$feed_info->set_feed_url(urldecode($url));
 	$feed_info->init();
 	$feed_error = $feed_info->error();
 	$feed_url = $feed_info->subscribe_url();
