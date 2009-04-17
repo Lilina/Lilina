@@ -145,6 +145,7 @@ admin_header(_r('Feeds'));
 				<input type="text" name="change_id" id="change_id" value="" />
 			</div>
 			<input type="submit" value="<?php _e('Save'); ?>" class="submit" />
+			<p class="loading"><?php _e('Changing feed&hellip;') ?></p>
 		</fieldset>
 	</form>
 </div>
@@ -163,6 +164,7 @@ admin_header(_r('Feeds'));
 		</div>
 		<input type="hidden" name="action" value="add" />
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
+		<p class="loading"><?php _e('Adding feed&hellip;') ?></p>
 	</fieldset>
 </form>
 <?php

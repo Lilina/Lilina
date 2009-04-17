@@ -8,9 +8,6 @@ var admin = {
 	init: function () {
 		/** Hide some stuff */
 		$("#changer, #changer_id").hide();
-		$("fieldset#add").append('<p class="loading">Adding feed...</p>');
-		$("fieldset#change").append('<p class="loading">Changing feed...</p>');
-
 		/** Set up events */
 		$(".change_link").live('click', function() {
 			$("#change_url").val(
@@ -73,7 +70,7 @@ var admin = {
 	enable_button: function (selector) {
 		$(selector)
 			.children("input.submit")
-				.attr('disabled', '')
+				.removeAttr('disabled')
 				.show()
 			.end()
 			.children(".loading")
@@ -136,11 +133,11 @@ var feeds = {
 			humanMsg.displayMsg('No feed URL supplied', 'error');
 			return false;
 		}
-		admin.disable_button("#add_form");
+		admin.disable_button("#add");
 		admin.ajax.post('add', {name: $("#add_name").val(), url: $("#add_url").val()}, feeds.add_callback);
 	},
 	add_callback: function (data) {
-		admin.enable_button("#add_form");
+		admin.enable_button("#add");
 		if(!data.errors || data.errors.length == 0) {
 			// Clear the values
 			$("#add_url, #add_name").val('');
@@ -164,9 +161,11 @@ var feeds = {
 			humanMsg.displayMsg('No feed ID supplied', 'error');
 			return false;
 		}
-		admin.ajax.post('change', {feed_id: $("#change_id").val(), name: $("#change_name").val(), url: $("#change_url").val()}, feeds.add_callback);
+		admin.disable_button("#change");
+		admin.ajax.post('change', {feed_id: $("#change_id").val(), name: $("#change_name").val(), url: $("#change_url").val()}, feeds.change_callback);
 	},
 	change_callback: function (data) {
+		admin.enable_button("#change");
 		if(!data.errors || data.errors.length == 0) {
 			// Clear the values
 			$("#change_url, #change_name, #change_id").val('');
