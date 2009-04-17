@@ -99,10 +99,10 @@ function lilina_parse_html($input) {
  * @param string $url URL to feed or website (if autodiscovering)
  * @param string $name Title/Name of feed
  * @param string $cat Category to add feed to
+ * @param bool $return If true, return the new feed's details. Otherwise, use the global $data array
  * @return bool True if succeeded, false if failed
  */
-function add_feed($url, $name = '', $cat = 'default') {
-	global $data;
+function add_feed($url, $name = '', $cat = 'default', $return = false) {
 	/** Fix users' kludges; They'll thank us for it */
 	if(empty($url)) {
 		if(function_exists('_r'))
@@ -137,6 +137,16 @@ function add_feed($url, $name = '', $cat = 'default') {
 		$name = $feed_info->get_title();
 	}
 
+	if($return === true) {
+		return array(
+			'feed'	=> $feed_url,
+			'url'	=> $feed_info->get_link(),
+			'name'	=> $name,
+			'cat'	=> $cat,
+		);
+	}
+
+	global $data;
 	$data['feeds'][] = array(
 		'feed'	=> $feed_url,
 		'url'	=> $feed_info->get_link(),
