@@ -19,7 +19,7 @@ var admin = {
 			$("#change_id").val(
 				$(this).parents("tr:first").attr("id").split("-")[1]
 			);
-			$("#changer").slideDown();
+			$("#changer").slideDown("normal", function () { window.location.hash = '#changer'; });
 			return false;
 		});
 
