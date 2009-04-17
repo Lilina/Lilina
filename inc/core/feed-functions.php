@@ -178,8 +178,12 @@ function change_feed($id, $url, $name = '', $category = '') {
 	if(!empty($name)) {
 		$feed['name'] = $name;
 	}
+	else {
+		$name = $feed['name'];
+	}
+	$data['feeds'][$id] = array_merge($data['feeds'][$id], $feed);
 	save_feeds();
-	MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
+	MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $name, $id));
 	return true;
 }
 
