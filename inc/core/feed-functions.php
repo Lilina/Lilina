@@ -148,7 +148,7 @@ function add_feed($url, $name = '', $cat = 'default') {
 	else
 		MessageHandler::add( "Added feed \"$name\"");
 
-	add_action( 'send_headers', 'save_feeds' );
+	save_feeds();
 	return true;
 }
 
