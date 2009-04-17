@@ -103,36 +103,6 @@ function save_options() {
 }
 
 /**
- * generate_nonce() - Generates nonce
- *
- * Uses the current time
- * @global array Need settings for user and password
- * @param string $nonce Supplied nonce
- * @return bool True if nonce is equal, false if not
- */
-function generate_nonce() {
-	$user_settings = get_option('auth');
-	$time = ceil(time() / 43200);
-	return md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
-}
-
-/**
- * check_nonce() - Checks whether supplied nonce matches current nonce
- * @global array Need settings for user and password
- * @param string $nonce Supplied nonce
- * @return bool True if nonce is equal, false if not
- */
-function check_nonce($nonce) {
-	$user_settings = get_option('auth');
-	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
-	if($nonce !== $current_nonce) {
-		return false;
-	}
-	return true;
-}
-
-/**
  * get_temp_dir() - Get a temporary directory to try writing files to
  *
  * {@internal Missing Long Description}}
