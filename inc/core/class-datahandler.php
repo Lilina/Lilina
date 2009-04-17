@@ -77,7 +77,7 @@ class DataHandler {
 			return true;
 		}
 	
-		if(!$fp = fopen($file, 'wb')) {
+		if(!$fp = @fopen($file, 'wb')) {
 			return false;
 		}
 
