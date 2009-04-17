@@ -190,7 +190,7 @@ function change_feed($id, $url, $name = '', $category = '') {
  * @return bool
  */
 function remove_feed($id) {
-	global $id;
+	global $data;
 
 	if(!isset($data['feeds'][$id])) {
 		MessageHandler::add_error(_r('Feed does not exist'));
