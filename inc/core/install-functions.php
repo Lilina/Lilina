@@ -224,10 +224,10 @@ function lilina_check_installed() {
 		lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
 
 	if(!lilina_is_installed()) {
-		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='install.php'>install it now</a></p>", 'Not Installed');
+		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='" . guess_baseurl() . "install.php'>install it now</a></p>", 'Not Installed');
 	}
 	if(!lilina_settings_current()) {
-		lilina_nice_die("<p>Looks like Lilina is out of date! No worries, just <a href='install.php?action=upgrade'>go ahead and update</a></p>", 'Out of Date');
+		lilina_nice_die("<p>Looks like Lilina is out of date! No worries, just <a href='" . guess_baseurl() . "install.php?action=upgrade'>go ahead and update</a></p>", 'Out of Date');
 	}
 }
 
@@ -286,15 +286,7 @@ function lilina_settings_current() {
  * {{@internal Missing Long Description}}}
  */
 function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
-	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
-	$guessurl = $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-	if(strpos('.', $_SERVER['REQUEST_URI']))
-		$guessurl = dirname($guessurl);
-	$guessurl = preg_replace('|/admin.*|i', '', $guessurl);
-	$guessurl = str_replace('install.php', '', $guessurl);
-	if($guessurl[count($guessurl)-1] != '/') {
-		$guessurl .= '/';
-	}
+	$guessurl = guess_baseurl();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -317,6 +309,24 @@ function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 </html>
 <?php
 	die();
+}
+
+/**
+ * Guess the base URL
+ *
+ * @return string
+ */
+function guess_baseurl() {
+	$schema = ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) ? 'https://' : 'http://';
+	$guessurl = $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	if(strpos('.', $_SERVER['REQUEST_URI']))
+		$guessurl = dirname($guessurl);
+	$guessurl = preg_replace('|/admin.*|i', '', $guessurl);
+	$guessurl = str_replace('install.php', '', $guessurl);
+	if($guessurl[count($guessurl)-1] != '/') {
+		$guessurl .= '/';
+	}
+	return $guessurl;
 }
 
 /**
