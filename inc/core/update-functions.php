@@ -80,6 +80,8 @@ function lilina_footer_version() {
 		return false;
 
 	$cur = unserialize($cur);
+	if(empty($cur->response))
+		return false;
 
 	switch ( $cur->response ) {
 		case 'development' :
