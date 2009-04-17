@@ -1,5 +1,5 @@
 var importer = {
-	item_count: 0,
+	done: 0,
 	feeds: [],
 	end_callback: null,
 
@@ -27,7 +27,6 @@ var importer = {
 		"json");
 	},
 	log: function (data) {
-		console.log(data);
 		if(data.errors) {
 			jQuery.each(data.errors, function(index, error) {
 				$("#log").append('<li class="error">' + error['message'] + '</li>');
@@ -39,5 +38,8 @@ var importer = {
 				$("#log").append('<li class="message">' + message['message'] + '</li>');
 			});
 		}
+
+		importer.done++;
+		$('#import-progress .done').text(importer.done);
 	}
 };
