@@ -21,11 +21,11 @@ switch( $_REQUEST['action'] ) {
 		if( !isset($_REQUEST['name']) )
 			$_REQUEST['name'] = '';
 
-		if(!isset($_REQUEST['url']) || empty($_REQUEST['url']))
+		if(empty($_REQUEST['url']))
 			MessageHandler::add_error( _r('No URL specified') );
 		else {
 			add_feed( $_REQUEST['url'], htmlspecialchars($_REQUEST['name']) );
-			save_feeds();
+			clear_html_cache();
 		}
 		break;
 
@@ -34,11 +34,14 @@ switch( $_REQUEST['action'] ) {
 		$change_url  = ( !empty($_REQUEST['url']) ) ? $_REQUEST['url'] : '';
 		$change_id   = ( !empty($_REQUEST['feed_id']) ) ? (int) $_REQUEST['feed_id'] : null;
 		change_feed($change_id, $change_url, $change_name);
+		clear_html_cache();
 	break;
 
 	case 'remove':
 		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
 		remove_feed($remove_id);
+		clear_html_cache();
+		break;
 
 	case 'list':
 		$extra_messages = feed_list_table();

@@ -67,6 +67,7 @@ elseif(isset($_REQUEST['deactivate_plugin'])) {
 if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['_nonce'])) {
 	if(!check_nonce($_POST['_nonce']))
 		lilina_nice_die('Nonces do not match.');
+	clear_html_cache();
 	/** Needs better validation */
 	if(!empty($_POST['template']))
 		update_option('template', $_REQUEST['template']);

@@ -19,31 +19,27 @@ switch($action) {
 		if( !isset($_REQUEST['add_name']) )
 			$_REQUEST['add_name'] = '';
 
-		if(!isset($_REQUEST['add_url']))
+		if(empty($_REQUEST['add_url']))
 			MessageHandler::add_error(_r('No URL specified'));
-		else
+		else {
 			add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
+			clear_html_cache();
+		}
 	break;
-
-	case 'remove':
-		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
-		remove_feed($remove_id);
-		break;
 
 	case 'change':
 		$change_name	= ( !empty($_REQUEST['change_name']) )	? htmlspecialchars($_REQUEST['change_name']) : '';
 		$change_url		= ( !empty($_REQUEST['change_url']) )	? $_REQUEST['change_url'] : '';
 		$change_id		= ( !empty($_REQUEST['change_id']) )	? (int) $_REQUEST['change_id'] : null;
 		change_feed($change_id, $change_url, $change_name);
+		clear_html_cache();
+
+	case 'remove':
+		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
+		remove_feed($remove_id);
+		clear_html_cache();
+		break;
 	break;
-}
-if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {
-	save_feeds();
-	echo json_encode(array('errors' => MessageHandler::get_errors(), 'messages' => MessageHandler::get_messages()));
-	die();
-}
-elseif(isset($_REQUEST['list']) && isset($_REQUEST['ajax'])) {
-	die( feed_list_table() );
 }
 
 
