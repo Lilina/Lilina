@@ -108,7 +108,7 @@ function is_admin() {
  * @param mixed $new_value New value of <tt>$option</tt>
  */
 function update_option($option_name, $new_value) {
-	if($option_name === 'auth' || $option_name === 'sitename' || $option_name === 'baseurl' || $option_name === 'files')
+	if($option_name === 'auth' || $option_name === 'baseurl' || $option_name === 'files')
 		return false;
 
 	global $options;

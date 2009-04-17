@@ -69,6 +69,8 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 		lilina_nice_die('Nonces do not match.');
 	clear_html_cache();
 	/** Needs better validation */
+	if(!empty($_POST['sitename']))
+		update_option('sitename', $_REQUEST['sitename']);
 	if(!empty($_POST['template']))
 		update_option('template', $_REQUEST['template']);
 	if(!empty($_POST['locale']))
@@ -86,8 +88,7 @@ admin_header(_r('Settings'));
 		<legend><?php _e('General Settings'); ?></legend>
 		<div class="row">
 			<label for="sitename"><?php _e('Site name'); ?>:</label>
-			<input type="text" name="sitename" id="sitename" value="<?php echo get_option('sitename'); ?>" disabled="disabled" />
-			<p class="sidenote"><?php _e('This option must be changed in content/system/config/settings.php manually.'); ?></p>
+			<input type="text" name="sitename" id="sitename" value="<?php echo get_option('sitename'); ?>" />
 		</div>
 		<div class="row">
 			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
