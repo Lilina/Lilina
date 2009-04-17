@@ -4,7 +4,6 @@
  *
  * Default settings stored in the global $settings variable
  * DO NOT MAKE CHANGES IN THIS FILE, AS THEY WILL BE OVERRIDDEN WHEN YOU UPDATE
- * Instead, make changes in /conf/settings.php and copy needed settings over.
  *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
@@ -30,9 +29,6 @@ if(!defined('LOADED_SETTINGS')) {
 	$settings							= array();
 
 	$settings['baseurl']				= 'http://localhost/';
-	//Name of template
-	$settings['template']				= 'default';
-	$settings['sitename']				= 'Lilina News Aggregator';
 	$settings['auth']					= array('user' => 'username', 'pass' => 'password');
 	//Just in case we need to check against them
 	$default_settings = $settings;

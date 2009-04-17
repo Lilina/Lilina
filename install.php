@@ -167,6 +167,8 @@ function upgrade() {
 				new_options_302();
 			case $settings['settings_version'] < 339:
 				new_options_339();
+			case $settings['settings_version'] < 368:
+				new_options_368();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -201,6 +203,8 @@ function upgrade() {
 function default_options() {
 	new_options_297();
 	new_options_302();
+	new_options_339();
+	new_options_368();
 }
 function new_options_297() {
 	global $options;
@@ -222,6 +226,15 @@ function new_options_339() {
 	global $options;
 	if(empty($options['encoding']))
 		$options['encoding'] = 'utf-8';
+}
+function new_options_368() {
+	global $options, $settings;
+	if(empty($options['sitename'])) {
+		if(!empty($settings['sitename']))
+			$options['sitename'] = $settings['sitename'];
+		else
+			$options['sitename'] = 'Lilina News Aggregator';
+	}
 }
 
 function create_settings_file() {

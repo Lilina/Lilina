@@ -137,7 +137,7 @@ function get_option($option, $default = null) {
 	global $settings;
 	
 	/** Hardcoded settings in settings.php */
-	if($option === 'auth' || $option === 'sitename' || $option === 'baseurl' || $option === 'files') {
+	if($option === 'auth' || $option === 'baseurl' || $option === 'files') {
 		if(!isset($settings[$option]))
 			return false;
 		
