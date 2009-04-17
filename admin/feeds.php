@@ -8,52 +8,9 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 require_once('admin.php');
-/**
- * 
- * @global array
- */
-function get_feed_list() {
-	global $data;
-	if(isset($data['feeds']))
-		return $data['feeds'];
-	return false;
-}
+require_once(LILINA_PATH . '/admin/includes/feeds.php');
 
-/**
- * feed_list_table() - {@internal Missing Short Description}}
- *
- * {@internal Missing Long Description}}
- */
-function feed_list_table() {
-	//Defined in admin panel
-	$feeds			= get_feed_list();
-	$j	= 0;
-	if(is_array($feeds) && !empty($feeds)) {
-		foreach($feeds as $this_feed) {
-	?>
-		<tr id="feed-<?php echo $j ?>" class="<?php echo ($j % 2) ? 'alt' : ''; ?>">
-			<td class="name-col"><?php echo stripslashes($this_feed['name']); ?></td>
-			<td class="url-col"><?php echo $this_feed['feed']; ?></td>
-			<td class="cat-col"><?php echo $this_feed['cat']; ?></td>
-			<?php do_action('admin-feeds-infocol', $this_feed, $j); ?>
-			<td class="change-col"><a href="feeds.php?change=<?php echo $j; ?>&amp;action=change" class="change_link"><?php _e('Change'); ?></a></td>
-			<td class="remove-col"><a href="feeds.php?remove=<?php echo $j; ?>&amp;action=remove"><?php _e('Remove'); ?></a></td>
-			<?php do_action('admin-feeds-actioncol', $this_feed, $j); ?>
-		</tr>
-	<?php
-			++$j;
-		}
-	}
-	else {
-	?>
-		<tr id="nofeeds"><td><?php _e('You don\'t currently have any feeds. Try <a href="#add_form">adding some</a>.'); ?></td></tr>
-	<?php
-	}
-}
-
-
-$remove_id		= ( isset($_REQUEST['remove']) )		? htmlspecialchars($_REQUEST['remove']) : '';
-$action			= ( isset($_REQUEST['action'] ) )		? $_REQUEST['action'] : '';
+$action     = ( isset($_REQUEST['action'] ) )? $_REQUEST['action'] : '';
 
 /** Make sure we're actually adding */
 switch($action) {
@@ -69,28 +26,15 @@ switch($action) {
 	break;
 
 	case 'remove':
-		$removed = $data['feeds'][$remove_id];
-		unset($data['feeds'][$remove_id]);
-		$data['feeds'] = array_values($data['feeds']);
-		save_feeds();
-		MessageHandler::add(sprintf(_r('Removed feed &mdash; <a href="%s">Undo</a>?'), 'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])));
+		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
+		remove_feed($remove_id);
 		break;
 
 	case 'change':
 		$change_name	= ( !empty($_REQUEST['change_name']) )	? htmlspecialchars($_REQUEST['change_name']) : '';
 		$change_url		= ( !empty($_REQUEST['change_url']) )	? $_REQUEST['change_url'] : '';
 		$change_id		= ( !empty($_REQUEST['change_id']) )	? (int) $_REQUEST['change_id'] : null;
-
-		if(empty($_REQUEST['change_id']) || empty($_REQUEST['change_url']))
-			MessageHandler::add_error(_r('No URL or feed ID specified'));
-		else {
-			$data['feeds'][$change_id]['feed'] = $change_url;
-			if(!empty($change_name)) {
-				$data['feeds'][$change_id]['name'] = $change_name;
-			}
-			save_feeds();
-			MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
-		}
+		change_feed($change_id, $change_url, $change_name);
 	break;
 }
 if(isset($_REQUEST['ajax']) && !isset($_REQUEST['list'])) {

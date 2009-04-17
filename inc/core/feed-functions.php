@@ -153,6 +153,65 @@ function add_feed($url, $name = '', $cat = 'default') {
 }
 
 /**
+ * Change a feed's properties
+ *
+ * @param int $id ID of the feed to change
+ * @param string $url Feed URL
+ * @param string $name Name of the feed (optional)
+ * @param string $category Category of the feed (optional)
+ * @return bool
+ */
+function change_feed($id, $url, $name = '', $category = '') {
+	if(empty($id) || empty($url)) {
+		MessageHandler::add_error(_r('No URL or feed ID specified'));
+		return false;
+	}
+
+	global $data;
+	if(empty($data['feeds'][$id])) {
+		MessageHandler::add_error(_r('Feed does not exist'));
+	}
+	$feed = array('feed' => $url);
+	if(!empty($category)) {
+		$feed['cat'] = $category;
+	}
+	if(!empty($name)) {
+		$feed['name'] = $name;
+	}
+	save_feeds();
+	MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $change_name, $change_id));
+	return true;
+}
+
+/**
+ * Remove a feed
+ *
+ * @param int $id ID of the feed to remove
+ * @return bool
+ */
+function remove_feed($id) {
+	global $id;
+
+	if(!isset($data['feeds'][$id])) {
+		MessageHandler::add_error(_r('Feed does not exist'));
+		return false;
+	}
+
+	//Make a copy for later.
+	$removed = $data['feeds'][$id];
+	unset($data['feeds'][$id]);
+	//Reorder array
+	$data['feeds'] = array_values($data['feeds']);
+
+	save_feeds();
+	MessageHandler::add(sprintf(
+		_r('Removed feed &mdash; <a href="%s">Undo</a>?'),
+		'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])
+	));
+	return true;
+}
+
+/**
  * Load feeds into global $data
  *
  * @uses $data
