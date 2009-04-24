@@ -14,7 +14,7 @@ class Items {
 	/**
 	 * @var array|string
 	 */
-	public $feeds;
+	protected $feeds;
 
 	/**
 	 * Our items array, obtained from $simplepie->get_items()
@@ -82,6 +82,17 @@ class Items {
 		$this->simplepie->__destruct();
 		unset($this->simplepie);
 		unset($this->simplepie_items);
+
+		return $this->items;
+	}
+
+	/**
+	 * Set the feeds property for Items::load()
+	 *
+	 * @param array|string $feeds Single-level array of feed URLs or single URL as a string
+	 */
+	public function set_feeds($feeds) {
+		$this->feeds = $feeds;
 	}
 
 	/**
@@ -115,7 +126,7 @@ class Items {
 	/**
 	 * Create a new SimplePie object
 	 *
-	 * Creates an instance of SimplePie with LilinaItems::$feeds
+	 * Creates an instance of SimplePie with Items::$feeds
 	 *
 	 * @since 1.0
 	 */
@@ -232,7 +243,7 @@ class Items {
 	 * @return bool
 	 */
 	public function has_enclosure() {
-		return !!$this->item->metadata->enclosure;	
+		return !!$this->item->metadata->enclosure;
 	}
 	
 	/**

@@ -91,6 +91,8 @@ class ItemCache extends Items {
 		unset($this->simplepie);
 		unset($this->simplepie_items);
 		unset($this->cached_items);
+
+		return $this->items;
 	}
 
 	/**
