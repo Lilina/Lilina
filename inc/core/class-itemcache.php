@@ -11,7 +11,7 @@
  * @package Lilina
  * @subpackage Classes
  */
-class ItemCache extends LilinaItems {
+class ItemCache extends Items {
 	/**
 	 * Singleton instance of self
 	 *

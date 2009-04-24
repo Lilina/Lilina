@@ -4,7 +4,7 @@
  * @package Lilina
  * @subpackage Classes
  */
-class LilinaItems {
+class Items {
 	/**
 	 * Our SimplePie object to work with
 	 * @var SimplePie
