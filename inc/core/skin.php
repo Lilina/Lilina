@@ -104,7 +104,7 @@ function query_setup($args, $override = true) {
 		// Do nothing for now
 
 	if($max_items < 0)
-		$max_items = $list->get_item_quantity();
+		$max_items = count($lilina_items->get_items());
 
 	$total_items = $max_items;
 
@@ -126,8 +126,8 @@ function query_setup($args, $override = true) {
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
 
-	if(empty($list))
-		$list	= lilina_return_items($data);
+	if(empty($lilina_items))
+		$lilina_items = lilina_return_items($data);
 }
 
 /**
@@ -145,7 +145,6 @@ function query_setup($args, $override = true) {
  * returns false to stop processing items. If not, checks if the <tt>$item_number</tt> is
  * less than the total number of items and if so, returns true. Otherwise, returns false.
  * @global <tt>$data</tt> contains feed information
- * @global <tt>$list</tt> contains a SimplePie object
  * @global <tt>$item_number</tt> contains the current item's position in the item list
  * @global <tt>$settings</tt> contains filename information and default time to display
  * @global <tt>$showtime</tt> contains the
@@ -155,7 +154,7 @@ function query_setup($args, $override = true) {
  */
 function has_items($increment = true) {
 	global $lilina_items;
-	global $data, $item, $list, $item_number, $settings, $showtime, $total_items;
+	global $data, $item, $item_number, $settings, $showtime, $total_items;
 
 	if(empty($data)) {
 		load_feeds();
@@ -164,43 +163,10 @@ function has_items($increment = true) {
 	if(!isset($data['feeds']) || count($data['feeds']) === 0)
 		return false;
 
-	if(empty($list))
-		$list	= lilina_return_items($data);
+	if(empty($lilina_items))
+		$lilina_items = lilina_return_items($data);
 
-	if(!isset($item_number) && $increment)
-		$item_number = 0;
-	elseif ($increment)
-		++$item_number;
-	
-	if(!isset($showtime)) {
-		$showtime = get_offset();
-		if($showtime != 0)
-			$showtime = time() - $showtime;
-	}
-
-	if(!isset($total_items))
-		$total_items = $list->get_item_quantity();
-	
-	if($total_items <= 0)
-		return apply_filters('has_items', false, $showtime, $total_items);
-	
-	if(!isset($item)) {
-		if(!is_object($temp_item = $list->get_item(0))) {
-			return apply_filters('has_items', false, $showtime, $total_items);
-		}
-	}
-	else {
-		if(!is_object($temp_item = $list->get_item($item_number))) {
-			return apply_filters('has_items', false, $showtime, $total_items);
-		}
-	}
-	if(apply_filters('timestamp', $temp_item->get_date('U')) && apply_filters('timestamp', $temp_item->get_date('U')) < $showtime)
-		return apply_filters('has_items', false, $showtime, $total_items);
-
-	if($item_number < $total_items)
-		return apply_filters('has_items', true, $showtime, $total_items);
-
-	return apply_filters('has_items', false, $showtime, $total_items);
+	return $lilina_items->has_items();
 }
 
 /**
@@ -232,8 +198,9 @@ function get_offset($as_hours = false) {
  * @todo Document
  */
 function the_item() {
-	global $list, $item_number, $item;
-	$item = apply_filters('the_item', $list->get_item( $item_number ));
+	global $lilina_items, $item;
+
+	$item = apply_filters('the_item', $lilina_items->current_item());
 }
 
 /**
@@ -241,7 +208,7 @@ function the_item() {
  */
 function get_the_title() {
 	global $item;
-	return apply_filters( 'the_title', $item->get_title() );
+	return apply_filters( 'the_title', $item->title );
 }
 
 /**
@@ -256,7 +223,7 @@ function the_title() {
  */
 function get_the_summary($chars = 150) {
 	global $item;
-	return apply_filters('the_summary', shorten($item->get_description(), $chars) );
+	return apply_filters('the_summary', shorten($item->summary, $chars) );
 }
 
 /**
@@ -271,7 +238,7 @@ function the_summary($chars = 150) {
  */
 function get_the_content() {
 	global $item;
-	return apply_filters('the_content', $item->get_content());
+	return apply_filters('the_content', $item->content);
 }
 
 /**
@@ -287,7 +254,7 @@ function the_content() {
  */
 function get_the_link() {
 	global $item;
-	return apply_filters( 'the_link', $item->get_link() );
+	return apply_filters( 'the_link', $item->permalink );
 }
 
 /**
@@ -302,7 +269,7 @@ function the_link() {
  */
 function get_the_date($format='U') {
 	global $item;
-	$ts = apply_filters('timestamp', $item->get_date('U'));
+	$ts = apply_filters('timestamp', $item->timestamp);
 	return apply_filters( 'get_the_date', date($format, $ts), $ts, $format );
 }
 
@@ -323,19 +290,19 @@ function the_date($args='') {
  * SimplePie only gives us the URL as an ID, we want a MD5
  * @todo Document
  */
-function get_the_id($id = -1) {
-	global $list, $item;
-	if($id >= 0)
-		$current_item = $list->get_item( $id );
+function get_the_id($id = null) {
+	global $lilina_items, $item;
+	if($id !== null)
+		$current_item = $lilina_items->get_item( $id );
 	else
 		$current_item = $item;
-	return apply_filters( 'get_the_id', $current_item->get_id(true), $current_item, $id );
+	return apply_filters( 'get_the_id', $current_item->hash, $current_item, $id );
 }
 
 /**
  * @todo Document
  */
-function the_id($id = -1) {
+function the_id($id = null) {
 	echo get_the_id($id);
 }
 
@@ -344,7 +311,7 @@ function the_id($id = -1) {
  */
 function get_the_feed_name() {
 	global $item;
-	return apply_filters( 'the_feed_name', $item->get_feed()->get_title(), get_the_feed_url() );
+	return apply_filters( 'the_feed_name', $item->feed, get_the_feed_url() );
 }
 
 function the_feed_name() {
@@ -356,7 +323,7 @@ function the_feed_name() {
  */
 function get_the_feed_url() {
 	global $item;
-	return apply_filters( 'the_feed_url', $item->get_feed()->get_link() );
+	return apply_filters( 'the_feed_url', $item->feed );
 }
 
 function the_feed_url() {
@@ -368,8 +335,8 @@ function the_feed_url() {
  */
 function get_the_feed_favicon() {
 	global $item;
-	$temp_item = $item->get_feed();
-	if(!$return = $temp_item->get_favicon())
+/*	$temp_item = $item->feed;
+	if(!$return = $temp_item->get_favicon())*/
 		$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
 	return apply_filters( 'the_feed_favicon', $return );
 	
@@ -386,14 +353,8 @@ function the_feed_favicon() {
  * @todo Document
  */
 function get_the_feed_id($id = -1) {
-	global $list, $item;
-	if($id >= 0) {
-		$temp_item = $list->get_item( $id );
-		$current_feed = $temp_item->get_feed();
-	}
-	else
-		$current_feed = $item->get_feed();
-	return apply_filters( 'get_the_feed_id', md5($current_feed->get_link() . $current_feed->get_title()) );
+	global $item;
+	return apply_filters( 'get_the_feed_id', md5($item->feed) );
 }
 
 /**
@@ -407,11 +368,9 @@ function the_feed_id($id = -1) {
  * @todo Document
  */
 function has_enclosure() {
-	global $item, $enclosure;
-	$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
-	if(!$enclosure) return false;
-	$enclosure_link = $enclosure->get_link();
-	return !empty($enclosure_link);
+	global $item;
+	$enclosure = apply_filters( 'has_enclosure', $item->metadata->enclosure );
+	return !empty($enclosure);
 }
 
 if(!function_exists('the_enclosure')) {
@@ -419,12 +378,12 @@ if(!function_exists('the_enclosure')) {
 	 * @todo Document
 	 */
 	function the_enclosure() {
-		global $item, $enclosure;
-		if(empty($enclosure) && !has_enclosure()) {
+		global $item;
+		if(!has_enclosure()) {
 			return false;
 		}
 
-		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->get_link() . '" rel="enclosure">' . _r('Listen to podcast') . '</a>' . "\n" );
+		echo apply_filters( 'the_enclosure', '<a href="' . $item->metadata->enclosure . '" rel="enclosure">' . _r('Listen to podcast') . '</a>' . "\n" );
 	}
 }
 
@@ -432,27 +391,25 @@ if(!function_exists('the_enclosure')) {
  * @todo Document
  */
 function atom_enclosure() {
-	global $item, $enclosure;
-	if(!$enclosure)
-		$enclosure = apply_filters( 'has_enclosure', $item->get_enclosure() );
-
+	global $item;
 	if(!has_enclosure())
 		return false;
 
-	echo apply_filters('atom_enclosure', '<link href="' . $enclosure->get_link() . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->get_type() . '" />' . "\n");
+	//echo apply_filters('atom_enclosure', '<link href="' . $enclosure . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->get_type() . '" />' . "\n");
+	echo apply_filters('atom_enclosure', '<link href="' . $item->metadata->enclosure . '" rel="enclosure" />' . "\n");
 }
 
 /**
  * @todo Document
  */
 function date_equals($args='') {
-	global $item, $item_number, $list, $total_items;
+	/*global $item, $item_number, $list, $total_items;
 	$defaults = array(
 		'equalto' => 'previous',
 		'format' => 'l d F, Y'
 	);
 	$args = lilina_parse_args($args, $defaults);
-	/** Make sure we don't overwrite any current variables */
+	// Make sure we don't overwrite any current variables
 	extract($args, EXTR_SKIP);
 
 	if( 'previous' == $equalto )
@@ -464,22 +421,25 @@ function date_equals($args='') {
 		return false;
 	$temp_item = $list->get_item( $equalto );
 
-	$current_ts =  apply_filters('timestamp', $item->get_date('U'));
+	$current_ts =  apply_filters('timestamp', $item->timestamp);
 	$other_ts =  apply_filters('timestamp', $temp_item->get_date('U'));
 	$equals = date($format, $current_ts) == date($format, $other_ts);
 	return apply_filters('date_equals', $equals, $equalto);
+	*/
+	return true;
 }
 
 /**
  * @todo Document
  */
 function feed_equals($args='') {
+	/*
 	global $item, $item_number, $list, $total_items;
 	$defaults = array(
 		'equalto' => 'previous'
 	);
 	$args = lilina_parse_args($args, $defaults);
-	/** Make sure we don't overwrite any current variables */
+	// Make sure we don't overwrite any current variables
 	extract($args, EXTR_SKIP);
 
 	if( 'previous' == $equalto)
@@ -491,6 +451,8 @@ function feed_equals($args='') {
 		return false;
 	$equals = get_the_feed_id() == get_the_feed_id($equalto);
 	return apply_filters('feed_equals', $equals, $equalto);
+	*/
+	return false;
 }
 
 /**

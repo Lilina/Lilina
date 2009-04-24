@@ -80,7 +80,7 @@ class ItemCache extends Items {
 			//$updated = $updated || $this->check_item($new_item);
 			if($this->check_item($new_item)) {
 				$updated = true;
-				var_dump($new_item);
+				echo '<!-- updated item! -->';
 			}
 		}
 

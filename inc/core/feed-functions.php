@@ -17,35 +17,12 @@ defined('LILINA_PATH') or die('Restricted access');
  * @return object SimplePie object with all feed's associated data
  */
 function lilina_return_items($input) {
-	global $lilina;
-
-	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-
-	$feed = new SimplePie();
-	$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
-	/** This disables sorting too, we handle that ourselves later */
-	$feed->set_stupidly_fast(true);
-	$feed->set_cache_location(get_option('cachedir'));
-	$feed->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
-	$feed = apply_filters('simplepie-config', $feed);
-
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
-
-	$feed->set_feed_url($feed_list);
-	$feed->init();
-
-	/** We need this so we have something to work with. */
-	$feed->get_items();
-
-	if(!isset($feed->data['ordered_items'])) {
-		$feed->data['ordered_items'] = $feed->data['items'];
-	}
-	/** We disable sorting previously; so we force it here */
-	usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
-	usort($feed->data['items'], array(&$feed, 'sort_items'));
-	//var_dump($feed);
-	return apply_filters('return_items', $feed);
+	$itemcache = new ItemCache();
+	$itemcache->set_feeds($feed_list);
+	$itemcache->init();
+	return apply_filters('return_items', $itemcache);
 }
 
 /**

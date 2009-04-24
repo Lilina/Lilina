@@ -104,6 +104,22 @@ class Items {
 		if($enclosure = $item->get_enclosure()) {
 			$enclosure = $enclosure->get_link();
 		}
+		else {
+			// SimplePie_Item::get_enclosure() returns null, so we need to change this to false
+			$enclosure = false;
+		}
+		if($author = $item->get_author()) {
+			$author = array(
+				'name' => $item->get_author()->get_name(),
+				'url' => $item->get_author()->get_link()
+			);
+		}
+		else {
+			$author = array(
+				'name' => false,
+				'url' => false
+			);
+		}
 		$new_item = (object) array(
 			'hash'      => $item->get_id(true),
 			'timestamp' => $item->get_date('U'),
@@ -114,11 +130,8 @@ class Items {
 			'metadata'  => (object) array(
 				'enclosure' => $enclosure
 			),
-			'author'    => (object) array(
-				'name' => $item->get_author()->get_name(),
-				'url' => $item->get_author()->get_link()
-			),
-			'feed'      => md5($item->get_feed()->get_link() . $item->get_feed()->get_title())
+			'author'    => (object) $author,
+			'feed'      => $item->get_feed()->get_link()
 		);
 		return apply_filters('item_data', $new_item);
 	}
@@ -203,6 +216,7 @@ class Items {
 		$this->item = '';
 
 		$item = each($this->items);
+		$item = $item['value'];
 		if(!$item)
 			return false;
 
