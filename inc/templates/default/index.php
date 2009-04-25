@@ -55,39 +55,28 @@ template_header();
 <div id="main">
 <?php
 $num = 0;
-
-// We call it with false as a parameter to avoid incrementing the item number
-if(has_items(false)) {
+if(has_items()) {
 	while(has_items()): the_item();
-	if(!date_equals()) {
-		if($num != 0) {
-			//Close both feed and date
-			echo '	</div>', "\n";
+?>
+	<?php the_date('before=<h1 title="Click to expand/collapse date">News stories from &after=</h1>&format=l d F, Y') ?>
+	<div class="item c2 feed-<?php the_feed_id(); ?>" id="item-<?php echo $num ?>">
+		<img src="<?php the_feed_favicon(); ?>" alt="Favicon for <?php the_feed_name();?>" title="Favicon for <?php the_feed_name();?>" style="width:16px; height:16px;" />
+		<span class="time"><?php the_time('format=H:i'); ?></span>
+		<span class="title" title="Click to expand/collapse item"><?php the_title(); ?></span>
+		<span class="source"><a href="<?php the_link(); ?>">&#187; Post from <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="Visit off-site link" /></a></span>
+<?php
+		if( has_enclosure() ){
+?>
+		<span class="enclosure"><?php the_enclosure(); ?></span>
+<?php
 		}
 ?>
-	<h1 title="Click to expand/collapse date">News stories from <?php the_date('format=l d F, Y'); ?></h1>
-
-	<div id="date<?php the_date('format=dmY'); ?>"><?php
-}
-?>
-		<div class="item c2 feed-<?php the_feed_id(); ?>" id="item-<?php echo $num ?>">
-			<img src="<?php the_feed_favicon(); ?>" alt="Favicon for <?php the_feed_name();?>" title="Favicon for <?php the_feed_name();?>" style="width:16px; height:16px;" />
-			<span class="time"><?php the_date('format=H:i'); ?></span>
-			<span class="title" id="TITLE<?php the_id(); ?>" title="Click to expand/collapse item"><?php the_title(); ?></span>
-			<span class="source"><a href="<?php the_link(); ?>">&#187; Post from <?php the_feed_name();?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="Visit off-site link" /></a></span>
-<?php
-			if( has_enclosure() ){
-?>
-			<span class="enclosure"><?php the_enclosure(); ?></span>
-<?php
-			}
-?>
-			<div class="excerpt" id="ICONT<?php the_id(); ?>">
-				<?php the_content(); ?>
-			</div>
-			<?php do_action('river_entry'); ?>
-			<?php action_bar('before=&after= | '); ?>
-		</div><?php
+		<div class="excerpt">
+			<?php the_content(); ?>
+		</div>
+		<?php do_action('river_entry'); ?>
+		<?php action_bar('before=&after= | '); ?>
+	</div><?php
 		$num++;
 	endwhile;
 }

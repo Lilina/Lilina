@@ -265,25 +265,80 @@ function the_link() {
 }
 
 /**
- * @todo Document
+ * Retrieve the date of the item
+ *
+ * Will only output the date if the current post's date is different from the
+ * previous one output.
+ *
+ * @param string $args
  */
-function get_the_date($format='U') {
+function get_the_date($args = '') {
+	global $lilina_items, $item;
+	$defaults = array(
+		'format' => 'H:i:s, l d F, Y',
+		'before' => '',
+		'after' => '',
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+
+	$previous = false;
+	if($lilina_items->previous_item()) {
+		$previous = get_the_time($format, $lilina_items->previous_item()->timestamp);
+	}
+	$current = get_the_time($format, $item->timestamp);
+	if ( $previous == $current ) {
+		return;
+	}
+
+	return apply_filters('the_date', $before . $current . $after, $format, $before, $after);
+}
+
+/**
+ * Display the date of the item
+ *
+ * Will only output the date if the current post's date is different from the
+ * previous one output.
+ *
+ * @see get_the_date()
+ *
+ * @param string $args
+ */
+function the_date($args='') {
+	$date = get_the_date($args);
+	if(!empty($date)) {
+		echo $date;
+	}
+}
+
+/**
+ * Retrieve the time of the item
+ *
+ * @param string $format PHP date format
+ * @param int $timestamp Optional extra timestamp to pass through relevant filters
+ * @return string
+ */
+function get_the_time($format='U', $timestamp = null) {
 	global $item;
-	$ts = apply_filters('timestamp', $item->timestamp);
-	return apply_filters( 'get_the_date', date($format, $ts), $ts, $format );
+	if(null === $timestamp) {
+		$timestamp = $item->timestamp;
+	}
+	$timestamp = apply_filters('timestamp', $timestamp);
+	return apply_filters( 'get_the_time', date($format, $timestamp), $timestamp, $format );
 }
 
 /**
  * @todo Document
  */
-function the_date($args='') {
+function the_time($args='') {
 	$defaults = array(
 		'format' => 'H:i:s, l d F, Y'
 	);
 	$args = lilina_parse_args($args, $defaults);
 	/** Make sure we don't overwrite any current variables */
 	extract($args, EXTR_SKIP);
-	echo get_the_date($format);
+	echo get_the_time($format);
 }
 
 /**

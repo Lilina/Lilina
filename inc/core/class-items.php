@@ -6,7 +6,7 @@
  */
 class Items {
 	/**
-	 * Our SimplePie object to work with
+	 * SimplePie object
 	 * @var SimplePie
 	 */
 	protected $simplepie;
@@ -17,7 +17,7 @@ class Items {
 	protected $feeds;
 
 	/**
-	 * Our items array, obtained from $simplepie->get_items()
+	 * Items array, obtained from $simplepie->get_items()
 	 * @var array
 	 */
 	protected $simplepie_items;
@@ -33,12 +33,16 @@ class Items {
 	protected $current_feed;
 
 	/**
-	 * Store data outside of SimplePie_Item
-	 *
 	 * Stores item data in an stdClass object, independant of SimplePie
 	 * @var array
 	 */
 	public $item = array();
+
+	/**
+	 * Stores previous item data in an stdClass object, independant of SimplePie
+	 * @var array
+	 */
+	public $previous_item = array();
 
 	/**
 	 * List of all items
@@ -195,7 +199,7 @@ class Items {
 	 * @since 1.0
 	 *
 	 * @param int $hash Item index to retrieve
-	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
+	 * @return bool|stdClass False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function get_item($hash) {
 		if( !isset($this->items[ $offset ]) )
@@ -210,10 +214,11 @@ class Items {
 	 *
 	 * @since 1.0
 	 *
-	 * @return bool|SimplePie_Item False if item doesn't exist, otherwise returns the specified item
+	 * @return bool|stdClass False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function current_item() {
-		$this->item = '';
+		$this->previous_item = $this->current_item;
+		$this->current_item = '';
 
 		$item = each($this->items);
 		$item = $item['value'];
@@ -224,6 +229,20 @@ class Items {
 		$this->current_feed = $item->feed;
 
 		return $item;
+	}
+
+	/**
+	 * Return the previous item
+	 *
+	 * @since 1.0
+	 *
+	 * @return bool|stdClass False if item doesn't exist, otherwise returns the specified item
+	 */
+	public function previous_item() {
+		if(empty($this->previous_item))
+			return false;
+
+		return $this->previous_item;
 	}
 
 	/**
@@ -257,7 +276,7 @@ class Items {
 	 * @return bool
 	 */
 	public function has_enclosure() {
-		return !!$this->item->metadata->enclosure;
+		return !!$this->current_item->metadata->enclosure;
 	}
 	
 	/**
@@ -268,7 +287,7 @@ class Items {
 	 * @return string Absolute URL to the enclosure
 	 */
 	public function get_enclosure() {
-		return $this->item->metadata->enclosure;
+		return $this->current_item->metadata->enclosure;
 	}
 
 	/**
@@ -279,6 +298,6 @@ class Items {
 	 * @return string MD5 hash
 	 */
 	public function get_id() {
-		return $this->item->hash;
+		return $this->current_item->hash;
 	}
 }
