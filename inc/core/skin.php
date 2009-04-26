@@ -265,6 +265,50 @@ function the_link() {
 }
 
 /**
+ * Display the link to the item's author
+ *
+ * @param string $args Passed through to the_author_name()
+ */
+function the_author_link($args = '') {
+	global $item;
+	$defaults = array(
+		'before' => '',
+		'after' => '',
+		'echo' => true
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	if($item->author->url) {
+		$before .= '<a href="' . $item->author->url . '">';
+		$after = '</a>' . $after;
+	}
+	echo the_author_name('echo=0&before=' . $before . '&after=' . $after);
+}
+
+/**
+ * Display or Retrieve the item's author
+ *
+ * @param string $args
+ * @return string|null
+ */
+function the_author_name($args = '') {
+	global $item;
+	$defaults = array(
+		'before' => '',
+		'after' => '',
+		'echo' => true
+	);
+	$args = lilina_parse_args($args, $defaults);
+	/** Make sure we don't overwrite any current variables */
+	extract($args, EXTR_SKIP);
+	if((bool) $echo)
+		echo $before . $item->author->name . $after;
+	else
+		return $before . $item->author->name . $after;
+}
+
+/**
  * Retrieve the date of the item
  *
  * Will only output the date if the current post's date is different from the

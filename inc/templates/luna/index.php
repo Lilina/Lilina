@@ -25,39 +25,15 @@ header('Content-Type: text/html; charset=utf-8');
 $notfirst = false;
 while(has_items()):
 	the_item();
-
-	if(!date_equals('F d, Y')) {
-		if($notfirst) {
 ?>
-			<!-- End <div class="channelgroup"> -->
-			</div>
-			<!-- End <div class="daygroup"> -->
-			</div>
+		<?php the_date('format=F d, Y&before=<h2>&after=</h2>'); ?>
+		<h3><a href="<?php the_feed_url() ?>"><?php the_feed_name() ?></a></h3>
 <?php
-		}
-?>
-		<div class="daygroup">
-		<h2><?php the_date('format=F d, Y'); ?></h2>
-<?php
-	}
-
-	if(!feed_equals()) {
-		if($notfirst) {
-?>
-			<!-- End <div class="channelgroup"> -->
-			</div>
-<?php
-		}
-?>
-		<div class="channelgroup">
-			<h3><a href="<?php the_feed_url() ?>"><?php the_feed_name() ?></a></h3>
-<?php
-		/**
-		 * Feed faces ("hackergotchi") are disabled, because of the lack of
-		 * usefulness. Instead, we'll offer a plugin hook here.
-		 */
-		do_action('channelgroup');
-	}
+	/**
+	 * Feed faces ("hackergotchi") are disabled, because of the lack of
+	 * usefulness. Instead, we'll offer a plugin hook here.
+	 */
+	do_action('channelgroup');
 ?>
 	<div class="entrygroup" id="<?php the_id() ?>"></div>
 	<h4><a href="<?php the_link() ?>"><?php the_title() ?></a></h4>
@@ -67,7 +43,7 @@ while(has_items()):
 	</div>
 
 <p class="date">
-<a href="<?php the_link() ?>"><TMPL_IF author>by <TMPL_VAR author> at </TMPL_IF><?php the_date() ?><TMPL_IF category> under <TMPL_VAR category></TMPL_IF></a>
+<?php the_author_link('before=by &after= at ') ?><a href="<?php the_link() ?>"><?php the_time('format=F d, Y h:i A') ?></a><!--<TMPL_IF category> under <TMPL_VAR category></TMPL_IF>-->
 </p>
 </div>
 </div>
@@ -75,13 +51,9 @@ while(has_items()):
 	$notfirst = true;
 endwhile;
 ?>
-<!-- End <div class="channelgroup"> -->
-</div>
-<!-- End <div class="daygroup"> -->
-</div>
 
 <div class="sidebar">
-<img src="images/logo.png" width="136" height="136" alt="">
+<img src="admin/logo-small.png" width="136" alt="">
 
 <h2>Subscriptions</h2>
 <ul>
