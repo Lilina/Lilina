@@ -84,8 +84,8 @@ class ItemCache extends Items {
 			}
 		}
 
-		usort($this->cached_items, array($this, 'sort_items'));
-		usort($this->items, array($this, 'sort_items'));
+		uasort($this->cached_items, array($this, 'sort_items'));
+		uasort($this->items, array($this, 'sort_items'));
 
 		if($updated)
 			$this->save_cache();

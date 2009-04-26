@@ -83,7 +83,7 @@ class Items {
 			$this->items[ $new_item->hash ] = $new_item;
 		}
 
-		usort($this->items, array($this, 'sort_items'));
+		uasort($this->items, array($this, 'sort_items'));
 
 		$this->simplepie->__destruct();
 		unset($this->simplepie);
