@@ -83,11 +83,24 @@ class Items {
 			$this->items[ $new_item->hash ] = $new_item;
 		}
 
+		usort($this->items, array($this, 'sort_items'));
+
 		$this->simplepie->__destruct();
 		unset($this->simplepie);
 		unset($this->simplepie_items);
 
 		return $this->items;
+	}
+
+	/**
+	 * usort callback for items
+	 *
+	 * @param stdObject $a First item
+	 * @param stdObject $b Second item
+	 * @param bool
+	 */
+	public function sort_items($a, $b) {
+		return $a->timestamp <= $b->timestamp;
 	}
 
 	/**
