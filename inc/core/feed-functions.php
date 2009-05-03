@@ -62,6 +62,24 @@ function lilina_parse_html($input) {
 	return apply_filters('parse_html', $input);
 }
 
+/**
+ * Sanitize item's properties
+ *
+ * Wrapper function for HTML Purifier; sets our settings such as the cache
+ * directory and purifies both arrays and strings
+ *
+ * @since 1.0
+ * @todo Make really recursive instead of faux recursing
+ *
+ * @param string|array $input HTML to purify
+ * @return string|array Purified HTML
+ */
+function lilina_sanitize_item($item) {
+	$item->title = lilina_parse_html($item->title);
+	$item->content = lilina_parse_html($item->content);
+	$item->summary = lilina_parse_html($item->summary);
+	return apply_filters('sanitize_item', $item);
+}
 
 /**
  * Add a new feed to the database
