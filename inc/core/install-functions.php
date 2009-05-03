@@ -323,7 +323,7 @@ function guess_baseurl() {
 		$guessurl = dirname($guessurl);
 	$guessurl = preg_replace('|/admin.*|i', '', $guessurl);
 	$guessurl = str_replace('install.php', '', $guessurl);
-	if($guessurl[count($guessurl)-1] != '/') {
+	if($guessurl[strlen($guessurl)-1] != '/') {
 		$guessurl .= '/';
 	}
 	return $guessurl;
