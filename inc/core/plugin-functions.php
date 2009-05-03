@@ -122,7 +122,6 @@ function do_action($action_name){
  * optimization purposes, so everything is as quick as possible.
  *
  * @author WordPress
- * @since 0.71
  * @global array $filters Stores all of the filters added in the form of
  *	filters['tag']['array of priorities']['array of functions serialized']['array of ['array (functions, accepted_args)']']
  *
@@ -160,6 +159,31 @@ function add_filter($filter, $function, $priority = 10, $num_args=1) {
  */
 function add_action($action, $function, $priority = 10, $num_args=0) {
 	add_filter($action, $function, $priority, $num_args);
+}
+
+/**
+ * Check if any filter has been registered for a hook.
+ *
+ * @global array $filters Stores all of the filters
+ *
+ * @param string $filter
+ * @return boolean
+ */
+function has_filter($filter) {
+	global $filters;
+	return !empty($filters[$filter]);
+}
+
+/**
+ * Check if any action has been registered for a hook.
+ *
+ * @see has_filter() has_action() is an alias of has_filter().
+ *
+ * @param string $action
+ * @return boolean
+ */
+function has_action($action) {
+	return has_filter($action);
 }
 
 /**
