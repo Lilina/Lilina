@@ -40,8 +40,13 @@ class ItemCache extends Items {
 	public function __construct($sp = null) {
 		$this->data = new DataHandler();
 		$current = $this->data->load('items.data');
-		if($current !== null)
-			$this->cached_items = $this->items = unserialize($current);
+		if($current !== null) {
+			// Workaround for old, serialized PHP database
+			if(($this->items = json_decode($current)) === $current) {
+				$this->items = unserialize($current);
+			}
+			$this->cached_items = $this->items;
+		}
 
 		parent::__construct($sp);
 	}
@@ -75,7 +80,7 @@ class ItemCache extends Items {
 		$updated = false;
 
 		foreach($this->simplepie_items as $item) {
-			$new_item = $this->normalise($item);
+			$new_item = apply_filters('item_data_precache', $this->normalise($item));
 			$this->items[ $new_item->hash ] = $new_item;
 			//$updated = $updated || $this->check_item($new_item);
 			if($this->check_item($new_item)) {
@@ -98,6 +103,7 @@ class ItemCache extends Items {
 		return $this->items;
 	}
 
+	
 	/**
 	 * Check the current item against the cached items
 	 *
@@ -164,6 +170,6 @@ class ItemCache extends Items {
 	 * @since 1.0
 	 */
 	protected function save_cache() {
-		$this->data->save('items.data', serialize($this->cached_items));
+		$this->data->save('items.data', json_encode($this->cached_items));
 	}
 }
