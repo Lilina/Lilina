@@ -7,70 +7,70 @@
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+error_reporting(E_ALL);
 require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
+require_once(LILINA_PATH . '/admin/includes/class-ajaxhandler.php');
 
-if(!isset($_REQUEST['action']))
-	die('No action specified');
+//header('Content-Type: application/json');
+header('Content-Type: application/javascript');
 
-$type = isset( $_REQUEST['type'] ) ? $_REQUEST['type'] : 'json';
+class AdminAjax {
+	/**
+	 * Initialise the Ajax interface
+	 */
+	public static function init() {
+		$handler = new AjaxHandler();
+		$handler->registerMethod('feeds.add', array('AdminAjax', 'feeds_add') );
+		$handler->registerMethod('feeds.change', array('AdminAjax', 'feeds_change') );
+		$handler->registerMethod('feeds.remove', array('AdminAjax', 'feeds_remove') );
+		$handler->registerMethod('feeds.list', array('AdminAjax', 'feeds_list') );
 
-switch( $_REQUEST['action'] ) {
-	case 'add':
-		/** We need some sort of value here */
-		if( !isset($_REQUEST['name']) )
-			$_REQUEST['name'] = '';
-
-		if(empty($_REQUEST['url']))
-			MessageHandler::add_error( _r('No URL specified') );
-		else {
-			add_feed( $_REQUEST['url'], htmlspecialchars($_REQUEST['name']) );
-			clear_html_cache();
+		$method = isset($_REQUEST['method']) ? $_REQUEST['method'] : null;
+		try {
+			$output = $handler->handle($method, $_REQUEST);
+			echo json_encode($output);
+		} catch( Exception $e ) {
+			header('HTTP/500 Internal Server Error');
+			echo json_encode( array('error'=>1, 'msg'=>$e->getMessage(), 'code'=>$e->getCode()));
 		}
-		break;
+	}
+	/**
+	 * Callback for feeds.add
+	 */
+	public static function feeds_add($url, $name = '') {
+		/** We need some sort of value here 
+		if( !isset($params['name']) )
+			$params['name'] = '';
 
-	case 'change':
-		$change_name = ( !empty($_REQUEST['name']) ) ? htmlspecialchars($_REQUEST['name']) : '';
-		$change_url  = ( !empty($_REQUEST['url']) ) ? $_REQUEST['url'] : '';
-		$change_id   = ( !empty($_REQUEST['feed_id']) ) ? (int) $_REQUEST['feed_id'] : null;
-		change_feed($change_id, $change_url, $change_name);
+		if(empty($params['url']))
+			throw new Exception( _r('No URL specified'), Errors::get_code('admin.feeds.no_url') );*/
+
+		add_feed( $url, htmlspecialchars($name) );
 		clear_html_cache();
-	break;
-
-	case 'remove':
-		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
-		remove_feed($remove_id);
+	}
+	/**
+	 * Callback for feeds.change
+	 */
+	public static function feeds_change($feed_id, $url, $name = '') {
+		$result = change_feed($feed_id, (int) $url, $name);
 		clear_html_cache();
-		break;
 
-	case 'list':
-		$extra_messages = feed_list_table();
-		break;
+		return array();
+	}
+	/**
+	 * Callback for feeds.remove
+	 */
+	public static function feeds_remove($remove) {
+		$success = remove_feed((int) $remove);
+		clear_html_cache();
+	}
+	/**
+	 * Callback for feeds.list
+	 */
+	public static function feeds_list() {
+		return array('table' => feed_list_table());
+	}
 }
 
-$output = array(
-		'errors' => MessageHandler::get_errors(),
-		'messages' => MessageHandler::get_messages()
-);
-
-if(!empty($extra_messages))
-	$output[] = $extra_messages;
-
-/** Remove empty entries, such as 'errors' or 'messages' */
-foreach($output as $key => $entry) {
-	if(empty($entry))
-		unset($output[$key]);
-}
-
-/** Allow for different return types */
-switch($type) {
-	case 'raw':
-		implode("\n", $output);
-		break;
-
-	default:
-		echo json_encode($output);
-}
-
-/** End here, just for fun */
-die();
+AdminAjax::init();

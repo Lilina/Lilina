@@ -98,13 +98,8 @@ function lilina_sanitize_item($item) {
  * @return bool True if succeeded, false if failed
  */
 function add_feed($url, $name = '', $cat = 'default', $return = false) {
-	/** Fix users' kludges; They'll thank us for it */
 	if(empty($url)) {
-		if(function_exists('_r'))
-			MessageHandler::add_error(_r("Couldn't add feed: No feed URL supplied"));
-		else
-			MessageHandler::add_error("Couldn't add feed: No feed URL supplied");
-		return false;
+		throw new Exception(_r("Couldn't add feed: No feed URL supplied"), Errors::get_code('admin.feeds.no_url'));
 	}
 
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
@@ -119,12 +114,10 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
 
 	if(!empty($feed_error)) {
 		//No feeds autodiscovered;
-		if(function_exists('_r'))
-			MessageHandler::add_error(sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ));
-		else
-			MessageHandler::add_error("Couldn't add feed: $url is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery.");
-
-		return false;
+		throw new Exception(
+			sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ),
+			Errors::get_code('admin.feeds.invalid_url')
+		);
 	}
 
 	if(empty($name)) {
@@ -148,13 +141,9 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
 		'name'	=> $name,
 		'cat'	=> $cat,
 	);
-	if(function_exists('_r'))
-		MessageHandler::add( sprintf( _r('Added feed "%1$s"'), $name ) );
-	else
-		MessageHandler::add( "Added feed \"$name\"");
 
 	save_feeds();
-	return true;
+	return sprintf( _r('Added feed "%1$s"'), $name );
 }
 
 /**
@@ -168,13 +157,13 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
  */
 function change_feed($id, $url, $name = '', $category = '') {
 	if(empty($id) || empty($url)) {
-		MessageHandler::add_error(_r('No URL or feed ID specified'));
+		throw new Exception(_r('No URL or feed ID specified'), Errors::get_code('admin.feeds.no_id_or_url'));
 		return false;
 	}
 
 	global $data;
 	if(empty($data['feeds'][$id])) {
-		MessageHandler::add_error(_r('Feed does not exist'));
+		throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
 	}
 	$feed = array('feed' => $url);
 	if(!empty($category)) {
@@ -188,8 +177,7 @@ function change_feed($id, $url, $name = '', $category = '') {
 	}
 	$data['feeds'][$id] = array_merge($data['feeds'][$id], $feed);
 	save_feeds();
-	MessageHandler::add(sprintf(_r('Changed "%s" (#%d)'), $name, $id));
-	return true;
+	return sprintf(_r('Changed "%s" (#%d)'), $name, $id);
 }
 
 /**
@@ -202,8 +190,7 @@ function remove_feed($id) {
 	global $data;
 
 	if(!isset($data['feeds'][$id])) {
-		MessageHandler::add_error(_r('Feed does not exist'));
-		return false;
+		throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
 	}
 
 	//Make a copy for later.
@@ -213,11 +200,10 @@ function remove_feed($id) {
 	$data['feeds'] = array_values($data['feeds']);
 
 	save_feeds();
-	MessageHandler::add(sprintf(
+	return sprintf(
 		_r('Removed feed &mdash; <a href="%s">Undo</a>?'),
 		'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])
-	));
-	return true;
+	);
 }
 
 /**

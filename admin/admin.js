@@ -98,8 +98,7 @@ var admin = {
 			return_type = return_type || 'json';
 			type = type || 'GET';
 			
-			data.action = action;
-			data.type = type;
+			data.method = action;
 			$.ajax({
 				type: type,
 				url: "admin-ajax.php",
@@ -181,8 +180,8 @@ var feeds = {
 		});
 	},
 	reload_table: function () {
-		$.get("admin-ajax.php", {action: "list", type: "raw"}, function (data) {
-			$("#feeds_list tbody").html(data);
+		admin.ajax.get('feeds.list', {}, function (data) {
+			$("#feeds_list tbody").html(data.table);
 		});
 	},
 	begin_processing: function (items) {

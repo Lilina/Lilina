@@ -19,31 +19,45 @@ switch($action) {
 		if( !isset($_REQUEST['add_name']) )
 			$_REQUEST['add_name'] = '';
 
-		if(empty($_REQUEST['add_url']))
-			MessageHandler::add_error(_r('No URL specified'));
-		else {
+		try {
+			if(empty($_REQUEST['add_url']))
+				throw new Exception(_r('No URL specified'), Errors::get_code('admin.feeds.no_url'));
+
 			add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
 			clear_html_cache();
+		} catch( Exception $e ) {
+			$error = $e->getMessage();
 		}
 	break;
 
 	case 'change':
-		$change_name	= ( !empty($_REQUEST['change_name']) )	? htmlspecialchars($_REQUEST['change_name']) : '';
-		$change_url		= ( !empty($_REQUEST['change_url']) )	? $_REQUEST['change_url'] : '';
-		$change_id		= ( !empty($_REQUEST['change_id']) )	? (int) $_REQUEST['change_id'] : null;
-		change_feed($change_id, $change_url, $change_name);
-		clear_html_cache();
+		$change_name = ( !empty($_REQUEST['change_name']) ) ? htmlspecialchars($_REQUEST['change_name']) : '';
+		$change_url  = ( !empty($_REQUEST['change_url']) ) ? $_REQUEST['change_url'] : '';
+		$change_id   = ( !empty($_REQUEST['change_id']) ) ? (int) $_REQUEST['change_id'] : null;
+		try {
+			change_feed($change_id, $change_url, $change_name);
+			clear_html_cache();
+		} catch( Exception $e ) {
+			$error = $e->getMessage();
+		}
 
 	case 'remove':
 		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
-		remove_feed($remove_id);
-		clear_html_cache();
+		try {
+			remove_feed($remove_id);
+			clear_html_cache();
+		} catch( Exception $e ) {
+			$error = $e->getMessage();
+		}
 		break;
 	break;
 }
 
 
 admin_header(_r('Feeds'));
+
+if(!empty($error))
+	echo '<div id="alert" class="fade"><p>' . $error . '</p></div>';
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
@@ -61,7 +75,7 @@ admin_header(_r('Feeds'));
 	</thead>
 	<tbody>
 <?php
-	feed_list_table();
+	echo feed_list_table();
 ?>
 	</tbody>
 </table>
