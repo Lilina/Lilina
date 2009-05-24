@@ -133,10 +133,14 @@ function do_action($action_name){
  */
 function add_filter($filter, $function, $priority = 10, $num_args=1) {
 	global $filters;
-	$filters[$filter][$priority][$function]	= array(
+
+	$id = _build_callback_string($function);
+
+	$filters[$filter][$priority][$id] = array(
 		'function'	=> $function,
 		'num_args'	=> $num_args,
-		);
+	);
+
 	return true;
 }
 
@@ -215,6 +219,23 @@ function _call_all_hook($args) {
 				call_user_func_array($the_['function'], $args);
 
 	} while ( next($filters['all']) !== false );
+}
+
+/**
+ * Build a unique ID to use for identification of a callback
+ *
+ * @param callback $callback Anything valid as a callback, as per PHP's pseudo-type
+ * @return string Unique ID
+ */
+function _build_callback_string($callback) {
+	if(is_string($callback))
+		return $callback;
+	elseif(is_string($callback[0]))
+		return $callback[0] . $callback[1];
+	elseif(is_object($callback[0]))
+		$obj_idx = get_class($function[0]).$function[1];
+
+	throw new Exception('Invalid callback: ' . $callback);
 }
 
 /**
