@@ -1,0 +1,102 @@
+
+
+body {
+	/* Simple and keeps us constant */
+	font-family: 'Lucida Grande',Verdana,Arial,Helvetica,sans-serif;
+	font-size: 62.5%;
+	line-height: 2.2em;
+	margin: 0;
+	background: #FFF;
+	color: #333;
+}
+h1, h2, legend {
+	font-family: 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
+}
+h1 {
+	font-weight: 900;
+	font-size: 1.9em;
+	margin: 0.6em 0;
+}
+h2 {
+	font-weight: 400;
+	font-size: 1.7em;
+	margin: 0.8em 0;
+}
+p, ul, pre {
+	font-size: 1.5em;
+	margin-top: 1em;
+}
+ul ul {
+	font-size: 1em;
+}
+
+#alert {
+	background: #0CA2FF;
+	padding: 1.5em;
+	color: #FFF;
+}
+#alert p {
+	margin: 0.1em;
+	padding: 0;
+}
+#alert a {
+	color: #FFF;
+}
+.dialog {
+	width: 70%;
+	max-width: 700px;
+}
+/* Forms */
+fieldset {
+	border: none;
+	padding: 0;
+	margin: 1em 0 0;
+}
+legend {
+	font-size: 1.7em;
+	margin: 0.8em 0;
+	padding: 0;
+}
+.row {
+	clear: both;
+	margin: 1em auto;
+	width: 80%;
+	overflow: hidden;
+}
+.row label {
+	display: block;
+	float: left;
+	text-align: right;
+	width: 40%;
+	margin-left: -2em;
+	padding: 0.5em 2em 0.5em 0;
+	font-size: 1.2em;
+}
+.row input, .row select {
+	width: 56%;
+	padding: 0.6em;
+	margin-bottom: 1em;
+	font-size: 1.3em;
+	font-family: Arial, sans-serif;
+}
+.row .sidenote {
+	clear: both;
+	padding: 0;
+	margin: 0.5em 0;
+	font-size: 1em;
+	color: #AAA;
+	text-align: center;
+}
+.submit {
+	clear: both;
+	width: 20%;
+	margin: 0 auto;
+	font-size: 1.6em;
+	background: #eee;
+	border: 1px solid #CCC;
+}
+
+.loading {
+	background: url("loading.gif") no-repeat center center;
+	display: none;
+}
