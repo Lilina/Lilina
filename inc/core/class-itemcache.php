@@ -45,6 +45,7 @@ class ItemCache extends Items {
 			if(($this->items = json_decode($current)) === $current) {
 				$this->items = unserialize($current);
 			}
+			$this->items = (array) $this->items;
 			$this->cached_items = $this->items;
 		}
 
