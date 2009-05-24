@@ -51,6 +51,23 @@ class Templates {
 	}
 
 	/**
+	 * Run the initialisation file in the template's directory
+	 *
+	 * Enables template authors to put all of their PHP code in one file to be
+	 * run on init, without worrying about hooking it. Works like WordPress's
+	 * functions.php
+	 */
+	public static function init_template() {
+		$current = Templates::get_current();
+
+		if (file_exists($current['Stylesheet Dir'] . '/init.php') && $current['Stylesheet Dir'] != $current['Template Dir'])
+			include($current['Stylesheet Dir'] . '/init.php');
+
+		if (file_exists($current['Template Dir'] . '/init.php'))
+			include($current['Template Dir'] . '/init.php');
+	}
+
+	/**
 	 * Returns the path to a specified file
 	 *
 	 * Uses content negotiation to find the best suitable match for $file_name
@@ -59,16 +76,16 @@ class Templates {
 	 */
 	public static function get_file($file_name) {
 		$current = Templates::get_current();
-		
+
 		if (file_exists($current['Stylesheet Dir'] . '/' . $file_name))
 			return $current['Stylesheet Dir'] . '/' . $file_name;
-		
+
 		elseif (file_exists($current['Template Dir'] . '/' . $file_name))
 			return $current['Template Dir'] . '/' . $file_name;
-		
+
 		elseif (file_exists(Templates::get_template_root() . '/default/' . $file_name))
 			return Templates::get_template_root() . '/default/' . $file_name;
-		
+
 		else
 			return false;
 	}
