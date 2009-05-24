@@ -65,8 +65,8 @@ function keyboardWatcher(e) {
 				else {
 					$('#item-' + Items.current).addClass('currentItem');
 				}
-				//$.scrollTo('#item-' + Items.current, 800);
-				window.location = '#item-' + Items.current;
+				$.scrollTo('#item-' + Items.current, 400);
+				//window.location = '#item-' + Items.current;
 				break;
 			//  "k" key
 			case 75:
@@ -79,8 +79,8 @@ function keyboardWatcher(e) {
 				else {
 					$('#item-' + Items.current).addClass('currentItem');
 				}
-				//$.scrollTo('#item-' + Items.current, 400);
-				window.location = '#item-' + Items.current;
+				$.scrollTo('#item-' + Items.current, 400);
+				//window.location = '#item-' + Items.current;
 				break;
 			// "v" key
 			case 86:
