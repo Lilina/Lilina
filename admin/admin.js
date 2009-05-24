@@ -19,7 +19,7 @@ var admin = {
 			$("#change_id").val(
 				$(this).parents("tr:first").attr("id").split("-")[1]
 			);
-			$("#changer").slideDown("normal", function () { window.location.hash = '#changer'; });
+			$("#changer").slideDown("normal").scrollTo('#changer', 400);
 			return false;
 		});
 
@@ -133,23 +133,17 @@ var feeds = {
 			return false;
 		}
 		admin.disable_button("#add");
-		admin.ajax.post('add', {name: $("#add_name").val(), url: $("#add_url").val()}, feeds.add_callback);
+		admin.ajax.post('feeds.add', {name: $("#add_name").val(), url: $("#add_url").val()}, feeds.add_callback);
 	},
 	add_callback: function (data) {
 		admin.enable_button("#add");
-		if(!data.errors || data.errors.length == 0) {
+		if(!data.error) {
 			// Clear the values
 			$("#add_url, #add_name").val('');
 
-			jQuery.each(data.messages, function (index, message) {
-				humanMsg.displayMsg(message['message']);
-			});
 			feeds.reload_table();
 			return;
 		}
-		jQuery.each(data.errors, function(index, error) {
-			humanMsg.displayMsg(error['message'], 'error', -1);
-		});
 	},
 	change: function () {
 		if( !$("#change_url").val() ) {
@@ -165,19 +159,15 @@ var feeds = {
 	},
 	change_callback: function (data) {
 		admin.enable_button("#change");
-		if(!data.errors || data.errors.length == 0) {
+		if(!data.error) {
 			// Clear the values
 			$("#change_url, #change_name, #change_id").val('');
 
-			jQuery.each(data.messages, function (index, message) {
-				humanMsg.displayMsg(message['message']);
-			});
+			humanMsg.displayMsg(data.msg);
 			feeds.reload_table();
 			return;
 		}
-		jQuery.each(data.errors, function(index, error) {
-			humanMsg.displayMsg(error['message'], 'error');
-		});
+		humanMsg.displayMsg(data.msg, 'error');
 	},
 	reload_table: function () {
 		admin.ajax.get('feeds.list', {}, function (data) {

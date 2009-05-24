@@ -23,7 +23,7 @@ switch($action) {
 			if(empty($_REQUEST['add_url']))
 				throw new Exception(_r('No URL specified'), Errors::get_code('admin.feeds.no_url'));
 
-			add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
+			$message = add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
 			clear_html_cache();
 		} catch( Exception $e ) {
 			$error = $e->getMessage();
@@ -35,7 +35,7 @@ switch($action) {
 		$change_url  = ( !empty($_REQUEST['change_url']) ) ? $_REQUEST['change_url'] : '';
 		$change_id   = ( !empty($_REQUEST['change_id']) ) ? (int) $_REQUEST['change_id'] : null;
 		try {
-			change_feed($change_id, $change_url, $change_name);
+			$message = change_feed($change_id, $change_url, $change_name);
 			clear_html_cache();
 		} catch( Exception $e ) {
 			$error = $e->getMessage();
@@ -44,7 +44,7 @@ switch($action) {
 	case 'remove':
 		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
 		try {
-			remove_feed($remove_id);
+			$message = remove_feed($remove_id);
 			clear_html_cache();
 		} catch( Exception $e ) {
 			$error = $e->getMessage();
@@ -58,6 +58,8 @@ admin_header(_r('Feeds'));
 
 if(!empty($error))
 	echo '<div id="alert" class="fade"><p>' . $error . '</p></div>';
+if(!empty($message))
+	echo '<div id="message"><p>' . $message . '</p></div>';
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
@@ -118,7 +120,6 @@ if(!empty($error))
 		</div>
 		<input type="hidden" name="action" value="add" />
 		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
-		<p class="loading"><?php _e('Adding feed&hellip;') ?></p>
 	</fieldset>
 </form>
 <?php

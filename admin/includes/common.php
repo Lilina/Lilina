@@ -55,9 +55,10 @@ function admin_header($title, $parent_file = false) {
 <link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl'); ?>admin/resources/full.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/json2.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
+<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.extensions.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
-<!--<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.json.js"></script>-->
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
 </head>

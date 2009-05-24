@@ -46,8 +46,9 @@ class AdminAjax {
 		if(empty($params['url']))
 			throw new Exception( _r('No URL specified'), Errors::get_code('admin.feeds.no_url') );*/
 
-		add_feed( $url, htmlspecialchars($name) );
+		$result = add_feed( $url, htmlspecialchars($name) );
 		clear_html_cache();
+		return array('success' => 1, 'msg' => $result);
 	}
 	/**
 	 * Callback for feeds.change
@@ -56,7 +57,7 @@ class AdminAjax {
 		$result = change_feed($feed_id, (int) $url, $name);
 		clear_html_cache();
 
-		return array();
+		return array('success' => 1, 'msg' => $result);
 	}
 	/**
 	 * Callback for feeds.remove
@@ -64,6 +65,7 @@ class AdminAjax {
 	public static function feeds_remove($remove) {
 		$success = remove_feed((int) $remove);
 		clear_html_cache();
+		return array('success' => 1, 'msg' => $result);
 	}
 	/**
 	 * Callback for feeds.list
