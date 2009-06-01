@@ -49,5 +49,5 @@ $body .= '
 		}
 	</script>';
 
-lilina_nice_die($body, 'Login', 'login');
+lilina_nice_die($body, _r('Login'), 'login');
 ?>
