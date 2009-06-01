@@ -6,8 +6,8 @@
  */
 
 /** */
-require_once(LILINA_INCPATH . '/contrib/gettext.php');
-require_once(LILINA_INCPATH . '/contrib/streams.php');
+require_once(LILINA_INCPATH . '/contrib/pomo/translations.php');
+require_once(LILINA_INCPATH . '/contrib/pomo/mo.php');
 
 /**
  * Localisation class
@@ -15,7 +15,7 @@ require_once(LILINA_INCPATH . '/contrib/streams.php');
  * @subpackage Localisation
  */
 class Locale {
-	private static $messages = array();
+	private static $translations = array();
 	private static $plural_function;
 	private static $locale;
 
@@ -75,9 +75,6 @@ class Locale {
 	 * If the domain already exists, the inclusion will fail. If the
 	 * MO file is not readable, the inclusion will fail.
 	 *
-	 * On success, the mofile will be placed in the $messages array by
-	 * $domain and will be an gettext_reader object.
-	 *
 	 * @since 1.0
 	 * @uses CacheFileReader Reads the MO file
 	 * @uses gettext_reader Allows for retrieving translated strings
@@ -87,16 +84,15 @@ class Locale {
 	 * @return bool Successfulness of loading textdomain
 	 */
 	public static function load($domain, $mofile) {
-		if (isset(self::$messages[$domain]))
-			return false;
+		if ( !is_readable($mofile)) return;
 
-		if ( is_readable($mofile))
-			$input = new CachedFileReader($mofile);
-		else
-			return false;
+		$mo = new MO();
+		$mo->import_from_file( $mofile );
 
-		self::$messages[$domain] = new gettext_reader($input);
-		return true;
+		if (isset(self::$translations[$domain]))
+			$mo->merge_with( self::$translations[$domain] );
+
+		self::$translations[$domain] = &$mo;
 	}
 
 	/**
@@ -171,7 +167,7 @@ class Locale {
 	/**
 	 * Retrieve the translated text
 	 *
-	 * If the domain is set in the $messages array, then the text is run
+	 * If the domain is set in the $translations array, then the text is run
 	 * through the domain's translate method. After it is passed to
 	 * the 'gettext' filter hook, along with the untranslated text as
 	 * the second parameter.
@@ -187,18 +183,19 @@ class Locale {
 	 * @return string Translated text
 	 */
 	public static function translate($text, $domain = 'default') {
-		$text = apply_filters('pre_gettext', $text, $domain);
-
-		if (isset(self::$messages[$domain]))
-			return apply_filters('gettext', self::$messages[$domain]->translate($text), $text, $domain);
-		else
-			return apply_filters('gettext', $text, $text, $domain);
+		$translations = &self::get_translations($domain);
+		return apply_filters('gettext', $translations->translate($text), $text, $domain);
 	}
-	
+
+	public static function translate_with_gettext_context( $text, $context, $domain = 'default' ) {
+		$translations = &self::get_translations($domain);
+		return apply_filters( 'gettext_with_context', $translations->translate( $text, $context ), $text, $context, $domain);
+	}
+
 	/**
 	 * Retrieve the plural or single form based on the amount
 	 *
-	 * If the domain is not set in the $messages list, then a comparsion
+	 * If the domain is not set in the $translations list, then a comparsion
 	 * will be made and either $plural or $single parameters returned.
 	 *
 	 * If the domain does exist, then the parameters $single, $plural,
@@ -217,14 +214,23 @@ class Locale {
 	 * @return string Either $single or $plural translated text
 	 */
 	public static function ngettext($single, $plural, $number, $domain = 'default') {
-		if (isset(self::$messages[$domain])) {
-			return apply_filters('ngettext', self::$messages[$domain]->ngettext($single, $plural, $number), $single, $plural, $number);
-		} else {
-			if ($number != 1)
-				return $plural;
-			else
-				return $single;
-		}
+		$translations = &self::get_translations($domain);
+		return $translations->translate_plural($single, $plural, $number);
+	}
+
+	/**
+	 * Returns the Translations instance for a domain. If there isn't one,
+	 * returns empty Translations instance.
+	 *
+	 * @param string $domain
+	 * @return object A Translation instance
+	 */
+	public static function &get_translations($domain) {
+		$empty = &new Translations;
+		if ( isset(self::$translations[$domain]) )
+			return self::$translations[$domain];
+		else
+			return $empty;
 	}
 }
 
@@ -268,10 +274,6 @@ function _e($text, $domain = 'default') {
  * translatable text found in more than two places but with
  * different translated context.
  *
- * In order to use the separate contexts, the _c() function
- * is used and the translatable string uses a pipe ('|')
- * which has the context the string is in.
- *
  * When the translated string is returned, it is everything
  * before the pipe, not including the pipe character. If
  * there is no pipe in the translated text then everything
@@ -280,17 +282,12 @@ function _e($text, $domain = 'default') {
  * @since 1.0
  *
  * @param string $text Text to translate
+ * @param string $context
  * @param string $domain Optional. Domain to retrieve the translated text
  * @return string Translated context string without pipe
  */
-function _c($text, $domain = 'default') {
-	$whole = Locale::translate($text, $domain);
-	$last_bar = strrpos($whole, '|');
-	if ( false == $last_bar ) {
-		return $whole;
-	} else {
-		return substr($whole, 0, $last_bar);
-	}
+function _c( $single, $context, $domain = 'default' ) {
+	return Locale::translate_with_gettext_context( $single, $context, $domain );
 }
 
 /**
@@ -309,7 +306,7 @@ function _c($text, $domain = 'default') {
  * @return string Either $single or $plural translated text
  */
 function __ngettext($single, $plural, $number, $domain = 'default') {
-	Locale::ngettext($single, $plural, $number, $domain);
+	echo Locale::ngettext($single, $plural, $number, $domain);
 }
 
 /**
@@ -319,12 +316,12 @@ function __ngettext($single, $plural, $number, $domain = 'default') {
  * use them later.
  *
  * Example:
- *  $messages = array(
+ *  $translations = array(
  *  	'post' => __ngettext_noop('%s post', '%s posts'),
  *  	'page' => __ngettext_noop('%s pages', '%s pages')
  *  );
  *  ...
- *  $message = $messages[$type];
+ *  $message = $translations[$type];
  *  $usable_text = sprintf(__ngettext($message[0], $message[1], $count), $count);
  *
  * @since 1.0
