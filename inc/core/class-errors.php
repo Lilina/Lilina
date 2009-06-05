@@ -5,7 +5,7 @@ class Errors {
 	protected static function init() {
 		self::$codes = array();
 
-		// 0-100 = admin.
+		// 0-99 = admin.
 		// 0-9 = admin.ajax.
 		self::$codes['admin.ajax.unknown']       = 1;
 		self::$codes['admin.ajax.no_method']     = 2;
@@ -16,6 +16,11 @@ class Errors {
 		self::$codes['admin.feeds.no_url']       = 11;
 		self::$codes['admin.feeds.no_id_or_url'] = 12;
 		self::$codes['admin.feeds.invalid_id']   = 13;
+
+		// 900-999 = update.
+		self::$codes['update.core']              = 900;
+		self::$codes['update.plugin']            = 901;
+		self::$codes['update.theme']             = 902;
 	}
 	public static function get_code($name) {
 		if(empty(self::$codes))

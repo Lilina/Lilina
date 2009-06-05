@@ -96,43 +96,75 @@ legend {
 	border: 1px solid #CCC;
 }
 
-.loading {
-	position: absolute;
-	padding: 2px;
-	background: #000 url("loading.gif") no-repeat center center;
-	opacity: 0.45;
-	filter:alpha(opacity: 45);
-	-moz-opacity: 0.45;
-	-khtml-opacity: 0.45;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-}
+#loading, .ui-widget-overlay {
+	background: #000000 none repeat scroll 0 0;
+	opacity: 0.5;
+	-moz-opacity: 0.5;
+	-khtml-opacity: 0.5;
+	filter: alpha(opacity=5);
 
-#lightbox-overlay {  
-	top:0;
-	left:0;
-	z-index:1;
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	background-color: #000;
-	opacity: 0.45;
-	-moz-opacity: 0.45;
-	filter:alpha(opacity=45);
-}
-#lightbox-content {
-	background: #DCD8D7;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	z-index: 2;
 	position: fixed;
 	top: 0;
-	right: 0;
-	bottom: 0;
 	left: 0;
-	width: 680px;
-	height: 50%;
-	margin: auto;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+}
+
+#loading {
+	background: #000 url("loading.gif") no-repeat center center;
+	display: none;
+}
+
+.ui-dialog {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 4px solid #000000;
+	overflow: visible !important;
+	padding: 10px;
+
+	position: relative;
+	width: 300px;
+}
+.ui-widget-header {
+	background: none;
+	border: none;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	padding: 0;
+	font-family: Helvetica, Verdana, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+
+	padding: 10px 10px 0;
+	position: relative;
+}
+
+.ui-dialog.error .ui-dialog-titlebar, 
+.ui-dialog.confirmation .ui-dialog-titlebar {
+	color: #BD1D1B;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	color: #aaa;
+	font-size: 0.8em;
+	float: right;
+}
+.ui-dialog.confirmation .ui-dialog-titlebar .ui-dialog-titlebar-close { display: none; }
+
+#dialog {
+	font-size: 13px;
+	margin: 0;
+}
+#dialog p {
+	font-size: 1em;
+	margin: 0;
+}
+#dialog .error-message {
+	background: #E9E9E9;
+	border: 1px solid #999999;
+	font-family: Monaco,Courier,monospace;
+	font-size: 12px;
+	line-height: 1.4em;
+	padding: 10px;
 }

@@ -51,13 +51,13 @@ function admin_header($title, $parent_file = false) {
 <head>
 <title><?php echo $title ?> &mdash; <?php echo get_option('sitename'); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl'); ?>admin/resources/jquery-ui.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl'); ?>admin/resources/core.css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl'); ?>admin/resources/full.css" media="screen"/>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/json2.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.extensions.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
