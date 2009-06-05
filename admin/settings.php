@@ -77,12 +77,20 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 		update_option('locale', $_REQUEST['locale']);
 	if(!empty($_POST['timezone']))
 		update_option('timezone', $_REQUEST['timezone']);
+
+	header('HTTP/1.1 302 Found', true, 302);
+	header('Location: ' . get_option('baseurl') . 'admin/settings.php?updated=1');
+	die();
 }
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header(_r('Settings'));
 ?>
 <h1><?php _e('Settings'); ?></h1>
+<?php
+if(!empty($_GET['updated']))
+	echo '<div id="message"><p>' . _r('Settings updated!') . '</p></div>';
+?>
 <form action="settings.php" method="post">
 	<fieldset id="general">
 		<legend><?php _e('General Settings'); ?></legend>
@@ -118,10 +126,10 @@ admin_header(_r('Settings'));
 				<?php
 				foreach(available_locales() as $locale) {
 					echo '<option';
-					if($locale['name'] === get_option('locale')) {
+					if($locale['realname'] === get_option('locale')) {
 						echo ' selected="selected"';
 					}
-					echo '>', $locale['name'], '</option>';
+					echo ' value="' . $locale['realname'] . '">', $locale['name'], '</option>';
 				}
 				?>
 			</select>

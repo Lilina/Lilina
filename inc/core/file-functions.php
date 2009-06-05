@@ -55,8 +55,9 @@ function available_locales() {
 	$locales = array();
 
 	/** Special case for English */
-	$locales[]	= array('name' => 'en',
-						'file' => '');
+	$locales[]	= array('name' => 'English',
+						'file' => '',
+						'realname' => 'en');
 
 	foreach($locale_list as $locale) {
 		$locale = basename($locale, '.mo');
@@ -68,14 +69,16 @@ function available_locales() {
 
 			$locales[$locale] = array(
 				'name' => $name,
-				'file' => $locale . '.mo'
+				'file' => $locale . '.mo',
+				'realname' => $locale
 			);
 		}
 
 		else {
 			$locales[$locale] = array(
 				'name' => $locale,
-				'file' => $locale . '.mo'
+				'file' => $locale . '.mo',
+				'realname' => $locale
 			);
 		}
 	}
