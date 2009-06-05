@@ -84,17 +84,6 @@ function available_locales() {
 
 /**
  * Save options to options.data
- *
- * Deprecated in favour of save_options
- * @see save_options()
- */
-function save_settings() {
-	echo '<h1>DEPRECATED FUNCTION: ' . __FUNCTION__ . '</h1>';
-	save_options();
-}
-
-/**
- * Save options to options.data
  */
 function save_options() {
 	global $options;
