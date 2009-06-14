@@ -9,7 +9,7 @@
  */
 
 /** */
-define('LILINA_CORE_VERSION', '1.0-alpha-6');
+define('LILINA_CORE_VERSION', '1.0-bleeding');
 define('LILINA_SETTINGS_VERSION', 368);
 define('LILINA_FEEDSTORAGE_VERSION', 237);
 
