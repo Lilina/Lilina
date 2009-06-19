@@ -1,0 +1,17 @@
+#header p {
+	float: left;
+	margin: 0;
+	padding: 0;
+	line-height: 2em;
+	font-size: 1.4em;
+}
+#header p#sitetitle {
+	float: right;
+}
+#header p a {
+	color: #fff;
+	text-decoration: none;
+}
+#main {
+	max-width: 760px;
+}
