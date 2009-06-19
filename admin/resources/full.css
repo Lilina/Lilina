@@ -4,16 +4,6 @@
 
 /* Header section */
 #header {
-	font: 1.1em/1em Arial,sans-serif;
-	width: 90%;
-	height: 3em;
-
-	background: #0CA2FF;
-	border-bottom: 1px solid #0B8AD9;
-
-	padding: 0 5%;
-	margin: 0;
-
 	position: fixed;
 	top: 0;
 	z-index: 20;
@@ -35,30 +25,6 @@
 }
 #skip {
 	display: none;
-}
-#navigation {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	font-size: 1em;
-	position: absolute;
-	top: 0.5em;
-}
-#navigation li {
-	display: inline;
-	list-style-type: none;
-	float: left;
-	margin: 0;
-	padding: 0;
-	position: relative;
-	white-space: nowrap;
-}
-#navigation li a {
-	color: #FFF;
-	text-decoration:none;
-	padding: 0.3em 1em;
-	line-height: 200%;
-	display: block;
 }
 #navigation > li > a {
 	margin-left: 0.1em;
@@ -122,9 +88,8 @@
 #main {
 	width: 90%;
 	max-width: 960px;
-	margin: 5em auto;
-	padding: 1em;
-	clear: both;
+	margin-top: 5em;
+	margin-bottom: 5em;
 }
 
 .item-table {
@@ -152,6 +117,15 @@
 }
 .item-table tr:nth-child(2n), .item-table tr.alt {
 	background: #F3F7FE;
+}
+.item-table input {
+	width: 100%;
+}
+.item-table tbody .remove-col {
+	color: red;
+}
+.item-table tbody .remove-col span {
+	cursor: pointer;
 }
 
 

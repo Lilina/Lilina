@@ -25,6 +25,7 @@ class AdminAjax {
 		$handler->registerMethod('feeds.change', array('AdminAjax', 'feeds_change') );
 		$handler->registerMethod('feeds.remove', array('AdminAjax', 'feeds_remove') );
 		$handler->registerMethod('feeds.list', array('AdminAjax', 'feeds_list') );
+		$handler->registerMethod('feeds.get', array('AdminAjax', 'feeds_get') );
 
 		$method = isset($_REQUEST['method']) ? $_REQUEST['method'] : null;
 		try {
@@ -54,24 +55,30 @@ class AdminAjax {
 	 * Callback for feeds.change
 	 */
 	public static function feeds_change($feed_id, $url, $name = '') {
-		$result = change_feed($feed_id, (int) $url, $name);
+		$result = change_feed((int) $feed_id, $url, $name);
 		clear_html_cache();
 
-		return array('success' => 1, 'msg' => $result);
+		return array('success' => 1, 'msg' => $result, 'url' => $url, 'name' => $name);
 	}
 	/**
 	 * Callback for feeds.remove
 	 */
-	public static function feeds_remove($remove) {
-		$success = remove_feed((int) $remove);
+	public static function feeds_remove($feed_id) {
+		$success = remove_feed((int) $feed_id);
 		clear_html_cache();
-		return array('success' => 1, 'msg' => $result);
+		return array('success' => 1, 'msg' => $success);
 	}
 	/**
 	 * Callback for feeds.list
 	 */
 	public static function feeds_list() {
 		return array('table' => feed_list_table());
+	}
+	/**
+	 * Callback for feeds.get
+	 */
+	public static function feeds_get() {
+		return get_feeds();
 	}
 }
 

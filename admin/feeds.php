@@ -63,25 +63,24 @@ if(!empty($message))
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
+<p><?php _e('Double-click the name or URL to edit.'); ?>
 <table id="feeds_list" class="item-table">
 	<thead>
 		<tr>
 		<th><?php _e('Feed Name'); ?></th>
 		<th><?php _e('URL'); ?></th>
-		<th><?php _e('Category'); ?></th>
+		<!--<th><?php _e('Category'); ?></th>-->
 		<?php do_action('admin-feeds-infocol-description'); ?>
-		<th class="change-col"><?php _e('Edit Feed'); ?></th>
+		<!--<th class="change-col"><?php _e('Edit Feed'); ?></th>-->
 		<th class="remove-col"><?php _e('Remove Feed'); ?></th>
 		<?php do_action('admin-feeds-actioncol-description'); ?>
 		</tr>
 	</thead>
 	<tbody>
-<?php
-	echo feed_list_table();
-?>
+		<tr><td colspan="3">Javascript must be enabled.</td></tr>
 	</tbody>
 </table>
-<div id="changer" class="dialog">
+<div id="changer">
 	<form action="feeds.php" method="get" id="change_form">
 		<fieldset id="change">
 			<h2><?php _e('Edit Feed'); ?></h2>
@@ -101,7 +100,6 @@ if(!empty($message))
 				<input type="text" name="change_id" id="change_id" value="" />
 			</div>
 			<input type="submit" value="<?php _e('Save'); ?>" class="submit" />
-			<p class="loading"><?php _e('Changing feed&hellip;') ?></p>
 		</fieldset>
 	</form>
 </div>

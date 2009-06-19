@@ -6,32 +6,44 @@ var admin = {
 	 * Initialise the page
 	 */
 	init: function () {
-		/** Hide some stuff */
-		$("#changer, #changer_id").hide();
-		/** Set up events */
-		$(".change_link").live('click', function() {
-			$("#change_url").val(
-				$(this).parent().siblings(".url-col").text()
-			);
-			$("#change_name").val(
-				$(this).parent().siblings(".name-col").text()
-			);
-			$("#change_id").val(
-				$(this).parents("tr:first").attr("id").split("-")[1]
-			);
-			$("#changer").slideDown("normal").scrollTo('#changer', 400);
-			return false;
-		});
+		// Feeds page only
+		if ( $('body#admin-feeds').length != 0 ) {
+			/** Hide some stuff */
+			$("#changer, #changer_id").hide();
+			/** Set up events */
+			$(".change_link").live('click', function() {
+				$("#change_url").val(
+					$(this).parent().siblings(".url-col").text()
+				);
+				$("#change_name").val(
+					$(this).parent().siblings(".name-col").text()
+				);
+				$("#change_id").val(
+					$(this).parents("tr:first").attr("id").split("-")[1]
+				);
+				$("#changer").slideDown("normal").scrollTo('#changer', 400);
+				return false;
+			});
 
-		$("#add_form").submit(function () {
-			feeds.add();
-			return false;
-		});
+			$("#add_form").submit(function () {
+				feeds.add();
+				return false;
+			});
 
-		$("#change_form").submit(function () {
-			feeds.change();
-			return false;
-		});
+			$("#change_form").submit(function () {
+				feeds.change();
+				return false;
+			});
+
+			$('#feeds_list tbody').empty();
+			new FeedList();
+		}
+		else if ( $('body#admin-subscribe').length != 0) {
+			$("#add_form").submit(function () {
+				//feeds.add();
+				return false;
+			});
+		}
 
 		/** Make it look pretty */
 		$("#alert").effect("highlight", { 
@@ -272,20 +284,18 @@ var feeds = {
 			humanMsg.displayMsg('No feed ID supplied', 'error');
 			return false;
 		}
-		admin.disable_button("#change");
-		admin.ajax.post('change', {feed_id: $("#change_id").val(), name: $("#change_name").val(), url: $("#change_url").val()}, feeds.change_callback);
-	},
-	change_callback: function (data) {
-		admin.enable_button("#change");
-		if(!data.error) {
-			// Clear the values
-			$("#change_url, #change_name, #change_id").val('');
+		admin.ajax.post('feeds.change', {
+				feed_id: $("#change_id").val(),
+				name: $("#change_name").val(),
+				url: $("#change_url").val()
+			}, function (data) {
+				humanMsg.displayMsg(data.msg);
+				// Clear the values
+				$("#change_url, #change_name, #change_id").val('');
 
-			humanMsg.displayMsg(data.msg);
-			feeds.reload_table();
-			return;
-		}
-		humanMsg.displayMsg(data.msg, 'error');
+				feeds.reload_table();
+				return;
+		});
 	},
 	reload_table: function () {
 		admin.ajax.get('feeds.list', {}, function (data) {
@@ -305,8 +315,131 @@ var feeds = {
 	},
 };
 
+/* List object, for use with the feeds list table (#feeds_list) */
+FeedList = function() {
+	this.feeds = [];
+	this.load()
+};
+FeedList.prototype.feeds = [];
+FeedList.prototype.load = function() {
+	var t = this;
+	admin.ajax.get('feeds.get', {}, function (data) {
+		t.loadCallback(data);
+	});
+};
+FeedList.prototype.loadCallback = function (data) {
+	var n = 0;
+	var t = this;
+	jQuery.each(data, function () {
+		t.feeds.push(new FeedRow(this, n++));
+	});
+};
+
+/* Row object (single feed), for use with FeedList */
+FeedRow = function(data, id) {
+	this.data = data;
+	this.id = id;
+	this.render()
+};
+FeedRow.prototype.data = null;
+FeedRow.prototype.id = null;
+FeedRow.prototype.row = null;
+FeedRow.prototype.render = function() {
+	var exists = true;
+	if(!this.row) {
+		exists = false;
+		this.row = $('<tr><td class="name-col" /><td class="url-col" /><td class="remove-col" /></tr>');
+	}
+	$(this.row).attr('id', 'feed-' + this.id);
+	$("td", this.row).html("<span />");
+	$(".name-col span", this.row).text(this.data.name);
+	$(".url-col span", this.row).text(this.data.feed);
+	$(".remove-col span", this.row).text('Delete');
+	this.bindEvents();
+	if(!exists)
+		$('#feeds_list tbody').append(this.row)
+};
+FeedRow.prototype.bindEvents = function() {
+	var url = $(".url-col", this.row);
+	var name = $(".name-col", this.row);
+	var delete_span = $(".remove-col span", this.row);
+	url.unbind("click dblclick");
+	name.unbind("click dblclick");
+	delete_span.unbind("click");
+
+	// We define this so that "this" refers to the FeedRow object, rather than
+	// the element that the event was triggered for
+	var me = this;
+	url.dblclick(function() {
+		return me.edit("feed")
+	});
+	name.dblclick(function() {
+		return me.edit("name")
+	});
+	delete_span.click(function() {
+		return me.remove()
+	});
+};
+FeedRow.prototype.edit = function(type) {
+	switch (type) {
+		case "feed":
+			var value = $(".url-col span", this.row);
+			var input_field = $('<input type="text" />').val(this.data.feed);
+			break;
+		case "name":
+			var value = $(".name-col span", this.row);
+			var input_field = $('<input type="text" />').val(this.data.name);
+			break;
+	}
+	value.replaceWith($("<span />").append(input_field));
+	input_field.focus();
+	input_field.select();
+	var me = this;
+	input_field.bind("blur keypress", function(e) {
+		if (e.type == "keypress" && e.which == 13) {
+			me.save();
+		}
+		if (e.type == "blur") {
+			me.save();
+		}
+	});
+	return false
+};
+FeedRow.prototype.remove = function () {
+	admin.ajax.post("feeds.remove", {feed_id: this.id}, this.removeComplete);
+};
+FeedRow.prototype.removeComplete = function (data) {
+	this.row.remove();
+	humanMsg.displayMsg(data.msg);
+};
+FeedRow.prototype.save = function () {
+	var new_data = {feed_id: this.id};
+
+	if($(".url-col input", this.row).length)
+		new_data.url = $(".url-col input", this.row).val();
+	else
+		new_data.url = this.data.feed;
+
+	if($(".name-col input", this.row).length)
+		new_data.name = $(".name-col input", this.row).val();
+
+	var me = this;
+	admin.ajax.post("feeds.change", new_data, function (data) {
+			me.saveComplete(data);
+		});
+};
+FeedRow.prototype.saveComplete = function(data) {
+	this.data.feed = data.url;
+	if(data.name.length != 0)
+		this.data.name = data.name;
+	this.render();
+	humanMsg.displayMsg(data.msg);
+	this.bindEvents();
+};
+
 $(document).ready(function () {
 	admin.init();
+	//console.log(new FeedRow({url: 'http://example.com', name: 'yo', id: 682}));
 });
 
 //Alias for feeds.add

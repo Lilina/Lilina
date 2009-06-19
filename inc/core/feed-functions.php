@@ -173,7 +173,7 @@ function change_feed($id, $url, $name = '', $category = '') {
 		$feed['name'] = $name;
 	}
 	else {
-		$name = $feed['name'];
+		$name = $data['feeds'][$id]['name'];
 	}
 	$data['feeds'][$id] = array_merge($data['feeds'][$id], $feed);
 	save_feeds();

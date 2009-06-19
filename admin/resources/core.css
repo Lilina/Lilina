@@ -29,7 +29,41 @@ p, ul, pre {
 ul ul {
 	font-size: 1em;
 }
+#header {
+	font: 1.1em/1em Arial,sans-serif;
+	width: 90%;
+	height: 3em;
 
+	background: #0CA2FF;
+	border-bottom: 1px solid #0B8AD9;
+
+	padding: 0 5%;
+	margin: 0;
+}
+#navigation {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	font-size: 1em;
+	position: absolute;
+	top: 0.5em;
+}
+#navigation li {
+	display: inline;
+	list-style-type: none;
+	float: left;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	white-space: nowrap;
+}
+#navigation li a {
+	color: #FFF;
+	text-decoration:none;
+	padding: 0.3em 1em;
+	line-height: 200%;
+	display: block;
+}
 #alert {
 	background: #0CA2FF;
 	padding: 1.5em;
@@ -46,6 +80,13 @@ ul ul {
 	width: 70%;
 	max-width: 700px;
 }
+
+#main {
+	margin: 0 auto;
+	padding: 1em;
+	clear: both;
+}
+
 /* Forms */
 fieldset {
 	border: none;
@@ -114,6 +155,7 @@ legend {
 #loading {
 	background: #000 url("loading.gif") no-repeat center center;
 	display: none;
+	cursor: wait;
 }
 
 .ui-dialog {
