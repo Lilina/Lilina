@@ -62,7 +62,7 @@ function admin_header($title, $parent_file = false) {
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
 </head>
-<body id="admin-<?php echo $self; ?>" class="admin-page">
+<body id="admin-<?php echo basename($self, '.php'); ?>" class="admin-page">
 <div id="header">
 	<p id="sitetitle"><a href="<?php echo get_option('baseurl'); ?>"><?php echo get_option('sitename'); ?></a></p>
 	<ul id="navigation">
