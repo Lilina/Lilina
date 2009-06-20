@@ -71,7 +71,7 @@ class DataHandler {
 	 * @param string $file Filename to save to
 	 * @param string $data Data to save into $file
 	 */
-	protected function put($file, $data) {
+	protected function put($file, $data, $mode = false) {
 		if(file_exists($file) && file_get_contents($file) === $data) {
 			touch($file);
 			return true;
@@ -83,8 +83,24 @@ class DataHandler {
 
 		fwrite($fp, $data);
 		fclose($fp);
+
+		$this->chmod($file, $mode);
 		return true;
 		
+	}
+
+	/**
+	 * Change the file permissions
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $file Absolute path to file
+	 * @param integer $mode Octal mode
+	 */
+	protected function chmod($file, $mode = false){
+		if(!$mode)
+			$mode = 0644;
+		return @chmod($file, $mode);
 	}
 
 	/**
