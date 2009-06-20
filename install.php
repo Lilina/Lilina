@@ -298,7 +298,7 @@ switch($page) {
 		</div>
 	</fieldset>
 	<input type="hidden" value="2" name="page" id="page" />
-	<input type="submit" value="Next &raquo;" class="submit" />
+	<input type="submit" value="Next" class="submit" />
 </form>
 <?php
 		break;
@@ -308,16 +308,15 @@ switch($page) {
 	default:
 ?>
 <h1>Installation</h1>
-<p>Welcome to Lilina installation. We're now going to start installing. Make sure that both the <code>conf/</code> and <code>cache/</code> directories exist and are <a href="readme.html#permissions">writable</a>.</p>
+<p>Welcome to Lilina installation. We're now going to start installing. Make sure that the <code>content/</code> directory is <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
-<input type="submit" value="Install &raquo;" class="submit" />
+<input type="submit" value="Install" class="submit" />
 </form>
 <?php
 		break;
 }
 ?>
-			<img id="logo" src="admin/logo-small.png" alt="Lilina Logo" />
 		</div>
 	</body>
 </html>

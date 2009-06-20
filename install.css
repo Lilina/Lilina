@@ -17,12 +17,12 @@ body {
 }
 h1 {
 	font-weight: 400;
-	font-size: 2em;
+	font-size: 3em;
 	margin: 0.6em 0;
 }
 h2 {
 	font-weight: 400;
-	font-size: 1.8em;
+	font-size: 2.6em;
 	margin: 0.8em 0;
 }
 p, ul, pre {
@@ -41,9 +41,13 @@ a {
 	margin: 10em auto 0;
 	width: 60%;
 	max-width: 700px;
+	padding-bottom: 100px;
+	background: url(admin/logo-small.png) no-repeat center bottom;
+	text-align: center;
 }
 #logo {
 	margin-top: 2em;
+	display: none;
 }
 
 /* Readme only */
@@ -75,6 +79,8 @@ dl {
 }
 dd#username, dd#password {
 	font-weight: 700;
+	margin: 0;
+	padding: 0;
 }
 #footnote-quote {
 	color: #999;
@@ -104,13 +110,18 @@ form .input {
 	width: 80%;
 	clear: both;
 	overflow: hidden;
+	margin: 0 auto;
 }
 
 .submit {
 	clear: both;
 	width: 20%;
-	margin: 0 auto;
+	margin: 1em 0 0 auto;
 	font-size: 1.6em;
-	background: #eee;
-	border: 1px solid #CCC;
+	background: #333;
+	color: #fff;
+	border: none;
+	border-radius: px;
+	-moz-border-radius: 10px;
+	text-align: center;
 }
