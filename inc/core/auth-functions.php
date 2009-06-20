@@ -23,7 +23,7 @@ defined('LILINA_PATH') or die('Restricted access');
  * @param string $p Password to check if needed
  * @return mixed {@see User::identify()}}
  */
-function lilina_auth($u,$p) {
+function lilina_auth($un, $pw) {
 	$user = new User($un, $pw);
 	return $user->identify();
 }
@@ -68,7 +68,7 @@ function lilina_login_form($user, $pass) {
 	}
 
 	if(!defined('LILINA_LOGIN')) {
-		header('HTTP/1.1 301 Moved Permanently');
+		header('HTTP/1.1 302 Found');
 		header('Location: ' . get_option('baseurl') . 'admin/login.php');
 		header('Connection: close');
 		die();
