@@ -53,24 +53,28 @@ class OPML {
 		try {
 			$xml_parser = new SimpleXMLElement($this->raw, LIBXML_NOERROR);
 
-			foreach($xml_parser->body->outline as $element) {
-				if($element['type'] == 'rss' || isset($element['xmlUrl'])):
-					$this->data[] = $this->format($element);
-				elseif($element->outline):
-					foreach($element->outline as $subelement) {
-						if($subelement['type'] == 'rss'|| isset($element['xmlUrl'])) {
-							$this->data[(string) $element['text']][] = $this->format($subelement);
-						}
-					}
-				endif;
-			}
+			$this->data = $this->loop($xml_parser->body->outline);
 		}
 		catch (Exception $e) {
 			$this->error = $e->getMessage();
 			return;
 		}
 	}
-	
+
+	protected function loop($element) {
+		$data = array();
+
+		foreach($element as $element) {
+			if($element['type'] == 'rss' || isset($element['xmlUrl'])) {
+				$data[] = $this->format($element);
+			} elseif($element->outline) {
+				$data[(string) $element['text']] = $this->loop($element->outline);
+			}
+		}
+
+		return $data;
+	}
+
 	/**
 	 * Return an array from a supplied SimpleXMLElement object
 	 *
@@ -87,4 +91,3 @@ class OPML {
 		);
 	}
 }
-?>
