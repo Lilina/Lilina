@@ -15,8 +15,8 @@ require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
 require_once(LILINA_PATH . '/admin/includes/class-ajaxhandler.php');
 
-//header('Content-Type: application/json');
-header('Content-Type: application/javascript');
+//header('Content-Type: application/javascript');
+header('Content-Type: application/json');
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-store, no-cache, must-revalidate");
