@@ -36,6 +36,10 @@ function lilina_auth($un, $pw) {
 function lilina_logout() {
 	$user = new User();
 	$user->destroy_cookies();
+
+	header('HTTP/1.1 302 Found');
+	header('Location: ' . get_option('baseurl') . 'admin/login.php');
+	die();
 }
 
 /**
