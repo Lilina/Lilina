@@ -127,6 +127,12 @@
 .item-table tbody .remove-col span {
 	cursor: pointer;
 }
+.item-table #nofeeds {
+	display: none;
+}
+.item-table #nofeeds td {
+	text-align: center;
+}
 
 
 #footer {

@@ -63,7 +63,7 @@ if(!empty($message))
 ?>
 <h1><?php _e('Feeds'); ?></h1>
 <h2><?php _e('Current Feeds'); ?></h2>
-<p><?php _e('Double-click the name or URL to edit.'); ?>
+<p><?php _e('Double-click the name or URL to edit.'); ?></p>
 <table id="feeds_list" class="item-table">
 	<thead>
 		<tr>
@@ -77,7 +77,8 @@ if(!empty($message))
 		</tr>
 	</thead>
 	<tbody>
-		<tr><td colspan="3">Javascript must be enabled.</td></tr>
+		<tr class="nojs"><td colspan="3"><?php _e('Javascript must be enabled.') ?></td></tr>
+		<tr id="nofeeds"><td colspan="3"><?php _e("You don't have any feeds yet! Try adding some.") ?></td></tr>
 	</tbody>
 </table>
 <div id="changer">

@@ -47,5 +47,5 @@ function get_feeds() {
 	global $data;
 	if(isset($data['feeds']))
 		return $data['feeds'];
-	return false;
+	return array(false);
 }

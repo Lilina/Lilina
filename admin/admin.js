@@ -35,7 +35,7 @@ var admin = {
 				return false;
 			});
 
-			$('#feeds_list tbody').empty();
+			$(".nojs").remove();
 			new FeedList();
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
@@ -328,6 +328,10 @@ FeedList.prototype.load = function() {
 	});
 };
 FeedList.prototype.loadCallback = function (data) {
+	if(false == data[0]) {
+		$("#nofeeds").show();
+		return false;
+	}
 	var n = 0;
 	var t = this;
 	jQuery.each(data, function () {
