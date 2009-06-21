@@ -8,13 +8,26 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 error_reporting(E_ALL);
+// Fool the authentication so we can handle it ourselves
+define('LILINA_LOGIN', true);
+
 require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
 require_once(LILINA_PATH . '/admin/includes/class-ajaxhandler.php');
 
 //header('Content-Type: application/json');
 header('Content-Type: application/javascript');
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
+if(defined('LILINA_AUTH_ERROR')) {
+	header('HTTP/1.1 401 Unauthorized');
+	echo json_encode( array('error' => 1, 'msg' => _r('You are not currently logged in'), 'code' => Errors::get_code('auth.none')) );
+	die();
+}
 class AdminAjax {
 	/**
 	 * Initialise the Ajax interface
@@ -32,7 +45,7 @@ class AdminAjax {
 			$output = $handler->handle($method, $_REQUEST);
 			echo json_encode($output);
 		} catch( Exception $e ) {
-			header('HTTP/500 Internal Server Error');
+			header('HTTP/1.1 500 Internal Server Error');
 			echo json_encode( array('error'=>1, 'msg'=>$e->getMessage(), 'code'=>$e->getCode()));
 		}
 	}
