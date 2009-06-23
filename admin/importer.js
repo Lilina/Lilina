@@ -10,36 +10,40 @@ var importer = {
 	iterate: function () {
 		var feed = importer.feeds.shift();
 		if(feed == undefined) {
-			if(importer.end_callback != null)
-				importer.end_callback();
+			if(this.end_callback != null)
+				this.end_callback();
 			return;
 		}
 
-		$.post("admin-ajax.php", {
-			action: "add",
-			type: "json",
-			name: feed['title'],
-			url: feed['url']
-		}, function (data) {
-			importer.log(data);
-			importer.iterate();
-		},
-		"json");
+		var me = this;
+		$.ajax({
+			data: {name: feed['title'], url: feed['url'], method: "feeds.add"},
+			dataType: "json",
+			complete: function(request) {
+				try {
+					data = JSON.parse(request.responseText);
+					me.log(data);
+					me.iterate();
+				} catch(e) {
+					me.log("Error parsing response.");
+					me.iterate();
+				}
+			},
+			type: "POST",
+			url: "admin-ajax.php"
+		})
 	},
 	log: function (data) {
-		if(data.errors) {
-			jQuery.each(data.errors, function(index, error) {
-				$("#log").append('<li class="error">' + error['message'] + '</li>');
-			});
+		console.log(data);
+		if(data.error) {
+			$("#log").append('<li class="error">' + data.msg + '</li>');
 		}
 
-		if(data.messages) {
-			jQuery.each(data.messages, function(index, message) {
-				$("#log").append('<li class="message">' + message['message'] + '</li>');
-			});
+		if(data.success) {
+			$("#log").append('<li class="message">' + data.msg + '</li>');
 		}
 
-		importer.done++;
-		$('#import-progress .done').text(importer.done);
+		this.done++;
+		$('#import-progress .done').text(this.done);
 	}
 };

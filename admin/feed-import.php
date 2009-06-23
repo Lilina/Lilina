@@ -37,8 +37,8 @@ function register_importer($uid, $name, $description, $callback) {
 function import($feeds) {
 	?>
 <p><?php _e('Currently importing feeds. Please keep this page open in your browser until all feeds have been processed.'); ?></p>
-<p class="sidenote"><?php _e('Please note: Javascript must be enabled to import feeds.'); ?></p>
-<p id="import-progress"><?php printf(_r('Imported <span class="done">0</span> of <span class="total">%d</span> so far.'), count($feeds) ) ?> <img src="loading.gif" alt="" /></p>
+<p class="nojs"><?php _e('Javascript must be enabled.') ?></p>
+<p id="import-progress"><?php printf(_r('Imported <span class="done">0</span> of <span class="total">%d</span> so far.'), count($feeds) ) ?></p>
 <ul id="log">
 </ul>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/importer.js"></script>

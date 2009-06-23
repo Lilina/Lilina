@@ -35,7 +35,6 @@ var admin = {
 				return false;
 			});
 
-			$(".nojs").remove();
 			new FeedList();
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
@@ -57,6 +56,7 @@ var admin = {
 		});
 
 		$("body").append("<div id='loading'></div>");
+		$(".nojs").remove();
 	},
 	dialog: {
 		alert: function(msg) {
@@ -301,18 +301,7 @@ var feeds = {
 		admin.ajax.get('feeds.list', {}, function (data) {
 			$("#feeds_list tbody").html(data.table);
 		});
-	},
-	begin_processing: function (items) {
-		feeds.current_feeds = items;
-		console.log(feeds);
-		feeds.process();
-	},
-	process: function () {
-		feed = feeds.current_feeds.shift();
-		console.log('#' + feeds.count + ': ' + feed['title'] + ' - ' + feed['url']);
-		add_feed(feed['url'], feed['title'], true, undefined, feeds.log);
-		feeds.count++;
-	},
+	}
 };
 
 /* List object, for use with the feeds list table (#feeds_list) */
@@ -328,7 +317,7 @@ FeedList.prototype.load = function() {
 	});
 };
 FeedList.prototype.loadCallback = function (data) {
-	if(false == data[0]) {
+	if(0 == data.length) {
 		$("#nofeeds").show();
 		return false;
 	}
@@ -410,10 +399,12 @@ FeedRow.prototype.edit = function(type) {
 	return false
 };
 FeedRow.prototype.remove = function () {
-	admin.ajax.post("feeds.remove", {feed_id: this.id}, this.removeComplete);
+	var me = this;
+	admin.ajax.post("feeds.remove", {feed_id: this.id}, function (data) { me.removeComplete(data); });
 };
 FeedRow.prototype.removeComplete = function (data) {
 	this.row.remove();
+	this.render();
 	humanMsg.displayMsg(data.msg);
 };
 FeedRow.prototype.save = function () {
@@ -438,15 +429,9 @@ FeedRow.prototype.saveComplete = function(data) {
 		this.data.name = data.name;
 	this.render();
 	humanMsg.displayMsg(data.msg);
-	this.bindEvents();
 };
 
 $(document).ready(function () {
 	admin.init();
 	//console.log(new FeedRow({url: 'http://example.com', name: 'yo', id: 682}));
 });
-
-//Alias for feeds.add
-function add_feed(url, title) {
-	return feeds.add(url, title);
-}

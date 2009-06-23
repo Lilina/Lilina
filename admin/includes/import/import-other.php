@@ -58,7 +58,7 @@ class OPML_Import {
 			$feeds[] = array('url' => $feed['xmlurl'], 'title' => $feed['title'], 'cat' => '');
 			++$feeds_num;
 		}
-		MessageHandler::add(sprintf(__ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
+		MessageHandler::add(sprintf(Locale::ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
 		return $feeds;
 	}
 
@@ -97,6 +97,6 @@ class OPML_Import {
 	}
 }
 
-$opml_importer = new OPML_Import;
+$opml_importer = new OPML_Import();
 register_importer('opml', _r('Other (OPML)'), _r('Import feeds from an OPML file'), array(&$opml_importer, 'dispatch'));
 ?>
