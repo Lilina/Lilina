@@ -12,10 +12,11 @@ class Errors {
 		self::$codes['admin.ajax.missing_param'] = 3;
 
 		// 10-19 = admin.feeds.
-		self::$codes['admin.feeds.invalid_url']  = 10;
-		self::$codes['admin.feeds.no_url']       = 11;
-		self::$codes['admin.feeds.no_id_or_url'] = 12;
-		self::$codes['admin.feeds.invalid_id']   = 13;
+		self::$codes['admin.feeds.invalid_url']    = 10;
+		self::$codes['admin.feeds.no_url']         = 11;
+		self::$codes['admin.feeds.no_id_or_url']   = 12;
+		self::$codes['admin.feeds.invalid_id']     = 13;
+		self::$codes['admin.feeds.protocol_error'] = 13;
 
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;

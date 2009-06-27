@@ -102,6 +102,13 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
 		throw new Exception(_r("Couldn't add feed: No feed URL supplied"), Errors::get_code('admin.feeds.no_url'));
 	}
 
+	if(!preg_match('#https|http|feed#', $url)) {
+		if(strpos($url, '://')) {
+			throw new Exception(_r('Unsupported URL protocol'), Errors::get_code('admin.feeds.protocol_error'));
+		}
+
+		$url = 'http://' . $url;
+	}
 	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 	$feed_info = new SimplePie();
 	$feed_info->set_useragent('Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
