@@ -86,9 +86,12 @@ class ItemCache extends Items {
 			//$updated = $updated || $this->check_item($new_item);
 			if($this->check_item($new_item)) {
 				$updated = true;
-				echo '<!-- updated item! -->';
 			}
 		}
+
+		$this->simplepie->__destruct();
+		unset($this->simplepie);
+		unset($this->simplepie_items);
 
 		uasort($this->cached_items, array($this, 'sort_items'));
 		uasort($this->items, array($this, 'sort_items'));
@@ -96,9 +99,6 @@ class ItemCache extends Items {
 		if($updated)
 			$this->save_cache();
 
-		$this->simplepie->__destruct();
-		unset($this->simplepie);
-		unset($this->simplepie_items);
 		unset($this->cached_items);
 
 		return $this->items;
