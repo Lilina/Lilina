@@ -60,9 +60,9 @@ class AdminAjax {
 		if(empty($params['url']))
 			throw new Exception( _r('No URL specified'), Errors::get_code('admin.feeds.no_url') );*/
 
-		$result = add_feed( $url, htmlspecialchars($name) );
+		$result = add_feed( $url, $name );
 		clear_html_cache();
-		return array('success' => 1, 'msg' => $result);
+		return array('success' => 1, 'msg' => $result, 'feed' => $url, 'name' => $name);
 	}
 	/**
 	 * Callback for feeds.change
