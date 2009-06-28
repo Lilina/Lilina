@@ -48,10 +48,10 @@ var admin = {
 					message: msg
 				}
 			}
-			msg.title = (msg.title != undefined) ? msg.title: "Something Went Wrong!";
+			msg.title = (msg.title != undefined) ? msg.title: _r("Something Went Wrong!");
 			msg.isError = (msg.isError != undefined) ? msg.isError: true;
 			if (msg.isError) {
-				var dialog = $('<div id="dialog" title="' + msg.title + '"><p>Error message:</p><p class="error-message">' + msg.message + '</p><p>If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.</p></div>')
+				var dialog = $('<div id="dialog" title="' + msg.title + '"><p>' + _r("Error message:") + '</p><p class="error-message">' + msg.message + '</p><p>' + _r('If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.') + '</p></div>')
 			} else {
 				var dialog = $("<div id='dialog' title='" + msg.title + "'><p>" + msg.message + "</p></div>")
 			}
@@ -72,9 +72,9 @@ var admin = {
 					message: msg
 				}
 			}
-			msg.title = (msg.title != undefined) ? msg.title: "Are You Sure?";
-			msg.ok = (msg.ok != undefined) ? msg.ok: "OK";
-			msg.cancel = (msg.cancel != undefined) ? msg.cancel: "Cancel";
+			msg.title = (msg.title != undefined) ? msg.title: _r("Are You Sure?");
+			msg.ok = (msg.ok != undefined) ? msg.ok: _r("OK");
+			msg.cancel = (msg.cancel != undefined) ? msg.cancel: _r("Cancel");
 			var dialog = $("<div title='" + msg.title + "'><p>" + msg.message + "</p><p class='buttons'><a href='#OK' class='doit'>" + msg.ok + "</a> <span class='cancel'>or <a href='#Cancel'>" + msg.cancel + "</a></span></p></div>");
 			$("body").append(dialog);
 			var dialogClasses = (additional_classes == undefined) ? "confirmation": "confirmation " + additional_classes;
@@ -198,18 +198,18 @@ var admin = {
 						if (10 <= code) {
 							msg.message = res.msg;
 							msg.isError = false;
-							msg.title = "Whoops!"
+							msg.title = _r("Whoops!")
 						} else {
 							// 900-999 means something needs updating
 							if (900 <= code && code < 1000) {
 								msg = false;
 								admin.dialog.update(res.msg)
 							} else {
-								msg.message = res.msg + " (error-code: " + res.code + ")"
+								msg.message = res.msg + " (" + res.code + ")"
 							}
 						}
 					} catch(e) {
-						msg.message = "Failed to parse response: " + req.responseText
+						msg.message = _r("Failed to parse response: ") + req.responseText
 					}
 
 					if (msg) {
@@ -243,7 +243,7 @@ var feeds = {
 
 	add: function () {
 		if( !$("#add_url").val() ) {
-			humanMsg.displayMsg('No feed URL supplied', 'error');
+			humanMsg.displayMsg(_r('No feed URL supplied'), 'error');
 			return false;
 		}
 		admin.ajax.post('feeds.add', {
@@ -259,11 +259,11 @@ var feeds = {
 	},
 	change: function () {
 		if( !$("#change_url").val() ) {
-			humanMsg.displayMsg('No feed URL supplied', 'error');
+			humanMsg.displayMsg(_r('No feed URL supplied'), 'error');
 			return false;
 		}
 		else if( !$("#change_id").val() ) {
-			humanMsg.displayMsg('No feed ID supplied', 'error');
+			humanMsg.displayMsg(_r('No feed ID supplied'), 'error');
 			return false;
 		}
 		admin.ajax.post('feeds.change', {
@@ -282,6 +282,34 @@ var feeds = {
 	reload_table: function () {
 		admin.feedslist.reload();
 	}
+};
+
+
+AddForm = function() {
+	this.show();
+};
+AddForm.prototype.show = function () {
+	var form = $('');
+	admin.dialog.custom({});
+};
+AddForm.prototype.hide = function () {
+
+};
+AddForm.prototype.add = function () {
+	if( !$("#add_url").val() ) {
+		humanMsg.displayMsg('', 'error');
+		return false;
+	}
+	admin.ajax.post('feeds.add', {
+			name: $("#add_name").val(),
+			url: $("#add_url").val()
+		}, function (data) {
+			humanMsg.displayMsg(data.msg);
+			// Clear the values
+			$("#add_url, #add_name").val('');
+			admin.feedlist.reload();
+			return;
+		});
 };
 
 /* List object, for use with the feeds list table (#feeds_list) */
@@ -425,7 +453,12 @@ FeedRow.prototype.saveComplete = function(data) {
 	humanMsg.displayMsg(data.msg);
 };
 
+function _r(text) {
+	if(admin.localisations[text] == undefined)
+		return text;
+	return admin.localisations[text];
+}
+
 $(document).ready(function () {
 	admin.init();
-	//console.log(new FeedRow({url: 'http://example.com', name: 'yo', id: 682}));
 });
