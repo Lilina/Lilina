@@ -8,23 +8,6 @@ var admin = {
 	init: function () {
 		// Feeds page only
 		if ( $('body#admin-feeds').length != 0 ) {
-			/** Hide some stuff */
-			$("#changer, #changer_id").hide();
-			/** Set up events */
-			$(".change_link").live('click', function() {
-				$("#change_url").val(
-					$(this).parent().siblings(".url-col").text()
-				);
-				$("#change_name").val(
-					$(this).parent().siblings(".name-col").text()
-				);
-				$("#change_id").val(
-					$(this).parents("tr:first").attr("id").split("-")[1]
-				);
-				$("#changer").slideDown("normal").scrollTo('#changer', 400);
-				return false;
-			});
-
 			$("#add_form").submit(function () {
 				feeds.add();
 				return false;
@@ -35,7 +18,7 @@ var admin = {
 				return false;
 			});
 
-			new FeedList();
+			this.feedlist = new FeedList();
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
 			$("#add_form").submit(function () {
@@ -270,8 +253,7 @@ var feeds = {
 				humanMsg.displayMsg(data.msg);
 				// Clear the values
 				$("#add_url, #add_name").val('');
-
-				feeds.reload_table();
+				admin.feedlist.reload();
 				return;
 			});
 	},
@@ -293,14 +275,12 @@ var feeds = {
 				// Clear the values
 				$("#change_url, #change_name, #change_id").val('');
 
-				feeds.reload_table();
+				admin.feedslist.reload();
 				return;
 		});
 	},
 	reload_table: function () {
-		admin.ajax.get('feeds.list', {}, function (data) {
-			$("#feeds_list tbody").html(data.table);
-		});
+		admin.feedslist.reload();
 	}
 };
 
@@ -321,12 +301,23 @@ FeedList.prototype.loadCallback = function (data) {
 		$("#nofeeds").show();
 		return false;
 	}
-	var n = 0;
-	var t = this;
+	this.n = 0;
+	t = this;
 	jQuery.each(data, function () {
-		t.feeds.push(new FeedRow(this, n++));
+		t.add(this);
 	});
 };
+FeedList.prototype.add = function (data) {
+	this.feeds.push(new FeedRow(data, this.n++));
+};
+FeedList.prototype.reload = function () {
+	jQuery.each(this.feeds, function () {
+		this.derender();
+		delete this;
+	});
+	this.feeds = [];
+	this.load();
+}
 
 /* Row object (single feed), for use with FeedList */
 FeedRow = function(data, id) {
@@ -348,9 +339,12 @@ FeedRow.prototype.render = function() {
 	$(".name-col span", this.row).text(this.data.name);
 	$(".url-col span", this.row).text(this.data.feed);
 	$(".remove-col span", this.row).text('Delete');
-	this.bindEvents();
 	if(!exists)
-		$('#feeds_list tbody').append(this.row)
+		$('#feeds_list tbody').append(this.row);
+	this.bindEvents();
+};
+FeedRow.prototype.derender = function() {
+	this.row.remove();
 };
 FeedRow.prototype.bindEvents = function() {
 	var url = $(".url-col", this.row);
