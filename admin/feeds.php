@@ -81,29 +81,6 @@ if(!empty($message))
 		<tr id="nofeeds"><td colspan="3"><?php _e("You don't have any feeds yet! Try adding some.") ?></td></tr>
 	</tbody>
 </table>
-<div id="changer">
-	<form action="feeds.php" method="get" id="change_form">
-		<fieldset id="change">
-			<h2><?php _e('Edit Feed'); ?></h2>
-			<div class="row">
-				<label for="change_name"><?php _e('Name'); ?>:</label>
-				<input type="text" name="change_name" id="change_name" />
-			</div>
-			<div class="row">
-				<label for="change_url"><?php _e('Feed address (URL)'); ?>:</label>
-				<input type="text" name="change_url" id="change_url" />
-				<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
-			</div>
-			<input type="hidden" name="action" value="change" />
-			<input type="hidden" name="change_cat" value="" />
-			<div id="changer_id" class="row">
-				<label for="change_id"><?php _e('Feed ID'); ?>:</label>
-				<input type="text" name="change_id" id="change_id" value="" />
-			</div>
-			<input type="submit" value="<?php _e('Save'); ?>" class="submit" />
-		</fieldset>
-	</form>
-</div>
 <form action="feeds.php" method="get" id="add_form">
 	<fieldset id="add">
 		<h2><?php _e('Add Feed'); ?></h2>
