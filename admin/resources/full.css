@@ -107,8 +107,10 @@
 .item-table tbody tr {
 	border-bottom: 1px solid #CCC;
 }
-.item-table td.remove-col {
+.item-table .remove-col {
 	text-align: center;
+}
+.item-table td.remove-col {
 	font-size: 1em;
 }
 .item-table th, .item-table td {
