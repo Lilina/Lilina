@@ -110,12 +110,12 @@ legend {
 	text-align: right;
 	width: 40%;
 	margin-left: -2em;
-	padding: 0.5em 2em 0.5em 0;
+	padding: 2px 2em 2px 0;
 	font-size: 1.2em;
 }
 .row input, .row select {
 	width: 56%;
-	padding: 0.6em;
+	padding: 3px;
 	margin-bottom: 1em;
 	font-size: 1.3em;
 	font-family: Arial, sans-serif;
