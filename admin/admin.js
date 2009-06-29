@@ -364,8 +364,8 @@ FeedRow.prototype.render = function() {
 	}
 	$(this.row).attr('id', 'feed-' + this.id);
 	$("td", this.row).html("<span />");
-	$(".name-col span", this.row).text(this.data.name);
-	$(".url-col span", this.row).text(this.data.feed);
+	$(".name-col span", this.row).text(this.data.name).attr("title", _r("Double-click to edit"));
+	$(".url-col span", this.row).text(this.data.feed).attr("title", _r("Double-click to edit"));
 	$(".remove-col span", this.row).text('Delete').addClass("button negative");
 	if(!exists)
 		$('#feeds_list tbody').append(this.row);
