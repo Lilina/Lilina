@@ -12,7 +12,7 @@ define('LILINA_LOGIN', true);
 require_once('admin.php');
 
 if(defined('LILINA_AUTHED') && LILINA_AUTHED === true) {
-	header('HTTP/1.1 301 Moved Permanently');
+	header('HTTP/1.1 302 Found', true, 302);
 	header('Location: ' . get_option('baseurl') . 'admin/index.php');
 	header('Connection: close');
 	die();
