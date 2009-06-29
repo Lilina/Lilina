@@ -28,8 +28,8 @@ class HTTPRequest {
 		$this->transports['fsockopen'] = 'HTTPRequest_fsockopen';
 
 		if(empty($transport) || !isset($this->transports[$transport])) {
-			foreach($this->transports as $t) {
-				$result = call_user_func(array($this->transports[$t], 'test'));
+			foreach($this->transports as $t => $class) {
+				$result = call_user_func(array($class, 'test'));
 				if($result) {
 					$transport = $t;
 					break;
