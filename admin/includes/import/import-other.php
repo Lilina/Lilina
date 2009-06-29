@@ -39,7 +39,7 @@ class OPML_Import {
 
 		$http = new HTTPRequest('', 10, 'Lilina/' . LILINA_CORE_VERSION);
 		$opml = $http->get($opml_url);
-		$opml = new OPML($opml->body);
+		$opml = new OPMLParser($opml->body);
 
 		if(!empty($opml->error) || empty($opml->data)) {
 			throw new Exception(sprintf(_r('The OPML file could not be read. The parser said: %s'), $opml->error));

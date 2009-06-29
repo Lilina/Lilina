@@ -42,12 +42,12 @@
  *
  * @package OPML Parser
  */
-class OPML {
+class OPMLParser {
 	public $data = array();
 	public $raw = '';
 	public $error = '';
 
-	public function OPML($raw_data) {
+	public function __construct($raw_data) {
 		$this->raw = $raw_data;
 		// Create an XML parser
 		try {
