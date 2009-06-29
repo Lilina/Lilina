@@ -151,7 +151,7 @@ if(!empty($_GET['updated']))
 	</fieldset>
 	<input type="hidden" name="action" value="settings" />
 	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
-	<input type="submit" value="<?php _e('Save') ?>" class="submit" />
+	<p class="buttons"><button type="submit" class="positive"><?php _e('Save') ?></button></p>
 </form>
 <form action="settings.php" method="post">
 	<fieldset id="plugins">
@@ -181,11 +181,11 @@ foreach(lilina_plugins_list(get_plugin_dir()) as $plugin):
 <?php
 if( isset($current_plugins[md5($plugin_file)]) ):
 ?>
-					<td><a href="settings.php?deactivate_plugin=<?php echo $plugin_file ?>"><?php  _e('Dectivate') ?></a></td>
+					<td><a href="settings.php?deactivate_plugin=<?php echo $plugin_file ?>" class="button negative"><?php  _e('Dectivate') ?></a></td>
 <?php
 else:
 ?>
-					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>"><?php  _e('Activate') ?></a></td>
+					<td><a href="settings.php?activate_plugin=<?php echo $plugin_file ?>" class="button positive"><?php  _e('Activate') ?></a></td>
 <?php
 endif;
 ?>

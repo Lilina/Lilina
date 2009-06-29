@@ -107,7 +107,7 @@
 .item-table tbody tr {
 	border-bottom: 1px solid #CCC;
 }
-.item-table .change-col, .item-table .remove-col {
+.item-table .remove-col {
 	text-align: center;
 }
 .item-table th, .item-table td {
@@ -120,9 +120,6 @@
 }
 .item-table input {
 	width: 100%;
-}
-.item-table tbody .remove-col {
-	color: red;
 }
 .item-table tbody .remove-col span {
 	cursor: pointer;

@@ -95,7 +95,7 @@ fieldset {
 }
 legend {
 	font-size: 1.7em;
-	margin: 0.8em 0;
+	margin: 0.8em 0 0.4em;
 	padding: 0;
 }
 .row {
@@ -128,13 +128,32 @@ legend {
 	color: #AAA;
 	text-align: center;
 }
-.submit {
-	clear: both;
-	width: 20%;
-	margin: 0 auto;
-	font-size: 1.6em;
-	background: #eee;
-	border: 1px solid #CCC;
+p.buttons {
+	font-size: 1em;
+	text-align: center;
+}
+button, .button {
+	margin: 0 4px;
+	padding: 4px 8px;
+	font-size: 1.2em;
+	color: #fff;
+	background: #0CA2FF;
+	border: 1px solid #0CA2FF;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	text-align: center;
+	cursor: pointer;
+	font-family: 'Lucida Grande',Verdana,Arial,Helvetica,sans-serif;
+
+	text-decoration: none;
+}
+button.positive, .button.positive {
+	background: #037F0C;
+	border-color: #037F0C;
+}
+button.negative, .button.negative {
+	background: #B2080A;
+	border-color: #B2080A;
 }
 
 #loading, .ui-widget-overlay {

@@ -95,7 +95,7 @@ if(!empty($message))
 			<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
 		</div>
 		<input type="hidden" name="action" value="add" />
-		<input type="submit" value="<?php _e('Add'); ?>" class="submit" />
+		<p class="buttons"><button type="submit" class="positive"><?php _e('Add'); ?></button></p>
 	</fieldset>
 </form>
 <?php

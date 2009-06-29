@@ -75,7 +75,7 @@ var admin = {
 			msg.title = (msg.title != undefined) ? msg.title: _r("Are You Sure?");
 			msg.ok = (msg.ok != undefined) ? msg.ok: _r("OK");
 			msg.cancel = (msg.cancel != undefined) ? msg.cancel: _r("Cancel");
-			var dialog = $("<div title='" + msg.title + "'><p>" + msg.message + "</p><p class='buttons'><a href='#OK' class='doit'>" + msg.ok + "</a> <span class='cancel'>or <a href='#Cancel'>" + msg.cancel + "</a></span></p></div>");
+			var dialog = $("<div title='" + msg.title + "'><p>" + msg.message + "</p><button type='button' class='doit positive'>" + msg.ok + "</button> <span class='cancel'>or <a href='#Cancel' class='button negative'>" + msg.cancel + "</a></span></p></div>");
 			$("body").append(dialog);
 			var dialogClasses = (additional_classes == undefined) ? "confirmation": "confirmation " + additional_classes;
 			dialog.dialog({
@@ -87,7 +87,7 @@ var admin = {
 					dialog.remove()
 				}
 			});
-			$("a.doit", dialog).click(function(e) {
+			$("button.doit", dialog).click(function(e) {
 				dialog.dialog("close");
 				if (owner) {
 					callback.call(owner)
@@ -366,7 +366,7 @@ FeedRow.prototype.render = function() {
 	$("td", this.row).html("<span />");
 	$(".name-col span", this.row).text(this.data.name);
 	$(".url-col span", this.row).text(this.data.feed);
-	$(".remove-col span", this.row).text('Delete');
+	$(".remove-col span", this.row).text('Delete').addClass("button negative");
 	if(!exists)
 		$('#feeds_list tbody').append(this.row);
 	this.bindEvents();
