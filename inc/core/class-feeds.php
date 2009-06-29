@@ -14,6 +14,7 @@
  */
 class Feeds {
 	protected $feeds;
+	protected $file;
 
 	public function __construct() {
 		if(!class_exists('SimplePie'))
@@ -151,12 +152,31 @@ class Feeds {
 	 */
 	protected function load() {
 		$data = $this->file->load('feeds.json');
-		if($data !== null)
-			$data = json_decode($data, true);
+		if($data === null) {
+			$data = $this->upgrade();
+		}
 		else
-			$data = array();
+			$data = json_decode($data, true);
 
 		$this->feeds = $data;
+	}
+
+	protected function upgrade() {
+		$data = $this->file->load('feeds.data');
+		if($data === null) {
+			return array();
+		}
+		$data = unserialize(base64_decode($data));
+		$new_data = array();
+		foreach($data['feeds'] as $feed) {
+			$id = sha1($feed['feed']);
+
+			$new_data[$id] = array_merge($feed, array('id' => $id));
+		}
+		$this->feeds = $new_data;
+		$this->save();
+
+		return $new_data;
 	}
 
 	/**
