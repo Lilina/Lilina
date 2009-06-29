@@ -140,7 +140,8 @@ class Feeds {
 		$removed = apply_filters('feed-delete', $removed);
 		$this->save();
 		return sprintf(
-			_r('Removed feed &mdash; <a href="%s">Undo</a>?'),
+			_r('Removed "%1$s" &mdash; <a href="%1$s">Undo</a>?'),
+			$removed['name'],
 			'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed']) . '&amp;id=' . urlencode($removed['id'])
 		);
 	}

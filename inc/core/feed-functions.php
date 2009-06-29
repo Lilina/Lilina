@@ -163,7 +163,7 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
  * @return bool
  */
 function change_feed($id, $url, $name = '', $category = '') {
-	if(empty($id) || empty($url)) {
+	if((empty($id) && $id !== 0) || empty($url)) {
 		throw new Exception(_r('No URL or feed ID specified'), Errors::get_code('admin.feeds.no_id_or_url'));
 		return false;
 	}
@@ -208,7 +208,8 @@ function remove_feed($id) {
 
 	save_feeds();
 	return sprintf(
-		_r('Removed feed &mdash; <a href="%s">Undo</a>?'),
+		_r('Removed "%1$s" &mdash; <a href="%1$s">Undo</a>?'),
+		$removed['name'],
 		'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])
 	);
 }
