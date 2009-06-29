@@ -115,7 +115,7 @@ class OPML_Import {
 		admin_header(_r('Other (OPML) Importer'));
 		try {
 			$feeds = $this->import_opml($_POST['url']);
-			import();
+			import($feeds);
 		}
 		catch (Exception $e) {
 			$this->error($e);
