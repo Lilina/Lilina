@@ -107,13 +107,15 @@
 .item-table tbody tr {
 	border-bottom: 1px solid #CCC;
 }
-.item-table .remove-col {
+.item-table td.remove-col {
 	text-align: center;
+	font-size: 1em;
 }
 .item-table th, .item-table td {
 	text-align: left;
 	vertical-align: top;
-	padding: 1.2em 0.6em;
+	padding: 10px 6px;
+	font-size: 1.2em;
 }
 .item-table tr:nth-child(2n), .item-table tr.alt {
 	background: #F3F7FE;
