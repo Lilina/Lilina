@@ -37,12 +37,12 @@ class OPML_Import {
 			return false;
 		}
 
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-		$opml = new SimplePie_File($opml_url);
+		$http = new HTTPRequest('', 10, 'Lilina/' . LILINA_CORE_VERSION);
+		$opml = $http->get($opml_url);
 		$opml = new OPML($opml->body);
 
 		if(!empty($opml->error) || empty($opml->data)) {
-			MessageHandler::add_error(sprintf(_r('The OPML file could not be read. The parser said: %s'), $opml->error));
+			throw new Exception(sprintf(_r('The OPML file could not be read. The parser said: %s'), $opml->error));
 			return false;
 		}
 		$feeds_num = 0;
@@ -74,7 +74,7 @@ class OPML_Import {
 			<label for="url"><?php _e('OPML address (URL)'); ?>:</label>
 			<input type="text" name="url" id="url" />
 		</div>
-		<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
+		<p class="buttons"><button type="submit" class="positive"><?php _e('Import'); ?></button></p>
 		<input type="hidden" name="step" value="1" />
 		<input type="hidden" name="service" value="opml" />
 	</fieldset>
@@ -83,7 +83,29 @@ class OPML_Import {
 		admin_footer();
 	}
 
+	protected function error($e) {
+	?>
+<h1><?php _e('Other (OPML) Importer') ?></h1>
+<p><?php echo $e->getMessage(); ?></p>
+<p><?php _e("Make sure you typed the URL correctly, and that it points directly to your OPML file. (We can't yet find them automatically!)") ?></p>
+<form action="feed-import.php" method="post">
+	<input type="hidden" name="url" id="url" value="<?php echo htmlspecialchars($_POST['url']) ?>" />
+	<p class="buttons">
+		<button type="submit" class="positive"><?php _e('Try Again'); ?></button>
+		<button type="submit" class="negative" name="cancel" value="cancel"><?php _e('Cancel'); ?></button>
+	</p>
+	<input type="hidden" name="step" value="1" />
+	<input type="hidden" name="service" value="opml" />
+</form>
+<?php
+	}
+
 	protected function import() {
+		if(!empty($_POST['cancel']) && $_POST['cancel'] == 'cancel') {
+			header('HTTP/1.1 302 Found', true, 302);
+			header('Location: ' . get_option('baseurl') . 'admin/feed-import.php');
+			die();
+		}
 		if(empty($_POST['url'])) {
 			$_POST['step']--;
 			$this->dispatch();
@@ -91,7 +113,13 @@ class OPML_Import {
 		}
 
 		admin_header(_r('Other (OPML) Importer'));
-		import($this->import_opml($_POST['url']));
+		try {
+			$feeds = $this->import_opml($_POST['url']);
+			import();
+		}
+		catch (Exception $e) {
+			$this->error($e);
+		}
 		admin_footer();
 		return;
 	}
