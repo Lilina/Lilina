@@ -52,6 +52,12 @@ class Items {
 	public $items = array();
 
 	/**
+	 * Conditions used when filtering items
+	 * @var array
+	 */
+	protected $conditions = array();
+
+	/**
 	 * Object constructor
 	 *
 	 * Sets our used properties with user input
@@ -64,6 +70,15 @@ class Items {
 			unset($sp);
 			$this->init();
 		}
+	}
+
+	/**
+	 * Set the conditions to use when filtering
+	 *
+	 * @param array $conditions
+	 */
+	public function set_conditions($conditions) {
+		$this->conditions = array_merge($conditions, $this->conditions);
 	}
 
 	/**
@@ -312,5 +327,26 @@ class Items {
 	 */
 	public function get_id() {
 		return $this->current_item->hash;
+	}
+
+	/**
+	 *
+	 */
+	public function filter() {
+		$this->items = array_filter($this->items, array($this, 'filter_callback'));
+	}
+
+	protected function filter_callback($item) {
+		foreach($this->conditions as $key => $condition) {
+			switch($key) {
+				case 'time':
+					if($item->timestamp < $condition) {
+						return false;
+					}
+					break;
+			}
+		}
+
+		return true;
 	}
 }

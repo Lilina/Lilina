@@ -16,12 +16,14 @@ defined('LILINA_PATH') or die('Restricted access');
  * @param array $input Input array of user specified feeds
  * @return object SimplePie object with all feed's associated data
  */
-function lilina_return_items($input) {
+function lilina_return_items($input, $conditions = array()) {
 	foreach($input['feeds'] as $the_feed)
 		$feed_list[] = $the_feed['feed'];
 	$itemcache = new ItemCache();
 	$itemcache->set_feeds($feed_list);
 	$itemcache->init();
+	$itemcache->set_conditions(array('time' => (time() - 86400)));
+	$itemcache->filter();
 	return apply_filters('return_items', $itemcache);
 }
 
@@ -208,7 +210,7 @@ function remove_feed($id) {
 
 	save_feeds();
 	return sprintf(
-		_r('Removed "%1$s" &mdash; <a href="%1$s">Undo</a>?'),
+		_r('Removed "%1$s" &mdash; <a href="%2$s">Undo</a>?'),
 		$removed['name'],
 		'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])
 	);
