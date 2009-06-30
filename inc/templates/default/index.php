@@ -29,9 +29,6 @@ template_header();
 	if(template_synd_links())
 		echo ' | ';
 	?>
-	<a id="expandall" href="javascript:void(0);"><img src="<?php template_directory(); ?>/arrow_out.png" alt="<?php _e('Show All Items'); ?>" /> <?php _e('Expand'); ?></a> |
-	<a id="collapseall" href="javascript:void(0);"><img src="<?php template_directory(); ?>/arrow_in.png" alt="<?php _e('Hide All Items'); ?>" /> <?php _e('Collapse'); ?></a>
-	|
 	<a href="opml.php"><?php _e('OPML'); ?></a>
 	|
 	<a href="#sources"><?php _e('List of sources'); ?></a>

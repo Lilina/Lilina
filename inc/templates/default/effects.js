@@ -98,20 +98,6 @@ function keyboardWatcher(e) {
 
 /* JQuery Stuff! */
 $(document).ready(function() {
-	/* Setup our global buttons */
-	$('.river-page #expandall').css({cursor:'pointer'}).click(function (item) {
-		$('.excerpt').slideDown();
-		$('.item').removeClass('c2').addClass('c1');
-
-		return false;
-	});
-	$('.river-page #collapseall').css({cursor:'pointer'}).click(function() {
-		$('.excerpt').slideUp();
-		$('.item').addClass('c1').removeClass('c2');
-
-		return false;
-	});
-
 	/* Ajax loading if no items are found */
 	$('.river-page #viewallitems').click(function() {
 		$('#main').load('index.php?hours=-1 #main', {}, function () {
