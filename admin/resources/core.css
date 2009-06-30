@@ -100,7 +100,7 @@ legend {
 }
 .row {
 	clear: both;
-	margin: 1em auto;
+	margin: 1em auto 2em;
 	width: 80%;
 	overflow: hidden;
 }
@@ -116,7 +116,7 @@ legend {
 .row input, .row select {
 	width: 56%;
 	padding: 3px;
-	margin-bottom: 1em;
+	margin: 0;
 	font-size: 1.3em;
 	font-family: Arial, sans-serif;
 }
