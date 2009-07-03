@@ -81,6 +81,7 @@ class Feeds {
 			'id'	=> $id,
 			'name'	=> $name,
 			'cat'	=> $cat,
+			'icon'	=> $feed_info->get_favicon(),
 		);
 
 		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url);
