@@ -64,70 +64,7 @@ function template_footer(){
  * @todo Document
  * @todo Implement items_per_page, feed_include, feed_exclude
  */
-function query_setup($args, $override = true) {
-	global $data, $item, $list, $item_number, $showtime, $total_items;
-	$defaults = array(
-		'showtime' => -1,
-		'items_per_page' => 5,
-		'max_items' => -1,
-
-		'feed_include' => -1,
-		'feed_exclude' => -1,
-
-		'page_num' => -1,
-		'offset' => -1,
-	);
-	$args = lilina_parse_args($args, $defaults);
-	/** Make sure we don't overwrite any current variables */
-	extract($args, EXTR_SKIP);
-
-	/** Default setup */
-	if($args['showtime'] < 0) {
-		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
-			if( -1 == $_REQUEST['hours'])
-				$showtime = 0;
-			else
-				$showtime = time() - ((int) $_REQUEST['hours'] * 60 * 60);
-		}
-		else {
-			global $settings;
-			$times = get_option('interface', 'times');
-			$showtime = time() - ((int) $times[0] * 60 * 60);
-		}
-
-		$showtime = apply_filters('showtime', $showtime);
-	}
-	else
-		$showtime = apply_filters('showtime', $args['showtime']);
-
-	if($items_per_page < 0)
-		// Do nothing for now
-
-	if($max_items < 0)
-		$max_items = count($lilina_items->get_items());
-
-	$total_items = $max_items;
-
-	if($feed_include < 0)
-		// Do nothing for now
-
-	if($feed_exclude < 0)
-		// Do nothing for now
-
-	if($page_num > 0)
-		$offset += ($items_per_page * $page_num);
-
-	if($offset >= 0)
-		$item_number = ($offset - 1);
-		
-	if(empty($data))
-		load_feeds();
-
-	if(!isset($data['feeds']) || count($data['feeds']) === 0)
-		return false;
-
-	if(empty($lilina_items))
-		$lilina_items = lilina_return_items($data);
+function query_setup($args) {
 }
 
 /**
