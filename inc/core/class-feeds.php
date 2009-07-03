@@ -13,6 +13,7 @@
  * @subpackage Administration
  */
 class Feeds {
+	protected static $instance;
 	protected $feeds;
 	protected $file;
 
@@ -23,6 +24,15 @@ class Feeds {
 		$this->file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 		$this->load();
 	}
+
+	public static function get_instance($sp = null) {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new Feeds($sp);
+		}
+		return self::$instance;
+	}
+
+	private function __clone() {}
 
 	/**
 	 * Add a new feed to the database
@@ -86,7 +96,7 @@ class Feeds {
 
 		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url);
 		$this->save();
-		return sprintf( _r('Added feed "%1$s"'), $name );
+		return array('msg' => sprintf( _r('Added feed "%1$s"'), $name ), 'id' => $id);;
 	}
 
 	public function get($id) {
