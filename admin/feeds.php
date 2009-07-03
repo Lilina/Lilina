@@ -10,50 +10,6 @@
 require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
 
-$action     = ( isset($_REQUEST['action'] ) )? $_REQUEST['action'] : '';
-
-/** Make sure we're actually adding */
-switch($action) {
-	case 'add':
-		/** We need some sort of value here */
-		if( !isset($_REQUEST['add_name']) )
-			$_REQUEST['add_name'] = '';
-
-		try {
-			if(empty($_REQUEST['add_url']))
-				throw new Exception(_r('No URL specified'), Errors::get_code('admin.feeds.no_url'));
-
-			$message = add_feed($_REQUEST['add_url'], $_REQUEST['add_name']);
-			clear_html_cache();
-		} catch( Exception $e ) {
-			$error = $e->getMessage();
-		}
-	break;
-
-	case 'change':
-		$change_name = ( !empty($_REQUEST['change_name']) ) ? htmlspecialchars($_REQUEST['change_name']) : '';
-		$change_url  = ( !empty($_REQUEST['change_url']) ) ? $_REQUEST['change_url'] : '';
-		$change_id   = ( !empty($_REQUEST['change_id']) ) ? (int) $_REQUEST['change_id'] : null;
-		try {
-			$message = change_feed($change_id, $change_url, $change_name);
-			clear_html_cache();
-		} catch( Exception $e ) {
-			$error = $e->getMessage();
-		}
-
-	case 'remove':
-		$remove_id  = ( isset($_REQUEST['remove']) ) ? htmlspecialchars($_REQUEST['remove']) : '';
-		try {
-			$message = remove_feed($remove_id);
-			clear_html_cache();
-		} catch( Exception $e ) {
-			$error = $e->getMessage();
-		}
-		break;
-	break;
-}
-
-
 admin_header(_r('Feeds'));
 
 if(!empty($error))
