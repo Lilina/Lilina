@@ -68,43 +68,44 @@ function upgrade() {
 
 	require_once(LILINA_PATH . '/inc/core/conf.php');
 
+	/*
 	if(@file_exists(LILINA_PATH . '/content/system/config/feeds.data')) {
 		$feeds = file_get_contents(LILINA_PATH . '/content/system/config/feeds.data');
 		$feeds = unserialize( base64_decode($feeds) );
 
-		/** Are we pre-versioned? */
+		/** Are we pre-versioned? * /
 		if(!isset($feeds['version'])){
 
-			/** Is this 0.7? */
+			/** Is this 0.7? * /
 			if(!is_array($feeds['feeds'][0])) {
-				/** 1 dimensional array, each value is a feed URL string */
+				/** 1 dimensional array, each value is a feed URL string * /
 				foreach($feeds['feeds'] as $new_feed) {
-					add_feed($new_feed);
+					Feeds::get_instance()->add($new_feed);
 				}
 			}
 
-			/** We must be in between 0.7 and r147, when we started versioning */
+			/** We must be in between 0.7 and r147, when we started versioning * /
 			elseif(!isset($feeds['feeds'][0]['url'])) {
 				foreach($feeds['feeds'] as $new_feed) {
-					add_feed($new_feed['feed'], $new_feed['name']);
+					Feeds::get_instance()->add($new_feed['feed'], $new_feed['name']);
 				}
 			}
 
-			/** The feeds are up to date, but we don't have a version */
+			/** The feeds are up to date, but we don't have a version * /
 			else {
 			}
 
 		}
 		elseif($feeds['version'] != $lilina['feed-storage']['version']) {
-			/** Note the lack of breaks here, this means the cases cascade */
+			/** Note the lack of breaks here, this means the cases cascade * /
 			switch(true) {
 				case $feeds['version'] < 147:
-					/** We had a b0rked upgrader, so we need to make sure everything is okay */
+					/** We had a b0rked upgrader, so we need to make sure everything is okay * /
 					foreach($feeds['feeds'] as $this_feed) {
 						
 					}
 				case $feeds['version'] < 237:
-					/** We moved stuff around this version, but we've handled that above. */
+					/** We moved stuff around this version, but we've handled that above. * /
 			}
 		}
 		else {
@@ -114,6 +115,7 @@ function upgrade() {
 		$data['version'] = $lilina['feed-storage']['version'];
 		save_feeds();
 	} //end file_exists()
+	*/
 
 
 	/** Just in case... */

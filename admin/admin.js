@@ -253,31 +253,9 @@ var feeds = {
 				humanMsg.displayMsg(data.msg);
 				// Clear the values
 				$("#add_url, #add_name").val('');
-				admin.feedlist.reload();
+				admin.feedlist.add(data.data);
 				return;
 			});
-	},
-	change: function () {
-		if( !$("#change_url").val() ) {
-			humanMsg.displayMsg(_r('No feed URL supplied'), 'error');
-			return false;
-		}
-		else if( !$("#change_id").val() ) {
-			humanMsg.displayMsg(_r('No feed ID supplied'), 'error');
-			return false;
-		}
-		admin.ajax.post('feeds.change', {
-				feed_id: $("#change_id").val(),
-				name: $("#change_name").val(),
-				url: $("#change_url").val()
-			}, function (data) {
-				humanMsg.displayMsg(data.msg);
-				// Clear the values
-				$("#change_url, #change_name, #change_id").val('');
-
-				admin.feedslist.reload();
-				return;
-		});
 	},
 	reload_table: function () {
 		admin.feedslist.reload();
@@ -307,7 +285,7 @@ AddForm.prototype.add = function () {
 			humanMsg.displayMsg(data.msg);
 			// Clear the values
 			$("#add_url, #add_name").val('');
-			admin.feedlist.reload();
+			admin.feedlist.add(data.data);
 			return;
 		});
 };
@@ -336,7 +314,7 @@ FeedList.prototype.loadCallback = function (data) {
 	});
 };
 FeedList.prototype.add = function (data) {
-	this.feeds.push(new FeedRow(data, this.n++));
+	this.feeds.push(new FeedRow(data));
 };
 FeedList.prototype.reload = function () {
 	jQuery.each(this.feeds, function () {
@@ -348,13 +326,11 @@ FeedList.prototype.reload = function () {
 }
 
 /* Row object (single feed), for use with FeedList */
-FeedRow = function(data, id) {
+FeedRow = function(data) {
 	this.data = data;
-	this.id = id;
 	this.render()
 };
 FeedRow.prototype.data = null;
-FeedRow.prototype.id = null;
 FeedRow.prototype.row = null;
 FeedRow.prototype.render = function() {
 	var exists = true;
@@ -362,7 +338,7 @@ FeedRow.prototype.render = function() {
 		exists = false;
 		this.row = $('<tr><td class="name-col" /><td class="url-col" /><td class="remove-col" /></tr>');
 	}
-	$(this.row).attr('id', 'feed-' + this.id);
+	$(this.row).attr('id', 'feed-' + this.data.id);
 	$("td", this.row).html("<span />");
 	$(".name-col span", this.row).text(this.data.name).attr("title", _r("Double-click to edit"));
 	$(".url-col span", this.row).text(this.data.feed).attr("title", _r("Double-click to edit"));
@@ -412,7 +388,7 @@ FeedRow.prototype.edit = function(type) {
 	var me = this;
 	input_field.bind("blur keypress", function(e) {
 		if (e.type == "keypress" && e.which == 13) {
-			me.save();
+			me.save(type);
 		}
 		if (e.type == "blur") {
 			me.save();
@@ -422,7 +398,7 @@ FeedRow.prototype.edit = function(type) {
 };
 FeedRow.prototype.remove = function () {
 	var me = this;
-	admin.ajax.post("feeds.remove", {feed_id: this.id}, function (data) { me.removeComplete(data); });
+	admin.ajax.post("feeds.remove", {feed_id: this.data.id}, function (data) { me.removeComplete(data); });
 };
 FeedRow.prototype.removeComplete = function (data) {
 	this.row.remove();
@@ -430,23 +406,21 @@ FeedRow.prototype.removeComplete = function (data) {
 	humanMsg.displayMsg(data.msg);
 };
 FeedRow.prototype.save = function () {
-	var new_data = {feed_id: this.id};
+	var new_data = {feed_id: this.data.id};
 
 	if($(".url-col input", this.row).length)
 		new_data.url = $(".url-col input", this.row).val();
-	else
-		new_data.url = this.data.feed;
 
 	if($(".name-col input", this.row).length)
 		new_data.name = $(".name-col input", this.row).val();
 
 	var me = this;
 	admin.ajax.post("feeds.change", new_data, function (data) {
-			me.saveComplete(data);
+			me.saveComplete(data.data);
 		});
 };
 FeedRow.prototype.saveComplete = function(data) {
-	this.data.feed = data.url;
+	this.data.feed = data.feed;
 	if(data.name.length != 0)
 		this.data.name = data.name;
 	this.render();

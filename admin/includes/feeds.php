@@ -44,8 +44,5 @@ function feed_list_table() {
  * @global array
  */
 function get_feeds() {
-	global $data;
-	if(isset($data['feeds']))
-		return $data['feeds'];
-	return array(false);
+	return Feeds::get_instance()->getAll();
 }

@@ -100,59 +100,7 @@ function lilina_sanitize_item($item) {
  * @return bool True if succeeded, false if failed
  */
 function add_feed($url, $name = '', $cat = 'default', $return = false) {
-	if(empty($url)) {
-		throw new Exception(_r("Couldn't add feed: No feed URL supplied"), Errors::get_code('admin.feeds.no_url'));
-	}
-
-	if(!preg_match('#https|http|feed#', $url)) {
-		if(strpos($url, '://')) {
-			throw new Exception(_r('Unsupported URL protocol'), Errors::get_code('admin.feeds.protocol_error'));
-		}
-
-		$url = 'http://' . $url;
-	}
-	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-	$feed_info = new SimplePie();
-	$feed_info->set_useragent('Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
-	$feed_info->set_stupidly_fast(true);
-	$feed_info->enable_cache(false);
-	$feed_info->set_feed_url(urldecode($url));
-	$feed_info->init();
-	$feed_error = $feed_info->error();
-	$feed_url = $feed_info->subscribe_url();
-
-	if(!empty($feed_error)) {
-		//No feeds autodiscovered;
-		throw new Exception(
-			sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ),
-			Errors::get_code('admin.feeds.invalid_url')
-		);
-	}
-
-	if(empty($name)) {
-		//Get it from the feed
-		$name = $feed_info->get_title();
-	}
-
-	if($return === true) {
-		return array(
-			'feed'	=> $feed_url,
-			'url'	=> $feed_info->get_link(),
-			'name'	=> $name,
-			'cat'	=> $cat,
-		);
-	}
-
-	global $data;
-	$data['feeds'][] = array(
-		'feed'	=> $feed_url,
-		'url'	=> $feed_info->get_link(),
-		'name'	=> $name,
-		'cat'	=> $cat,
-	);
-
-	save_feeds();
-	return sprintf( _r('Added feed "%1$s"'), $name );
+	return Feeds::get_instance()->add($url, $name, $cat);
 }
 
 /**
@@ -165,28 +113,7 @@ function add_feed($url, $name = '', $cat = 'default', $return = false) {
  * @return bool
  */
 function change_feed($id, $url, $name = '', $category = '') {
-	if((empty($id) && $id !== 0) || empty($url)) {
-		throw new Exception(_r('No URL or feed ID specified'), Errors::get_code('admin.feeds.no_id_or_url'));
-		return false;
-	}
-
-	global $data;
-	if(empty($data['feeds'][$id])) {
-		throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
-	}
-	$feed = array('feed' => $url);
-	if(!empty($category)) {
-		$feed['cat'] = $category;
-	}
-	if(!empty($name)) {
-		$feed['name'] = $name;
-	}
-	else {
-		$name = $data['feeds'][$id]['name'];
-	}
-	$data['feeds'][$id] = array_merge($data['feeds'][$id], $feed);
-	save_feeds();
-	return sprintf(_r('Changed "%s" (#%d)'), $name, $id);
+	throw new Exception("This isn't handled yet, because I'm lazy. Please fix me. If you see this, report a bug and I'll fix it.");
 }
 
 /**
@@ -196,24 +123,7 @@ function change_feed($id, $url, $name = '', $category = '') {
  * @return bool
  */
 function remove_feed($id) {
-	global $data;
-
-	if(!isset($data['feeds'][$id])) {
-		throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
-	}
-
-	//Make a copy for later.
-	$removed = $data['feeds'][$id];
-	unset($data['feeds'][$id]);
-	//Reorder array
-	$data['feeds'] = array_values($data['feeds']);
-
-	save_feeds();
-	return sprintf(
-		_r('Removed "%1$s" &mdash; <a href="%2$s">Undo</a>?'),
-		$removed['name'],
-		'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed'])
-	);
+	return Feeds::get_instance()->delete($id);
 }
 
 /**

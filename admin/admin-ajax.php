@@ -60,24 +60,29 @@ class AdminAjax {
 		if(empty($params['url']))
 			throw new Exception( _r('No URL specified'), Errors::get_code('admin.feeds.no_url') );*/
 
-		$result = add_feed( $url, $name );
+		$result = Feeds::get_instance()->add( $url, $name );
 		clear_html_cache();
-		return array('success' => 1, 'msg' => $result, 'feed' => $url, 'name' => $name);
+		return array('success' => 1, 'msg' => $result['msg'], 'data' => Feeds::get_instance()->get($result['id']));
 	}
 	/**
 	 * Callback for feeds.change
 	 */
-	public static function feeds_change($feed_id, $url, $name = '') {
-		$result = change_feed((int) $feed_id, $url, $name);
+	public static function feeds_change($feed_id, $url = '', $name = '') {
+		$data = array();
+		if(!empty($url))
+			$data['feed'] = $url;
+		if(!empty($name))
+			$data['name'] = $name;
+		$result = Feeds::get_instance()->update($feed_id, $data);
 		clear_html_cache();
 
-		return array('success' => 1, 'msg' => $result, 'url' => $url, 'name' => $name);
+		return array('success' => 1, 'msg' => $result, 'data' => Feeds::get_instance()->get($feed_id));
 	}
 	/**
 	 * Callback for feeds.remove
 	 */
 	public static function feeds_remove($feed_id) {
-		$success = remove_feed((int) $feed_id);
+		$success = Feeds::get_instance()->delete($feed_id);
 		clear_html_cache();
 		return array('success' => 1, 'msg' => $success);
 	}
@@ -91,7 +96,7 @@ class AdminAjax {
 	 * Callback for feeds.get
 	 */
 	public static function feeds_get() {
-		return get_feeds();
+		return Feeds::get_instance()->getAll();
 	}
 }
 
