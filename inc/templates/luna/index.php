@@ -59,7 +59,7 @@ endwhile;
 <ul>
 <?php
 list_feeds('format=<li>
-<a href="%4$s" title="subscribe"><img src="' . get_template_directory() . '/images/feed.png" alt="(feed)"></a> <a href="%1$s">%3$s</a>
+<a href="%4$s" title="subscribe"><img src="%2$s" alt="(feed)" height="16" width="16"></a> <a href="%1$s">%3$s</a>
 </li>');
 ?>
 </ul>

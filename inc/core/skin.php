@@ -497,19 +497,8 @@ function feed_equals($args='') {
 * @return boolean Are feeds available?
 */
 function has_feeds() {
-	global $data;
-	if(empty($data))
-		load_feeds();
-
-	if(!isset($data['feeds']) || count($data['feeds']) === 0)
-		return false;
-
-	return true;
-	//if(empty($list)) {
-	//	$list	= lilina_return_items($data);
-	//}
-	//var_dump($list);
-	//return apply_filters('has_feeds', ((is_array($list[0]) && count($list[0]) > 0) ? true : false));
+	$feeds = Feeds::get_instance()->getAll();
+	return apply_filters('has_feeds', count($feeds === 0));
 }
 
 /**
@@ -518,11 +507,7 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
-	global $data;
-	if(empty($data)) {
-		load_feeds();
-	}
-	return apply_filters('get_feeds', $data['feeds']);
+	return apply_filters('get_feeds', Feeds::get_instance()->getAll());
 }
 
 /**
@@ -539,8 +524,11 @@ function list_feeds($args = '') {
 
 	if(has_feeds()) {
 		foreach(get_feeds() as $feed) {
+			$icon = $feed['icon'];
+			if(!$icon)
+				$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
 			$title = ($title_length > 0) ? shorten($feed['name'], $title_length) : $feed['name'];
-			printf($format, $feed['url'], /** This doesn't work yet: get_the_feed_favicon($feed['url']) */ Templates::path_to_url( Templates::get_file('feed.png') ), $title, $feed['feed']);
+			printf($format, $feed['url'], $icon, $title, $feed['feed']);
 		}
 	}
 }

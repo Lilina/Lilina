@@ -65,7 +65,8 @@ class Feeds {
 		$feed_info = new SimplePie();
 		$feed_info->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed_info->set_stupidly_fast(true);
-		$feed_info->enable_cache(false);
+		$feed_info->set_cache_location(get_option('cachedir'));
+		$feed_info->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 		$feed_info->set_feed_url($url);
 		$feed_info->init();
 		$feed_error = $feed_info->error();
@@ -171,6 +172,19 @@ class Feeds {
 			$data = json_decode($data, true);
 
 		$this->feeds = $data;
+		if(get_option('feeds_version', 0) !== 2) {
+			$new_feeds = array();
+
+			// Crappy workaround
+			set_time_limit(count($this->feeds) * 10);
+			foreach($this->feeds as $id => $feed) {
+				$new_feeds[$id] = $this->upgrade_single($feed);
+			}
+
+			$this->feeds = $new_feeds;
+			$this->save();
+			update_option('feeds_version', 2);
+		}
 	}
 
 	protected function upgrade() {
@@ -189,6 +203,22 @@ class Feeds {
 		$this->save();
 
 		return $new_data;
+	}
+
+	protected function upgrade_single($feed) {
+		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+		$sp = new SimplePie();
+		$sp->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
+		$sp->set_stupidly_fast(true);
+		$sp->set_cache_location(get_option('cachedir'));
+		$sp->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
+		$sp->set_feed_url($feed['feed']);
+		$sp->init();
+		if(!isset($feed['icon'])) {
+			$feed['icon'] = $sp->get_favicon();
+		}
+
+		return $feed;
 	}
 
 	/**
