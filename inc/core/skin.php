@@ -523,7 +523,9 @@ function list_feeds($args = '') {
 	extract($args, EXTR_SKIP);
 
 	if(has_feeds()) {
-		foreach(get_feeds() as $feed) {
+		$feeds = get_feeds();
+		usort($feeds, '_sort_feeds');
+		foreach($feeds as $feed) {
 			$icon = $feed['icon'];
 			if(!$icon)
 				$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
@@ -531,6 +533,17 @@ function list_feeds($args = '') {
 			printf($format, $feed['url'], $icon, $title, $feed['feed']);
 		}
 	}
+}
+
+/**
+ * Sort feeds by name (internal)
+ *
+ * @param array $a First feed array
+ * @param array $b Second feed array
+ * @return See strnatcmp()
+ */
+function _sort_feeds($a, $b) {
+    return strnatcasecmp($a['name'], $b['name']);
 }
 
 /**
