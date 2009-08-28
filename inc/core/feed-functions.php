@@ -13,11 +13,11 @@ defined('LILINA_PATH') or die('Restricted access');
  * Generates a SimplePie object from a list of feeds
  *
  * Takes an input array and parses it using the SimplePie library. Returns a SimplePie object.
- * @param array $input Input array of user specified feeds
+ * @param array $input Deprecated
  * @return object SimplePie object with all feed's associated data
  */
 function lilina_return_items($input, $conditions = array()) {
-	foreach($input['feeds'] as $the_feed)
+	foreach(Feeds::get_instance()->getAll() as $the_feed)
 		$feed_list[] = $the_feed['feed'];
 	$itemcache = new ItemCache();
 	$itemcache->set_feeds($feed_list);
