@@ -138,7 +138,7 @@ class Installer {
 
 		if(empty($errors)) {
 			$output .= "<p>These warnings might cause some feeds not to be read properly, however <em>you will be able to run Lilina.</em></p>\n";
-			$output .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">';
+			$output .= '<form action="install.php" method="post">';
 			$output .= '<input type="hidden" name="page" value="1" /><input type="hidden" name="skip" value="1" />';
 			$output .= '<input class="submit" type="submit" value="Continue" /></form>';
 			$output .= "<p id='footnote-quote'>Danger, Will Robinson! &mdash; <em>Lost in Space</em></p>";
@@ -202,7 +202,7 @@ class Installer {
 		?>
 		<h1>Uh oh!</h1>
 		<p>Something happened and <code><?php echo $filename ?></code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
-		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+		<form action="install.php" method="post">
 		<input type="hidden" name="sitename" value="<?php echo $sitename; ?>" />
 		<input type="hidden" name="username" value="<?php echo $username; ?>" />
 		<input type="hidden" name="password" value="<?php echo $password; ?>" />

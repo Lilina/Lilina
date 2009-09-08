@@ -9,7 +9,7 @@
  * @author WordPress
  */
 function lilina_version_check() {
-	if ( strpos($_SERVER['PHP_SELF'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
+	if ( strpos($_SERVER['REQUEST_URI'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
 		return;
 	global $lilina;
 	//Just to make sure
