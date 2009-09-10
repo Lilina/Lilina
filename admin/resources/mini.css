@@ -1,17 +1,61 @@
-#header p {
-	float: left;
-	margin: 0;
-	padding: 0;
-	line-height: 2em;
-	font-size: 1.4em;
+body {
+	background: #efefef;
 }
-#header p#sitetitle {
-	float: right;
+h1 {
+	font-size: 30px;
+	margin-bottom: 30px;
 }
-#header p a {
-	color: #fff;
-	text-decoration: none;
+p {
+	margin-bottom: 0;
 }
 #main {
-	max-width: 760px;
+	width: 400px;
+	margin: 0 auto;
+}
+label {
+}
+.input {
+	border: 1px solid #ccc;
+	font: normal 26px 'Lucida Grande', Verdana, Arial, Helvetica, sans-serif;
+	color: #444;
+	background: #fff;
+	outline: 0;
+	margin: 0;
+	padding: 4px 5px;
+	width: 370px;
+}
+.errorform #url {
+	border-color: red;
+}
+.input_small {
+	font-size: 12px;
+}
+.submit {
+	margin-top: 1em;
+}
+#backlink {
+	margin: 0;
+}
+#backlink a {
+	color: #999;
+	font-size: 0.8em;
+}
+#error {
+	background: #a40000;
+	padding: 4px 8px;
+	color: #fff;
+	font-size: 0.8em;
+	text-align: center;
+}
+#error p {
+	margin: 0;
+}
+#counter {
+	font-size: 20px;
+}
+
+#message {
+	text-align: center;
+	color: #888;
+	margin-top: 100px;
 }

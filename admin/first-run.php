@@ -26,6 +26,6 @@ admin_header(_r('First-Run'));
 <p class="sidenote"><?php echo sprintf(_r('Looking to import from another service? Try our <a href="%s">open documentation</a> to see what other users have found.'), 'http://getlilina.org/wiki/importing') ?></p>
 <h2><?php _e('Quick Adding') ?></h2>
 <p><?php _e('Use this bookmarlet to subscribe to feeds straight from your browser:')?> 
-<a href="javascript:void(sp=window.open('<?php echo get_option('baseurl') ?>admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,width=800,height=600,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));"><?php _e('Subscribe') ?></a></p>
+<a href="javascript:void(sp=window.open('<?php echo get_option('baseurl') ?>admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,resizable=no,width=450,height=430,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));"><?php _e('Subscribe') ?></a></p>
 <?php
 admin_footer();
