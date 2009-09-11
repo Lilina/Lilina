@@ -281,3 +281,28 @@ body.login .humanMsg {
 	margin-right: 200px;
 	height: inherit;
 }
+
+#block-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	overflow: auto;
+}
+#block-list li {
+	display: block;
+	width: 24%;
+	margin-left: 0.7%;
+	padding: 10px 0;
+	float: left;
+	border: 1px solid #babdb6;
+	text-align: center;
+}
+#block-list a {
+	color: #333;
+	background: url("feed.png") no-repeat left center;
+	text-decoration: none;
+	padding-left: 26px;
+}
+#block-list .greader a { background-image: url("greader.png"); }
+#block-list .bloglines a { background-image: url("bloglines.png"); }
