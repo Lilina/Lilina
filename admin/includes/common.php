@@ -19,7 +19,7 @@
 function generate_nonce() {
 	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	return md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
+	return md5($time . $user_settings['user'] . $user_settings['pass']);
 }
 
 /**
@@ -31,7 +31,7 @@ function generate_nonce() {
 function check_nonce($nonce) {
 	$user_settings = get_option('auth');
 	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . get_option('auth', 'user') . get_option('auth', 'pass'));
+	$current_nonce = md5($time . $user_settings['user'] . $user_settings['pass']);
 	if($nonce !== $current_nonce) {
 		return false;
 	}
