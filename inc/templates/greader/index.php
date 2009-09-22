@@ -31,7 +31,9 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 
 	<title><?php /*the_page_title();*/ template_sitename();?></title>
 
+	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/reset.css" media="screen"/>
 	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/style.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/content.css" media="screen"/>
 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
@@ -62,13 +64,21 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 if(has_items(false)) {
 		while(has_items()): the_item();
 ?>
-				<li class="feed-<?php the_feed_id(); ?> item collapsed" id="item-<?php the_id(); ?>">
+				<li class="feed-<?php the_feed_id(); ?> item" id="item-<?php the_id(); ?>">
 					<div class="title-bar">
-						<a class="title" id="title-<?php the_id(); ?>" title="Click to expand/collapse item" href="javascript:void(0)"><?php the_title(); ?></a>
-						<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
-						<a href="<?php the_link(); ?>" class="sourcelink">Read original post</a>
+						<div class="main-section">
+							<h3 class="title" id="title-<?php the_id(); ?>"><?php the_title(); ?></h3>
+							&nbsp;
+							<div class="excerpt"><p><?php the_summary(200) ?></p></div>
+							<div class="read"><a href="<?php the_link(); ?>">Continue reading on the original site.</a></div>
+						</div>
+						<div class="secondary-section">
+							<span class="feed"><?php the_feed_name() ?></span>
+							<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
+						</div>
+						<div class="clearer"></div>
 					</div>
-					<div class="excerpt" id="excerpt-<?php the_id(); ?>">
+					<div class="content" id="content-<?php the_id(); ?>">
 						<?php the_content(); ?>
 					</div>
 					<div class="action-bar">
@@ -115,5 +125,8 @@ else {
 
 <?php template_footer(); ?>
 <!-- Generated in: <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
+
+<script src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
+<script src="<?php template_directory(); ?>/greader.js"></script>
 </body>
 </html>
