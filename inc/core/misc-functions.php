@@ -304,7 +304,7 @@ function lilina_level_playing_field() {
 			die('GLOBALS overwrite attempt detected');
 
 		// Variables that shouldn't be unset
-		$keep = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'table_prefix');
+		$keep = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES');
 
 		$input = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES, isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
 		foreach ( $input as $k => $v ) {
@@ -332,6 +332,8 @@ function lilina_level_playing_field() {
  * @return string Shortened string
  */
 function shorten($string, $length) {
+	$string = strip_tags($string);
+
 	/** Short-circuit if no shortening is needed */
 	if(!isset($string[$length + 1])) return $string;
 
@@ -340,7 +342,7 @@ function shorten($string, $length) {
 
 	// Convert 'smart' punctuation to 'dumb' punctuation, strip the HTML tags,
 	// and convert all tabs and line-break characters to single spaces.
-	$short_desc = trim(str_replace(array("\r","\n", "\t"), ' ', strip_tags($string)));
+	$short_desc = trim(str_replace(array("\r","\n", "\t"), ' ', $string));
 
 	// Cut the string to the requested length, and strip any extraneous spaces 
 	// from the beginning and end.
