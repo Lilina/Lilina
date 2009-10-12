@@ -20,17 +20,7 @@ admin_header(_r('Home'));
 	<h3><?php _e('Current Feeds') ?></h3>
 	<ul>
 <?php
-/**
- * 
- * @global array
- */
-function get_feed_list() {
-	global $data;
-	if(isset($data['feeds']))
-		return $data['feeds'];
-	return false;
-}
-$feed_list = get_feed_list();
+$feed_list = Feeds::get_instance()->getAll();
 if(is_array($feed_list)) {
 	foreach($feed_list as $this_feed) {
 		if(isset($this_feed['name']) && !empty($this_feed['name'])) {
