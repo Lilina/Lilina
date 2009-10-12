@@ -81,27 +81,18 @@ function query_setup($args) {
  * Checks if the current item's date is less than the <tt>$showtime</tt> variable and if so,
  * returns false to stop processing items. If not, checks if the <tt>$item_number</tt> is
  * less than the total number of items and if so, returns true. Otherwise, returns false.
- * @global <tt>$data</tt> contains feed information
- * @global <tt>$item_number</tt> contains the current item's position in the item list
- * @global <tt>$settings</tt> contains filename information and default time to display
- * @global <tt>$showtime</tt> contains the
  *
  * @return boolean Are items available?
  * @todo This is somewhat ugly code. Clean it up.
  */
 function has_items($increment = true) {
 	global $lilina_items;
-	global $data, $item, $item_number, $settings, $showtime, $total_items;
 
-	if(empty($data)) {
-		load_feeds();
-	}
-
-	if(!isset($data['feeds']) || count($data['feeds']) === 0)
+	if(count(Feeds::get_instance()->getAll()) === 0)
 		return false;
 
 	if(empty($lilina_items))
-		$lilina_items = lilina_return_items($data);
+		$lilina_items = lilina_return_items();
 
 	return $lilina_items->has_items();
 }
