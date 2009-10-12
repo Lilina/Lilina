@@ -16,7 +16,7 @@ defined('LILINA_PATH') or die('Restricted access');
  * @param array $input Deprecated
  * @return object SimplePie object with all feed's associated data
  */
-function lilina_return_items($input, $conditions = array()) {
+function lilina_return_items($input = '', $conditions = array()) {
 	foreach(Feeds::get_instance()->getAll() as $the_feed)
 		$feed_list[] = $the_feed['feed'];
 	$itemcache = new ItemCache();
@@ -133,16 +133,8 @@ function remove_feed($id) {
  * @return array
  */
 function load_feeds() {
-	global $data;
-
-	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-	$data = $file->load('feeds.data');
-	if($data !== null)
-		$data = unserialize(base64_decode($data));
-	else
-		$data = array();
-
-	return $data;
+	throw new Exception('Deprecated function');
+	return false;
 }
 
 /**
@@ -153,12 +145,10 @@ function load_feeds() {
  * @return bool True if feeds were successfully saved, false otherwise
  */
 function save_feeds($feeds = null) {
-	if(empty($feeds)) {
-		global $data;
-		$feeds = $data;
+	if($feeds != null) {
+		return false;
 	}
-	$file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-	return $file->save('feeds.data', base64_encode(serialize($feeds)));
+	return Feeds::get_instance()->save();
 }
 
 /**
@@ -169,7 +159,6 @@ function save_feeds($feeds = null) {
  * @return string Name of the feed
  */
 function get_feed_name($name, $url) {
-	global $data;
 	if($feed = feed_exists($url)) {
 		$name = $feed['name'];
 	}
@@ -185,7 +174,7 @@ function get_feed_name($name, $url) {
  */
 function feed_exists($url) {
 	global $data;
-	foreach($data['feeds'] as $feed) {
+	foreach(Feeds::get_instance()->getAll() as $feed) {
 		if($feed['url'] === $url || strpos($feed['url'], $url)) {
 			return $feed;
 		}
