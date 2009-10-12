@@ -265,16 +265,9 @@ function lilina_settings_current() {
 	global $lilina;
 	require_once(LILINA_PATH . '/inc/core/version.php');
 
-	require_once(LILINA_PATH . '/inc/core/feed-functions.php');
-
-	load_feeds();
-
-	global $data;
 	global $settings;
 	if( isset($settings['settings_version'])
-	  && $settings['settings_version'] == LILINA_SETTINGS_VERSION
-	  && isset($data['version'])
-	  && $data['version'] == LILINA_FEEDSTORAGE_VERSION ) {
+	  && $settings['settings_version'] == LILINA_SETTINGS_VERSION ) {
 		return true;
 	}
 	return false;
