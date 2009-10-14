@@ -111,7 +111,8 @@ a {
 
 .item {
 	color: #333;
-	border: 2px solid #6688EE;
+	border: 2px solid #fff;
+	border-bottom-color: #eee;
 	padding: 5px 0;
 }
 
@@ -125,7 +126,7 @@ a {
 	position: relative;
 	float: left;
 	width: 80%;
-	height: 32px;
+	height: 31px;
 }
 	.item .title-bar .title {
 		color: #000;
@@ -153,7 +154,7 @@ a {
 	.item .title-bar .date {
 	}
 
-.item.collapsed { border-color: #fff #fff #eee; }
+.item.selected { border: 2px solid #6688EE; }
 .item.collapsed .title-bar { color: #ccc; }
 .item.collapsed .title-bar .title { color: #777; }
 .item.collapsed .content { display: none; }
@@ -243,3 +244,8 @@ a {
 				margin-left: 2em;
 				display: block;
 			}
+
+#message {
+	position: absolute;
+	width: 400px;
+}
