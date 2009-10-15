@@ -48,20 +48,13 @@ function lilina_parse_html($input) {
 	if(!isset($purifier) || !is_a($purifier, 'HTMLPurifier')) {
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core.Encoding', get_option('encoding'));
-		$config->set('HTML.XHTML', true);
 		$config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
 		$config->set('Cache.SerializerPath', get_option('cachedir'));
 		$config = apply_filters('htmlpurifier_config', $config);
 		$purifier = new HTMLPurifier($config);
 	}
 
-	if(!is_array($input)) {
-		return apply_filters('parse_html', $purifier->purify($input));
-	}
-	
-	array_walk_recursive($input, 'lilina_parse_html');
-
-	return apply_filters('parse_html', $input);
+	return apply_filters('parse_html', $purifier->purify($input));
 }
 
 /**
