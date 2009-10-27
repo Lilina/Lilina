@@ -14,6 +14,10 @@
  * @package Lilina
 */
 class OPML_Import {
+	protected $name = '';
+	public function __construct($name) {
+		$this->name = $name;
+	}
 	public function dispatch() {
 		$step = ( !empty($_POST['step']) ? $_POST['step'] : 0 );
 		switch($step) {
@@ -60,9 +64,9 @@ class OPML_Import {
 	}
 
 	protected function introduction() {
-		admin_header(_r('Other (OPML) Importer'));
+		admin_header($this->name);
 ?>
-<h1><?php _e('Other (OPML) Importer') ?></h1>
+<h1><?php echo $this->name ?></h1>
 <p><?php _e('If a feed reader you use allows you to export your links or subscriptions as OPML you may import them here.'); ?></p>
 <p><?php _e('You can import from either <a href="#url_input" class="link">a remote URL</a> or <a href="#file_input" class="link">upload a file</a>.</p>') ?></p>
 <form action="feed-import.php" method="post" id="import_form" enctype="multipart/form-data">
@@ -96,7 +100,7 @@ class OPML_Import {
 
 	protected function error($e) {
 	?>
-<h1><?php _e('Other (OPML) Importer') ?></h1>
+<h1><?php echo $this->name ?></h1>
 <p><?php echo $e->getMessage(); ?></p>
 <p><?php _e("If you're importing from a remote URL, make sure you typed the URL correctly, and that it points directly to your OPML file. (We can't yet find them automatically!)") ?></p>
 <p><?php _e("If you're importing from a local file, make sure you selected the correct file and that you submitted the form correctly. You'll need to click cancel and retry uploading, sorry.") ?></p>
@@ -124,7 +128,7 @@ class OPML_Import {
 			return;
 		}
 
-		admin_header(_r('Other (OPML) Importer'));
+		admin_header($this->name);
 		try {
 			$opml = '';
 			if(!empty($_POST['url'])) {
@@ -146,6 +150,6 @@ class OPML_Import {
 	}
 }
 
-$opml_importer = new OPML_Import();
+$opml_importer = new OPML_Import(_r('Other (OPML) Importer'));
 register_importer('opml', _r('Other (OPML)'), _r('Import feeds from an OPML file'), array(&$opml_importer, 'dispatch'));
 ?>

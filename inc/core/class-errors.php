@@ -18,6 +18,10 @@ class Errors {
 		self::$codes['admin.feeds.invalid_id']     = 13;
 		self::$codes['admin.feeds.protocol_error'] = 13;
 
+		// 20-39 = admin.importer.
+		// 20-29 = admin.importer.greader.
+		self::$codes['admin.importer.greader.invalid_auth'] = 20;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.

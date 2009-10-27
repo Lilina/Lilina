@@ -10,6 +10,7 @@
 
 /** */
 require_once(LILINA_PATH . '/admin/includes/import/import-other.php');
+require_once(LILINA_INCPATH . '/contrib/googlereaderapi.php');
 
 /**
  * Google Reader-to-Lilina importer
@@ -17,10 +18,24 @@ require_once(LILINA_PATH . '/admin/includes/import/import-other.php');
  * @package Lilina
 */
 class GoogleReader_Import extends OPML_Import {
+	public function __construct($name) {
+		parent::__construct($name);
+	}
+	public function dispatch() {
+		$step = ( !empty($_POST['step']) ? $_POST['step'] : 0 );
+		switch($step) {
+			case 0:
+				$this->introduction();
+				break;
+			case 1:
+				$this->import();
+				break;
+		}
+	}
 	public function introduction() {
-		admin_header(_r('Google Reader Importer'));
+		admin_header($this->name);
 ?>
-<h1><?php _e('Google Reader Importer') ?></h1>
+<h1><?php echo $this->name ?></h1>
 <p><?php _e('There are several ways to import from Google Reader.'); ?></p>
 <h2><?php _e('Method 1'); ?></h2>
 <p><?php printf(
@@ -44,13 +59,30 @@ class GoogleReader_Import extends OPML_Import {
 		</div>
 		<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
 		<input type="hidden" name="step" value="1" />
-		<input type="hidden" name="service" value="opml" />
+		<input type="hidden" name="service" value="greader" />
 	</fieldset>
 </form>
 <?php
 		admin_footer();
 	}
+	protected function import() {
+		admin_header($this->name);
+		try {
+			// I'm not in favour of allowing user input to pass through
+			// unsanitized, but it's URL encoded in the request library, so
+			// we'll let Google handle it.
+			$this->api = new GoogleReaderAPI($_POST['user'], $_POST['pass']);
+			$this->api->connect();
+			$opml = $this->api->call();
+			$feeds = $this->import_opml($opml);
+			import($feeds);
+		}
+		catch (Exception $e) {
+			$this->error($e);
+		}
+		admin_footer();
+	}
 }
 
-$greader_importer = new GoogleReader_Import;
+$greader_importer = new GoogleReader_Import(_r('Google Reader Importer'));
 register_importer('greader', _r('Google Reader'), _r('Import feeds from Google Reader'), array(&$greader_importer, 'dispatch'));

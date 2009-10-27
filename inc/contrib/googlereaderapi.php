@@ -60,6 +60,14 @@ class GoogleReaderAPI {
 		// note that the hyphen above is a shortcut
 		// for "the currently logged-in user"
 		$response = $this->request->get($action, array('Cookie' => $this->cookie));
+		
+		if($response->success !== true) {
+			if(isset($response->headers['location']) && strpos($response->headers['location'], 'https://www.google.com/accounts/ServiceLogin') !== false) {
+				// Error text from Google
+				throw new Exception(_r('The username or password you entered is incorrect.'), Errors::get_code('admin.importer.greader.invalid_auth'));
+			}
+		}
+		
 		// and finally, let's take a look.
 		return $response->body;
 	}
