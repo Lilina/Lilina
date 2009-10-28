@@ -17,6 +17,7 @@
 define('LILINA_PATH', dirname(dirname(__FILE__)));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 define('LILINA_ADMIN', 1) ;
+define('LILINA_PAGE', 'admin');
 
 global $settings;
 require_once(LILINA_INCPATH . '/core/install-functions.php');

@@ -14,6 +14,8 @@
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 
+define('LILINA_PAGE', 'opml');
+
 //Check installed
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 lilina_check_installed();
