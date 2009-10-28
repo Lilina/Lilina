@@ -76,7 +76,7 @@ class HTTPRequest {
 	 */
 	public function request($url, $headers = array(), $data = array(), $type = HTTPRequest::GET) {
 		if (!preg_match('/^http(s)?:\/\//i', $url)) {
-			throw new Exception('Only HTTP requests are handled.');
+			throw new Exception(_r('Only HTTP requests are handled.'));
 		}
 		$this->redirects = 0;
 		$transport = new $this->transport();
@@ -100,9 +100,10 @@ class HTTPRequest {
 		$headers = explode("\r\n", $headers);
 		preg_match('#^HTTP/1\.\d (\d+)#i', array_shift($headers), $matches);
 		if(empty($matches)) {
-			throw new Exception('Response could not be parsed');
+			throw new Exception(_r('Response could not be parsed'));
 		}
 		$return->status_code = (int) $matches[1];
+		$return->success = false;
 		if($return->status_code >= 200 && $return->status_code < 200)
 			$return->success = true;
 
@@ -116,7 +117,7 @@ class HTTPRequest {
 		}
 		if (isset($return->headers['content-encoding']) && $this->transport == 'HTTPRequest_fsockopen') {
 			// Bail. We'll handle this at some later date.
-			throw new Exception('Encoded feeds are not currently handled');
+			throw new Exception(_r('Encoded feeds are not currently handled'));
 		}
 
 		//fsockopen and cURL compatibility
