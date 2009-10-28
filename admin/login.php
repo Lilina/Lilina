@@ -37,8 +37,8 @@ $body = '';
 </head>
 <body id="admin-subscribe" class="admin-page">
 	<div id="main">
-		<h1>Login</h1>
-		<p id="backlink"><a href="<?php echo get_option('baseurl'); ?>">Back to <?php echo get_option('sitename'); ?></a></p>
+		<h1><?php _e('Login') ?></h1>
+		<p id="backlink"><a href="<?php echo get_option('baseurl'); ?>"><?php echo sprintf(_r('Back to %s'), get_option('sitename')); ?></a></p>
 <?php
 if(defined('LILINA_AUTH_ERROR') && LILINA_AUTH_ERROR === -1) {
 ?>

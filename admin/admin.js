@@ -342,7 +342,7 @@ FeedRow.prototype.render = function() {
 	$("td", this.row).html("<span />");
 	$(".name-col span", this.row).text(this.data.name).attr("title", _r("Double-click to edit"));
 	$(".url-col span", this.row).text(this.data.feed).attr("title", _r("Double-click to edit"));
-	$(".remove-col span", this.row).text('Delete').addClass("button negative");
+	$(".remove-col span", this.row).text(_r('Delete')).addClass("button negative");
 	if(!exists)
 		$('#feeds_list tbody').append(this.row);
 	this.bindEvents();

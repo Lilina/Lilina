@@ -73,7 +73,8 @@ function admin_header($title, $parent_file = false) {
 		"Something Went Wrong!": "<?php _e('Something Went Wrong!') ?>",
 		"Error message:": "<?php _e('Error message:') ?>",
 		'If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.': '<?php echo str_replace("'", '\\\'', _r('If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.')) ?>',
-		"Double-click to edit": "<?php _e('Double-click to edit') ?>"
+		"Double-click to edit": "<?php _e('Double-click to edit') ?>",
+		"Delete": "<?php _e('Delete') ?>"
 	};
 </script>
 </head>
