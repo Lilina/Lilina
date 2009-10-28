@@ -154,7 +154,7 @@ function get_option($option, $default = null) {
 	if(!isset($options[$option]))
 		return $default;
 
-	return $options[$option];
+	return maybe_unserialize($options[$option]);
 }
 
 /**
