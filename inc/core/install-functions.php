@@ -71,6 +71,8 @@ class Installer {
 
 		
 		default_options();
+		global $options;
+		$options['sitename'] = $sitename;
 		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 
 		if(!save_options()) {
@@ -159,9 +161,6 @@ class Installer {
 			$guessurl .= '/';
 		}
 		return "<?php
-// What you want to call your Lilina installation
-\$settings['sitename'] = '" . addslashes($sitename) . "';
-
 // The URL to your server
 \$settings['baseurl'] = '$guessurl';
 
