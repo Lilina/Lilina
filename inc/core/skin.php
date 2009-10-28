@@ -73,7 +73,7 @@ function query_setup($args) {
  * Loads feeds from conf/feeds.data into the global <tt>$list</tt> array if not already done.
  * Then calls <tt>lilina_return_items()</tt> and stores the SimplePie object returned in the
  * global <tt>$list</tt> array if not already done.
- 
+ *
  * Increments the <tt>$item_number</tt> if the <tt>$increment</tt> parameter is true, or
  * initializes the <tt>$item_number</tt> if not already done. Then sets the <tt>$showtime</tt>
  * variable if not already done.
