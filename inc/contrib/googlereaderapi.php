@@ -47,6 +47,13 @@ class GoogleReaderAPI {
 
 		$response = $this->request->post($this->urls['auth'], array(), $data);
 
+		if($response->success !== true) {
+			if($response->status_code == 403) {
+				// Error text from Google
+				throw new Exception(_r('The username or password you entered is incorrect.'), Errors::get_code('admin.importer.greader.invalid_auth'));
+			}
+		}
+
 		preg_match('#SID=(.*)#i', $response->body, $results);
 		// so we've found the SID
 		// now we can build the cookie that gets us in the door
@@ -60,13 +67,6 @@ class GoogleReaderAPI {
 		// note that the hyphen above is a shortcut
 		// for "the currently logged-in user"
 		$response = $this->request->get($action, array('Cookie' => $this->cookie));
-		
-		if($response->success !== true) {
-			if(isset($response->headers['location']) && strpos($response->headers['location'], 'https://www.google.com/accounts/ServiceLogin') !== false) {
-				// Error text from Google
-				throw new Exception(_r('The username or password you entered is incorrect.'), Errors::get_code('admin.importer.greader.invalid_auth'));
-			}
-		}
 		
 		// and finally, let's take a look.
 		return $response->body;
