@@ -70,9 +70,16 @@ class ItemCache extends Items {
 	/**
 	 * Initialize SimplePie and load any new items
 	 *
+	 * @param bool $override Whether to override the updateon check
 	 * @return array List of items, including new items
 	 */
-	public function init() {
+	public function init($override = false) {
+		if(get_option('updateon') !== 'pageview' && !$override) {
+			echo '<h1>DID NOT UPDATE</h1>';
+			return false;
+		}
+		echo '<h1>UPDATING</h1>';
+
 		if(is_null($this->simplepie))
 			$this->load();
 

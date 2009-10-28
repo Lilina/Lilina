@@ -171,6 +171,8 @@ function upgrade() {
 				new_options_339();
 			case $settings['settings_version'] < 368:
 				new_options_368();
+			case $settings['settings_version'] < 480:
+				new_options_368();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -203,10 +205,14 @@ function upgrade() {
 }
 
 function default_options() {
-	new_options_297();
-	new_options_302();
-	new_options_339();
-	new_options_368();
+	global $options;
+	$options['offset']					= 0;
+	$options['encoding']				= 'utf-8';
+	$options['template'] = 'default';
+	$options['locale'] = 'en';
+	$options['timezone'] = 'UTC';
+	$options['sitename'] = 'Lilina News Aggregator';
+	$options['updateon'] = 'pageview';
 }
 function new_options_297() {
 	global $options;
@@ -237,6 +243,10 @@ function new_options_368() {
 		else
 			$options['sitename'] = 'Lilina News Aggregator';
 	}
+}
+function new_options_480() {
+	global $options;
+	$options['updateon'] = 'pageview';
 }
 
 function create_settings_file() {

@@ -68,15 +68,12 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 	if(!check_nonce($_POST['_nonce']))
 		lilina_nice_die('Nonces do not match.');
 	clear_html_cache();
-	/** Needs better validation */
-	if(!empty($_POST['sitename']))
-		update_option('sitename', $_REQUEST['sitename']);
-	if(!empty($_POST['template']))
-		update_option('template', $_REQUEST['template']);
-	if(!empty($_POST['locale']))
-		update_option('locale', $_REQUEST['locale']);
-	if(!empty($_POST['timezone']))
-		update_option('timezone', $_REQUEST['timezone']);
+	
+	$updatable_options = array('sitename', 'template', 'locale', 'timezone', 'updateon');
+	foreach($updatable_options as $option) {
+		if(!empty($_POST[$option]))
+			update_option($option, $_POST[$option]);
+	}
 
 	header('HTTP/1.1 302 Found', true, 302);
 	header('Location: ' . get_option('baseurl') . 'admin/settings.php?updated=1');
@@ -148,6 +145,20 @@ if(!empty($_GET['updated']))
 				?>
 			</select>
 		</div>
+	</fieldset>
+	<fieldset id="update">
+		<legend><?php _e('Updating Settings'); ?></legend>
+		<div class="row">
+			<label for="sitename"><?php _e('Update on'); ?>:</label>
+			<select id="updateon" name="updateon">
+				<option <?php if(get_option('updateon') == 'pageview') { echo 'selected="selected" '; } ?>value="pageview"><?php _e('Page View') ?></option>
+				<option <?php if(get_option('updateon') == 'manual') { echo 'selected="selected" '; } ?>value="manual"><?php _e('Manual') ?></option>
+			</select>
+		</div>
+		
+		<h2><?php _e('Manual Updating') ?></h2>
+		<p><?php echo sprintf(_r('The URL to manually update the items is <code>%s</code>'), get_option('baseurl') . '?method=update') ?></p>
+		<p><?php _e('This URL will work regardless of the above option. If the "manual" option is selected, however, this is the only way to update the items.') ?></p>
 	</fieldset>
 	<input type="hidden" name="action" value="settings" />
 	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
