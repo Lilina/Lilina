@@ -40,13 +40,13 @@ class Controller {
 		try {
 			if( !$method || empty($this->methods[$method]) ) {
 				// No or invalid method
-				throw new Exception('Unknown method: ' . $method);
+				throw new Exception(sprintf(_r('Unknown method: %s'), $method));
 			}
 
 			$callback = $this->methods[$method];
 			$output = call_user_func($callback);
 		} catch (Exception $e) {
-			lilina_nice_die('<p>An error occured dispatching a method: ' . $e->getMessage() . '</p>');
+			lilina_nice_die('<p>' . sprintf(_r('An error occured dispatching a method: %s'), $e->getMessage()) . '</p>');
 		}
 	}
 }
