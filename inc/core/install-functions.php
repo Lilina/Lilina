@@ -278,6 +278,9 @@ function lilina_settings_current() {
  * {{@internal Missing Long Description}}}
  */
 function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
+	if($title == 'Whoops!' && function_exists('_r')) {
+		$title = _r('Whoops!');
+	}
 	$guessurl = guess_baseurl();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
