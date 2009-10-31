@@ -41,6 +41,7 @@ class Templates {
 
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
+		header('Content-Type: text/html; charset=utf-8');
 		$cache = new CacheHandler();
 		$cache->begin_caching($prefix . $_SERVER['REQUEST_URI']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
