@@ -235,11 +235,14 @@ class ItemUpdater {
 				self::println("\t" . sprintf(_r('Title: %s'), $detail->title));
 				break;
 			case 'notice':
-				self::println($detail);
+				if(!self::$cmdline)
+					echo '<h2>' . $detail . '</h2>';
+				else
+					self::println($detail);
 				break;
 			case 'error':
 				if(!self::$cmdline)
-					self::println('<span style="color:red">' . sprintf(_r('Error: %s'), $detail) . '</span>');
+					echo '<span style="color:red">' . sprintf(_r('Error: %s'), $detail) . '</span><br />';
 				else
 					self::println("\t" . sprintf(_r('Error: %s'), $detail));
 				break;
