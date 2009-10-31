@@ -9,7 +9,7 @@ class Items {
 	 * SimplePie object
 	 * @var SimplePie
 	 */
-	protected $simplepie;
+	protected $simplepie = null;
 
 	/**
 	 * @var array|string

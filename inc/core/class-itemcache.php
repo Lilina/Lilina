@@ -78,6 +78,8 @@ class ItemCache extends Items {
 			return false;
 		}
 
+		do_action('itemcache-log', 'notice', _r('Beginning fetching of feeds'));
+
 		if(is_null($this->simplepie))
 			$this->load();
 
@@ -175,6 +177,11 @@ class ItemCache extends Items {
 	 * @param stdClass $item Item to update
 	 */
 	protected function update_item($item) {
+		if(isset($this->cached_items[ $item->hash ]))
+			do_action('itemcache-log', 'update', $item);
+		else
+			do_action('itemcache-log', 'insert', $item);
+		
 		$this->cached_items[ $item->hash ] = $item;
 	}
 
