@@ -133,7 +133,7 @@ class ItemCache extends Items {
 	 *
 	 * @param stdClass $item Item to check
 	 */
-	protected function check_item($item) {
+	public function check_item($item) {
 		if(!isset( $this->cached_items[ $item->hash ] )) {
 			$this->update_item($item);
 			do_action('insert_item', $item);

@@ -132,7 +132,7 @@ class Items {
 	 *
 	 * Converts a SimplePie_Item into a new-style stdClass
 	 */
-	protected function normalise($item) {
+	public function normalise($item, $feed_id = '') {
 		if($enclosure = $item->get_enclosure()) {
 			$enclosure = $enclosure->get_link();
 		}
@@ -165,6 +165,8 @@ class Items {
 			'author'    => (object) $author,
 			'feed'      => $item->get_feed()->get_link()
 		);
+		if(!empty($feed_id))
+			$new_item['feed_id'] = $feed_id;
 		return apply_filters('item_data', $new_item);
 	}
 
