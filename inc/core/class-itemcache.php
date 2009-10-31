@@ -100,8 +100,7 @@ class ItemCache extends Items {
 		unset($this->simplepie);
 		unset($this->simplepie_items);
 
-		uasort($this->cached_items, array($this, 'sort_items'));
-		uasort($this->items, array($this, 'sort_items'));
+		$this->sort_all();
 
 		if($updated)
 			$this->save_cache();
@@ -109,6 +108,17 @@ class ItemCache extends Items {
 		unset($this->cached_items);
 
 		return $this->items;
+	}
+
+	/**
+	 * Sort all items
+	 *
+	 * This bypasses SimplePie's sorting (and lack thereof for items without
+	 * timestamps).
+	 */
+	public function sort_all() {
+		uasort($this->cached_items, array($this, 'sort_items'));
+		uasort($this->items, array($this, 'sort_items'));
 	}
 
 	/**
@@ -178,10 +188,11 @@ class ItemCache extends Items {
 	 */
 	protected function update_item($item) {
 		if(isset($this->cached_items[ $item->hash ]))
-			do_action('itemcache-log', 'update', $item);
+			do_action('itemcache-update', $item);
 		else
-			do_action('itemcache-log', 'insert', $item);
+			do_action('itemcache-insert', $item);
 		
+		$this->items[ $item->hash ] = $item;
 		$this->cached_items[ $item->hash ] = $item;
 	}
 
@@ -192,7 +203,7 @@ class ItemCache extends Items {
 	 *
 	 * @since 1.0
 	 */
-	protected function save_cache() {
+	public function save_cache() {
 		$this->data->save('items.data', json_encode($this->cached_items));
 	}
 }
