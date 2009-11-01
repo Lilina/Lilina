@@ -49,7 +49,7 @@ class ItemUpdater {
 		$updated = false;
 		
 		foreach(Feeds::get_instance()->getAll() as $feed) {
-			self::log('notice', "\n" . sprintf(_r('Retrieving "%s"'), $feed['name']));
+			self::log('feedbegin', sprintf(_r('Retrieving "%s"'), $feed['name']));
 			$sp = self::load_feed($feed);
 			if($error = $sp->error()) {
 				self::log('error', sprintf(_r('An error occurred: %s'), $error));
@@ -63,6 +63,7 @@ class ItemUpdater {
 					$updated = true;
 				}
 			}
+			self::log('feedend', _r('Finished retrieving and processing'));
 		}
 
 		ItemCache::get_instance()->sort_all();
@@ -179,6 +180,7 @@ class ItemUpdater {
 			self::println('--------------------------------------------------------------------------------');
 		}
 		else {
+			header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html>
 <html>
@@ -189,7 +191,7 @@ class ItemUpdater {
 		</style>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	</head>
-	<body>
+	<body class="updater">
 		<div id="container">
 			<h1><?php _e('Lilina Item Updater') ?></h1>
 			<p><?php echo sprintf(_r('Installation Name: %s'), get_option('sitename')) ?></p>
@@ -235,14 +237,32 @@ class ItemUpdater {
 				self::println("\t" . sprintf(_r('Title: %s'), $detail->title));
 				break;
 			case 'notice':
-				if(!self::$cmdline)
-					echo '<h2>' . $detail . '</h2>';
+				if(!self::$cmdline) {
+					echo '<li><h2>' . $detail . '</h2></li>';
+					flush();
+				}
 				else
 					self::println($detail);
 				break;
+			case 'feedbegin':
+				if(!self::$cmdline) {
+					echo '<li><h2>' . $detail . '</h2><ul>';
+					flush();
+				}
+				else
+					self::println("\n" . $detail);
+				break;
+			case 'feedend':
+				if(!self::$cmdline) {
+					echo '</ul></li>';
+					flush();
+				}
+				break;
 			case 'error':
-				if(!self::$cmdline)
-					echo '<span style="color:red">' . sprintf(_r('Error: %s'), $detail) . '</span><br />';
+				if(!self::$cmdline) {
+					echo '<li style="color:red">' . sprintf(_r('Error: %s'), $detail) . '</li>';
+					flush();
+				}
 				else
 					self::println("\t" . sprintf(_r('Error: %s'), $detail));
 				break;
@@ -254,7 +274,7 @@ class ItemUpdater {
 			echo $text . "\n";
 		}
 		else {
-			echo htmlentities($text) . "<br />\n";
+			echo '<li>' . htmlentities($text) . "</li>\n";
 			flush();
 		}
 	}
