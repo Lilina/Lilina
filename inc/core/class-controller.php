@@ -40,6 +40,13 @@ class Controller {
 
 		try {
 			if( !$method || empty($this->methods[$method]) ) {
+				// Dynamically load method if possible
+				if(file_exists(LILINA_INCPATH . '/core/method-' . $method . '.php')) {
+					require_once(LILINA_INCPATH . '/core/method-' . $method . '.php');
+				}
+			}
+			// Check again, in case we loaded it last time
+			if( !$method || empty($this->methods[$method]) ) {
 				// No or invalid method
 				throw new Exception(sprintf(_r('Unknown method: %s'), $method));
 			}
