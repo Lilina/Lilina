@@ -12,7 +12,6 @@
 define('LILINA_PATH', dirname(__FILE__));
 define('LILINA_INCPATH', LILINA_PATH . '/inc');
 
-define('LILINA_PAGE', 'index');
 $settings	= array();
 error_reporting(E_ALL);
 

@@ -36,6 +36,7 @@ class Controller {
 		$method = 'default';
 		if(isset($_GET['method']))
 			$method = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_GET['method']);
+		define('LILINA_PAGE', $method);
 
 		try {
 			if( !$method || empty($this->methods[$method]) ) {
