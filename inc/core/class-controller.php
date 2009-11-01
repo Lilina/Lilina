@@ -45,6 +45,9 @@ class Controller {
 					require_once(LILINA_INCPATH . '/core/method-' . $method . '.php');
 				}
 			}
+			
+			do_action('controller-lateregister', $this);
+			
 			// Check again, in case we loaded it last time
 			if( !$method || empty($this->methods[$method]) ) {
 				// No or invalid method
