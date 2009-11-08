@@ -109,7 +109,7 @@ function do_action($action_name){
  *
  * In WordPress 1.5.1+, hooked functions can take extra arguments that are set
  * when the matching do_action() or apply_filters() call is run. The
- * $accepted_args allow for calling functions only when the number of args
+ * $num_args allow for calling functions only when the number of args
  * match. Hooked functions can take extra arguments that are set when the
  * matching do_action() or apply_filters() call is run. For example, the action
  * comment_id_not_found will pass any functions that hook onto it the ID of the
@@ -123,7 +123,7 @@ function do_action($action_name){
  *
  * @author WordPress
  * @global array $filters Stores all of the filters added in the form of
- *	filters['tag']['array of priorities']['array of functions serialized']['array of ['array (functions, accepted_args)']']
+ *	filters['tag']['array of priorities']['array of functions serialized']['array of ['array (function, num_args)']']
  *
  * @param string $filter The name of the filter to hook the $function_to_add to.
  * @param callback $function The name of the function to be called when the filter is applied.
@@ -188,6 +188,53 @@ function has_filter($filter) {
  */
 function has_action($action) {
 	return has_filter($action);
+}
+
+/**
+ * Removes a function from a specified filter hook.
+ *
+ * This function removes a function attached to a specified filter hook. This
+ * method can be used to remove default functions attached to a specific filter
+ * hook and possibly replace them with a substitute.
+ *
+ * To remove a hook, the $function_to_remove and $priority arguments must match
+ * when the hook was added. This goes for both filters and actions. No warning
+ * will be given on removal failure.
+ *
+ * @author WordPress
+ * @global array $filters Stores all of the filters
+ *
+ * @param string $filter The filter hook to which the function to be removed is hooked.
+ * @param callback $function_to_remove The name of the function which should be removed.
+ * @param int $priority optional. The priority of the function (default: 10).
+ * @return boolean Whether the function existed before it was removed.
+ */
+function remove_filter($filter, $function_to_remove, $priority = 10) {
+	$function_to_remove = _build_callback_string($function_to_remove);
+
+	$r = isset($GLOBALS['filters'][$filter][$priority][$function_to_remove]);
+
+	if ( true === $r) {
+		unset($GLOBALS['filters'][$filter][$priority][$function_to_remove]);
+		if ( empty($GLOBALS['filters'][$filter][$priority]) )
+			unset($GLOBALS['filters'][$filter][$priority]);
+	}
+
+	return $r;
+}
+
+/**
+ * Removes a function from a specified action hook.
+ *
+ * @see remove_filter
+ *
+ * @param string $filter The filter hook to which the function to be removed is hooked.
+ * @param callback $function_to_remove The name of the function which should be removed.
+ * @param int $priority optional. The priority of the function (default: 10).
+ * @return boolean Whether the function existed before it was removed.
+ */
+function remove_action($filter, $function_to_remove, $priority = 10) {
+	return remove_filter($filter, $function_to_remove, $priority);
 }
 
 /**
