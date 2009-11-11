@@ -24,6 +24,4 @@ $lilina = array(
 		'version'	=> LILINA_SETTINGS_VERSION,
 	),
 );
-
-define('LILINA_USERAGENT', 'Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko)');
 ?>

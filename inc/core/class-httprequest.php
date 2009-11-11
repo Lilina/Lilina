@@ -3,6 +3,8 @@
  * HTTP Request class
  */
 
+define('LILINA_USERAGENT', 'Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko)');
+
 /**
  * HTTP Request class
  *
@@ -41,7 +43,7 @@ class HTTPRequest {
 		
 		$this->timeout = $timeout;
 		if ($useragent === null) {
-			$useragent = 'Lilina/1.0-bleeding';
+			$useragent = LILINA_USERAGENT;
 		}
 		$this->useragent = $useragent;
 	}
