@@ -280,7 +280,7 @@ function _build_callback_string($callback) {
 	elseif(is_string($callback[0]))
 		return $callback[0] . $callback[1];
 	elseif(is_object($callback[0]))
-		$obj_idx = get_class($function[0]).$function[1];
+		return get_class($callback[0]).$callback[1];
 
 	throw new Exception('Invalid callback: ' . $callback);
 }
