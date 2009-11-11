@@ -1,127 +1,116 @@
-/*
-Lilina News Aggregator
-
-Installation Style Sheet
-Licensed under the GNU General Public License
-Copyright 2007 Ryan McCue
-*/
-
-/* General styles for all error pages and installation */
-html, body {
-	color: #333;
+html, body { min-height: 100%; }
+html {
+	background: #ccc;
 }
 body {
-	font-family: Arial, sans-serif;
-	font-size: 62.5%;
-	line-height: 2.2em;
+	min-height: 100%;
+	background: #fff;
+	color: #000;
+	width: 600px;
+	margin: 0 auto;
+	border-left: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	
+	font: 12px/16px Arial, sans-serif;
 }
-h1 {
-	font-weight: 400;
-	font-size: 3em;
-	margin: 0.6em 0;
-}
-h2 {
-	font-weight: 400;
-	font-size: 2.6em;
-	margin: 0.8em 0;
-}
-p, ul, pre {
-	font-size: 1.5em;
-	margin-top: 1em;
-}
-ul ul {
-	font-size: 1em;
-}
+
 a {
 	text-decoration: none;
-	color: #2e91d0;
-	font-weight: 700;
+	color: #01A0C7;
 }
-#container {
-	margin: 10em auto 0;
-	width: 60%;
-	max-width: 700px;
-	padding-bottom: 100px;
-	background: url(admin/logo-small.png) no-repeat center bottom;
-	text-align: center;
-}
-#logo {
-	margin-top: 2em;
-	display: none;
-}
+	a:hover {
+		color: #00F;
+	}
 
-/* Readme only */
-#header-logo {
-	float: right;
+h1, h2, h3, p, form, ul {
+	margin-bottom: 16px;
 }
-
-/* Login only */
-.login #container {
-	width: 40%;
-}
-.alert {
-	position: absolute;
-	top: 0;
-	width: 40%;
-	left: 30%;
-	right: 30%;
-	background: #8CC63F;
-	padding: 1.5em;
-	margin: 0;
-	-moz-border-radius-bottomleft: 8px;
-	-moz-border-radius-bottomright: 8px;
-	color: #FFF;
-}
-
-/* Installation only */
-dl {
-	font-size: 1.5em;
-}
-dd#username, dd#password {
-	font-weight: 700;
-	margin: 0;
-	padding: 0;
-}
-#footnote-quote {
-	color: #999;
-	text-align: right;
-}
-
-/* Forms */
-fieldset {
-	border: none;
-	margin-top: 1em;
-	padding: 0;
-}
-legend {
-	font-size: 1.8em;
-	margin: 0.8em 0;
-}
-form label {
-	font-size: 1.5em;
-	padding: 0.5em;
-	float: left;
-}
-form .input {
-	float: right;
-	padding: 0.6em
-}
-.row {
+h1, h2, h3 {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 5px;
 	width: 80%;
-	clear: both;
-	overflow: hidden;
-	margin: 0 auto;
+}
+ul ul {
+	margin-bottom: 0;
+}
+h1 { font-size: 20px; }
+	#title {
+		text-align: center;
+		border-bottom: 1px solid #aaa;
+		padding-bottom: 10px;
+		width: 100%;
+	}
+h2 { font-size: 16px; }
+h3 { font-size: 12px; font-weight: bold; }
+p {
+	margin-top: 16px;
 }
 
-.submit {
-	clear: both;
-	width: 20%;
-	margin: 1em 0 0 auto;
-	font-size: 1.6em;
+ul {
+	margin-left: 15px;
+	list-style-type: disc;
+}
+	li {
+		margin-bottom: 3px;
+	}
+		li ul {
+			margin-top: 3px;
+		}
+
+form .row {
+	margin-bottom: 20px;
+}
+	label {
+		display: block;
+		font-weight: bold;
+		font-size: 13px;
+		line-height: 20px;
+		padding-bottom: 5px;
+	}
+	input {
+		border: 1px solid #ccc;
+		font-size: 18px;
+		color: #333;
+		padding: 5px;
+	}
+	.sidenote {
+		color: #666;
+		font-size: 11px;
+		margin: 10px 0;
+	}
+
+code, pre {
+	font-family: Consolas, monospace;
+	font-size: 12px;
+}
+	pre {
+		margin: 10px;
+	}
+
+#logindetails {
+	border: 1px solid #ccc;
+	padding: 10px;
+	display: inline-block;
+}
+	#logindetails dd {
+		margin-left: 10px;
+		font-weight: bold;
+	}
+
+#footer {
 	background: #333;
-	color: #fff;
-	border: none;
-	border-radius: px;
-	-moz-border-radius: 10px;
+	color: #666;
+	padding: 10px;
 	text-align: center;
+	font-size: 11px;
+}
+	#footer a {
+		color: #aaa;
+	}
+		#footer a:hover {
+			color: #ddd;
+		}
+
+#content {
+	padding: 20px;
 }

@@ -1,17 +1,14 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<!DOCTYPE html>
+<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<title>Readme &mdash; Lilina News Aggregator</title>
-		<style type="text/css">
-			@import "install.css";
-		</style>
+		<link rel="stylesheet" type="text/css" href="admin/resources/reset.css" />
+		<link rel="stylesheet" type="text/css" href="install.css" />
 	</head>
 	<body>
-		<div id="container">
-			<img id="header-logo" src="admin/logo-small.png" alt="Lilina Logo" />
-			<h1>Lilina Readme &mdash; Version 1.0 Alpha 2</h1>
+		<div id="content">
+			<h1 id="title">Lilina <span class="version">1.0-bleeding</span></h1>
 			<h2 id="welcome">Welcome!</h2>
 				<p>Welcome and thanks for downloading Lilina! This file is designed to give you a guide into the installation and use of the Lilina News Aggregator software.</p>
 			<h2 id="about">About</h2>
@@ -34,12 +31,12 @@
 				</ul>
 				<p>That's it! No PEAR packages are needed and no MySQL, PostgreSQL or SQLite databases are needed. Lilina is fully self-contained and uses flat-files instead of databases.</p>
 			<h2 id="installation">Installation</h2>
-				<p>Upload to your server and then simply open up <a href="install.php">install.php</a> in your browser</p>
+				<p>Upload to your server and then simply open up <a href="install.php">install.php</a> in your browser.</p>
 			<h2 id="permissions">Permissions</h2>
-				<p>To use Lilina, you will need to make sure that both your <code>cache/</code> and <code>conf/</code> directories are writable. You can set the proper permissions using:</p>
-				<pre>chmod -R 0755 cache conf</pre>
+				<p>To use Lilina, you will need to make sure that your <code>content/</code> directory is writable. You can set the proper permissions using:</p>
+				<pre>chmod -R 0755 content</pre>
 				<p>If that does not work, you will need to give the folder world writable permissions. This is not recommended as it is then possible for anyone to edit your files. You can set it by executing:</p>
-				<pre>chmod -R 0777 cache conf</pre>
+				<pre>chmod -R 0777 content</pre>
 				<p>If you use a graphical FTP client, you can also set it on each folder using the number 755 or 777, or giving read and execute permissions to all and the write permission to the owner only</p>
 			<h2 id="support">Support</h2>
 				<p>Support is available from the <a href="http://getlilina.org/docs/support">Lilina support page</a>, <a href="http://getlilina.org/forums/">the Lilina forums</a> or <a href="http://getlilina.org/docs/">on the Lilina wiki</a>.</p>
@@ -50,10 +47,12 @@
 					<li><a href="http://htmlpurifier.org/">HTMLPurifier</a> by Edward Z. Yang</li>
 					<li><a href="http://jquery.org/">jQuery</a> by John Resig</li>
 					<li>PHP-gettext by Danilo Segan, Nico Kaiser and Steven Armstrong</li>
-					<li>The POMO library (part of <a href="http://glotpress.org/">GlotPress</a>) by Nikolay Bachiyski</li>
+					<li>The Pomo library (part of <a href="http://glotpress.org/">GlotPress</a>) by Nikolay Bachiyski</li>
 					<li><a href="http://simplepie.org/">SimplePie</a> by Ryan Parman, Geoffery Sneddon and the SimplePie development team</li>
 				</ul>
-			<img id="logo" src="admin/logo-small.png" alt="Lilina Logo" />
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="http://getlilina.org/">Lilina</a> <span class="version">1.0-bleeding</span>. Read the <a href="http://codex.getlilina.org/">documentation</a> or get help on the <a href="http://getlilina.org/forums/">forums</a></p>
 		</div>
 	</body>
 </html>

@@ -80,9 +80,9 @@ class Installer {
 			return false;
 		}
 	?>
-	<h1>Installation Complete!</h1>
+	<h1 id="title">Installation Complete!</h1>
 	<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it <strong>won't be shown again</strong>!</p>
-	<dl>
+	<dl id="logindetails">
 		<dt>Your username is</dt>
 		<dd id="username"><?php echo $username;?></dd>
 		<dt>and your password is</dt>
@@ -219,14 +219,15 @@ class Installer {
  * Checks the PHP version and whether Lilina is installed and up-to-date
  */
 function lilina_check_installed() {
+	require_once(LILINA_PATH . '/inc/core/version.php');
 	if(version_compare('5.2', phpversion(), '>'))
-		lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
+		lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer.</p>');
 
 	if(!lilina_is_installed()) {
-		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='" . guess_baseurl() . "install.php'>install it now</a></p>", 'Not Installed');
+		lilina_nice_die("<p>Whoops! It doesn't look like you've installed Lilina yet. Don't panic, you can <a href='" . guess_baseurl() . "install.php'>install it now</a>.</p>", 'Not Installed');
 	}
 	if(!lilina_settings_current()) {
-		lilina_nice_die("<p>Looks like Lilina is out of date! No worries, just <a href='" . guess_baseurl() . "install.php?action=upgrade'>go ahead and update</a></p>", 'Out of Date');
+		lilina_nice_die("<p>Looks like Lilina is out of date! No worries, just <a href='" . guess_baseurl() . "install.php?action=upgrade'>go ahead and update</a>.</p>", 'Out of Date');
 	}
 }
 
@@ -261,9 +262,6 @@ function lilina_settings_current() {
 
 	require_once(LILINA_PATH . '/inc/core/conf.php');
 
-	global $lilina;
-	require_once(LILINA_PATH . '/inc/core/version.php');
-
 	global $settings;
 	if( isset($settings['settings_version'])
 	  && $settings['settings_version'] == LILINA_SETTINGS_VERSION ) {
@@ -287,18 +285,18 @@ function lilina_nice_die($message, $title = 'Whoops!', $class = false) {
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $title; ?> &mdash; Lilina News Aggregator</title>
-		<style type="text/css">
-			@import "<?php echo $guessurl ?>install.css";
-		</style>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title><?php echo $title; ?> &mdash; Lilina News Aggregator</title>
+		<link rel="stylesheet" type="text/css" href="<?php echo $guessurl ?>admin/resources/reset.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $guessurl ?>install.css" />
 	</head>
 	<body<?php if($class !== false) echo ' class="' . $class . '"'; ?>>
-		<div id="container">
-			<h1><?php echo $title; ?></h1>
+		<div id="content">
+			<h1 id="title"><?php echo $title; ?></h1>
 			<?php echo $message; ?>
-
-			<img id="logo" src="<?php echo $guessurl ?>admin/logo-small.png" alt="Lilina Logo" />
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="http://getlilina.org/">Lilina</a> <span class="version"><?php echo LILINA_CORE_VERSION; ?></span>. Read the <a href="http://codex.getlilina.org/">documentation</a> or get help on the <a href="http://getlilina.org/forums/">forums</a></p>
 		</div>
 	</body>
 </html>

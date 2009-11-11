@@ -18,6 +18,7 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
+require_once(LILINA_INCPATH . '/core/version.php');
 lilina_level_playing_field();
 
 if(version_compare('5.2', phpversion(), '>'))
@@ -272,41 +273,42 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 if($page === "1" && !isset($_REQUEST['skip']))
 	$installer->compatibility_test();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 	<head>
-		<title>Installation - Lilina News Aggregator</title>
-		<style type="text/css">
-			@import "install.css";
-		</style>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>Installation - Lilina News Aggregator</title>
+		<link rel="stylesheet" type="text/css" href="admin/resources/reset.css" />
+		<link rel="stylesheet" type="text/css" href="install.css" />
 	</head>
 	<body>
-		<div id="container">
+		<div id="content">
 <?php
 switch($page) {
 	case 1:
 ?>
-<h1>Setting Up</h1>
+<h1 id="title">Setting Up</h1>
 <p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 	<fieldset id="general">
-		<legend>General Settings</legend>
-		<div class="row<?php if(!$sitename) echo ' highlight';?>">
+		<h2>General Settings</h2>
+		<div class="row">
 			<label for="sitename">Name of site</label>
 			<input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
+			<p class="sidenote">Give your site something to identify it by. This can be changed later.</p>
 		</div>
 	</fieldset>
 	<fieldset id="security">
-		<legend>Security Settings</legend>
-		<div class="row<?php if(!$username) echo ' highlight';?>">
+		<h2>Security Settings</h2>
+		<div class="row">
 			<label for="username">Admin Username</label>
 			<input type="text" value="<?php echo (!$username) ? 'admin' : $username;?>" name="username" id="username" class="input" size="40" />
+			<p class="sidenote">&ldquo;admin&rdquo; probably isn&apos;t the best choice, but it&apos;ll do.</p>
 		</div>
-		<div class="row<?php if(!$password) echo ' highlight';?>">
+		<div class="row">
 			<label for="password">Admin Password</label>
 			<input type="text" value="<?php echo (!$password) ? generate_password() : $password;?>" name="password" id="password" class="input" size="40" />
+			<p class="sidenote">Pick something strong and memorable. If you forget this, you might have to reinstall!</p>
 		</div>
 	</fieldset>
 	<input type="hidden" value="2" name="page" id="page" />
@@ -319,7 +321,7 @@ switch($page) {
 		break;
 	default:
 ?>
-<h1>Installation</h1>
+<h1 id="title">Installation</h1>
 <p>Welcome to Lilina installation. We're now going to start installing. Make sure that the <code>content/</code> directory is <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
@@ -329,6 +331,9 @@ switch($page) {
 		break;
 }
 ?>
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="http://getlilina.org/">Lilina</a> <span class="version"><?php echo LILINA_CORE_VERSION; ?></span>. Read the <a href="http://codex.getlilina.org/">documentation</a> or get help on the <a href="http://getlilina.org/forums/">forums</a></p>
 		</div>
 	</body>
 </html>
