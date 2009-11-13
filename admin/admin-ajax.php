@@ -13,7 +13,6 @@ define('LILINA_LOGIN', true);
 
 require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
-require_once(LILINA_PATH . '/admin/includes/class-ajaxhandler.php');
 
 //header('Content-Type: application/javascript');
 header('Content-Type: application/json');
