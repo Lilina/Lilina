@@ -34,8 +34,8 @@ class Controller {
 	 */
 	public function dispatch() {
 		$method = 'default';
-		if(isset($_GET['method']))
-			$method = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_GET['method']);
+		if(isset($_REQUEST['method']))
+			$method = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_REQUEST['method']);
 		define('LILINA_PAGE', $method);
 
 		try {
