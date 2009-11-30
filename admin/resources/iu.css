@@ -1,0 +1,35 @@
+body.updater #container {
+	text-align: left;
+}
+
+#updatelist {
+	list-style-type: none;
+	margin-left: 0;
+}
+	#updatelist li {
+		padding: 15px 0;
+		border-top: 1px solid #e1e1e1;
+		margin: 0;
+		color: #aaa;
+	}
+		#updatelist li:last-child {
+			border-bottom: 1px solid #e1e1e1;
+		}
+	#updatelist li.updated {
+		color: #444;
+	}
+	#updatelist li.error {
+		border-color: #f00;
+		color: #000;
+	}
+#loading, #finished {
+	display: none;
+	background: #4d4d4d;
+	color: #fff;
+	padding: 10px 20px;
+	margin: 0 -20px;
+}
+	#loading {
+		padding-left: 40px;
+		background: #4d4d4d url("loading-small.gif") no-repeat 17px center;
+	}

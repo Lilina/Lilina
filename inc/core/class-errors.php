@@ -22,6 +22,13 @@ class Errors {
 		// 20-29 = admin.importer.greader.
 		self::$codes['admin.importer.greader.invalid_auth'] = 20;
 
+		// 100-199 = api.
+		// 100-109 = api.itemupdater.
+		self::$codes['api.itemupdater.itemerror']           = 100;
+		self::$codes['api.itemupdater.ajax.unknown']        = 101;
+		self::$codes['api.itemupdater.ajax.no_id']          = 102;
+		self::$codes['api.itemupdater.ajax.action_unknown'] = 103;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.
