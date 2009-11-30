@@ -12,6 +12,7 @@ error_reporting(E_ALL);
 define('LILINA_LOGIN', true);
 
 require_once('admin.php');
+require_once(LILINA_INCPATH . '/core/class-httprequest.php');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
 
 //header('Content-Type: application/javascript');
