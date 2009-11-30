@@ -4,6 +4,7 @@
  * @package Lilina
  * @subpackage Updater
  */
+
 /**
  * Checks to see if a new version of Lilina is available
  * @author WordPress
@@ -11,11 +12,8 @@
 function lilina_version_check() {
 	if ( strpos($_SERVER['REQUEST_URI'], 'install.php') !== false || defined('LILINA_INSTALLING') || !is_admin() )
 		return;
-	global $lilina;
-	//Just to make sure
-	require_once(LILINA_INCPATH . '/core/version.php');
-	require_once(LILINA_INCPATH . '/core/conf.php');
-	$lilina_version = $lilina['core-sys']['version'];
+
+	$lilina_version = LILINA_CORE_VERSION;
 	$php_version = phpversion();
 
 	$data = new DataHandler();
@@ -73,7 +71,6 @@ function lilina_version_check() {
  * @author WordPress
  */
 function lilina_footer_version() {
-	global $lilina;
 	$data = new DataHandler();
 	$cur = $data->load('core-update-check.data');
 	if($cur === null)
@@ -85,7 +82,7 @@ function lilina_footer_version() {
 
 	switch ( $cur->response ) {
 		case 'development' :
-			printf(' | '._r( 'You are using a development version (%1$s). Thanks! Make sure you <a href="%2$s">stay updated</a>.' ), $lilina['core-sys']['version'], 'http://getlilina.org/download/#svn');
+			printf(' | '._r( 'You are using a development version (%1$s). Thanks! Make sure you <a href="%2$s">stay updated</a>.' ), LILINA_CORE_VERSION, 'http://getlilina.org/download/#svn');
 		break;
 
 		case 'upgrade' :
@@ -94,7 +91,7 @@ function lilina_footer_version() {
 
 		case 'latest' :
 		default :
-			printf(' | '._r( 'Version %s' ), $lilina['core-sys']['version']);
+			printf(' | '._r( 'Version %s' ), LILINA_CORE_VERSION);
 		break;
 	}
 }
