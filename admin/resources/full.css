@@ -78,12 +78,6 @@
 	background-color: #0CA2FF;
 	color: #fff;
 }
-#navigation li.current ul {
-}
-#navigation li li.current a {
-}
-#navigation li.current li a:hover {
-}
 
 #main {
 	width: 90%;
@@ -158,7 +152,7 @@
 	left: 10px;
 	width: 30%;
 	max-width: 300px;
-	color: white;
+	color: #fff;
 	text-align: left;
 	z-index: 900;
 	display: none;
@@ -306,3 +300,14 @@ body.login .humanMsg {
 }
 #block-list .greader a { background-image: url("greader.png"); }
 #block-list .bloglines a { background-image: url("bloglines.png"); }
+
+#update-nag {
+	font-size: 12px;
+	border: 1px solid #f00;
+	padding: 11px;
+	background: #faa;
+}
+	#update-nag a {
+		color: #000;
+		font-weight: bold;
+	}
