@@ -74,7 +74,7 @@ if(has_items(false)) {
 						</div>
 						<div class="secondary-section">
 							<span class="feed"><?php the_feed_name() ?></span>
-							<span class="date"><?php the_date('format=l d F, Y H:i'); ?></span>
+							<span class="date"><?php the_time('format=l d F, Y H:i'); ?></span>
 						</div>
 						<div class="clearer"></div>
 					</div>
