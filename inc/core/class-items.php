@@ -232,10 +232,10 @@ class Items {
 	 * @return bool|stdClass False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function get_item($hash) {
-		if( !isset($this->items[ $offset ]) )
+		if( !isset($this->items[ $hash ]) )
 			return false;
 
-		$item = $this->items[$offset];
+		$item = $this->items[$hash];
 		return $item;
 	}
 
