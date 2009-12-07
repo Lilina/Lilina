@@ -35,21 +35,16 @@ function lilina_version_check() {
 	$new_option->version_checked = $lilina_version;
 
 	$headers = apply_filters('update_http_headers', array());
-	require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-	$request = new SimplePie_File("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale",
-		2, //Timeout
-		0, //No. of redirects allowed
-		$headers,
-		"Lilina/$lilina_version;  " . get_option('baseurl')
-	);
+	$request = new HTTPRequest('', 2);
+	$response = $request->get("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale", $headers);
 
-	if ( !$request->success ) {
+	if ( !$response->success ) {
 		// Save it anyway
 		$data->save('core-update-check.data', serialize($new_option));
 		return false;
 	}
 
-	$body = trim( $request->body );
+	$body = trim( $response->body );
 	$body = str_replace(array("\r\n", "\r"), "\n", $body);
 
 	$returns = explode("\n", $body);
