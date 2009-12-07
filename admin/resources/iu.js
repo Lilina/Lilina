@@ -20,7 +20,7 @@ var ItemUpdater = {
 			'type': (type) ? type : 'GET',
 			'url': this.location
 		});
-	}
+	},
 	init: function () {
 		var me = this;
 		this.api('update', {"action": "test", "format": "json"}, function (data) { me.test_success(); }, function(data) { me.test_failure(); });
