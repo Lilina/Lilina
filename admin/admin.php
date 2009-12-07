@@ -43,11 +43,6 @@ else {
 	lilina_login_form('', '');
 }
 
-if(isset($_REQUEST['logout']) && $_REQUEST['logout'] == 'logout') {
-	lilina_logout();
-	die();
-}
-
 /** This sanitises all input variables, so we don't have to worry about them later */
 lilina_level_playing_field();
 

@@ -11,9 +11,28 @@
 define('LILINA_LOGIN', true);
 require_once('admin.php');
 
+$return = '';
+if(!empty($_REQUEST['return']))
+	$return = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_REQUEST['return']);
+
+if(isset($_REQUEST['logout'])) {
+	$user = new User();
+	$user->destroy_cookies();
+
+	if(empty($return))
+		$return = 'admin/login.php';
+
+	header('HTTP/1.1 302 Found');
+	header('Location: ' . get_option('baseurl') . $return);
+	die();
+}
+
 if(defined('LILINA_AUTHED') && LILINA_AUTHED === true) {
+	if(empty($return))
+		$return = 'admin/';
+
 	header('HTTP/1.1 302 Found', true, 302);
-	header('Location: ' . get_option('baseurl') . 'admin/index.php');
+	header('Location: ' . get_option('baseurl') . $return);
 	header('Connection: close');
 	die();
 }
@@ -63,6 +82,7 @@ if(defined('LILINA_AUTH_ERROR') && LILINA_AUTH_ERROR === -1) {
 			</fieldset>
 
 			<input type="hidden" name="page" value="<?php if (isset($page)) echo $page; ?>" />
+			<input type="hidden" name="return" value="<?php echo $return ?>" />
 			<input type="submit" value="<?php _e('Log in') ?>" class="submit" />
 		</form>
 	</div>
