@@ -157,8 +157,9 @@ if(!empty($_GET['updated']))
 		</div>
 		
 		<h2><?php _e('Manual Updating') ?></h2>
-		<p><?php echo sprintf(_r('The URL to manually update the items is <code>%s</code>'), get_option('baseurl') . '?method=update') ?></p>
+		<p><?php printf(_r('The URL to manually update the items is <code>%s</code>'), get_option('baseurl') . '?method=update') ?></p>
 		<p><?php _e('This URL will work regardless of the above option. If the "manual" option is selected, however, this is the only way to update the items.') ?></p>
+		<p><?php printf(_r('For information on using cron with this URL, see the <a href="%s">documentation</a>.'), 'http://codex.getlilina.org/wiki/Updating_Feeds') ?></p>
 	</fieldset>
 	<input type="hidden" name="action" value="settings" />
 	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
