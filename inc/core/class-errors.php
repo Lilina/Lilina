@@ -29,6 +29,9 @@ class Errors {
 		self::$codes['api.itemupdater.ajax.no_id']          = 102;
 		self::$codes['api.itemupdater.ajax.action_unknown'] = 103;
 
+		// 110-119 = api.items.
+		self::$codes['api.items.no_method'] = 110;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.
