@@ -106,7 +106,7 @@ class HTTPRequest {
 		}
 		$return->status_code = (int) $matches[1];
 		$return->success = false;
-		if($return->status_code >= 200 && $return->status_code < 200)
+		if($return->status_code >= 200 && $return->status_code < 300)
 			$return->success = true;
 
 		$return->headers = array();
