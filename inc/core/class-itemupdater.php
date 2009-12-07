@@ -29,7 +29,7 @@ class ItemUpdater {
 			do_action('iu-feed-start', $feed);
 			$sp = self::load_feed($feed);
 			if($error = $sp->error()) {
-				throw new Exception(sprintf(_r('An error occurred with "%1$s": %2$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+				throw new Exception(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
 			}
 			
 			$count = 0;
