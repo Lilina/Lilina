@@ -131,7 +131,7 @@ class UpdaterMethod {
 		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
 		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>admin/resources/iu.js"></script>
 		<script type="text/javascript">
-			var api = new LilinaAPI("<?php echo get_option('baseurl') ?>");
+			ItemUpdater.location = "<?php echo get_option('baseurl') ?>";
 			ItemUpdater.feeds = <?php echo json_encode($feeds) ?>;
 		</script>
 	</head>

@@ -6,7 +6,7 @@ LilinaAPI.prototype.call = function (method, params, callback, error_callback, t
 	params = params || {};
 	callback = callback || false;
 	error_callback = error_callback || false;
-	var request_params = { 'method': method };
+	var request_params = { 'method': "api", "action": method };
 
 	$.extend(request_params, params);
 

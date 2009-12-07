@@ -2,9 +2,28 @@ var ItemUpdater = {
 	feeds: [],
 	current_id: 0,
 	errors: 0,
+	location: "",
+	api: function (method, params, callback, error_callback, type) {
+		params = params || {};
+		callback = callback || false;
+		error_callback = error_callback || false;
+		var request_params = { 'method': method };
+
+		$.extend(request_params, params);
+
+		$.ajax({
+			'cache': false,
+			'data': request_params,
+			'dataType': 'json',
+			'error': error_callback,
+			'success': callback,
+			'type': (type) ? type : 'GET',
+			'url': this.location
+		});
+	}
 	init: function () {
 		var me = this;
-		api.get('update', {"action": "test", "format": "json"}, function (data) { me.test_success(); }, function(data) { me.test_failure(); });
+		this.api('update', {"action": "test", "format": "json"}, function (data) { me.test_success(); }, function(data) { me.test_failure(); });
 	},
 	test_success: function () {
 		$('.js-hide').hide();
@@ -23,7 +42,7 @@ var ItemUpdater = {
 			return;
 		}
 		$('#loading').show();
-		api.post('update', {"action": "single", "id": this.feeds[this.current_id], "format": "json"},
+		this.api('update', {"action": "single", "id": this.feeds[this.current_id], "format": "json"},
 			function (data) { me.process_success(data); },
 			function (xhr, status, error) { me.process_fail(xhr, status, error); }
 		);
