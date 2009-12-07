@@ -36,6 +36,9 @@ class Controller {
 		$method = 'default';
 		if(isset($_REQUEST['method']))
 			$method = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_REQUEST['method']);
+
+		$method = apply_filters('controller-method', $method);
+
 		define('LILINA_PAGE', $method);
 
 		try {
@@ -55,7 +58,7 @@ class Controller {
 			}
 
 			$callback = $this->methods[$method];
-			$output = call_user_func($callback);
+			call_user_func($callback);
 		} catch (Exception $e) {
 			lilina_nice_die('<p>' . sprintf(_r('An error occured dispatching a method: %s'), $e->getMessage()) . '</p>');
 		}
