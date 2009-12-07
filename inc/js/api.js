@@ -1,11 +1,9 @@
-function LilinaAPI(location) {
-	this.location = location;
-}
-LilinaAPI.prototype.location = '';
-LilinaAPI.prototype.call = function (method, params, callback, error_callback, type) {
+LilinaAPI = {};
+LilinaAPI.call = function (method, params, callback, error_callback, type, location) {
 	params = params || {};
 	callback = callback || false;
 	error_callback = error_callback || false;
+	location = location || "index.php";
 	var request_params = { 'method': "api", "action": method };
 
 	$.extend(request_params, params);
@@ -17,8 +15,8 @@ LilinaAPI.prototype.call = function (method, params, callback, error_callback, t
 		'error': error_callback,
 		'success': callback,
 		'type': (type) ? type : 'GET',
-		'url': this.location
+		'url': location
 	});
 };
-LilinaAPI.prototype.get = function (method, params, callback, error_callback) { return this.call(method, params, callback, error_callback, "GET"); };
-LilinaAPI.prototype.post = function (method, params, callback, error_callback) { return this.call(method, params, callback, error_callback, "POST"); };
+LilinaAPI.get = function (method, params, callback, error_callback, location) { return this.call(method, params, callback, error_callback, "GET", location); };
+LilinaAPI.post = function (method, params, callback, error_callback, location) { return this.call(method, params, callback, error_callback, "POST", location); };
