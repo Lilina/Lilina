@@ -16,8 +16,7 @@ class LilinaAPI {
 	// General API methods
 	public static function init() {
 		// Setup headers
-		//header('Content-Type: application/json');
-		header('Content-Type: text/plain');
+		header('Content-Type: application/json');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 		header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -30,7 +29,7 @@ class LilinaAPI {
 		$handler->registerMethod('items.getList', array('LilinaAPI', 'items_getList') );
 		$handler->registerMethod('feeds.get', array('LilinaAPI', 'feeds_get') );
 		$handler->registerMethod('feeds.getList', array('LilinaAPI', 'feeds_getList') );
-		$handler->registerMethod('update.all', array('LilinaAPI', 'update_all') );
+		$handler->registerMethod('update.single', array('LilinaAPI', 'update_single') );
 		do_action('LilinaAPI-register', $handler);
 
 		// Dispatch
@@ -73,11 +72,8 @@ class LilinaAPI {
 	}
 
 	// Updater methods
-	public static function update_all() {
-		$updater = new UpdaterMethod();
-		return $updater->process('all');
-	}
 	public static function update_single($id) {
+		require_once(LILINA_INCPATH . '/core/method-update.php');
 		$updater = new UpdaterMethod();
 		return $updater->process($id);
 	}
