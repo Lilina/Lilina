@@ -51,6 +51,10 @@ a:active, a:focus {
 				#menu li a:hover {
 					color: #333;
 				}
+			#menu li#updating {
+				background: url("loading.gif") no-repeat left center;
+				padding-left: 18px;
+			}
 #sidebar {
 	float: left;
 	position: relative;

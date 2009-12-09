@@ -20,13 +20,14 @@ $authenticated = !!$user->identify();
 	<script type="text/javascript" src="<?php template_directory() ?>/date.extensions.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/to_relative_time.jquery.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/ui.js"></script>
 </head>
 <body>
 	<div id="header">
 
 		<h1><a href="#"><?php echo get_option('sitename') ?></a></h1>
 		<ul id="menu">
+			<li id="update"><a href="?method=update">Update</a></li>
+			<li id="updating">Now updating&hellip; <span class="progress"></span></li>
 <?php
 if($authenticated) {
 ?>
