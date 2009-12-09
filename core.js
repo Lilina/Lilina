@@ -8,7 +8,7 @@ String.prototype.shorten = function(length) {
 		var shorterLength = length - 4;
 		return this.substr(0, shorterLength) + "...";
 	} else {
-		return this;
+		return String(this);
 	}
 }
 
@@ -119,7 +119,6 @@ RazorUI.beginUpdate = function () {
 	RazorUI.updateFeed();
 };
 RazorUI.updateFeed = function (data) {
-	console.log(data);
 	if(data != undefined && typeof data == "array")
 		Razor.updated = Razor.updated + data.msgs[0].updated;
 
