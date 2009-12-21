@@ -184,6 +184,13 @@ a:active, a:focus {
 		padding: 10px;
 		overflow: auto;
 	}
+	#item-view .loading {
+		background: #EEEEEE url(loading.gif) no-repeat center;
+		height: 100%;
+		width: 100%;
+		text-align: center;
+		text-indent: -9999px;
+	}
 .footer {
 	position: absolute;
 	bottom: 0;
