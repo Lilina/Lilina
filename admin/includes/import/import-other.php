@@ -29,6 +29,30 @@ class OPML_Import {
 				break;
 		}
 	}
+
+	/**
+	 * Take the result of the parsed OPML and change it into data we can save
+	 *
+	 * @param array $feeds Either a category, or a feed
+	 * @param string $cat Category (defaults to nothing)
+	 * @return array
+	 */
+	protected function parse($feeds, $cat = '') {
+		$new_feeds = array();
+		foreach($feeds as $name => $feed) {
+			if(!isset($feed['xmlurl'])) {
+				$new_cat = '';
+				if(!empty($name))
+					$new_cat = $name;
+				$feed = $this->parse($feed, $new_cat);
+				$new_feeds = array_merge($new_feeds, $feed);
+			}
+			else
+				$new_feeds[] = array('url' => $feed['xmlurl'], 'title' => $feed['title'], 'cat' => $cat);
+		}
+		return $new_feeds;
+	}
+
 	/**
 	 * Parse feeds into an array, ready to pass to the Javascript importer
 	 *
@@ -47,18 +71,8 @@ class OPML_Import {
 			return false;
 		}
 		$feeds_num = 0;
-		foreach($opml->data as $cat => $feed) {
-			if(!isset($feed['xmlurl']) && isset($feed[0]['xmlurl'])) {
-				foreach($feed as $subfeed) {
-					$feeds[] = array('url' => $subfeed['xmlurl'], 'title' => $subfeed['title'], 'cat' => $cat);
-					++$feeds_num;
-				}
-				continue;
-			}
+		$feeds = $this->parse($opml->data);
 
-			$feeds[] = array('url' => $feed['xmlurl'], 'title' => $feed['title'], 'cat' => '');
-			++$feeds_num;
-		}
 		MessageHandler::add(sprintf(Locale::ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
 		return $feeds;
 	}
