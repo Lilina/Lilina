@@ -24,6 +24,11 @@ RazorUI.init = function () {
 	LilinaAPI.call('items.getList', {"limit": 20}, RazorUI.populateItemList);
 
 	$('#items-list li a').live('click', RazorUI.handleItemClick);
+	$('#help').click(function () {
+		var loading = $('<div class="loading">Loading...</div>');
+		$('#item-view').html(loading);
+		LilinaAPI.call('razor.help', {}, RazorUI.populateItemView);
+	});
 	$('#update a').click(function () {
 		RazorUI.beginUpdate();
 		return false;
@@ -70,7 +75,7 @@ RazorUI.populateItemList = function (list) {
 		var a = $('a', li);
 
 		a.data('item-id', id).attr('title', item.title);
-		$('.item-title', li).text( item.title.shorten(40) );
+		$('.item-title', li).html( item.title.shorten(40) );
 		var feed = RazorUI.feeds[item.feed_id];
 		$('.item-source', li).text(feed.name);
 
@@ -89,10 +94,15 @@ RazorUI.populateItemList = function (list) {
 RazorUI.populateItemView = function (item) {
 	$('#item-view').empty();
 	var basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span></p></div><div id="item-content" /></div>');
-	var feed = RazorUI.feeds[item.feed_id];
+
+	if(item.feed_id != undefined)
+		var feed = RazorUI.feeds[item.feed_id];
+	else
+		var feed = {"name": "Razor", "url": "http://getlilina.org/"};
+
 	var date = new Date(item.timestamp * 1000);
 
-	$('.item-title a', basics).text(item.title).attr('href', item.permalink);
+	$('.item-title a', basics).html(item.title).attr('href', item.permalink);
 	$('.item-source a', basics).text(feed.name).attr('href', feed.url).addClass('external');
 	$('.item-date abbr', basics).text(date.toUTCString()).attr('title', date.toUTCString()).toRelativeTime();
 	$('#item-content', basics).html(item.content);

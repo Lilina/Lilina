@@ -32,7 +32,7 @@ $authenticated = !!$user->identify();
 if($authenticated) {
 ?>
 			<li><a href="<?php echo get_option('baseurl') ?>admin/settings.php">Settings</a></li>
-			<li><a href="#help">Help</a></li>
+			<li><a href="#help" id="help">Help</a></li>
 			<li><a href="<?php echo get_option('baseurl') ?>admin/login.php?logout=logout&return=index.php">Logout</a></li>
 <?php
 }
@@ -81,12 +81,13 @@ if($authenticated) {
 	<div id="item-view">
 		<div id="item">
 			<div id="heading">
-				<h2 class="item-title">Example Item</h2>
+				<h2 class="item-title">Welcome to Razor!</h2>
 				<p class="item-meta"><span class="item-source">From <a href="#external" class="external">Example Feed</a></span>. <span class="item-date">Posted <abbr class="relative" title="Sat, 01 Jan 2009 12:00:00">Sat, 01 Jan 2009 12:00:00</abbr></p>
 
 			</div>
 			<div id="item-content">
-				<p>Lorem ipsum dolor...</p>
+				<p>	Razor is a template for Lilina, built to feel and act like
+					a desktop feed reader.</p>
 			</div>
 		</div>
 	</div>
