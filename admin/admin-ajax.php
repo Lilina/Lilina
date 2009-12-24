@@ -53,13 +53,6 @@ class AdminAjax {
 	 * Callback for feeds.add
 	 */
 	public static function feeds_add($url, $name = '') {
-		/** We need some sort of value here 
-		if( !isset($params['name']) )
-			$params['name'] = '';
-
-		if(empty($params['url']))
-			throw new Exception( _r('No URL specified'), Errors::get_code('admin.feeds.no_url') );*/
-
 		$result = Feeds::get_instance()->add( $url, $name );
 		clear_html_cache();
 		return array('success' => 1, 'msg' => $result['msg'], 'data' => Feeds::get_instance()->get($result['id']));
