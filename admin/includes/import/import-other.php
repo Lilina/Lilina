@@ -147,10 +147,10 @@ class OPML_Import {
 			$opml = '';
 			if(!empty($_POST['url'])) {
 				$http = new HTTPRequest('', 10, 'Lilina/' . LILINA_CORE_VERSION);
-				$opml = $http->get($opml_url);
+				$opml = $http->get($_POST['url']);
 				$opml = $opml->body;
 			}
-			if(!empty($_FILES['file'])) {
+			elseif(!empty($_FILES['file']['tmp_name'])) {
 				$opml = file_get_contents($_FILES['file']['tmp_name']);
 			}
 			$feeds = $this->import_opml($opml);
