@@ -322,7 +322,7 @@ switch($page) {
 	default:
 ?>
 <h1 id="title">Installation</h1>
-<p>Welcome to Lilina installation. We're now going to start installing. Make sure that the <code>content/</code> directory is <a href="readme.html#permissions">writable</a>.</p>
+<p>Welcome to Lilina installation. We're now going to start installing. Make sure that the <code>content/system/</code> directory and all subdirectories are <a href="readme.html#permissions">writable</a>.</p>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 <input type="hidden" name="page" value="1" />
 <input type="submit" value="Install" class="submit" />
