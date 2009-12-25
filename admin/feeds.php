@@ -38,21 +38,24 @@ if(!empty($message))
 	</tbody>
 </table>
 <form action="feeds.php" method="get" id="add_form">
-	<fieldset id="add">
-		<h2><?php _e('Add Feed'); ?></h2>
-		<div class="row">
-			<label for="add_name"><?php _e('Name'); ?>:</label>
-			<input type="text" name="add_name" id="add_name" />
-			<p class="sidenote"><?php _e('If no name is specified, it will be taken from the feed'); ?></p>
-		</div>
+	<h2><?php _e('Add Feed'); ?></h2>
+	<fieldset id="required">
 		<div class="row">
 			<label for="add_url"><?php _e('Feed address (URL)'); ?>:</label>
 			<input type="text" name="add_url" id="add_url" />
 			<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
 		</div>
-		<input type="hidden" name="action" value="add" />
-		<p class="buttons"><button type="submit" class="positive"><?php _e('Add'); ?></button></p>
 	</fieldset>
+	<fieldset id="advanced">
+		<div class="row">
+			<label for="add_name"><?php _e('Name'); ?>:</label>
+			<input type="text" name="add_name" id="add_name" />
+			<p class="sidenote"><?php _e('If no name is specified, it will be taken from the feed'); ?></p>
+		</div>
+	</fieldset>
+	
+	<input type="hidden" name="action" value="add" />
+	<p class="buttons"><button type="submit" class="positive"><?php _e('Add'); ?></button></p>
 </form>
 <?php
 admin_footer();

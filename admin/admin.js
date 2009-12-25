@@ -19,6 +19,12 @@ var admin = {
 			});
 
 			this.feedlist = new FeedList();
+
+			$("#advanced").hide();
+			$("<p class='hideshow'><span>" + _r("Show advanced options") + "</span></p>").appendTo("#required .row").click(function () {
+				$("#advanced").show();
+				$(this).hide();
+			});
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
 			$("#add_form").submit(function () {

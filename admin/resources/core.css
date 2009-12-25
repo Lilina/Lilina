@@ -128,6 +128,19 @@ legend {
 	color: #AAA;
 	text-align: center;
 }
+.hideshow {
+	clear: both;
+	padding: 0;
+	margin: 0.5em 0;
+	font-size: 1em;
+	color: #999;
+	text-align: center;
+	text-decoration: underline;
+}
+	.hideshow span:hover {
+		cursor: pointer;
+		color: #666;
+	}
 p.buttons {
 	font-size: 1em;
 	text-align: center;
