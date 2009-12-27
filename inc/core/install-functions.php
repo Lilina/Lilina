@@ -35,6 +35,7 @@ class Installer {
 	public function install($sitename, $username, $password) {
 		global $installer;
 		require_once(LILINA_INCPATH . '/core/version.php');
+		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 
 		$settings = $this->generate_default_settings($sitename, $username, $password);
 		if( !is_writable(LILINA_PATH . '/content/system/config/') || !($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+'))) {
@@ -48,19 +49,11 @@ class Installer {
 			echo "<p>Using existing feeds data</p>\n";
 		}
 		else {
-			$feeds_file = @fopen(LILINA_PATH . '/content/system/config/feeds.data', 'w+');
-			if(is_resource($feeds_file)) {
-				$data['version'] = LILINA_FEEDSTORAGE_VERSION;
-				$sdata	= base64_encode(serialize($data)) ;
-				if(!$feeds_file) {
-					$this->file_error_notice(LILINA_PATH . '/content/system/config/feeds.data', $sitename, $username, $password);
-					return false;
-				}
-				fputs($feeds_file, $sdata);
-				fclose($feeds_file);
-			}
-			else {
-				echo "<p>Couldn't create <code>content/system/config/feeds.data</code>. Please ensure you create this yourself and make it writable by the server</p>\n";
+			$feeds_file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
+			$feeds_file = $feeds_file->save('feeds.json', json_encode(array()));
+			if(!$feeds_file) {
+				$this->file_error_notice(LILINA_PATH . '/content/system/config/feeds.data', $sitename, $username, $password);
+				return false;
 			}
 		}
 
@@ -73,7 +66,6 @@ class Installer {
 		default_options();
 		global $options;
 		$options['sitename'] = $sitename;
-		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 
 		if(!save_options()) {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
@@ -190,7 +182,7 @@ class Installer {
 	 */
 	public function make_writable($filename) {
 		if(!is_writable($filename)) {
-			chmod($filename, 0666);
+			@chmod($filename, 0666);
 		}
 
 		clearstatcache();
