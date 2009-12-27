@@ -214,6 +214,7 @@ function default_options() {
 	$options['timezone'] = 'UTC';
 	$options['sitename'] = 'Lilina News Aggregator';
 	$options['updateon'] = 'pageview';
+	$options['feeds_version'] = LILINA_FEEDSTORAGE_VERSION;
 }
 function new_options_297() {
 	global $options;
