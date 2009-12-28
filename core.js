@@ -10,7 +10,7 @@ String.prototype.shorten = function(length) {
 	} else {
 		return String(this);
 	}
-}
+};
 
 RazorUI = {};
 RazorUI.init = function () {
@@ -77,7 +77,7 @@ RazorUI.populateItemList = function (list) {
 		a.data('item-id', id).attr('title', item.title);
 		$('.item-title', li).html( item.title.shorten(40) );
 		var feed = RazorUI.feeds[item.feed_id];
-		$('.item-source', li).text(feed.name);
+		$('.item-source', li).html(feed.name);
 
 		var date = new Date(item.timestamp * 1000);
 		$('.item-date', li).text(date.toUTCString());
@@ -103,7 +103,7 @@ RazorUI.populateItemView = function (item) {
 	var date = new Date(item.timestamp * 1000);
 
 	$('.item-title a', basics).html(item.title).attr('href', item.permalink);
-	$('.item-source a', basics).text(feed.name).attr('href', feed.url).addClass('external');
+	$('.item-source a', basics).html(feed.name).attr('href', feed.url).addClass('external');
 	$('.item-date abbr', basics).text(date.toUTCString()).attr('title', date.toUTCString()).toRelativeTime();
 	$('#item-content', basics).html(item.content);
 
@@ -129,7 +129,7 @@ RazorUI.beginUpdate = function () {
 	RazorUI.updateFeed();
 };
 RazorUI.updateFeed = function (data) {
-	if(data != undefined && typeof data == "array")
+	if(data != undefined && data.msgs != undefined && data.msgs[0] != undefined && data.msgs[0].updated != undefined)
 		Razor.updated = Razor.updated + data.msgs[0].updated;
 
 	feed = Razor.feeds[Razor.currentID];
