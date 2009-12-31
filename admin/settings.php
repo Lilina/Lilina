@@ -158,12 +158,12 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header(_r('Settings'));
-?>
-<h1><?php _e('Settings'); ?></h1>
-<?php
+
 if(!empty($_GET['updated']))
-	echo '<div id="message"><p>' . _r('Settings updated!') . '</p></div>';
+	echo '<div id="message" class="message"><p>' . _r('Settings updated!') . '</p></div>';
 ?>
+
+<h1><?php _e('Settings'); ?></h1>
 <form action="settings.php" method="post">
 	<fieldset id="general">
 		<legend><?php _e('General Settings'); ?></legend>

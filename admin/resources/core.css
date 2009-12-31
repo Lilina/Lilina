@@ -6,7 +6,7 @@ body {
 	font-size: 62.5%;
 	line-height: 2.2em;
 	margin: 0;
-	background: #FFF;
+	background: #efefef;
 	color: #333;
 }
 h1, h2, legend {
@@ -23,7 +23,7 @@ h2 {
 	margin: 0.8em 0;
 }
 p, ul, pre {
-	font-size: 1.5em;
+	font-size: 12px;
 	margin-top: 1em;
 }
 ul ul {
@@ -64,18 +64,20 @@ ul ul {
 	line-height: 200%;
 	display: block;
 }
-#alert {
-	background: #0CA2FF;
-	padding: 1.5em;
-	color: #FFF;
+
+.message {
+	font-size: 11px;
+	padding: 10px 20px;
+	margin: -20px -20px 0;
+	border-bottom: 1px solid #ccc;
+	background: #FFFCCA;
 }
-#alert p {
-	margin: 0.1em;
-	padding: 0;
-}
-#alert a {
-	color: #FFF;
-}
+	.message p {
+		font-size: 1em;
+		margin: 0;
+		padding: 0;
+	}
+
 .dialog {
 	width: 70%;
 	max-width: 700px;
