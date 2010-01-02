@@ -20,11 +20,7 @@ var admin = {
 
 			this.feedlist = new FeedList();
 
-			$("#advanced").hide();
-			$("<p class='hideshow'><span>" + _r("Show advanced options") + "</span></p>").appendTo("#required .row").click(function () {
-				$("#advanced").show();
-				$(this).hide();
-			});
+			$(".optional").hide();
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
 			$("#add_form").submit(function () {
@@ -32,11 +28,10 @@ var admin = {
 				return false;
 			});
 		}
-
-		/** Make it look pretty */
-		$("#alert").effect("highlight", { 
-			color: "red" 
-		}, 3000);
+		$("<p class='hideshow'><span>" + _r("Show advanced options") + "</span></p>").insertBefore(".optional").click(function () {
+			$(this).siblings(".optional").show();
+			$(this).hide();
+		});
 
 		$("#navigation li.has-submenu").hover(function() {
 			$(this).addClass('hovering');

@@ -46,7 +46,7 @@ if(!empty($message))
 			<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
 		</div>
 	</fieldset>
-	<fieldset id="advanced">
+	<fieldset id="advanced" class="optional">
 		<div class="row">
 			<label for="add_name"><?php _e('Name'); ?>:</label>
 			<input type="text" name="add_name" id="add_name" />
