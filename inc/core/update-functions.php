@@ -40,7 +40,7 @@ function lilina_version_check() {
 		$response = $request->get("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale", $headers);
 	}
 	catch (Exception $e) {
-		$response = (object) array('success' => true);
+		$response = (object) array('success' => false);
 	}
 
 	if ( !$response->success ) {
