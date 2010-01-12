@@ -32,10 +32,11 @@ ul ul {
 #header {
 	font: 1.1em/1em Arial,sans-serif;
 	width: 90%;
-	height: 3em;
+	height: 33px;
 
-	background: #0CA2FF;
+	background: #0CA2FF url("header.png");
 	border-bottom: 1px solid #0B8AD9;
+	border-bottom-color: rgba(0, 0, 0, 0.2);
 
 	padding: 0 5%;
 	margin: 0;
