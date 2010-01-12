@@ -14,7 +14,7 @@ class Controller {
 	 * Hook into the controller-register action to add your own methods
 	 */
 	public function __construct() {
-		do_action('controller-register', $this);
+		do_action_ref_array('controller-register', array(&$this));
 		$this->registerMethod('default', array('Templates', 'load'));
 	}
 
@@ -49,7 +49,7 @@ class Controller {
 				}
 			}
 			
-			do_action('controller-lateregister', $this);
+			do_action_ref_array('controller-lateregister', array(&$this));
 			
 			// Check again, in case we loaded it last time
 			if( !$method || empty($this->methods[$method]) ) {

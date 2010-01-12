@@ -92,6 +92,51 @@ function do_action($action_name){
 }
 
 /**
+ * Execute functions hooked on a specific action hook, specifying arguments in an array.
+ *
+ * @see do_action() This function is identical, but the arguments passed to the
+ * functions hooked to <tt>$tag</tt> are supplied using an array.
+ *
+ * @package WordPress
+ * @subpackage Plugin
+ * @since 2.1
+ * @global array $wp_filter Stores all of the filters
+ * @global array $wp_actions Increments the amount of times action was triggered.
+ *
+ * @param string $tag The name of the action to be executed.
+ * @param array $args The arguments supplied to the functions hooked to <tt>$tag</tt>
+ * @return null Will return null if $tag does not exist in $wp_filter array
+ */
+function do_action_ref_array($tag, $args) {
+	global $filters;
+
+	global $current_filter;
+	$current_filter = $tag;
+
+	// Do 'all' actions first
+	if ( isset($filters['all']) ) {
+		$all_args = func_get_args();
+		_call_all_hook($all_args);
+	}
+
+	if ( !isset($filters[$tag]) ) {
+		return;
+	}
+
+	ksort($filters[$tag]);
+
+	reset($filters[$tag]);
+
+	do {
+		foreach( (array) current($filters[$tag]) as $action )
+			call_user_func_array($action['function'], array_slice($args, 0, (int) $action['num_args']));
+
+	} while ( next($filters[$tag]) !== false );
+
+	$current_filter = '';
+}
+
+/**
  * Hooks a function or method to a specific filter action.
  *
  * Filters are the hooks that Lilina launches to modify text of various types

@@ -30,7 +30,7 @@ class LilinaAPI {
 		$handler->registerMethod('feeds.get', array('LilinaAPI', 'feeds_get') );
 		$handler->registerMethod('feeds.getList', array('LilinaAPI', 'feeds_getList') );
 		$handler->registerMethod('update.single', array('LilinaAPI', 'update_single') );
-		do_action('LilinaAPI-register', $handler);
+		do_action_ref_array('LilinaAPI-register', array(&$handler));
 
 		// Dispatch
 		$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
