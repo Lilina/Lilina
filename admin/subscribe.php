@@ -80,20 +80,22 @@ class SubscribePage {
 		<form action="subscribe.php" method="post" id="add_form"<?php if(!empty($error)) echo ' class="errorform"' ?>>
 			<fieldset id="add">
 				<p>
-					<label for="name"><?php _e('Name'); ?>:</label>
-					<input type="text" name="name" id="name" class="input input_small" />
-				</p>
-				<p class="sidenote"><?php _e('If no name is specified, it will be taken from the feed'); ?></p>
-
-				<p>
 					<label for="url"><?php _e('Feed address (URL)'); ?>:</label>
 					<input type="text" name="url" id="url" value="<?php if(!empty($url)) echo $url; ?>" class="input input_small" />
 				</p>
 				<p class="sidenote"><?php _e('Example'); ?>: http://feeds.feedburner.com/lilina-news, http://getlilina.org</p>
-
-				<input type="hidden" name="action" value="add" />
-				<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
 			</fieldset>
+			<fieldset id="optional" class="optional">
+				<p>
+					<label for="name"><?php _e('Name'); ?>:</label>
+					<input type="text" name="name" id="name" class="input input_small" />
+				</p>
+				<p class="sidenote"><?php _e('If no name is specified, it will be taken from the feed'); ?></p>
+			
+			</fieldset>
+
+			<input type="hidden" name="action" value="add" />
+			<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
 		</form>
 	</div>
 <?php
@@ -119,6 +121,15 @@ class SubscribePage {
 
 	public static function foot() {
 ?>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$(".optional").hide();
+			$("<p class='hideshow'><span><?php _e('Show advanced options') ?></span></p>").insertBefore(".optional").click(function () {
+				$(this).siblings(".optional").show();
+				$(this).hide();
+			});
+		});
+	</script>
 </body>
 </html>
 <?php
