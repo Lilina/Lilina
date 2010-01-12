@@ -22,7 +22,7 @@ admin_header(_r('First-Run'));
 	<li class="greader"><a href="feed-import.php?service=greader"><?php _e('Google Reader') ?></a></li>
 	<li class="bloglines"><a href="feed-import.php?service=bloglines"><?php _e('Bloglines') ?></a></li>
 	<li class="other"><a href="feed-import.php?service=opml"><?php _e('OPML (desktop readers)') ?></a></li>
-	<li class="other"><a href="feed-import.php?service=other"><?php _e('Others') ?></a></li>
+	<li class="other"><a href="feed-import.php"><?php _e('Others') ?></a></li>
 </ul>
 <p class="sidenote"><?php echo sprintf(_r('Looking to import from another service? Try our <a href="%s">open documentation</a> to see what other users have found.'), 'http://getlilina.org/wiki/importing') ?></p>
 <h2><?php _e('Quick Adding') ?></h2>
