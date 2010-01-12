@@ -81,6 +81,9 @@ class UpdaterMethod {
 				case 'test':
 					$return = $this->test();
 					break;
+				case 'cron':
+					$return = $this->cron();
+					break;
 				case 'all':
 					$return = $this->process('all');
 					break;
@@ -100,6 +103,16 @@ class UpdaterMethod {
 		}
 		
 		echo json_encode($return);
+		die();
+	}
+	
+	protected function cron() {
+		set_time_limit(0);
+		$this->feeds = Feeds::get_instance()->getAll();
+
+		CronUpdater::set_feeds($this->feeds);
+		CronUpdater::process();
+
 		die();
 	}
 	
@@ -128,7 +141,6 @@ class UpdaterMethod {
 		<link rel="stylesheet" type="text/css" href="<?php echo get_option('baseurl') ?>admin/resources/iu.css" />
 		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
 		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/json2.js"></script>
-		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
 		<script type="text/javascript" src="<?php echo get_option('baseurl') ?>admin/resources/iu.js"></script>
 		<script type="text/javascript">
 			ItemUpdater.location = "<?php echo get_option('baseurl') ?>";
