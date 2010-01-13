@@ -226,7 +226,7 @@ class Locale {
 	 * @return object A Translation instance
 	 */
 	public static function &get_translations($domain) {
-		$empty = &new Translations;
+		$empty = new Translations;
 		if ( isset(self::$translations[$domain]) )
 			return self::$translations[$domain];
 		else
