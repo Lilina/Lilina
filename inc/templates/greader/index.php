@@ -10,19 +10,8 @@ header('Content-Type: text/html; charset=utf-8');
 
 require_once(LILINA_INCPATH . '/core/auth-functions.php');
 
-//Authentication Section
-if(isset($_POST['user']) && isset($_POST['pass'])) {
-	$test = lilina_auth($_POST['user'], $_POST['pass']);
-}
-
-if(!isset($test) || $test == 'error') {
-	$test = false;
-}
-
-if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
-	lilina_logout();
-	die();
-}
+$user = new User();
+$authenticated = !!$user->identify();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -47,10 +36,21 @@ if($test === true && isset($_GET['logout']) && $_GET['logout'] == 'logout') {
 <div id="logo">&nbsp;</div>
 
 <div id="navigation">
-  	<span class="site-name"><?php template_sitename() ?></span> |
-	<a href="admin/"><?php echo ($test ? 'Admin Panel' : 'Log In' ); ?></a> |
-	<a href="atom.php">Subscribe to Feed</a> |
-	<a href="opml.php">OPML</a>
+	<span class="site-name"><?php template_sitename() ?></span> |
+<?php
+if($authenticated) {
+?>
+	<a href="<?php echo get_option('baseurl') ?>admin/">Admin Panel</a>
+<?php
+}
+else {
+?>
+	<a href="<?php echo get_option('baseurl') ?>admin/login.php?return=index.php">Login</a> |
+<?php
+}
+?>
+	<a href="<?php echo get_option('baseurl') ?>?method=feed&type=atom">Subscribe to Feed</a> |
+	<a href="<?php echo get_option('baseurl') ?>?method=opml">OPML</a>
 </div>
 
 <div id="main">
