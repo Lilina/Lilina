@@ -53,7 +53,7 @@ endwhile;
 ?>
 
 <div class="sidebar">
-<img src="admin/logo-small.png" width="136" alt="">
+<img src="admin/logo-small.png" width="136" id="logo" />
 
 <h2>Subscriptions</h2>
 <ul>

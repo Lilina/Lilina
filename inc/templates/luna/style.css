@@ -93,6 +93,11 @@ img.face {
 	font-size: 85%;
 }
 
+.sidebar #logo {
+	display: block;
+	margin: 0 auto;
+}
+
 .sidebar h2 {
 	font-size: 110%;
 	font-weight: bold;
