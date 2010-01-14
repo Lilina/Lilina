@@ -13,7 +13,7 @@ require_once('admin.php');
 
 $return = '';
 if(!empty($_REQUEST['return']))
-	$return = preg_replace('/[^-_.0-9a-zA-Z]/', '', $_REQUEST['return']);
+	$return = preg_replace('/[^-_.\/0-9a-zA-Z]/', '', $_REQUEST['return']);
 
 if(isset($_REQUEST['logout'])) {
 	$user = new User();

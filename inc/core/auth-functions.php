@@ -72,8 +72,9 @@ function lilina_login_form($user, $pass) {
 	}
 
 	if(!defined('LILINA_LOGIN')) {
+		$current = str_replace(get_option('baseurl'), '', $_SERVER['REQUEST_URI']);
 		header('HTTP/1.1 302 Found');
-		header('Location: ' . get_option('baseurl') . 'admin/login.php');
+		header('Location: ' . get_option('baseurl') . 'admin/login.php?return=' . $current);
 		header('Connection: close');
 		die();
 	}
