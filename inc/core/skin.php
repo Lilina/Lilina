@@ -199,6 +199,9 @@ function the_link() {
  */
 function the_author_link($args = '') {
 	global $item;
+	if(empty($item->author->url))
+		return;
+
 	$defaults = array(
 		'before' => '',
 		'after' => '',
@@ -222,6 +225,9 @@ function the_author_link($args = '') {
  */
 function the_author_name($args = '') {
 	global $item;
+	if(empty($item->author->name))
+		return;
+
 	$defaults = array(
 		'before' => '',
 		'after' => '',
