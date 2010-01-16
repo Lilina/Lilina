@@ -63,6 +63,7 @@ function apply_filters($filter_name, $string=''){
 	do {
 		foreach((array) current($filters[$filter_name]) as $filter) {
 			$filter_function = $filter['function'];
+			$args[1] = $string;
 			$string = call_user_func_array($filter['function'], array_slice($args, 1, (int) $filter['num_args']));
 		}
 	} while ( next($filters[$filter_name]) !== false );
