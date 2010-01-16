@@ -53,7 +53,12 @@ class LilinaAPI {
 	}
 	public static function items_get($id) {
 		self::load_items();
-		return self::$cache->get_item($id);
+		// This is to make sure get_the_link() etc. work.
+		global $item;
+		$item = self::$cache->get_item($id);
+		if($item != false)
+			$item->actions = apply_filters('action_bar', array());
+		return $item;
 	}
 	public static function items_getList($start = 0, $limit = null) {
 		self::load_items();
