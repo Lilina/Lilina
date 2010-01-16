@@ -20,6 +20,9 @@ $authenticated = !!$user->identify();
 	<script type="text/javascript" src="<?php template_directory() ?>/date.extensions.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/to_relative_time.jquery.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
+	<?php
+	template_header();
+	?>
 </head>
 <body>
 	<div id="header">
@@ -91,5 +94,6 @@ if($authenticated) {
 			</div>
 		</div>
 	</div>
+	<?php template_footer(); ?>
 </body>
 </html>
