@@ -107,6 +107,14 @@ RazorUI.populateItemView = function (item) {
 	$('.item-date abbr', basics).text(date.toUTCString()).attr('title', date.toUTCString()).toRelativeTime();
 	$('#item-content', basics).html(item.content);
 
+	if(item.actions != undefined && item.actions.length > 0) {
+		var footer = $(basics).append('<div class="footer"><ul></ul></div>');
+		$.each(item.actions, function (index, action) {
+			var li = $('<li></li>').html(action);
+			$('ul', footer).append(li);
+		});
+	}
+
 	$('#item-view').html(basics);
 	RazorUI.fitToWindow();
 };
