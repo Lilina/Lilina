@@ -107,7 +107,7 @@ legend {
 	width: 80%;
 	overflow: hidden;
 }
-.row label {
+.row label, .row p.title {
 	display: block;
 	float: left;
 	text-align: right;
@@ -116,7 +116,7 @@ legend {
 	padding: 2px 2em 2px 0;
 	font-size: 1.2em;
 }
-.row input, .row select {
+.row input, .row select, .row .input {
 	width: 56%;
 	padding: 3px;
 	margin: 0;
