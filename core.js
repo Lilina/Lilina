@@ -108,10 +108,10 @@ RazorUI.populateItemView = function (item) {
 	$('#item-content', basics).html(item.content);
 
 	if(item.actions != undefined && item.actions.length > 0) {
-		var footer = $(basics).append('<div class="footer"><ul></ul></div>');
+		$(basics).append('<div class="footer"><ul></ul></div>');
 		$.each(item.actions, function (index, action) {
 			var li = $('<li></li>').html(action);
-			$('ul', footer).append(li);
+			$('.footer ul', basics).append(li);
 		});
 	}
 
