@@ -9,128 +9,8 @@
 
 /** */
 require_once('admin.php');
-
-/**
- * available_locales() - {{@internal Missing Short Description}}}
- *
- * {{@internal Missing Long Description}}}
- */
-function available_locales() {
-	$locale_list = array_map('basename', glob(LILINA_PATH . LANGDIR . '/*.mo'));
-	$locale_list = apply_filters('locale_files', $locale_list);
-	$locales = array();
-
-	/** Special case for English */
-	$locales[]	= array('name' => 'English',
-						'file' => '',
-						'realname' => 'en');
-
-	foreach($locale_list as $locale) {
-		$locale = basename($locale, '.mo');
-
-		if(file_exists( $locale . '.txt' )) {
-			$locale_metadata = file_get_contents(LILINA_PATH . LANGDIR . $locale . '.txt');
-
-			preg_match("|Name:(.*)|i", $locale_metadata, $name);
-
-			$locales[$locale] = array(
-				'name' => $name,
-				'file' => $locale . '.mo',
-				'realname' => $locale
-			);
-		}
-
-		else {
-			$locales[$locale] = array(
-				'name' => $locale,
-				'file' => $locale . '.mo',
-				'realname' => $locale
-			);
-		}
-	}
-	return $locales;
-}
-
-/**
- * available_templates() - {{@internal Missing Short Description}}}
- *
- * {{@internal Missing Long Description}}}
- */
-function available_templates() {
-	//Make sure we open it correctly
-	if ($handle = opendir(LILINA_INCPATH . '/templates/')) {
-		//Go through all entries
-		while (false !== ($dir = readdir($handle))) {
-			// just skip the reference to current and parent directory
-			if ($dir != '.' && $dir != '..') {
-				if (is_dir(LILINA_INCPATH . '/templates/' . $dir)) {
-					if(file_exists(LILINA_INCPATH . '/templates/' . $dir . '/style.css')) {
-						$list[] = $dir;
-					}
-				} 
-			}
-		}
-		// ALWAYS remember to close what you opened
-		closedir($handle);
-	}
-	foreach($list as $the_template) {
-		$temp_data = implode('', file(LILINA_INCPATH . '/templates/' . $the_template . '/style.css'));
-		preg_match("|Name:(.*)|i", $temp_data, $real_name);
-		preg_match("|Description:(.*)|i", $temp_data, $desc);
-		$templates[]	= array(
-								'name' => $the_template,
-								'real_name' => trim($real_name[1]),
-								'description' => trim($desc[1])
-								);
-	}
-	return $templates;
-}
-
-
-/**
- * Activate a plugin
- *
- * @since 1.0
- *
- * @param string $plugin_file Relative path to plugin
- * @return bool Whether plugin was activated
- */
-function activate_plugin($plugin_file) {
-	global $current_plugins;
-	$plugin_file = trim($plugin_file);
-
-	if(!validate_plugin($plugin_file))
-		return false;
-	$current_plugins[md5($plugin_file)] = $plugin_file;
-	
-	$data = new DataHandler();
-	$data->save('plugins.data', serialize($current_plugins));
-	return true;
-}
-
-/**
- * Deactivate a plugin
- *
- * @since 1.0
- *
- * @param string $plugin_file Relative path to plugin
- * @return bool Whether plugin was deactivated
- */
-function deactivate_plugin($plugin_file) {
-	global $current_plugins;
-	
-	if(!isset($current_plugins[md5($plugin_file)]))
-		return false;
-
-	if(!validate_plugin($plugin_file))
-		return false;
-
-	unset($current_plugins[md5($plugin_file)]);
-	
-	$data = new DataHandler();
-	$data->save('plugins.data', serialize($current_plugins));
-	return true;
-}
+require_once(LILINA_PATH . '/admin/includes/settings.php');
+do_action('register_options');
 
 if(isset($_REQUEST['activate_plugin'])) {
 	activate_plugin($_REQUEST['activate_plugin']);
@@ -144,11 +24,13 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 	if(!check_nonce($_POST['_nonce']))
 		lilina_nice_die('Nonces do not match.');
 	clear_html_cache();
-	
-	$updatable_options = array('sitename', 'template', 'locale', 'timezone', 'updateon');
+
+	$updatable_options = AdminOptions::instance()->whitelisted;
 	foreach($updatable_options as $option) {
-		if(!empty($_POST[$option]))
-			update_option($option, $_POST[$option]);
+		if(!empty($_POST[$option])) {
+			$value = apply_filters('options-sanitize-' . $option, $_POST[$option]);
+			update_option($option, $value);
+		}
 	}
 
 	header('HTTP/1.1 302 Found', true, 302);
@@ -237,6 +119,8 @@ if(!empty($_GET['updated']))
 		<p><?php _e('This URL will work regardless of the above option. If the "manual" option is selected, however, this is the only way to update the items.') ?></p>
 		<p><?php printf(_r('For information on using cron with this URL, see the <a href="%s">documentation</a>.'), 'http://codex.getlilina.org/wiki/Updating_Feeds') ?></p>
 	</fieldset>
+	<?php do_action('options-form'); ?>
+	<?php AdminOptions::instance()->do_sections(); ?>
 	<input type="hidden" name="action" value="settings" />
 	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
 	<p class="buttons"><button type="submit" class="positive"><?php _e('Save') ?></button></p>
