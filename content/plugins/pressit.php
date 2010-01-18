@@ -36,7 +36,7 @@ function pressit_js() {
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$(".pressit_button").click(function() {
+		$(".pressit_button").live("click", function() {
 			var result = window.open($(this).attr('href'),'t','toolbar=0,resizable=0,scrollbars=1,status=1,width=700,height=500');
 			if(!result)
 				return true;
