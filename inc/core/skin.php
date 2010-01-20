@@ -344,7 +344,7 @@ function the_id($id = null) {
  */
 function get_the_feed_name() {
 	global $item;
-	return apply_filters( 'the_feed_name', $item->feed, get_the_feed_url() );
+	return apply_filters( 'the_feed_name', $item->feed, $item->feed_id );
 }
 
 function the_feed_name() {
