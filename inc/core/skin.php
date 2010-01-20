@@ -358,7 +358,9 @@ function the_feed_name() {
  */
 function get_the_feed_url() {
 	global $item;
-	return apply_filters( 'the_feed_url', $item->feed );
+	$feed = Feeds::get_instance()->get($item->feed_id);
+	$url = $feed['url'];
+	return apply_filters( 'the_feed_url', $url, $feed, $item->feed_id );
 }
 
 function the_feed_url() {
@@ -370,10 +372,11 @@ function the_feed_url() {
  */
 function get_the_feed_favicon() {
 	global $item;
-/*	$temp_item = $item->feed;
-	if(!$return = $temp_item->get_favicon())*/
-		$return = get_option('baseurl') . 'lilina-favicon.php?i=default';
-	return apply_filters( 'the_feed_favicon', $return );
+	$feed = Feeds::get_instance()->get($item->feed_id);
+	$icon = $feed['icon'];
+	if(!$icon)
+		$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
+	return apply_filters( 'the_feed_favicon', $icon, $feed, $item->feed_id );
 	
 }
 
@@ -387,15 +390,15 @@ function the_feed_favicon() {
 /**
  * @todo Document
  */
-function get_the_feed_id($id = -1) {
+function get_the_feed_id() {
 	global $item;
-	return apply_filters( 'get_the_feed_id', md5($item->feed) );
+	return apply_filters( 'get_the_feed_id', $item->feed_id );
 }
 
 /**
  * @todo Document
  */
-function the_feed_id($id = -1) {
+function the_feed_id() {
 	echo get_the_feed_id($id);
 }
 
