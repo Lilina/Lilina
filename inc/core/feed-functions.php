@@ -147,12 +147,13 @@ function save_feeds($feeds = null) {
 /**
  * Retrieve the custom name of a feed based on a ID
  *
+ * @deprecated Use Feeds::get_instance()->get($id) instead
  * @param string $name Default name to return if ID is not found
  * @param string $id ID to lookup
  * @return string Name of the feed
  */
 function get_feed_name($name, $id) {
-	if($feed = feed_exists($id)) {
+	if($feed = Feeds::get_instance()->get($id)) {
 		$name = $feed['name'];
 	}
 	return $name;
@@ -161,12 +162,12 @@ function get_feed_name($name, $id) {
 /**
  * Check for the existence of a feed based on a ID
  *
+ * @deprecated Use Feeds::get_instance()->get($id) instead
  * Checks whether the supplied feed is in the feed list
  * @param string $id ID to lookup
  * @return array|bool Returns the feed array if found, false otherwise
  */
 function feed_exists($id) {
-	$feeds = Feeds::get_instance()->getAll();
-	return array_key_exists($feed, $feeds);
+	return !!Feeds::get_instance()->get($id);
 }
 ?>
