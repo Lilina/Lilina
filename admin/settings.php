@@ -153,7 +153,7 @@ foreach(lilina_plugins_list(get_plugin_dir()) as $plugin):
 <?php
 if( isset($current_plugins[md5($plugin_file)]) ):
 ?>
-					<td><a href="settings.php?deactivate_plugin=<?php echo $plugin_file ?>" class="button negative"><?php  _e('Dectivate') ?></a></td>
+					<td><a href="settings.php?deactivate_plugin=<?php echo $plugin_file ?>" class="button negative"><?php  _e('Deactivate') ?></a></td>
 <?php
 else:
 ?>
