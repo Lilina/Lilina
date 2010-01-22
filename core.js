@@ -35,18 +35,22 @@ RazorUI.init = function () {
 	});
 	$('#updating').hide();
 };
+RazorUI.headerHeight = 51;
+RazorUI.itemListFooterHeight = 33;
+RazorUI.contentFooterHeight = 0;
 RazorUI.fitToWindow = function () {
 	$('#sidebar, #items-list, #item-view').css( {
-		'height': $(window).height() - 51
+		'height': $(window).height() - RazorUI.headerHeight
 	});
 	$('#sidebar .item-list').css( {
-		'height': $(window).height() - 84
+		'height': $(window).height() - (RazorUI.headerHeight + RazorUI.itemListFooterHeight)
 	});
 	$('#item-view').css( {
 		'width': $(window).width() - 592
 	});
+	var contentHeight = $(window).height() - (RazorUI.headerHeight + RazorUI.contentFooterHeight + 66 + 20); //header + footer + item header + padding
 	$('#item-content').css( {
-		'height': $(window).height() - 137
+		'height': contentHeight
 	});
 };
 RazorUI.populateFeedList = function (list) {
@@ -92,6 +96,7 @@ RazorUI.populateItemList = function (list) {
 	$('#items-list .item-date').toRelativeTime();
 };
 RazorUI.populateItemView = function (item) {
+	RazorUI.contentFooterHeight = 0;
 	$('#item-view').empty();
 	var basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span></p></div><div id="item-content" /></div>');
 
@@ -113,6 +118,7 @@ RazorUI.populateItemView = function (item) {
 			var li = $('<li></li>').html(action);
 			$('.footer ul', basics).append(li);
 		});
+		RazorUI.contentFooterHeight = 33;
 	}
 
 	$('#item-view').html(basics);
