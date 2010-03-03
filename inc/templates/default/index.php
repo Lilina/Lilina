@@ -27,7 +27,7 @@ header('Content-Type: text/html; charset=utf-8');
 		if(template_synd_links())
 			echo ' | ';
 		?>
-		<a href="opml.php"><?php _e('OPML'); ?></a>
+		<a href="<?php echo get_option('baseurl') ?>?method=opml"><?php _e('OPML'); ?></a>
 		|
 		<a href="#sources"><?php _e('List of sources'); ?></a>
 		|
