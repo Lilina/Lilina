@@ -200,7 +200,7 @@ function the_link() {
 function the_author_link($args = '') {
 	global $item;
 	if(empty($item->author->url))
-		return;
+		return the_author_name($args);
 
 	$defaults = array(
 		'before' => '',
