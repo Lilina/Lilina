@@ -78,7 +78,7 @@ class Items {
 	 * @param array $conditions
 	 */
 	public function set_conditions($conditions) {
-		$this->conditions = array_merge($conditions, $this->conditions);
+		$this->conditions = array_merge($this->conditions, $conditions);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Items {
 			'feed'      => $item->get_feed()->get_link()
 		);
 		if(!empty($feed_id))
-			$new_item['feed_id'] = $feed_id;
+			$new_item->feed_id = $feed_id;
 		return apply_filters('item_data', $new_item);
 	}
 
@@ -343,6 +343,11 @@ class Items {
 			switch($key) {
 				case 'time':
 					if($item->timestamp < $condition) {
+						return false;
+					}
+					break;
+				case 'feed':
+					if(empty($item->feed_id) || $item->feed_id != $condition) {
 						return false;
 					}
 					break;
