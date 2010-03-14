@@ -19,9 +19,6 @@ defined('LILINA_PATH') or die('Restricted access');
  * @package Lilina
  */
 class Installer {
-	public function __construct() {
-	}
-
 	/**
 	 * Lilina installer
 	 *
