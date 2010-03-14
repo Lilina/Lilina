@@ -74,6 +74,7 @@ class ItemCache extends Items {
 	 * @return array List of items, including new items
 	 */
 	public function init($override = false) {
+		$this->items = $this->cached_items;
 		if(get_option('updateon') !== 'pageview' && !$override) {
 			return false;
 		}
@@ -110,6 +111,9 @@ class ItemCache extends Items {
 		return $this->items;
 	}
 
+	public function reset() {
+		$this->items = $this->cached_items;
+	}
 	/**
 	 * Sort all items
 	 *
