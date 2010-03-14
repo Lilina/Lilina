@@ -22,7 +22,8 @@ function lilina_return_items($input = '', $conditions = array()) {
 	$itemcache = new ItemCache();
 	$itemcache->set_feeds($feed_list);
 	$itemcache->init();
-	$itemcache->set_conditions(array('time' => (time() - 86400)));
+	$conditions = apply_filters('return_items-conditions', array('time' => (time() - 86400)));
+	$itemcache->set_conditions($conditions);
 	$itemcache->filter();
 	return apply_filters('return_items', $itemcache);
 }
