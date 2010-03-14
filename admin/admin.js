@@ -19,8 +19,6 @@ var admin = {
 			});
 
 			this.feedlist = new FeedList();
-
-			$(".optional").hide();
 		}
 		else if ( $('body#admin-subscribe').length != 0) {
 			$("#add_form").submit(function () {
@@ -28,6 +26,7 @@ var admin = {
 				return false;
 			});
 		}
+		$(".optional").hide();
 		$("<p class='hideshow'><span>" + _r("Show advanced options") + "</span></p>").insertBefore(".optional").click(function () {
 			$(this).siblings(".optional").show();
 			$(this).hide();
