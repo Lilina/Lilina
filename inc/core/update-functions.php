@@ -94,6 +94,11 @@ function lilina_footer_version() {
 			printf(' | '._r( 'Version %s' ), LILINA_CORE_VERSION);
 		break;
 	}
+
+	if ( is_file(LILINA_PATH . '/.svn/entries') ) {
+		$file = file(LILINA_PATH . '/.svn/entries');
+		printf(' | ' . _r('SVN revision %s'), trim($file[3]));
+	}
 }
 
 /**
