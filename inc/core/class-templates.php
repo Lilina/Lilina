@@ -41,7 +41,7 @@ class Templates {
 
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
-		header('Content-Type: text/html; charset=utf-8');
+		Templates::headers();
 		$cache = new CacheHandler();
 		$cache->begin_caching($prefix . $_SERVER['REQUEST_URI']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
@@ -49,6 +49,59 @@ class Templates {
 		else
 			require_once($current['Template Dir'] . '/index.php');
 		$cache->end_caching($prefix . $_SERVER['REQUEST_URI']);
+	}
+
+	/**
+	 * HTTP header handler
+	 *
+	 * Handles the output of all default headers, but can be changed via the
+	 * `template-headers` filter.
+	 *
+	 * Also controls working with If-None-Match/If-Modified-Since
+	 */
+	public static function headers() {
+		// Basic default headers
+		$headers = array(
+			'Content-Type' => 'text/html; charset=utf-8',
+		);
+
+		// Last-Modified and ETag
+		$itemcache = ItemCache::get_instance();
+		$itemcache->init();
+		$item = reset($itemcache->retrieve());
+		$last_modified_timestamp = $item->timestamp;
+		$last_modified = date('D, d M Y H:i:s', $last_modified_timestamp);
+		$headers['Last-Modified'] = $last_modified . ' GMT';
+		$headers['ETag'] = '"' . md5($last_modified) . '"';
+
+		// Do the header dance
+		$headers = apply_filters('template-headers', $headers);
+		foreach($headers as $name => $value) {
+			header($name . ': ' . $value);
+		}
+
+		// Conditional GET
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
+			$client_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
+		else
+			$client_etag = false;
+
+		$client_modified = (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) ? strtotime(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) : false;
+
+		$protocol = $_SERVER["SERVER_PROTOCOL"];
+		if ( 'HTTP/1.1' != $protocol && 'HTTP/1.0' != $protocol )
+			$protocol = 'HTTP/1.0';
+
+		if ($client_modified !== false && $client_etag !== false) {
+			if(($client_modified >= $last_modified_timestamp) && ($client_etag == $headers['ETag'])) {
+				header($protocol . ' 304 Not Modified');
+				die();
+			}
+		}
+		elseif(($client_modified >= $last_modified_timestamp) || ($client_etag == $headers['ETag'])) {
+			header($protocol . ' 304 Not Modified');
+			die();
+		}
 	}
 
 	/**
