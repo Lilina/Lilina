@@ -15,7 +15,7 @@
  */
 function feed_list_table() {
 	//Defined in admin panel
-	$feeds			= get_feeds();
+	$feeds			= Feeds::get_instance()->getAll();
 	$j	= 0;
 	$table = '';
 	if(is_array($feeds) && !empty($feeds)) {
@@ -37,12 +37,4 @@ function feed_list_table() {
 		$table = '<tr id="nofeeds"><td>' . _r('You don\'t currently have any feeds. Try <a href="#add_form">adding some</a>.') . '</td></tr>';
 	}
 	return $table;
-}
-
-/**
- * 
- * @global array
- */
-function get_feeds() {
-	return Feeds::get_instance()->getAll();
 }
