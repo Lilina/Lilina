@@ -21,7 +21,7 @@ RazorUI.init = function () {
 
 	LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 	// We'll fix this hardcoded limit later.
-	LilinaAPI.call('items.getList', {"limit": 20}, RazorUI.populateItemList);
+	LilinaAPI.call('items.getList', {"limit": 40}, RazorUI.populateItemList);
 
 	$('#items-list li a').live('click', RazorUI.handleItemClick);
 	$('#help').click(function () {
@@ -35,7 +35,7 @@ RazorUI.init = function () {
 	});
 	$('#updating').hide();
 };
-RazorUI.headerHeight = 51;
+RazorUI.headerHeight = 59;
 RazorUI.itemListFooterHeight = 33;
 RazorUI.contentFooterHeight = 0;
 RazorUI.fitToWindow = function () {
@@ -80,7 +80,12 @@ RazorUI.populateItemList = function (list) {
 
 		a.data('item-id', id).attr('title', item.title);
 		$('.item-title', li).html( item.title.shorten(40) );
-		var feed = RazorUI.feeds[item.feed_id];
+
+		if(item.feed_id != undefined)
+			var feed = RazorUI.feeds[item.feed_id];
+		else
+			var feed = {"name": "Razor", "url": "http://getlilina.org/"};
+
 		$('.item-source', li).html(feed.name);
 
 		var date = new Date(item.timestamp * 1000);
