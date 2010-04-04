@@ -341,38 +341,36 @@ function _build_callback_string($callback) {
  */
 function plugins_meta($plugin_file) {
 	$plugin_data = implode('', file($plugin_file));
-	preg_match("|Plugin Name:(.*)|i", $plugin_data, $plugin_name);
-	preg_match("|Plugin URI:(.*)|i", $plugin_data, $plugin_uri);
-	preg_match("|Description:(.*)|i", $plugin_data, $description);
-	preg_match("|Author:(.*)|i", $plugin_data, $author_name);
-	preg_match("|Author URI:(.*)|i", $plugin_data, $author_uri);
-	//If the plugin sets the version...
-	if (preg_match("|Version:(.*)|i", $plugin_data, $version)) {
-		//...Let it
-		$version = trim($version[1]);
+	$headers = array(
+		'name' => 'Plugin Name',
+		'uri' => 'Plugin URI',
+		'description' => 'Description',
+		'author' => 'Author',
+		'author_uri' => 'Author URI',
+		'version' => 'Version',
+		'min_version' => 'Min Version',
+	);
+	$headers = apply_filters('plugin_headers', $headers);
+
+	foreach ( $headers as $friendly => $regex ) {
+		$value = null;
+
+		$success = preg_match('|' . preg_quote($regex, '|') . ':(.*)|i', $plugin_data, $value);
+		if (!$success) {
+			$value = array(1 => '');
+		}
+
+		$value = trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $value[1]));
+		$vals[$friendly] = $value;
 	}
-	else {
-		//...Otherwise assume it's 1.0
-		$version = 1.0;
-	}
-	//If the plugin sets the version...
-	if (preg_match("|Min Version:(.*)|i", $plugin_data, $min_version)) {
-		//...Let it
-		$min_version = trim($min_version[1]); //F1
-	}
-	else {
-		//...Otherwise assume it's the current version of Lilina
-		$min_version = 1.0;
-	}
-	//Set the $plugin object for returning
-	$plugin = new stdClass;
-	$plugin->name = $plugin_name[1];
-	$plugin->uri = $plugin_uri[1];
-	$plugin->description = $description[1];
-	$plugin->author = $author_name[1];
-	$plugin->author_uri = $author_uri[1];
-	$plugin->version = $version;
-	$plugin->min_version = $min_version;
+
+	if (empty($vals['version']))
+		$vals['version'] = 1.0;
+
+	if (empty($vals['min_version']))
+		$vals['min_version'] = LILINA_CORE_VERSION;
+
+	$plugin = (object) $vals;
 	return $plugin;
 }
 
