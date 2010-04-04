@@ -365,7 +365,7 @@ function plugins_meta($plugin_file) {
 	}
 
 	if (empty($vals['version']))
-		$vals['version'] = 1.0;
+		$vals['version'] = '1.0';
 
 	if (empty($vals['min_version']))
 		$vals['min_version'] = LILINA_CORE_VERSION;
