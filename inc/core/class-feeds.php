@@ -18,9 +18,6 @@ class Feeds {
 	protected $file;
 
 	public function __construct() {
-		if(!class_exists('SimplePie'))
-			require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-
 		$this->file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 		$this->load();
 	}
