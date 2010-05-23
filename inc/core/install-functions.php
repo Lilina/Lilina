@@ -49,14 +49,14 @@ class Installer {
 			$feeds_file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 			$feeds_file = $feeds_file->save('feeds.json', json_encode(array()));
 			if(!$feeds_file) {
-				$this->file_error_notice(LILINA_PATH . '/content/system/config/feeds.data', $sitename, $username, $password);
+				$this->file_error_notice(LILINA_PATH . '/content/system/config/feeds.json', $sitename, $username, $password);
 				return false;
 			}
 		}
 
 		/** Make sure it's writable now */
-		if(!$this->make_writable(LILINA_PATH . '/content/system/config/feeds.data')) {
-			echo "<p>Couldn't make <code>content/system/config/feeds.data</code> writable. Please ensure you make it writable yourself</p>\n";
+		if(!$this->make_writable(LILINA_PATH . '/content/system/config/feeds.json')) {
+			echo "<p>Couldn't make <code>content/system/config/feeds.json</code> writable. Please ensure you make it writable yourself</p>\n";
 		}
 
 		
