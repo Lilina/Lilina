@@ -32,6 +32,7 @@ if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['
 			update_option($option, $value);
 		}
 	}
+	do_action('settings_after_update');
 
 	header('HTTP/1.1 302 Found', true, 302);
 	header('Location: ' . get_option('baseurl') . 'admin/settings.php?updated=1');
