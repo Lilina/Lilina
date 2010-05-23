@@ -69,7 +69,12 @@ class Templates {
 		$itemcache = ItemCache::get_instance();
 		$itemcache->init();
 		$item = reset($itemcache->retrieve());
-		$last_modified_timestamp = $item->timestamp;
+
+		if($item !== false)
+			$last_modified_timestamp = $item->timestamp;
+		else
+			$last_modified_timestamp = time();
+
 		$last_modified = date('D, d M Y H:i:s', $last_modified_timestamp);
 		$headers['Last-Modified'] = $last_modified . ' GMT';
 		$headers['ETag'] = '"' . md5($last_modified) . '"';
