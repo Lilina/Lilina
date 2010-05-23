@@ -66,7 +66,7 @@ class Templates {
 		);
 
 		// Last-Modified and ETag
-		$itemcache = ItemCache::get_instance();
+		$itemcache = Items::get_instance();
 		$itemcache->init();
 		$item = reset($itemcache->retrieve());
 

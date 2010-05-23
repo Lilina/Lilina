@@ -26,8 +26,7 @@ class ItemUpdater {
 		$return = array();
 		
 		foreach(self::$feeds as $feed) {
-			do_action('iu-feed-start', $feed);
-			$sp = self::load_feed($feed);
+			$sp = &self::load_feed($feed);
 			if($error = $sp->error()) {
 				throw new Exception(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
 			}
@@ -36,22 +35,49 @@ class ItemUpdater {
 			$items = $sp->get_items();
 			foreach($items as $item) {
 				$new_item = self::normalise($item, $feed['id']);
+				unset($item);
 				$new_item = apply_filters('item_data_precache', $new_item);
-				if(ItemCache::get_instance()->check_item($new_item)) {
+				if(Items::get_instance()->check_item($new_item)) {
 					$count++;
 					$updated = true;
 				}
 			}
+			$sp->__destruct();
+			unset($items);
+			unset($sp);
+
 			do_action('iu-feed-finish', $feed);
 			$return[$feed['id']] = $count;
 		}
 
-		ItemCache::get_instance()->sort_all();
+		Items::get_instance()->sort_all();
 		
 		if($updated)
-			ItemCache::get_instance()->save_cache();
+			Items::get_instance()->save_cache();
 		
 		return $return;
+	}
+
+	public static function process_single($feed) {
+		$sp = &self::load_feed($feed);
+		if($error = $sp->error()) {
+			throw new Exception(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+		}
+		
+		$count = 0;
+		$items = $sp->get_items();
+		foreach($items as $item) {
+			$new_item = self::normalise($item, $feed['id']);
+			$new_item = apply_filters('item_data_precache', $new_item);
+			if(Items::get_instance()->check_item($new_item)) {
+				$count++;
+			}
+		}
+		$sp->__destruct();
+		unset($sp);
+
+		do_action('iu-feed-finish', $feed);
+		return array($feed['id'] => $count);
 	}
 
 	/**
@@ -60,7 +86,7 @@ class ItemUpdater {
 	 * @param string $feed Feed detail array, as returned by Feeds::get()
 	 * @return SimplePie
 	 */
-	public static function load_feed($feed) {
+	public static function &load_feed($feed) {
 		// This loads the useragent
 		class_exists('HTTPRequest');
 		global $lilina;

@@ -77,7 +77,7 @@ add_action('controller-register', 'instapaper_register', 10, 1);
 
 function instapaper_submit() {
 	$id = $_GET['id'];
-	$item = ItemCache::get_instance()->get_item($id);
+	$item = Items::get_instance()->get_item($id);
 
 	if ( false === $item ) {
 		throw new Exception(_r('Invalid item ID specified', 'instapaper'));

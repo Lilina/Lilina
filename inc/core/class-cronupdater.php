@@ -24,7 +24,7 @@ class CronUpdater extends ItemUpdater {
 			foreach($items as $item) {
 				$new_item = self::normalise($item, $feed['id']);
 				$new_item = apply_filters('item_data_precache', $new_item);
-				if(ItemCache::get_instance()->check_item($new_item)) {
+				if(Items::get_instance()->check_item($new_item)) {
 					$count++;
 					$updated = true;
 				}
@@ -32,10 +32,10 @@ class CronUpdater extends ItemUpdater {
 			do_action('iu-feed-finish', $feed);
 		}
 
-		ItemCache::get_instance()->sort_all();
+		Items::get_instance()->sort_all();
 		
 		if($updated)
-			ItemCache::get_instance()->save_cache();
+			Items::get_instance()->save_cache();
 	}
 
 	public static function log($text, $code) {

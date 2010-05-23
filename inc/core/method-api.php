@@ -47,22 +47,16 @@ class LilinaAPI {
 	}
 
 	// Item methods
-	protected static function load_items() {
-		if(self::$cache === null)
-			self::$cache = new ItemCache();
-	}
 	public static function items_get($id) {
-		self::load_items();
 		// This is to make sure get_the_link() etc. work.
 		global $item;
-		$item = self::$cache->get_item($id);
+		$item = Items::get_instance()->get_item($id);
 		if($item != false)
 			$item->actions = apply_filters('action_bar', array());
 		return $item;
 	}
 	public static function items_getList($start = 0, $limit = null) {
-		self::load_items();
-		$items = self::$cache->retrieve();
+		$items = Items::get_instance()->retrieve();
 		if($limit == null)
 			return $items;
 		return array_slice($items, $start, $limit, true);

@@ -58,19 +58,55 @@ class Items {
 	protected $conditions = array();
 
 	/**
+	 * Singleton instance of self
+	 *
+	 * Holds a singleton instance of self, for use by get_instance()
+	 *
+	 * @access protected
+	 */
+	protected static $instance;
+
+	/**
+	 * DataHandler instance
+	 *
+	 * Saves time, money and memory if we keep the same DataHandler
+	 *
+	 * @access protected
+	 */
+	protected $data;
+
+	/**
 	 * Object constructor
 	 *
 	 * Sets our used properties with user input
-	 * @param SimplePie
 	 */
-	public function __construct($sp = null) {
-		if($sp !== null) {
-			$this->simplepie = $sp;
-			/** Free up memory just in case */
-			unset($sp);
-			$this->init();
+	protected function __construct() {
+		$this->data = new DataHandler();
+		$current = $this->data->load('items.data');
+		if($current !== null) {
+			// Workaround for old, serialized PHP database
+			if(($this->items = json_decode($current)) === $current) {
+				$this->items = unserialize($current);
+			}
+			$this->items = (array) $this->items;
+			$this->cached_items = $this->items;
 		}
 	}
+
+	public function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new Items();
+		}
+		return self::$instance;
+	}
+
+	/**
+	 * Stop object cloning
+	 *
+	 * As this is a singleton, we don't want to be able to clone this
+	 * @access private
+	 */
+	protected function __clone() {}
 
 	/**
 	 * Set the conditions to use when filtering
@@ -81,30 +117,21 @@ class Items {
 		$this->conditions = array_merge($this->conditions, $conditions);
 	}
 
+
+
 	/**
-	 * Initialize our class and load the items in
+	 * Initialize SimplePie and load any new items
 	 *
-	 * {@internal Long Description Missing}}
+	 * @param bool $override Whether to override the updateon check
+	 * @return array List of items, including new items
 	 */
 	public function init() {
-		if(is_null($this->simplepie))
-			$this->load();
+		$this->items = $this->cached_items;
+		$this->sort_all();
+	}
 
-		$this->simplepie_items = &$this->simplepie->get_items();
-
-		/** Run through each item at least once */
-		foreach($this->simplepie_items as $item) {
-			$new_item = $this->normalise($item);
-			$this->items[ $new_item->hash ] = $new_item;
-		}
-
-		uasort($this->items, array($this, 'sort_items'));
-
-		$this->simplepie->__destruct();
-		unset($this->simplepie);
-		unset($this->simplepie_items);
-
-		return $this->items;
+	public function reset() {
+		$this->items = $this->cached_items;
 	}
 
 	/**
@@ -119,12 +146,25 @@ class Items {
 	}
 
 	/**
-	 * Set the feeds property for Items::load()
+	 * Sort all items
 	 *
-	 * @param array|string $feeds Single-level array of feed URLs or single URL as a string
+	 * This bypasses SimplePie's sorting (and lack thereof for items without
+	 * timestamps).
 	 */
-	public function set_feeds($feeds) {
-		$this->feeds = $feeds;
+	public function sort_all() {
+		uasort($this->cached_items, array('Items', 'sort_items'));
+		uasort($this->items, array('Items', 'sort_items'));
+	}
+
+	/**
+	 * Retreive the items without fetching new ones
+	 *
+	 * Depending on whether {@link init()} is called or not, this may include
+	 * new items.
+	 * @return array List of items
+	 */
+	public function retrieve() {
+		return $this->items;
 	}
 
 	/**
@@ -169,45 +209,6 @@ class Items {
 			$new_item->feed_id = $feed_id;
 		return apply_filters('item_data', $new_item);
 	}
-
-	/**
-	 * Create a new SimplePie object
-	 *
-	 * Creates an instance of SimplePie with Items::$feeds
-	 *
-	 * @since 1.0
-	 */
-	public function load() {
-		global $lilina;
-
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
-
-		$feed = new SimplePie();
-		$feed->set_useragent('Lilina/'. $lilina['core-sys']['version'].'; ('.get_option('baseurl').'; http://getlilina.org/; Allow Like Gecko) SimplePie/' . SIMPLEPIE_BUILD);
-		$feed->set_stupidly_fast(true);
-		$feed->set_cache_location(get_option('cachedir'));
-		$feed->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
-		$feed = apply_filters('simplepie-config', $feed);
-
-		$feed->set_feed_url($this->feeds);
-		$feed->init();
-
-		/** We need this so we have something to work with. */
-		$feed->get_items();
-
-		if(!isset($feed->data['ordered_items'])) {
-			$feed->data['ordered_items'] = $feed->data['items'];
-		}
-
-		/** Let's force sorting */
-		usort($feed->data['ordered_items'], array(&$feed, 'sort_items'));
-		usort($feed->data['items'], array(&$feed, 'sort_items'));
-
-		$this->simplepie = $feed;
-
-		/** Free up memory just in case */
-		unset($feed);
-	}
 	
 	/**
 	 * Return all items
@@ -217,7 +218,7 @@ class Items {
 	 * @return array All items from the feed
 	 */
 	public function get_items() {
-		return $this->simplepie_items;
+		return $this->items;
 	}
 	
 	/**
@@ -355,5 +356,80 @@ class Items {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check the current item against the cached items
+	 *
+	 * Checks the item against the cached database. If the item does not
+	 * exist, calls insert_item(). If the item is out-of-date, calls
+	 * update_item().
+	 *
+	 * @since 1.0
+	 *
+	 * @param stdClass $item Item to check
+	 */
+	public function check_item($item) {
+		if(!isset( $this->cached_items[ $item->hash ] )) {
+			$this->update_item($item);
+			do_action('insert_item', $item);
+			return true;
+		}
+
+		$cached_item = $this->cached_items[ $item->hash ];
+		if($cached_item->timestamp !== $item->timestamp || $cached_item->hash !== $item->hash) {
+			$old_item = $this->cached_items[ $item->hash ];
+			$this->update_item($item);
+			do_action('update_item', $item, $old_item);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Insert the current item into the cache database
+	 *
+	 * Inserts the item into the database with the information from the
+	 * current item.
+	 *
+	 * @since 1.0
+	 * @deprecated Use {@see update_item()} instead.
+	 *
+	 * @param stdClass $item Item to insert into database
+	 */
+	protected function insert_item($item) {
+		$this->update_item($item);
+	}
+
+	/**
+	 * Update the cached version of the current item
+	 *
+	 * Updates the item into the database with the information from the
+	 * current item.
+	 *
+	 * @since 1.0
+	 *
+	 * @param stdClass $item Item to update
+	 */
+	protected function update_item($item) {
+		if(isset($this->cached_items[ $item->hash ]))
+			do_action('itemcache-update', $item);
+		else
+			do_action('itemcache-insert', $item);
+		
+		$this->items[ $item->hash ] = $item;
+		$this->cached_items[ $item->hash ] = $item;
+	}
+
+	/**
+	 * Cache items
+	 *
+	 * Stores current items back into cache.
+	 *
+	 * @since 1.0
+	 */
+	public function save_cache() {
+		$this->data->save('items.data', json_encode($this->cached_items));
 	}
 }
