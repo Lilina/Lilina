@@ -6,24 +6,12 @@
  */
 class Items {
 	/**
-	 * SimplePie object
-	 * @var SimplePie
-	 */
-	protected $simplepie = null;
-
-	/**
 	 * @var array|string
 	 */
 	protected $feeds;
 
 	/**
-	 * Items array, obtained from $simplepie->get_items()
-	 * @var array
-	 */
-	protected $simplepie_items;
-
-	/**
-	 * @var SimplePie_Item
+	 * @var stdObject
 	 */
 	protected $current_item;
 
@@ -33,20 +21,27 @@ class Items {
 	protected $current_feed;
 
 	/**
-	 * Stores item data in an stdClass object, independant of SimplePie
+	 * Stores item data in an stdClass object
 	 * @var array
 	 */
 	public $item = array();
 
 	/**
-	 * Stores previous item data in an stdClass object, independant of SimplePie
+	 * Stores previous item data in an stdClass object
 	 * @var array
 	 */
 	public $previous_item = array();
 
 	/**
-	 * List of all items
+	 * Authoritative item database
 	 *
+	 * Any changes to this should be saved back to a file
+	 * @var array
+	 */
+	protected $cached_items = array();
+
+	/**
+	 * Local copy of item database to work with
 	 * @var array
 	 */
 	public $items = array();
@@ -120,7 +115,7 @@ class Items {
 
 
 	/**
-	 * Initialize SimplePie and load any new items
+	 * Load items and resort
 	 *
 	 * @param bool $override Whether to override the updateon check
 	 * @return array List of items, including new items
