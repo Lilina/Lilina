@@ -20,7 +20,6 @@ function lilina_return_items($input = '', $conditions = array()) {
 	foreach(Feeds::get_instance()->getAll() as $the_feed)
 		$feed_list[] = $the_feed['feed'];
 	$itemcache = Items::get_instance();
-	$itemcache->set_feeds($feed_list);
 	$itemcache->init();
 	$conditions = apply_filters('return_items-conditions', array('time' => (time() - 86400)));
 	$itemcache->set_conditions($conditions);
