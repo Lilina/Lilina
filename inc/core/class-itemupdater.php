@@ -13,6 +13,8 @@
  */
 class ItemUpdater {
 	protected static $feeds = array();
+	public static $fatal = true;
+
 	public static function set_feeds($feeds) {
 		self::$feeds = $feeds;
 	}
@@ -26,42 +28,32 @@ class ItemUpdater {
 		$return = array();
 		
 		foreach(self::$feeds as $feed) {
-			$sp = &self::load_feed($feed);
-			if($error = $sp->error()) {
-				throw new Exception(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
-			}
-			
-			$count = 0;
-			$items = $sp->get_items();
-			foreach($items as $item) {
-				$new_item = self::normalise($item, $feed['id']);
-				unset($item);
-				$new_item = apply_filters('item_data_precache', $new_item);
-				if(Items::get_instance()->check_item($new_item)) {
-					$count++;
-					$updated = true;
-				}
-			}
-			$sp->__destruct();
-			unset($items);
-			unset($sp);
-
-			do_action('iu-feed-finish', $feed);
-			$return[$feed['id']] = $count;
+			$result = self::process_single($feed);
+			if($result > 0)
+				$updated = true;
+			$return[ $feed['id'] ] = $result;
 		}
 
 		Items::get_instance()->sort_all();
 		
-		if($updated)
+		if($updated) {
 			Items::get_instance()->save_cache();
+			update_option('last_updated', time());
+		}
 		
 		return $return;
 	}
 
+	/**
+	 * Process a single feed
+	 *
+	 * @param array $feed Feed information (required elements are 'name' for error reporting, 'feed' for the feed URL and 'id' for the feed's unique internal ID)
+	 * @return int Number of items added
+	 */
 	public static function process_single($feed) {
 		$sp = &self::load_feed($feed);
 		if($error = $sp->error()) {
-			throw new Exception(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
 		}
 		
 		$count = 0;
@@ -77,7 +69,7 @@ class ItemUpdater {
 		unset($sp);
 
 		do_action('iu-feed-finish', $feed);
-		return array($feed['id'] => $count);
+		return $count;
 	}
 
 	/**
@@ -159,5 +151,15 @@ class ItemUpdater {
 		return apply_filters('item_data', $new_item);
 	}
 
-	public static function log($type, $detail) {}
+	/**
+	 * Log errors
+	 */
+	public static function log($detail, $code) {
+		if(self::$fatal) {
+			throw new Exception($detail, $code);
+		}
+		else {
+			MessageHandler::add_error($detail);
+		}
+	}
 }
