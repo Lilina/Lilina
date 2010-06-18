@@ -168,6 +168,7 @@ class HTTPRequest_cURL {
 	}
 
 	public function request($url, $timeout = 10, $headers = array(), $data = array(), $useragent = null, $type = HTTPRequest::GET) {
+		$r = array('blocking' => true);
 		$headers = HTTPRequest::flattern($headers);
 
 		switch($type) {
@@ -187,7 +188,16 @@ class HTTPRequest_cURL {
 		curl_setopt($this->fp, CURLOPT_USERAGENT, $useragent);
 		curl_setopt($this->fp, CURLOPT_HTTPHEADER, $headers);
 
+		if ( true === $r['blocking'] )
+			curl_setopt($this->fp, CURLOPT_HEADER, true);
+		else
+			curl_setopt($this->fp, CURLOPT_HEADER, false);
+
 		$this->headers = curl_exec($this->fp);
+		if ( !$r['blocking'] ) {
+			curl_close($this->fp);
+			return array( 'headers' => array(), 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => array() );
+		}
 		if (curl_errno($this->fp) === 23 || curl_errno($this->fp) === 61) {
 			curl_setopt($this->fp, CURLOPT_ENCODING, 'none');
 			$this->headers = curl_exec($this->fp);
