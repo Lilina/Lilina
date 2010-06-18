@@ -27,10 +27,14 @@ class MessageHandler {
 	 *
 	 * @param Error|string|object $message Either pass a string, or an Error object
 	 */
-	public static function add_error($message = 'Unknown error') {
+	public static function add_error($message = 'Unknown error', $uid = null) {
 		if(is_string($message))
 			$message = new Error($message);
-		self::$errors[] = $message;
+
+		if($uid !== null)
+			self::$errors[$uid] = $message;
+		else
+			self::$errors[] = $message;
 	}
 
 	/**
