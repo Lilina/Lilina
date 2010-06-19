@@ -68,7 +68,9 @@ class Templates {
 		// Last-Modified and ETag
 		$itemcache = Items::get_instance();
 		$itemcache->init();
-		$item = reset($itemcache->retrieve());
+		$items = $itemcache->retrieve();
+		if(is_array($items))
+			$item = reset($items);
 
 		if($item !== false)
 			$last_modified_timestamp = $item->timestamp;
@@ -156,7 +158,7 @@ class Templates {
 	 * @return string
 	 */
 	public static function path_to_url($path) {
-		return str_replace(Templates::get_template_root(), get_option('baseurl') . 'inc/templates', $path);
+		return str_replace(Templates::get_template_root(), get_option('baseurl') . 'content/templates', $path);
 	}
 
 	/**
@@ -165,7 +167,16 @@ class Templates {
 	 * @return string
 	 */
 	public static function get_template_root() {
-		return LILINA_INCPATH . '/templates';
+		return LILINA_CONTENT_DIR . '/templates';
+	}
+
+	/**
+	 * Returns the URL for the template root directory
+	 *
+	 * @return string
+	 */
+	public static function get_template_root_url() {
+		return get_option('baseurl') . 'content/templates';
 	}
 
 	/**
@@ -174,7 +185,16 @@ class Templates {
 	 * @return string
 	 */
 	public static function get_template_dir() {
-		return LILINA_INCPATH . '/templates/' . get_option('template');
+		return LILINA_CONTENT_DIR . '/templates/' . get_option('template');
+	}
+
+	/**
+	 * Returns the URL for the template root directory
+	 *
+	 * @return string
+	 */
+	public static function get_template_dir_url() {
+		return get_option('baseurl') . 'content/templates/' . get_option('template');
 	}
 
 	/**

@@ -612,21 +612,26 @@ function get_template_file($file) {
 
 if(!function_exists('template_file_load')) {
 	/**
-	 * Returns the URL for a specified file
-	 * @deprecated Deprecated in favour of {@see{template_directory()}
+	 * @deprecated Deprecated in favour of {@see{Templates::get_template_dir_url()}}
 	 */
 	function template_file_load($file) {
-		return apply_filters('template_file_load', get_option('baseurl') . 'inc/templates/' . get_option('template') . '/' . $file, $file);
+		return apply_filters('template_file_load', Templates::get_template_dir_url() . '/' . $file, $file);
 	}
 }
 if(!function_exists('template_directory')) {
+	/**
+	 * @deprecated Deprecated in favour of {@see{Templates::get_template_dir_url()}}
+	 */
 	function template_directory() {
 		echo get_template_directory();
 	}
 }
 if(!function_exists('get_template_directory')) {
+	/**
+	 * @deprecated Deprecated in favour of {@see{Templates::get_template_dir_url()}}
+	 */
 	function get_template_directory() {
-		return get_option('baseurl') . 'inc/templates/' . get_option('template');
+		return Templates::get_template_dir_url();
 	}
 }
 ?>

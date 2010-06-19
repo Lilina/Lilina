@@ -54,13 +54,13 @@ function available_locales() {
  */
 function available_templates() {
 	//Make sure we open it correctly
-	if ($handle = opendir(LILINA_INCPATH . '/templates/')) {
+	if ($handle = opendir(LILINA_CONTENT_DIR . '/templates/')) {
 		//Go through all entries
 		while (false !== ($dir = readdir($handle))) {
 			// just skip the reference to current and parent directory
 			if ($dir != '.' && $dir != '..') {
-				if (is_dir(LILINA_INCPATH . '/templates/' . $dir)) {
-					if(file_exists(LILINA_INCPATH . '/templates/' . $dir . '/style.css')) {
+				if (is_dir(LILINA_CONTENT_DIR . '/templates/' . $dir)) {
+					if(file_exists(LILINA_CONTENT_DIR . '/templates/' . $dir . '/style.css')) {
 						$list[] = $dir;
 					}
 				} 
@@ -70,7 +70,7 @@ function available_templates() {
 		closedir($handle);
 	}
 	foreach($list as $the_template) {
-		$temp_data = implode('', file(LILINA_INCPATH . '/templates/' . $the_template . '/style.css'));
+		$temp_data = implode('', file(LILINA_CONTENT_DIR . '/templates/' . $the_template . '/style.css'));
 		preg_match("|Name:(.*)|i", $temp_data, $real_name);
 		preg_match("|Description:(.*)|i", $temp_data, $desc);
 		$templates[]	= array(
