@@ -14,10 +14,9 @@ a:active, a:focus {
 }
 #header {
 	width: 100%;
-	border-bottom: 1px solid #aaa;
-	height: 50px;
-	background: #eee;
-	/* background: #5B92E5; */
+	height: 59px;
+	/*background: #eee url("resources/_CPToolbarViewBackground.png") repeat-x;*/
+	background: #173057;
 }
 	#header h1 {
 		position: absolute;
@@ -25,9 +24,10 @@ a:active, a:focus {
 		margin: 0;
 		font-size: 20px;
 		line-height: 50px;
+		font-weight: normal;
 	}
 		#header h1 a {
-			color: #666;
+			color: #eee;
 			text-decoration: none;
 		}
 	#menu {
@@ -42,25 +42,25 @@ a:active, a:focus {
 			display: inline;
 			margin-right: 10px;
 			font-size: 11px;
+			color: #999;
 		}
 			#menu li a {
 				text-decoration: none;
-				color: #666;
-				text-shadow: 1px 1px 0 #fff;
+				color: #ccc;
 			}
 				#menu li a:hover {
-					color: #333;
+					color: #eee;
 				}
 			#menu li#updating {
-				background: url("loading.gif") no-repeat left center;
-				padding-left: 18px;
+				background: url("resources/loading-blue.gif") no-repeat left center;
+				padding: 3px 0 3px 18px;
 			}
 #sidebar {
 	float: left;
 	position: relative;
 	width: 250px;
 
-	background: #f0f0f0;
+	background: #D7DDE6;
 	border-right: 1px solid #aaa;
 }
 	#sidebar .item-list {
@@ -91,10 +91,10 @@ a:active, a:focus {
 					text-decoration: none;
 				}
 					#sidebar .item-list li a:hover, #sidebar .item-list li a:focus {
-						background: #aaa;
+						background: rgba(56, 117, 215, 0.1);
 					}
 					#sidebar .item-list li a:active {
-						background: #999;
+						background: rgba(56, 117, 215, 0.3);
 					}
 					#sidebar .item-list li .delete {
 						display: none;
@@ -111,7 +111,7 @@ a:active, a:focus {
 	overflow: auto;
 
 	border-right: 1px solid #aaa;
-	background: #fff url("images/item-list.png");
+	background: #fff;
 }
 	#items-list ol {
 		margin: 0;
@@ -131,19 +131,27 @@ a:active, a:focus {
 			text-decoration: none;
 		}
 			#items-list li.alt a {
-				background: #f0f0f0;
+				background: #EDF3FE;
 			}
 			#items-list li a:hover, #items-list li a:focus, #items-list li.selected a {
-				background: #ddd;
+				background: #e5e5ff;
 			}
-			#items-list li a:active {
-				background: #aaa;
+			#items-list li a.current {
+				background: #3875D7;
+				color: #fff;
 			}
+				#items-list li a.current .item-source,
+				#items-list li a.current .item-date {
+					color: #ccc;
+				}
 				#items-list li a .sep {
 					display: none;
 				}
 				#items-list li a .item-title {
 					display: block;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
 				}
 				#items-list li a .item-source,
 				#items-list li a .item-date {
@@ -166,16 +174,15 @@ a:active, a:focus {
 		border-bottom: 1px solid #aaa;
 		width: 100%;
 		position: relative;
-		height: 65px;
 	}
 		#heading h2 {
 			margin: 0;
 			padding: 6px 10px 0;
 			font-size: 14px;
 		}
-			#heading h2 a {
-				text-decoration: none;
-			}
+		#heading a {
+			text-decoration: none;
+		}
 		#heading .item-meta {
 			font-size: 11px;
 			padding: 6px 10px 0;
@@ -185,7 +192,7 @@ a:active, a:focus {
 		overflow: auto;
 	}
 	#item-view .loading {
-		background: #EEEEEE url(loading.gif) no-repeat center;
+		background: #EEEEEE url("resources/loading.gif") no-repeat center;
 		height: 100%;
 		width: 100%;
 		text-align: center;
@@ -196,7 +203,7 @@ a:active, a:focus {
 	bottom: 0;
 	height: 32px;
 	width: 100%;
-	background: #eee;
+	background: url("resources/_CPToolbarViewBackground.png") #eee;
 	border-top: 1px solid #aaa;
 }
 	.footer ul {
@@ -218,7 +225,11 @@ a:active, a:focus {
 				text-decoration: none;
 			}
 				.footer li a:hover {
-					background: #333;
+					background: rgba(56, 117, 215, 0.8);
+					color: #fff;
+				}
+				.footer li a:active {
+					background: rgba(56, 117, 215, 0.9);
 					color: #fff;
 				}
 

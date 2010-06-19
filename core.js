@@ -118,7 +118,7 @@ RazorUI.populateItemView = function (item) {
 	$('#item-content', basics).html(item.content);
 
 	if(item.actions != undefined && item.actions.length > 0) {
-		$(basics).append('<div class="footer"><ul></ul></div>');
+		$(basics).append('<div class="footer" id="item-actions"><ul></ul></div>');
 		$.each(item.actions, function (index, action) {
 			var li = $('<li></li>').html(action);
 			$('.footer ul', basics).append(li);
@@ -132,6 +132,8 @@ RazorUI.populateItemView = function (item) {
 RazorUI.handleItemClick = function () {
 	var id = $(this).data('item-id');
 	var loading = $('<div class="loading">Loading...</div>');
+	$('#items-list li a.current').removeClass('current');
+	$(this).addClass('current');
 	$('#item-view').html(loading);
 	LilinaAPI.call('items.get', {'id': id}, RazorUI.populateItemView);
 };
