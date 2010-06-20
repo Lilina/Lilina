@@ -147,8 +147,10 @@ class Items {
 	 * timestamps).
 	 */
 	public function sort_all() {
-		uasort($this->cached_items, array('Items', 'sort_items'));
-		uasort($this->items, array('Items', 'sort_items'));
+		if(is_array($this->cached_items))
+			uasort($this->cached_items, array('Items', 'sort_items'));
+		if(is_array($this->items))
+			uasort($this->items, array('Items', 'sort_items'));
 	}
 
 	/**
