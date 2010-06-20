@@ -12,7 +12,7 @@ header('Content-Type: text/html; charset=utf-8');
 <html>
 <head>
 	<title><?php template_sitename();?></title>
-	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/style.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="<?php echo Templates::get_template_dir_url(); ?>/style.css" media="screen"/>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<?php
 	template_header();
