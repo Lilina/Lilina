@@ -415,22 +415,4 @@ function timezone_get_gmt_offset($timezone) {
 		return $offset;
 	}
 }
-
-/**
- * Output the feedback widget code
- *
- * Attaches the Get Satisfaction feedback widget to the end of the page.
- */
-function gsfn_feedback_widget() {
-?>
-<style type='text/css'>@import url('http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.css');</style>
-<script src='http://s3.amazonaws.com/getsatisfaction.com/feedback/feedback.js' type='text/javascript'></script>
-<script type="text/javascript" charset="utf-8">
-  var tab_options = {}
-  tab_options.placement = "right";  // left, right, bottom, hidden
-  tab_options.color = "#222"; // hex (#FF0000) or color (red)
-  GSFN.feedback('http://getsatisfaction.com/lilina/feedback/topics/new?display=overlay&style=problem', tab_options);
-</script>
-<?php
-}
 ?>
