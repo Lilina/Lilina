@@ -59,7 +59,6 @@ function admin_header($title, $parent_file = false) {
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/json2.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.ui.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
-<script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/humanmsg.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
 <script type="text/javascript">
 	admin.localisations = {
@@ -129,6 +128,9 @@ function admin_header($title, $parent_file = false) {
 	}
 ?>
 			<li id="page_item_logout" class="seperator"><a href="login.php?logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
+	</ul>
+	<ul id="utilities">
+		<li><a href="page_item_logout"><a href="login.php?logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Sign out'); ?></a></a></li>
 	</ul>
 </div>
 <div id="main">

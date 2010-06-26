@@ -6,6 +6,7 @@ var admin = {
 	 * Initialise the page
 	 */
 	init: function () {
+		$('#utilities').append('<li id="log_toggle"><a href="#log">Log</a></li>');
 		// Feeds page only
 		if ( $('body#admin-feeds').length != 0 ) {
 			$("#add_form").submit(function () {
@@ -40,6 +41,8 @@ var admin = {
 
 		$("body").append("<div id='loading'></div>");
 		$(".nojs").remove();
+		
+		admin.messages.setup();
 	},
 	dialog: {
 		alert: function(msg) {
@@ -123,6 +126,81 @@ var admin = {
 		},
 		update: function() {
 			// This will do something when needed
+		}
+	},
+	/**
+	 * Based on Humanized Messages 1.0, with some hints taken from Habari's code.
+	 */
+	messages: {
+		count: 0,
+		setup: function() {
+			// Inject the message structure
+			jQuery('body').append('<div id="humanMsg" class="humanMsg"><div class="imsgs"></div></div><div id="humanMsgLog"><ul><li class="empty_msg">No messages</li></ul></div>');
+			jQuery('li.empty_msg', '#humanMsgLog').show();
+
+			jQuery('#log_toggle a').click( function() {
+				jQuery('#humanMsgLog').toggleClass('open');
+				if( ! jQuery('#humanMsgLog').hasClass('open')) {
+					jQuery('#humanMsgLog').animate({top: "-9px"}, 800, function () { jQuery(this).hide(); });
+				}
+				else {
+					jQuery('#humanMsgLog').show().animate({top: "34px"}, 800);
+				}
+			} );
+		},
+
+		display: function(msg, cssClass) {
+			if (msg == '')
+				return;
+			if (cssClass == undefined)
+				cssClass = 'message';
+
+			clearTimeout(admin.messages.t2);
+			admin.messages.count++;
+
+			// Inject message
+			$('#humanMsg').show();
+			$('<div class="msg ' + cssClass + '" id="msgid_' + admin.messages.count + '"><p>' + msg + '</p></div>')
+			.appendTo('#humanMsg .imsgs')
+			.show().animate({ opacity: 0.8}, 200, function() {
+				jQuery('#humanMsgLog')
+					.children('ul').prepend('<li class="'+cssClass+'">'+msg+'</li>')	// Prepend message to log
+					.children('li:first').slideDown(200)				// Slide it down
+
+			})
+			
+			if ( jQuery('li.empty_msg', '#humanMsgLog').length != 0 ) {
+				jQuery('li.empty_msg', '#humanMsgLog').fadeOut(200, function () {
+					jQuery(this).remove()
+				});
+			}
+
+			// Watch for mouse & keyboard in .5s
+			admin.messages.t1 = setTimeout("admin.messages.bind()", 700)
+			// Remove message after 5s
+			admin.messages.t2 = setTimeout("admin.messages.remove()", 5000)
+		},
+
+		bind: function() {
+		// Remove message if mouse is moved or key is pressed
+			jQuery(window)
+				.mousemove(admin.messages.remove)
+				.click(admin.messages.remove)
+				.keypress(admin.messages.remove)
+		},
+
+		remove: function() {
+			// Unbind mouse & keyboard
+			jQuery(window)
+				.unbind('mousemove', admin.messages.remove)
+				.unbind('click', admin.messages.remove)
+				.unbind('keypress', admin.messages.remove)
+
+			// If message is fully transparent, fade it out
+			jQuery('#humanMsg .imsgs .msg').each(function(){
+				if (jQuery(this).css('opacity') == 0.8)
+					jQuery(this).animate({ opacity: 0 }, 500, function() { jQuery(this).remove() })
+			});
 		}
 	},
 	/**
@@ -243,14 +321,14 @@ var feeds = {
 
 	add: function () {
 		if( !$("#add_url").val() ) {
-			humanMsg.displayMsg(_r('No feed URL supplied'), 'error');
+			admin.messages.display(_r('No feed URL supplied'), 'error');
 			return false;
 		}
 		admin.ajax.post('feeds.add', {
 				name: $("#add_name").val(),
 				url: $("#add_url").val()
 			}, function (data) {
-				humanMsg.displayMsg(data.msg);
+				admin.messages.display(data.msg);
 				// Clear the values
 				$("#add_url, #add_name").val('');
 				admin.feedlist.add(data.data);
@@ -275,14 +353,14 @@ AddForm.prototype.hide = function () {
 };
 AddForm.prototype.add = function () {
 	if( !$("#add_url").val() ) {
-		humanMsg.displayMsg('', 'error');
+		admin.messages.display('', 'error');
 		return false;
 	}
 	admin.ajax.post('feeds.add', {
 			name: $("#add_name").val(),
 			url: $("#add_url").val()
 		}, function (data) {
-			humanMsg.displayMsg(data.msg);
+			admin.messages.display(data.msg);
 			// Clear the values
 			$("#add_url, #add_name").val('');
 			admin.feedlist.add(data.data);
@@ -403,7 +481,7 @@ FeedRow.prototype.remove = function () {
 FeedRow.prototype.removeComplete = function (data) {
 	this.row.remove();
 	this.render();
-	humanMsg.displayMsg(data.msg);
+	admin.messages.display(data.msg);
 };
 FeedRow.prototype.save = function () {
 	var new_data = {feed_id: this.data.id};
@@ -424,7 +502,7 @@ FeedRow.prototype.saveComplete = function(data) {
 	if(data.name.length != 0)
 		this.data.name = data.name;
 	this.render();
-	humanMsg.displayMsg(data.msg);
+	admin.messages.display(data.msg);
 };
 
 function _r(text) {
