@@ -127,10 +127,10 @@ function admin_header($title, $parent_file = false) {
 		
 	}
 ?>
-			<li id="page_item_logout" class="seperator"><a href="login.php?logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Log out'); ?></a></li>
 	</ul>
 	<ul id="utilities">
 		<li><a href="page_item_logout"><a href="login.php?logout" title="<?php _e('Log out of your current session'); ?>"><?php _e('Sign out'); ?></a></a></li>
+		<?php do_action('admin_utilities_items'); ?>
 	</ul>
 </div>
 <div id="main">
