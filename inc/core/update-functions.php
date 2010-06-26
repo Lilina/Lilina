@@ -118,6 +118,6 @@ function update_nag() {
 
 	$msg = sprintf(_r('Lilina %1$s is available! <a href="%2$s">Please update now</a>.'), $cur->version, $cur->url);
 
-	echo "<div id='update-nag'>$msg</div>";
+	echo "<div id='update-nag' class='message'>$msg</div>";
 }
 ?>

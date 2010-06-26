@@ -66,14 +66,14 @@ ul ul {
 	display: block;
 }
 
-.message {
+#main .message {
 	font-size: 11px;
 	padding: 10px 20px;
-	margin: -20px -20px 0;
+	margin: -20px -20px 20px;
 	border-bottom: 1px solid #ccc;
 	background: #FFFCCA;
 }
-	.message p {
+	#main .message p {
 		font-size: 1em;
 		margin: 0;
 		padding: 0;
