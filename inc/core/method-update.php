@@ -8,14 +8,27 @@
 
 class UpdaterMethod {
 	protected $feeds = array();
+	protected $action = '';
+	protected $format = '';
+	protected $selector = '';
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		if(empty($_GET['feed']))
-			$_GET['feed'] = 'all';
-		
-		$this->selector = $_GET['feed'];
+		if(!empty($_REQUEST['action']))
+			$this->action = $_REQUEST['action'];
+		if(!empty($_REQUEST['format']))
+			$this->format = $_REQUEST['format'];
+
+		//  Special stuff for cron updating
+		if(isset($_GET['cron'])) {
+			$this->action = 'cron';
+		}
+
+		// We require a format to be set, otherwise we default to HTML. We 
+		// don't want this if we're updating via cron, so we have to fake it.
+		if($this->action == 'cron')
+			$this->format = 'cron';
 	}
 
 	/**
@@ -66,18 +79,18 @@ class UpdaterMethod {
 	 * Run the updater
 	 */
 	public function init() {
-		if(empty($_REQUEST['format'])) {
+		if(empty($this->format)) {
 			$this->page();
 			die();
 		}
 
 		try {
 			header('Content-Type: text/json; charset=utf-8');
-			if(empty($_REQUEST['action'])) {
+			if(empty($this->action)) {
 				throw new Exception('Unknown method: ' . preg_replace('/[^-_.0-9a-zA-Z]/', '', $method), Errors::get_code('api.itemupdater.ajax.unknown'));
 			}
 
-			switch($_REQUEST['action']) {
+			switch($this->action) {
 				case 'test':
 					$return = $this->test();
 					break;
@@ -108,12 +121,28 @@ class UpdaterMethod {
 	
 	protected function cron() {
 		set_time_limit(0);
-		$this->feeds = Feeds::get_instance()->getAll();
+		
+		ItemUpdater::set_feeds( Feeds::get_instance()->getAll() );
+		ItemUpdater::$fatal = false;
 
-		CronUpdater::set_feeds($this->feeds);
-		CronUpdater::process();
-
-		die();
+		foreach(ItemUpdater::process() as $feed => $updated) {
+			$name = Feeds::get_instance()->get($feed);
+			$name = $name['name'];
+			if($updated < 0) {
+				$text = 'An error occurred while updating feed "%1$s".';
+			}
+			else {
+				$text = Locale::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);	
+			}
+			$messages[] = array('msg' => sprintf($text, $name, $updated), 'updated' => $updated);
+		}
+		
+		if(isset($_GET['output'])){
+			return array('success' => 1, 'msgs' => $messages);
+		}
+		else {
+			die();
+		}
 	}
 	
 	protected function test() {

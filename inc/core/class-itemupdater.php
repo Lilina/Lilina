@@ -54,6 +54,8 @@ class ItemUpdater {
 		$sp = &self::load_feed($feed);
 		if($error = $sp->error()) {
 			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+			do_action('iu-feed-finish', $feed);
+			return -1;
 		}
 		
 		$count = 0;
