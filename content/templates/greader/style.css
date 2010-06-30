@@ -133,7 +133,7 @@ a {
 		float: left;
 	}
 	.item .title-bar .excerpt, .item .title-bar .read {
-		height: 1.6em;
+		height: 1.3em;
 		position: absolute;
 		overflow: hidden;
 		display: none;
