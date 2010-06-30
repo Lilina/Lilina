@@ -1,10 +1,11 @@
 Raincoat = {};
 
 Raincoat.init = function () {
-	$('.item').addClass('collapsed').click(function (e) {
+	$('.item').addClass('collapsed');
+	$('.item .title-bar').click(function (e) {
 		if($(e.target).is('a')) return;
 		$('.item.selected').removeClass('selected');
-		$(this).toggleClass('collapsed').addClass('selected');
+		$(this).parent().toggleClass('collapsed').addClass('selected');
 	});
 
 	$('.item .title-bar').css('cursor', 'pointer');
