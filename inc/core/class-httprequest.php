@@ -104,6 +104,8 @@ class HTTPRequest {
 		$headers = $headers[0];
 		// Pretend CRLF = LF for compatibility (RFC 2616, section 19.3)
 		$headers = str_replace("\r\n", "\n", $headers);
+		// Unfold headers (replace [CRLF] 1*( SP | HT ) with SP) as per RFC 2616 (section 2.2)
+		$headers = preg_replace('/\n[ \t]/', ' ', $headers);
 		$headers = explode("\n", $headers);
 		preg_match('#^HTTP/1\.\d (\d+)#i', array_shift($headers), $matches);
 		if(empty($matches)) {
