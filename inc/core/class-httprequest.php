@@ -102,7 +102,9 @@ class HTTPRequest {
 		$headers = explode("\r\n\r\n", $headers, 2);
 		$return->body = array_pop($headers);
 		$headers = $headers[0];
-		$headers = explode("\r\n", $headers);
+		// Pretend CRLF = LF for compatibility (RFC 2616, section 19.3)
+		$headers = str_replace("\r\n", "\n", $headers);
+		$headers = explode("\n", $headers);
 		preg_match('#^HTTP/1\.\d (\d+)#i', array_shift($headers), $matches);
 		if(empty($matches)) {
 			throw new Exception(_r('Response could not be parsed'));
