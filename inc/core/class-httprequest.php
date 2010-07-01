@@ -3,7 +3,9 @@
  * HTTP Request class
  */
 
-define('LILINA_USERAGENT', 'Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko)');
+if(!defined('LILINA_USERAGENT')){
+	define('LILINA_USERAGENT', 'Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko)');
+}
 
 /**
  * HTTP Request class
@@ -25,9 +27,10 @@ class HTTPRequest {
 	protected $useragent  = null;
 	protected $redirects  = 0;
 
-	public function __construct($transport = 'fsockopen', $timeout = 10, $useragent = null) {
+	public function __construct($transport = 'fsockopen', $timeout = 10, $useragent = null, $transports = array()) {
 		$this->transports['curl']      = 'HTTPRequest_cURL';
 		$this->transports['fsockopen'] = 'HTTPRequest_fsockopen';
+		$this->transports = array_merge($this->transports, $transports);
 
 		if(empty($transport) || !isset($this->transports[$transport])) {
 			foreach($this->transports as $t => $class) {
