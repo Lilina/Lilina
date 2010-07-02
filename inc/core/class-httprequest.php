@@ -122,7 +122,15 @@ class HTTPRequest {
 			$value = trim($value);
 			preg_replace('#(\s+)#i', ' ', $value);
 			$key = strtolower($key);
-			$return->headers[$key] = trim($value);
+			if(isset($return->headers[$key])) {
+				if(!is_array($return->headers[$key])) {
+					$return->headers[$key] = array($return->headers[$key]);
+				}
+				$return->headers[$key][] = $value;
+			}
+			else {
+				$return->headers[$key] = $value;
+			}
 		}
 		if (isset($return->headers['content-encoding']) && $this->transport == 'HTTPRequest_fsockopen') {
 			// Bail. We'll handle this at some later date.
