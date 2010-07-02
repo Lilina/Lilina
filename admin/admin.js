@@ -494,13 +494,13 @@ FeedRow.prototype.save = function () {
 
 	var me = this;
 	admin.ajax.post("feeds.change", new_data, function (data) {
-			me.saveComplete(data.data);
+			me.saveComplete(data);
 		});
 };
 FeedRow.prototype.saveComplete = function(data) {
-	this.data.feed = data.feed;
-	if(data.name.length != 0)
-		this.data.name = data.name;
+	this.data.feed = data.data.feed;
+	if(data.data.name.length != 0)
+		this.data.name = data.data.name;
 	this.render();
 	admin.messages.display(data.msg);
 };
