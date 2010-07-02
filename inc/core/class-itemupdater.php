@@ -119,11 +119,16 @@ class ItemUpdater {
 	 */
 	public function normalise($item, $feed = '') {
 		if($enclosure = $item->get_enclosure()) {
+			$enclosure_data = (object) array(
+				'type' => $enclosure->get_real_type(),
+				'length' => $enclosure->get_length()
+			);
 			$enclosure = $enclosure->get_link();
 		}
 		else {
 			// SimplePie_Item::get_enclosure() returns null, so we need to change this to false
 			$enclosure = false;
+			$enclosure_data = false;
 		}
 		if($author = $item->get_author()) {
 			$author = array(
@@ -145,7 +150,8 @@ class ItemUpdater {
 			'summary'   => $item->get_description(),
 			'permalink' => $item->get_permalink(),
 			'metadata'  => (object) array(
-				'enclosure' => $enclosure
+				'enclosure' => $enclosure,
+				'enclosure_data' => $enclosure_data
 			),
 			'author'    => (object) $author,
 			'feed'      => $item->get_feed()->get_link()
