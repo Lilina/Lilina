@@ -12,6 +12,10 @@ if(!defined('LILINA_USERAGENT')){
  *
  * Based on SimplePie_File, RequestCore and WordPress' WP_Http classes
  *
+ * @todo Add chunked encoding support (RFC 2616, section 3.6.1)
+ * @todo Add support for content encoding (gzip, compress, deflate) (RFC 2616, section 3.5)
+ * @todo Add non-blocking request support
+ *
  * @author Ryan McCue
  * @package Lilina
  * @subpackage HTTP
@@ -100,6 +104,7 @@ class HTTPRequest {
 	 */
 	protected function parse_response($headers, $req_headers, $req_data, $req_type) {
 		$headers = explode("\r\n\r\n", $headers, 2);
+		$return = new stdClass;
 		$return->body = array_pop($headers);
 		$headers = $headers[0];
 		// Pretend CRLF = LF for compatibility (RFC 2616, section 19.3)
@@ -107,7 +112,7 @@ class HTTPRequest {
 		// Unfold headers (replace [CRLF] 1*( SP | HT ) with SP) as per RFC 2616 (section 2.2)
 		$headers = preg_replace('/\n[ \t]/', ' ', $headers);
 		$headers = explode("\n", $headers);
-		preg_match('#^HTTP/1\.\d (\d+)#i', array_shift($headers), $matches);
+		preg_match('#^HTTP/1\.\d[ \t]+(\d+)#i', array_shift($headers), $matches);
 		if(empty($matches)) {
 			throw new Exception(_r('Response could not be parsed'));
 		}
