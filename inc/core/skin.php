@@ -62,37 +62,24 @@ function template_footer(){
 
 /**
  * @todo Document
- * @todo Implement items_per_page, feed_include, feed_exclude
- */
-function query_setup($args) {
-}
-
-/**
- * Initializes SimplePie and loads the feeds into the global <tt>$list</tt> array.
- *
- * Loads feeds from conf/feeds.data into the global <tt>$list</tt> array if not already done.
- * Then calls <tt>lilina_return_items()</tt> and stores the SimplePie object returned in the
- * global <tt>$list</tt> array if not already done.
- *
- * Increments the <tt>$item_number</tt> if the <tt>$increment</tt> parameter is true, or
- * initializes the <tt>$item_number</tt> if not already done. Then sets the <tt>$showtime</tt>
- * variable if not already done.
- *
- * Checks if the current item's date is less than the <tt>$showtime</tt> variable and if so,
- * returns false to stop processing items. If not, checks if the <tt>$item_number</tt> is
- * less than the total number of items and if so, returns true. Otherwise, returns false.
- *
  * @return boolean Are items available?
- * @todo This is somewhat ugly code. Clean it up.
  */
-function has_items($increment = true) {
+function has_items() {
 	global $lilina_items;
 
 	if(count(Feeds::get_instance()->getAll()) === 0)
 		return false;
 
-	if(empty($lilina_items))
-		$lilina_items = lilina_return_items();
+	if(empty($lilina_items)) {
+		foreach(Feeds::get_instance()->getAll() as $the_feed)
+			$feed_list[] = $the_feed['feed'];
+
+		$lilina_items = &Items::get_instance();
+		$lilina_items->init();
+		$conditions = apply_filters('return_items-conditions', array('time' => (time() - 186400)));
+		$lilina_items->set_conditions($conditions);
+		$lilina_items->filter();
+	}
 
 	return $lilina_items->has_items();
 }
@@ -173,7 +160,6 @@ function get_the_content() {
  * @todo Document
  */
 function the_content() {
-	global $item;
 	echo get_the_content();
 }
 
@@ -320,7 +306,6 @@ function the_time($args='') {
 }
 
 /**
- * SimplePie only gives us the URL as an ID, we want a MD5
  * @todo Document
  */
 function get_the_id($id = null) {
@@ -399,7 +384,7 @@ function get_the_feed_id() {
  * @todo Document
  */
 function the_feed_id() {
-	echo get_the_feed_id($id);
+	echo get_the_feed_id();
 }
 
 /**
@@ -420,8 +405,12 @@ if(!function_exists('the_enclosure')) {
 		if(!has_enclosure()) {
 			return false;
 		}
+		$metadata = enclosure_metadata();
+		$type = '';
+		if(!empty($metadata->type))
+			$type = ' (' . $metadata->type . ')';
 
-		echo apply_filters( 'the_enclosure', '<a href="' . $item->metadata->enclosure . '" rel="enclosure">' . _r('Listen to podcast') . '</a>' . "\n" );
+		echo apply_filters( 'the_enclosure', '<a href="' . $item->metadata->enclosure . '" rel="enclosure">' . _r('View media') . $type .'</a>' . "\n" );
 	}
 }
 
@@ -435,6 +424,13 @@ function atom_enclosure() {
 
 	//echo apply_filters('atom_enclosure', '<link href="' . $enclosure . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->get_type() . '" />' . "\n");
 	echo apply_filters('atom_enclosure', '<link href="' . $item->metadata->enclosure . '" rel="enclosure" />' . "\n");
+}
+
+function enclosure_metadata() {
+	global $item;
+	if(!isset($item->metadata->enclosure_data))
+		return false;
+	return $item->metadata->enclosure_data;
 }
 
 /**
