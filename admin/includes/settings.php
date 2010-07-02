@@ -95,8 +95,12 @@ function activate_plugin($plugin_file) {
 	global $current_plugins;
 	$plugin_file = trim($plugin_file);
 
-	if(!validate_plugin($plugin_file))
+	try {
+		validate_plugin($plugin_file);
+	}
+	catch (Exception $e) {
 		return false;
+	}
 	$current_plugins[md5($plugin_file)] = $plugin_file;
 	
 	$data = new DataHandler();
@@ -118,8 +122,12 @@ function deactivate_plugin($plugin_file) {
 	if(!isset($current_plugins[md5($plugin_file)]))
 		return false;
 
-	if(!validate_plugin($plugin_file))
+	try {
+		validate_plugin($plugin_file);
+	}
+	catch (Exception $e) {
 		return false;
+	}
 
 	unset($current_plugins[md5($plugin_file)]);
 	
