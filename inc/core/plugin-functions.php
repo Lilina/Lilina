@@ -445,20 +445,20 @@ function lilina_plugins_init() {
  * @since 1.0
  *
  * @param $filename Path to plugin
- * @return bool True if file exists and is valid, else false
+ * @return bool True if file exists and is valid, otherwise an exception will be thrown
  */
 function validate_plugin($filename) {
 	switch(validate_file($filename)) {
 		case 1:
 		case 2:
-			MessageHandler::add_error(_r('Invalid plugin path.'));
+			throw new Exception(_r('Invalid plugin path.'), Errors::get_code('admin.plugins.invalid_path'));
 			break;
 
 		default:
 			if(file_exists(get_plugin_dir() . $filename))
 				return true;
 			else
-				MessageHandler::add_error(_r('Plugin file was not found.'));
+				throw new Exception(_r('Plugin file was not found.'), Errors::get_code('admin.plugins.not_found'));
 	}
 
 	return false;

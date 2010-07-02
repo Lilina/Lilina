@@ -15,6 +15,8 @@ class ItemUpdater {
 	protected static $feeds = array();
 	public static $fatal = true;
 
+	protected static $errors = array();
+
 	public static function set_feeds($feeds) {
 		self::$feeds = $feeds;
 	}
@@ -161,7 +163,10 @@ class ItemUpdater {
 			throw new Exception($detail, $code);
 		}
 		else {
-			MessageHandler::add_error($detail);
+			ItemUpdater::$errors[] = array(
+				'code' => $code,
+				'msg' => $detail
+			);
 		}
 	}
 }

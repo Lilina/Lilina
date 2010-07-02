@@ -22,6 +22,10 @@ class Errors {
 		// 20-29 = admin.importer.greader.
 		self::$codes['admin.importer.greader.invalid_auth'] = 20;
 
+		// 40-49 = admin.plugins.
+		self::$codes['admin.plugins.invalid_path'] = 40;
+		self::$codes['admin.plugins.not_found'] = 41;
+
 		// 100-199 = api.
 		// 100-109 = api.itemupdater.
 		self::$codes['api.itemupdater.itemerror']           = 100;
