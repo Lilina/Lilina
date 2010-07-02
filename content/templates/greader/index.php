@@ -36,7 +36,7 @@ $authenticated = !!$user->identify();
 <div id="logo">&nbsp;</div>
 
 <div id="navigation">
-	<span class="site-name"><?php template_sitename() ?></span> |
+	<span class="site-name"><?php template_sitename() ?></span>
 <?php
 if($authenticated) {
 ?>
@@ -45,11 +45,11 @@ if($authenticated) {
 }
 else {
 ?>
-	<a href="<?php echo get_option('baseurl') ?>admin/login.php?return=index.php">Login</a> |
+	<a href="<?php echo get_option('baseurl') ?>admin/login.php?return=index.php">Login</a>
 <?php
 }
 ?>
-	<a href="<?php echo get_option('baseurl') ?>?method=feed&type=atom">Subscribe to Feed</a> |
+	<a href="<?php echo get_option('baseurl') ?>?method=feed&type=atom">Subscribe to Feed</a>
 	<a href="<?php echo get_option('baseurl') ?>?method=opml">OPML</a>
 </div>
 
@@ -61,7 +61,7 @@ else {
 			<ul>
 <?php
 // We call it with false as a parameter to avoid incrementing the item number
-if(has_items(false)) {
+if(has_items()) {
 		while(has_items()): the_item();
 ?>
 				<li class="feed-<?php the_feed_id(); ?> item" id="item-<?php the_id(); ?>">

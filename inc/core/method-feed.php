@@ -36,7 +36,7 @@ class Resyndicate {
 	//query_setup('showtime=0');
 	global $showtime;
 	$showtime = 0;
-	if(has_items(false)) {
+	if(has_items()) {
 		while(has_items()): the_item();
 	?>
 	<entry>
@@ -85,7 +85,7 @@ class Resyndicate {
 	<generator>http://getlilina.org/?v=<?php echo LILINA_CORE_VERSION; ?></generator>
 	<language><?php echo get_option('lang'); ?></language>
 	<?php do_action('rss2_head');
-	if(has_items(false)) {
+	if(has_items()) {
 		while(has_items()) { the_item();
 	?>
 	<item>

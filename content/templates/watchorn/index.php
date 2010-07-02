@@ -32,7 +32,7 @@ header('Content-Type: text/html; charset=utf-8');
 <?php
 
 // We call it with false as a parameter to avoid incrementing the item number
-if(has_items(false)) {
+if(has_items()) {
 	while(has_items()): the_item();
 ?>
 			<li class="hentry item" id="item-<?php the_id() ?>">
