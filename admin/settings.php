@@ -14,9 +14,17 @@ do_action('register_options');
 
 if(isset($_REQUEST['activate_plugin'])) {
 	activate_plugin($_REQUEST['activate_plugin']);
+	
+	header('HTTP/1.1 302 Found', true, 302);
+	header('Location: ' . get_option('baseurl') . 'admin/settings.php?activated=1');
+	die();
 }
 elseif(isset($_REQUEST['deactivate_plugin'])) {
 	deactivate_plugin($_REQUEST['deactivate_plugin']);
+	
+	header('HTTP/1.1 302 Found', true, 302);
+	header('Location: ' . get_option('baseurl') . 'admin/settings.php?deactivated=1');
+	die();
 }
 
 
@@ -43,7 +51,13 @@ require_once(LILINA_INCPATH . '/core/file-functions.php');
 admin_header(_r('Settings'));
 
 if(!empty($_GET['updated']))
-	echo '<div id="message" class="message"><p>' . _r('Settings updated!') . '</p></div>';
+	echo '<div class="message"><p>' . _r('Settings updated!') . '</p></div>';
+
+if(!empty($_GET['activated']))
+	echo '<div class="message"><p>' . _r('Plugin <strong>activated</strong>.') . '</p></div>';
+
+if(!empty($_GET['deactivated']))
+	echo '<div class="message"><p>' . _r('Plugin <strong>deactivated</strong>.') . '</p></div>';
 ?>
 
 <h1><?php _e('Settings'); ?></h1>
