@@ -47,3 +47,7 @@ else {
 lilina_level_playing_field();
 
 require_once(LILINA_PATH . '/admin/includes/common.php');
+
+if ( !empty($_REQUEST['page']) ) {
+	do_action('admin_page_' . $_REQUEST['page']);
+}
