@@ -53,20 +53,26 @@ class ItemUpdater {
 	 * @return int Number of items added
 	 */
 	public static function process_single($feed) {
+		do_action('iu-feed-start', $feed);
+
 		$sp = &self::load_feed($feed);
 		if($error = $sp->error()) {
 			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
 			do_action('iu-feed-finish', $feed);
 			return -1;
 		}
-		
+
 		$count = 0;
 		$items = $sp->get_items();
 		foreach($items as $item) {
 			$new_item = self::normalise($item, $feed['id']);
-			$new_item = apply_filters('item_data_precache', $new_item);
+			$new_item = apply_filters('item_data_precache', $new_item, $feed);
 			if(Items::get_instance()->check_item($new_item)) {
 				$count++;
+				do_action('iu-item-add', $new_item, $feed);
+			}
+			else {
+				do_action('iu-item-noadd', $new_item, $feed);
 			}
 		}
 		$sp->__destruct();
@@ -109,6 +115,7 @@ class ItemUpdater {
 		usort($sp->data['ordered_items'], array(&$sp, 'sort_items'));
 		usort($sp->data['items'], array(&$sp, 'sort_items'));
 
+		do_action_ref_array('iu-load-feed', array(&$sp));
 		return $sp;
 	}
 
