@@ -21,7 +21,7 @@ class DataHandler {
 	 *
 	 * @var string
 	 */
-	protected static $directory;
+	protected $directory;
 
 	/**
 	 * Constructor, duh.
