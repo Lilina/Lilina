@@ -25,10 +25,13 @@ class ItemUpdater {
 	 * Process through the feeds and add the new items to the database
 	 */
 	public static function process() {
+		$reporting = error_reporting();
+		error_reporting(E_ERROR | E_PARSE);
+
 		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 		$updated = false;
 		$return = array();
-		
+
 		foreach(self::$feeds as $feed) {
 			$result = self::process_single($feed);
 			if($result > 0)
@@ -37,12 +40,13 @@ class ItemUpdater {
 		}
 
 		Items::get_instance()->sort_all();
-		
+
 		if($updated) {
 			Items::get_instance()->save_cache();
 			update_option('last_updated', time());
 		}
-		
+
+		error_reporting($reporting);
 		return $return;
 	}
 
