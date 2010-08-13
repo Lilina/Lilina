@@ -87,7 +87,7 @@ class UpdaterMethod {
 		try {
 			header('Content-Type: text/json; charset=utf-8');
 			if(empty($this->action)) {
-				throw new Exception('Unknown method: ' . preg_replace('/[^-_.0-9a-zA-Z]/', '', $method), Errors::get_code('api.itemupdater.ajax.unknown'));
+				throw new Exception('Unknown method: ' . preg_replace('/[^-_.0-9a-zA-Z]/', '', $this->action), Errors::get_code('api.itemupdater.ajax.unknown'));
 			}
 
 			switch($this->action) {
