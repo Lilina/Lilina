@@ -26,7 +26,7 @@ class ItemUpdater {
 	 */
 	public static function process() {
 		$reporting = error_reporting();
-		error_reporting(E_ERROR | E_PARSE);
+		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 
 		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
 		$updated = false;
