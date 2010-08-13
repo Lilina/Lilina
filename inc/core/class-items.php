@@ -116,9 +116,6 @@ class Items {
 
 	/**
 	 * Load items and resort
-	 *
-	 * @param bool $override Whether to override the updateon check
-	 * @return array List of items, including new items
 	 */
 	public function init() {
 		$this->items = $this->cached_items;
@@ -427,6 +424,7 @@ class Items {
 	 * @since 1.0
 	 */
 	public function save_cache() {
+		$this->cached_items = apply_filters('save_items', $this->cached_items, &$this);
 		$this->data->save('items.data', json_encode($this->cached_items));
 	}
 }
