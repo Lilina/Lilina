@@ -424,7 +424,7 @@ class Items {
 	 * @since 1.0
 	 */
 	public function save_cache() {
-		$this->cached_items = apply_filters('save_items', $this->cached_items, &$this);
+		$this->cached_items = apply_filters('save_items', $this->cached_items, $this);
 		$this->data->save('items.data', json_encode($this->cached_items));
 	}
 }
