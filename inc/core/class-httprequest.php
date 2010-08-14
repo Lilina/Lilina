@@ -137,10 +137,11 @@ class HTTPRequest {
 				$return->headers[$key] = $value;
 			}
 		}
-		if (isset($return->headers['content-encoding'])) {
-			// Bail. We'll handle this at some later date.
+		if (isset($return->headers['transfer-encoding'])) {
 			$return->body = HTTPRequest::decode_chunked($return->body);
-			//throw new Exception(_r('Encoded feeds are not currently handled'));
+		}
+		if (isset($returns->headers['content-encoding'])) {
+			throw new Exception(_r('Encoded feeds are not currently handled'));
 		}
 
 		//fsockopen and cURL compatibility
@@ -156,19 +157,22 @@ class HTTPRequest {
 		return $return;
 	}
 
-	protected static function decode_chunked($body) {
+	protected static function decode_chunked($data) {
 		$decoded = '';
+		$body = $data;
 
 		while (true) {
-			if ( !preg_match( '/^([0-9a-f]+)(\s|\n)+/mi', $body, $matches ) ) {
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $body, $matches );
+			if ( !$is_chunked ) {
 				// Looks like it's not chunked after all
-				return $body;
+				//throw new Exception('Not chunked after all: ' . $body);
+				return $decoded;
 			}
 
-			$length = hexdec( trim( $matches[1] ) );
+			$length = hexdec( $matches[1] );
 			$chunk_length = strlen( $matches[0] );
-			$decoded .= substr($body, $chunk_length, $length);
-			$body = substr($body, $chunk_length + $length + 2);
+			$decoded .= $part = substr($body, $chunk_length, $length);
+			$body = ltrim(str_replace(array($matches[0], $part), '', $body), "\r\n");
 
 			if (trim($body) === '0') {
 				// We'll just ignore the footer headers
