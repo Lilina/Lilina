@@ -156,7 +156,7 @@ class HTTPRequest {
 		return $return;
 	}
 
-	protected static function decode_chunked($data) {
+	protected static function decode_chunked($body) {
 		$decoded = '';
 
 		while (true) {
