@@ -137,7 +137,7 @@ class HTTPRequest {
 				$return->headers[$key] = $value;
 			}
 		}
-		if (isset($return->headers['content-encoding']) && $this->transport == 'HTTPRequest_fsockopen') {
+		if (isset($return->headers['content-encoding'])) {
 			// Bail. We'll handle this at some later date.
 			$return->body = HTTPRequest::decode_chunked($return->body);
 			//throw new Exception(_r('Encoded feeds are not currently handled'));
