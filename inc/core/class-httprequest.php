@@ -139,7 +139,8 @@ class HTTPRequest {
 		}
 		if (isset($return->headers['content-encoding']) && $this->transport == 'HTTPRequest_fsockopen') {
 			// Bail. We'll handle this at some later date.
-			throw new Exception(_r('Encoded feeds are not currently handled'));
+			$return->body = HTTPRequest::decode_chunked($return->body);
+			//throw new Exception(_r('Encoded feeds are not currently handled'));
 		}
 
 		//fsockopen and cURL compatibility
@@ -153,6 +154,27 @@ class HTTPRequest {
 		}
 
 		return $return;
+	}
+
+	protected static function decode_chunked($data) {
+		$decoded = '';
+
+		while (true) {
+			if ( !preg_match( '/^([0-9a-f]+)(\s|\n)+/mi', $body, $matches ) ) {
+				// Looks like it's not chunked after all
+				return $body;
+			}
+
+			$length = hexdec( trim( $matches[1] ) );
+			$chunk_length = strlen( $matches[0] );
+			$decoded .= substr($body, $chunk_length, $length);
+			$body = substr($body, $chunk_length + $length + 2);
+
+			if (trim($body) === '0') {
+				// We'll just ignore the footer headers
+				return $decoded;
+			}
+		}
 	}
 
 	protected function parse_headers($headers) {
