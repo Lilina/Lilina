@@ -140,8 +140,25 @@ class HTTPRequest {
 		if (isset($return->headers['transfer-encoding'])) {
 			$return->body = HTTPRequest::decode_chunked($return->body);
 		}
-		if (isset($returns->headers['content-encoding'])) {
-			throw new Exception(_r('Encoded feeds are not currently handled'));
+		if (isset($return->headers['content-encoding'])) {
+			switch ($return->headers['content-encoding']) {
+				case 'gzip':
+					if (function_exists('gzdecode')) {
+						$return->body = gzdecode($return->body);
+					}
+					else {
+						throw new Exception(_r('gzdecode is missing'));
+					}
+					break;
+				case 'deflate':
+					if (function_exists('gzinflate')) {
+						$return->body = gzinflate($return->body);
+					}
+					else {
+						throw new Exception(_r('gzinflate is missing'));
+					}
+					break;
+			}
 		}
 
 		//fsockopen and cURL compatibility
@@ -294,6 +311,9 @@ class HTTPRequest_fsockopen {
 			case HTTPRequest::POST:
 				if (isset($url_parts['path'])) {
 					$path = $url_parts['path'];
+					if (isset($url_parts['query'])) {
+						$path .= '?' . $url_parts['query'];
+					}
 				}
 				else {
 					$path = '/';
@@ -312,10 +332,11 @@ class HTTPRequest_fsockopen {
 				$out = "GET $get HTTP/1.0\r\n";
 				break;
 		}
-		$out .= "Host: {$url_parts[host]}\r\n";
+		$out .= "Host: {$url_parts['host']}\r\n";
 		$out .= "User-Agent: $useragent\r\n";
-		if (extension_loaded('zlib')) {
-			$out .= "Accept-Encoding: x-gzip,gzip,deflate\r\n";
+		$accept_encoding = $this->accept_encoding();
+		if (!empty($accept_encoding)) {
+			$out .= "Accept-Encoding: $accept_encoding\r\n";
 		}
 
 		if (isset($url_parts['user']) && isset($url_parts['pass'])) {
@@ -340,6 +361,20 @@ class HTTPRequest_fsockopen {
 		fclose($fp);
 
 		return $this->headers;
+	}
+
+	protected static function accept_encoding() {
+		$type = array();
+		if ( function_exists( 'gzinflate' ) )
+			$type[] = 'deflate;q=1.0';
+
+		if ( function_exists( 'gzuncompress' ) )
+			$type[] = 'compress;q=0.5';
+
+		if ( function_exists( 'gzdecode' ) )
+			$type[] = 'gzip;q=0.5';
+
+		return implode(', ', $type);
 	}
 
 	protected static function format_get($url_parts, $data) {
