@@ -87,7 +87,7 @@ class UpdaterMethod {
 		try {
 			header('Content-Type: text/json; charset=utf-8');
 			if(empty($this->action)) {
-				throw new Exception('No action specified'), Errors::get_code('api.itemupdater.ajax.action_unknown'));
+				throw new Exception(_r('No action specified'), Errors::get_code('api.itemupdater.ajax.action_unknown'));
 			}
 
 			switch($this->action) {
