@@ -119,7 +119,7 @@ class ItemUpdater {
 		usort($sp->data['ordered_items'], array(&$sp, 'sort_items'));
 		usort($sp->data['items'], array(&$sp, 'sort_items'));
 
-		do_action_ref_array('iu-load-feed', array(&$sp));
+		do_action_ref_array('iu-load-feed', array(&$sp, $feed));
 		return $sp;
 	}
 
@@ -169,7 +169,7 @@ class ItemUpdater {
 		);
 		if(!empty($feed))
 			$new_item->feed_id = $feed;
-		return apply_filters('item_data', $new_item);
+		return apply_filters('item_data', $new_item, $item);
 	}
 
 	/**

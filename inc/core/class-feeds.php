@@ -94,7 +94,7 @@ class Feeds {
 			'icon'	=> $feed_info->get_favicon(),
 		);
 
-		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url);
+		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url, $feed_info);
 		$this->save();
 		return array('msg' => sprintf( _r('Added feed "%1$s"'), $name ), 'id' => $id);;
 	}
@@ -146,9 +146,9 @@ class Feeds {
 
 		//Make a copy for later.
 		$removed = $this->feeds[$id];
-		unset($this->feeds[$id]);
-
 		$removed = apply_filters('feed-delete', $removed);
+
+		unset($this->feeds[$id]);
 		$this->save();
 		return sprintf(
 			_r('Removed "%1$s" &mdash; <a href="%2$s">Undo</a>?'),
