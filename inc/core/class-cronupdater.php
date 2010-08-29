@@ -8,7 +8,7 @@ class CronUpdater extends ItemUpdater {
 
 	public static function process() {
 		header('Content-Type: text/plain; charset=utf-8');
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		$updated = false;
 		
 		foreach(self::$feeds as $feed) {

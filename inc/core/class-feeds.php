@@ -58,7 +58,7 @@ class Feeds {
 
 			$url = 'http://' . $url;
 		}
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		// Need this for LILINA_USERAGENT
 		require_once(LILINA_INCPATH . '/core/class-httprequest.php');
 		$feed_info = new SimplePie();
@@ -205,7 +205,7 @@ class Feeds {
 	}
 
 	protected function upgrade_single($feed) {
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		$sp = new SimplePie();
 		$sp->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$sp->set_stupidly_fast(true);

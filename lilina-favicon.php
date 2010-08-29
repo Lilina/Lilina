@@ -18,7 +18,7 @@ define('LILINA_INCPATH', LILINA_PATH . '/inc');
 
 define('LILINA_PAGE', 'favicon');
 
-require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 if(!isset($_GET['i']))
 	die();

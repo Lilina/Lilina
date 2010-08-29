@@ -28,7 +28,7 @@ class ItemUpdater {
 		$reporting = error_reporting();
 		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 
-		require_once(LILINA_INCPATH . '/contrib/simplepie/simplepie.inc');
+		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		$updated = false;
 		$return = array();
 
