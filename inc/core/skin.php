@@ -74,7 +74,7 @@ function has_items() {
 		foreach(Feeds::get_instance()->getAll() as $the_feed)
 			$feed_list[] = $the_feed['feed'];
 
-		$lilina_items = &Items::get_instance();
+		$lilina_items = Items::get_instance();
 		$lilina_items->init();
 		$conditions = apply_filters('return_items-conditions', array('time' => (time() - 186400)));
 		$lilina_items->set_conditions($conditions);

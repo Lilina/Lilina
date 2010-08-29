@@ -21,7 +21,7 @@ class CacheHandler extends DataHandler {
 	 *
 	 * @var int
 	 */
-	protected static $expiration;
+	protected $expiration;
 
 	/**
 	 * Constructor, duh.
