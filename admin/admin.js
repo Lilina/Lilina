@@ -261,6 +261,7 @@ var admin = {
 
 			data.method = action;
 			$.ajax({
+				cache: false,
 				data: data,
 				dataType: return_type,
 				complete: function() {
