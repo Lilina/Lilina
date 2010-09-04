@@ -175,6 +175,9 @@ class HTTPRequest {
 	}
 
 	protected static function decode_chunked($data) {
+		if ( ! preg_match( '/^[0-9a-f]+(\s|\r|\n)+/mi', trim($data) ) )
+			return $data;
+
 		$decoded = '';
 		$body = $data;
 
@@ -183,7 +186,7 @@ class HTTPRequest {
 			if ( !$is_chunked ) {
 				// Looks like it's not chunked after all
 				//throw new Exception('Not chunked after all: ' . $body);
-				return $decoded;
+				return $body;
 			}
 
 			$length = hexdec( $matches[1] );
