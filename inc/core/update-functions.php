@@ -15,6 +15,8 @@ function lilina_version_check() {
 
 	$lilina_version = LILINA_CORE_VERSION;
 	$php_version = phpversion();
+	// We need this for unique identification of installations, but we take the hash of it
+	$id = sha1(get_option('baseurl'));
 
 	$data = new DataHandler();
 	$current = $data->load('core-update-check.data');
@@ -35,9 +37,9 @@ function lilina_version_check() {
 	$new_option->version_checked = $lilina_version;
 
 	try {
-		$headers = apply_filters('update_http_headers', array());
+		$headers = apply_filters('update_http_headers', array('X-Install-ID' => $id));
 		$request = new HTTPRequest('', 2);
-		$response = $request->get("http://api.getlilina.org/version-check/1.1/lilina-core/?version=$lilina_version&php=$php_version&locale=$locale", $headers);
+		$response = $request->get("http://api.getlilina.org/core/version-check/1.2/?version=$lilina_version&php=$php_version&locale=$locale", $headers);
 	}
 	catch (Exception $e) {
 		$response = (object) array('success' => false);
@@ -58,9 +60,9 @@ function lilina_version_check() {
 	if ( isset( $returns[1] ) )
 		$new_option->url = $returns[1];
 	if ( isset( $returns[2] ) )
-		$new_option->version = $returns[2];
+		$new_option->download = $returns[2];
 	if ( isset( $returns[3] ) )
-		$new_option->download = $returns[3];
+		$new_option->version = $returns[3];
 
 	$data->save('core-update-check.data', serialize($new_option));
 	return $new_option;
@@ -82,7 +84,7 @@ function lilina_footer_version() {
 
 	switch ( $cur->response ) {
 		case 'development' :
-			printf(' | '._r( 'You are using a development version (%1$s). Thanks! Make sure you <a href="%2$s">stay updated</a>.' ), LILINA_CORE_VERSION, 'http://getlilina.org/download/#svn');
+			printf(' | '._r( 'You are using a development version (%1$s). Thanks! Make sure you <a href="%2$s">stay updated</a>.' ), LILINA_CORE_VERSION, $cur->url);
 		break;
 
 		case 'upgrade' :
