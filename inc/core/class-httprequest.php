@@ -97,10 +97,11 @@ class HTTPRequest {
 	 * Simple HTTP response parser
 	 *
 	 * @param string $headers Full response text including headers and body
+	 * @param string $url Original request URL
 	 * @param array $req_headers Original $headers array passed to {@link request()}, in case we need to follow redirects
 	 * @param array $req_data Original $data array passed to {@link request()}, in case we need to follow redirects
 	 * @param array $req_type Original $type constant passed to {@link request()}, in case we need to follow redirects
-	 * @return stdClass Contains "body" string, "headers" array, "status code" integer as properties
+	 * @return stdClass Contains "body" string, "headers" array, "status code" integer, "success" boolean, "redirects" integer as properties
 	 */
 	protected function parse_response($headers, $url, $req_headers, $req_data, $req_type) {
 		$redirects = 10;
@@ -172,6 +173,7 @@ class HTTPRequest {
 			return $this->request($location, $req_headers, $req_data, $req_type);
 		}
 
+		$return->redirects = $this->redirects;
 		return $return;
 	}
 
