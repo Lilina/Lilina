@@ -18,6 +18,9 @@ define('LILINA_INCPATH', LILINA_PATH . '/inc');
 
 define('LILINA_PAGE', 'favicon');
 
+// Hide errors
+ini_set('display_errors', false);
+
 require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 if(!isset($_GET['i']))
