@@ -134,7 +134,7 @@ class Items {
 	 * @param bool
 	 */
 	public function sort_items($a, $b) {
-		return $a->timestamp <= $b->timestamp;
+		return $b->timestamp - $a->timestamp;
 	}
 
 	/**
