@@ -90,7 +90,7 @@ class HTTPRequest {
 		$this->redirects = 0;
 		$transport = new $this->transport();
 		$response = $transport->request($url, $this->timeout, $headers, $data, $this->useragent, $type);
-		return $this->parse_response($response, $headers, $data, $type);
+		return $this->parse_response($response, $url, $headers, $data, $type);
 	}
 
 	/**
@@ -102,7 +102,8 @@ class HTTPRequest {
 	 * @param array $req_type Original $type constant passed to {@link request()}, in case we need to follow redirects
 	 * @return stdClass Contains "body" string, "headers" array, "status code" integer as properties
 	 */
-	protected function parse_response($headers, $req_headers, $req_data, $req_type) {
+	protected function parse_response($headers, $url, $req_headers, $req_data, $req_type) {
+		$redirects = 10;
 		$headers = explode("\r\n\r\n", $headers, 2);
 		$return = new stdClass;
 		$return->body = array_pop($headers);
@@ -168,7 +169,7 @@ class HTTPRequest {
 		if ((in_array($return->status_code, array(300, 301, 302, 303, 307)) || $return->status_code > 307 && $return->status_code < 400) && isset($return->headers['location']) && $this->redirects < $redirects) {
 			$this->redirects++;
 			$location = SimplePie_Misc::absolutize_url($return->headers['location'], $url);
-			return $this->request($location, $req_headers, $eq_data, $req_type);
+			return $this->request($location, $req_headers, $req_data, $req_type);
 		}
 
 		return $return;
