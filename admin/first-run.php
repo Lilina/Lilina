@@ -65,7 +65,7 @@ function relative_time($posted_date) {
 		case $hours > 0:
 			// hours and minutes
 			$hour = sprintf(Locale::ngettext('%d hour', '%d hours', $hours), $hours);
-			if ($hours > 0) {
+			if ($minutes > 0) {
 				$minute = sprintf(Locale::ngettext('%d minute', '%d minutes', $minutes), $minutes);
 				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x hours, x minutes ago"'), $hour, $minute);
 			}
