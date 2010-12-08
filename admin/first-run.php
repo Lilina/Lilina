@@ -14,8 +14,8 @@ require_once('admin.php');
 
 admin_header(_r('First-Run'));
 ?>
-<h1><?php _e('Welcome') ?></h1>
-<p><?php _e("To help you settle in, we've included a few nifty tools in Lilina, just to help you get started.") ?></p>
+<h1><?php _e('Welcome!') ?></h1>
+<p><?php _e("Firstly, thanks for using Lilina! To help you settle in, we've included a few nifty tools in Lilina, just to help you get started.") ?></p>
 <h2><?php _e('Import') ?></h2>
 <p><?php _e("We can import from any service which supports an open standard called OPML. Here's some services you can import from:") ?></p>
 <ul id="block-list">
@@ -28,5 +28,9 @@ admin_header(_r('First-Run'));
 <h2><?php _e('Quick Adding') ?></h2>
 <p><?php _e('Use this bookmarlet to subscribe to feeds straight from your browser:')?> 
 <a href="javascript:void(sp=window.open('<?php echo get_option('baseurl') ?>admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,resizable=no,width=450,height=430,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));"><?php _e('Subscribe') ?></a></p>
+<h2><?php _e('Updating Your Feeds') ?></h2>
+<p><?php _e('Lilina offers several ways to update your feeds. Some templates offer an update button, while others leave it to you to work out.') ?></p>
+<p><?php printf(_r('To update your feeds from your browser, simply access <a href="%1$s">the updater</a> in your browser. You can also access this URL via cron, by appending <code>&amp;cron</code>.'), get_option('baseurl') . '?method=update') ?></p>
+<p><?php printf(_r('For more information on updating, see the <a href="%s">documentation</a>.'), 'http://codex.getlilina.org/wiki/Updating_Feeds') ?></p>
 <?php
 admin_footer();
