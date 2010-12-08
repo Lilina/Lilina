@@ -154,7 +154,7 @@ class ItemUpdater {
 			);
 		}
 		$new_item = (object) array(
-			'hash'      => $item->get_id(true),
+			'hash'      => sha1($item->get_id()),
 			'timestamp' => $item->get_date('U'),
 			'title'     => $item->get_title(),
 			'content'   => $item->get_content(),
