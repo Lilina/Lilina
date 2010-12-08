@@ -12,10 +12,99 @@
 /** */
 require_once('admin.php');
 
-admin_header(_r('First-Run'));
+admin_header(_r('Welcome!'));
+
+/**
+ * Make a timestamp into a relative string
+ *
+ * @todo Tidy up and move out of this file.
+ * Based on Garrett Murray's code from http://graveyard.maniacalrage.net/etc/relative/
+ */
+function relative_time($posted_date) {
+	$in_seconds = $posted_date;
+	$diff = time()-$in_seconds;
+	$months = floor($diff/2592000);
+	$diff -= $months*2419200;
+	$weeks = floor($diff/604800);
+	$diff -= $weeks*604800;
+	$days = floor($diff/86400);
+	$diff -= $days*86400;
+	$hours = floor($diff/3600);
+	$diff -= $hours*3600;
+	$minutes = floor($diff/60);
+	$diff -= $minutes*60;
+	$seconds = $diff;
+ 
+	if ($months > 0) {
+		return sprintf(_c('on %s', 'on <date>'), date('N, jS \o\f F, Y'));
+	}
+
+	switch (true) {
+		case $weeks > 0:
+			// weeks and days
+			$week = sprintf(Locale::ngettext('%d week', '%d weeks', $weeks), $weeks);
+			if ($days > 0) {
+				$day = sprintf(Locale::ngettext('%d day', '%d days', $days), $days);
+				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x weeks, x days ago"'), $week, $day);
+			}
+			else {
+				$relative_date = sprintf(_c('%s ago', 'relative time, "x weeks ago"'), $week);
+			}
+			break;
+		case $days > 0:
+			// days and hours
+			$day = sprintf(Locale::ngettext('%d day', '%d days', $days), $days);
+			if ($hours > 0) {
+				$hour = sprintf(Locale::ngettext('%d hour', '%d hours', $hours), $hours);
+				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x days, x hours ago"'), $day, $hour);
+			}
+			else {
+				$relative_date = sprintf(_c('%s ago', 'relative time, "x days ago"'), $day);
+			}
+			break;
+		case $hours > 0:
+			// hours and minutes
+			$hour = sprintf(Locale::ngettext('%d hour', '%d hours', $hours), $hours);
+			if ($hours > 0) {
+				$minute = sprintf(Locale::ngettext('%d minute', '%d minutes', $minutes), $minutes);
+				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x hours, x minutes ago"'), $hour, $minute);
+			}
+			else {
+				$relative_date = sprintf(_c('%s ago', 'relative time, "x hours ago"'), $hour);
+			}
+			break;
+		case $minutes > 0:
+			// minutes only
+			return sprintf(Locale::ngettext('%d minute ago', '%d minutes ago', $minutes), $minutes);
+			break;
+		case $seconds > 0:
+			// seconds only
+			return sprintf(Locale::ngettext('%d second ago', '%d seconds ago', $seconds), $seconds);
+			break;
+	}
+	return $relative_date;
+}
 ?>
 <h1><?php _e('Welcome!') ?></h1>
+<?php
+if (count(Feeds::get_instance()->getAll()) === 0) {
+?>
 <p><?php _e("Firstly, thanks for using Lilina! To help you settle in, we've included a few nifty tools in Lilina, just to help you get started.") ?></p>
+<?php
+}
+else {
+	$updated = get_option('last_updated');
+	if (!$updated) {
+		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.', count(Items::get_instance()->get_items()), count(Feeds::get_instance()->getAll())));
+	}
+	else {
+		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), count(Items::get_instance()->get_items()), count(Feeds::get_instance()->getAll()), doRelativeDate($updated));
+	}
+?>
+<p><?php echo $message ?></p>
+<?php
+}
+?>
 <h2><?php _e('Import') ?></h2>
 <p><?php _e("We can import from any service which supports an open standard called OPML. Here's some services you can import from:") ?></p>
 <ul id="block-list">
