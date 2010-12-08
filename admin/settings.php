@@ -120,18 +120,8 @@ if(!empty($_GET['deactivated']))
 		</div>
 	</fieldset>
 	<fieldset id="update">
-		<legend><?php _e('Updating Settings'); ?></legend>
-		<div class="row">
-			<label for="sitename"><?php _e('Update on'); ?>:</label>
-			<select id="updateon" name="updateon">
-				<option <?php if(get_option('updateon') == 'pageview') { echo 'selected="selected" '; } ?>value="pageview"><?php _e('Page View') ?></option>
-				<option <?php if(get_option('updateon') == 'manual') { echo 'selected="selected" '; } ?>value="manual"><?php _e('Manual') ?></option>
-			</select>
-		</div>
-		
-		<h2><?php _e('Manual Updating') ?></h2>
-		<p><?php printf(_r('The URL to manually update the items is <code>%s</code>'), get_option('baseurl') . '?method=update') ?></p>
-		<p><?php _e('This URL will work regardless of the above option. If the "manual" option is selected, however, this is the only way to update the items.') ?></p>
+		<h2><?php _e('Updating') ?></h2>
+		<p><?php printf(_r('The URL to update the items is <code>%s</code>'), get_option('baseurl') . '?method=update') ?></p>
 		<p><?php printf(_r('For information on using cron with this URL, see the <a href="%s">documentation</a>.'), 'http://codex.getlilina.org/wiki/Updating_Feeds') ?></p>
 	</fieldset>
 	<?php do_action('options-form'); ?>
