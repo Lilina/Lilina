@@ -98,7 +98,7 @@ else {
 		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.', count(Items::get_instance()->get_items()), count(Feeds::get_instance()->getAll())));
 	}
 	else {
-		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), count(Items::get_instance()->get_items()), count(Feeds::get_instance()->getAll()), doRelativeDate($updated));
+		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), count(Items::get_instance()->get_items()), count(Feeds::get_instance()->getAll()), relative_time($updated));
 	}
 ?>
 <p><?php echo $message ?></p>
