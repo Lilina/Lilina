@@ -371,10 +371,9 @@ class Items {
 		}
 
 		$cached_item = $this->cached_items[ $item->hash ];
-		if($cached_item->timestamp !== $item->timestamp || $cached_item->hash !== $item->hash) {
-			$old_item = $this->cached_items[ $item->hash ];
+		if($cached_item->timestamp !== $item->timestamp) {
 			$this->update_item($item);
-			do_action('update_item', $item, $old_item);
+			do_action('update_item', $item, $cached_item);
 			return true;
 		}
 
