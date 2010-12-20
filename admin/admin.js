@@ -146,6 +146,7 @@ var admin = {
 				else {
 					jQuery('#humanMsgLog').show().animate({top: "34px"}, 800);
 				}
+				return false;
 			} );
 		},
 
@@ -288,7 +289,7 @@ var admin = {
 							}
 						}
 					} catch(e) {
-						msg.message = _r("Failed to parse response: ") + req.responseText
+						msg.message = _r("Failed to parse response: ") + request.responseText
 					}
 
 					if (msg) {
