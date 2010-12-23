@@ -68,6 +68,10 @@ class Installer {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
 			return false;
 		}
+
+		require_once(LILINA_INCPATH . '/core/class-user.php');
+		$user = new User($username, $password);
+		$user->set_cookies();
 	?>
 	<h1 id="title">Installation Complete!</h1>
 	<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it <strong>won't be shown again</strong>!</p>
@@ -77,7 +81,7 @@ class Installer {
 		<dt>and your password is</dt>
 		<dd id="password"><?php echo $password;?></dd>
 	</dl>
-	<p>We can <a href="admin/first-run.php">help you get started</a>, or if you know what you're doing, <a href="admin/">head straight for the admin panel</a>.</p>
+	<p><a href="admin/">Head to the admin panel</a> to get started!</p>
 	<?php
 			return true;
 	}
