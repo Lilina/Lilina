@@ -62,6 +62,7 @@ class Feeds {
 		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		// Need this for LILINA_USERAGENT
+		class_exists('HTTPRequest');
 		require_once(LILINA_INCPATH . '/core/class-httprequest.php');
 		$feed_info = new SimplePie();
 		$feed_info->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
