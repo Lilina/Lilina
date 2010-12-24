@@ -91,48 +91,6 @@ function is_admin() {
 }
 
 /**
- * Update the value of an option.
- *
- * If the option does not exist, then the option will be added with the option
- * value, but you will not be able to set whether it is autoloaded. If you want
- * to set whether an option autoloaded, then you need to use the add_option().
- * Any of the old $settings keys are ignored.
- *
- * When the option is updated, then the filter named
- * 'update_option_$option_name', with the $option_name as the $option_name
- * parameter value, will be called. The hook should accept two parameters, the
- * first is the new parameter and the second is the old parameter.
- *
- * @global array <tt>$settings</tt> contains whatever option we are going to change
- * @param string $option Option key to change
- * @param mixed $new_value New value of <tt>$option</tt>
- */
-function update_option($option_name, $new_value) {
-	return Options::update($option_name, $new_value);
-}
-
-/**
- * Retrieve option value based on setting name.
- *
- * If the option does not exist or does not have a value, then the return value
- * will be false. This is useful to check whether you need to install an option
- * and is commonly used during installation of plugin options and to test
- * whether upgrading is required.
- *
- * There is a filter called 'option_$option' with the $option being replaced
- * with the option name. This gives the value as the only parameter.
- *
- * @uses $settings Old settings array for "auth", "sitename", "baseurl" and "files" options.
- * @uses $options New options array
- * @param string $option Name of option to retrieve.
- * @param mixed $default Value to default to if none is found. Alternatively used as a "subkey" option for the hardcoded settings
- * @return mixed Value set for the option.
- */
-function get_option($option, $default = null) {
-	return Options::get($option, $default);
-}
-
-/**
  * Merge user defined arguments into defaults array.
  *
  * This function is used throughout Lilina to allow for both string or array

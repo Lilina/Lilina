@@ -57,6 +57,7 @@ class Options {
 	 * @return mixed Value set for the option.
 	 */
 	public static function get($option, $default = null) {
+		var_dump(self::$options);
 		global $settings;
 
 		/** Hardcoded settings in settings.php */
@@ -113,4 +114,30 @@ class Options {
 	}
 }
 
+/**
+ * Convenience function for Options::get()
+ *
+ * @see Options::get()
+ */
+function get_option($option, $default = null) {
+	return Options::get($option, $default);
+}
+
+/**
+ * Convenience function for Options::update()
+ *
+ * @see Options::update()
+ */
+function update_option($option_name, $new_value) {
+	return Options::update($option_name, $new_value);
+}
+
+/**
+ * Convenience function for Options::save()
+ *
+ * @see Options::save()
+ */
+function save_options() {
+	return Options::save();
+}
 ?>

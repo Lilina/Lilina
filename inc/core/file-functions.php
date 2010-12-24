@@ -10,13 +10,6 @@
 defined('LILINA_PATH') or die('Restricted access');
 
 /**
- * Save options to options.data
- */
-function save_options() {
-	return Options::save();
-}
-
-/**
  * get_temp_dir() - Get a temporary directory to try writing files to
  *
  * {@internal Missing Long Description}}
