@@ -49,8 +49,29 @@ if(!isset($_GET['i']))
 
 function faux_hash($input) { return $input; }
 
+function display_cached_file($identifier_url, $cache_location = './cache') {
+	$cache = SimplePie_Cache::create($cache_location, $identifier_url, 'spi');
+
+	if ($file = $cache->load())
+	{
+		if (isset($file['headers']['content-type']))
+		{
+			header('Content-type:' . $file['headers']['content-type']);
+		}
+		else
+		{
+			header('Content-type: application/octet-stream');
+		}
+		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
+		echo $file['body'];
+		exit;
+	}
+
+	die('Cached file for ' . $identifier_url . ' cannot be found.');
+}
+
 if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi')) {
-	SimplePie_Misc::display_cached_file($_GET['i'], LILINA_CONTENT_DIR . '/system/cache', 'spi', 'SimplePie_Cache', 'faux_hash');
+	display_cached_file($_GET['i'], LILINA_CONTENT_DIR . '/system/cache');
 }
 else {
 	Locale::load_default_textdomain();
