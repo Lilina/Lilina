@@ -34,8 +34,4 @@ if(has_feeds()) {
 <?php
 }
 
-function export_register(&$controller) {
-	$controller->registerMethod('opml', 'export_opml');
-}
-
-add_action('controller-lateregister', 'export_register', 10, 1);
+Controller::registerMethod('opml', 'export_opml');

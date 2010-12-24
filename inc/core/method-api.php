@@ -42,9 +42,6 @@ class LilinaAPI {
 			echo json_encode( array('error'=>1, 'msg'=>$e->getMessage(), 'code'=>$e->getCode()));
 		}
 	}
-	public static function register(&$controller) {
-		$controller->registerMethod('api', array('LilinaAPI', 'init'));
-	}
 
 	// Item methods
 	public static function items_get($id) {
@@ -53,6 +50,7 @@ class LilinaAPI {
 		$item = Items::get_instance()->get_item($id);
 		if($item != false)
 			$item->actions = apply_filters('action_bar', array());
+		$item->services = Services::get_for_item($item);
 		return $item;
 	}
 	public static function items_getList($start = 0, $limit = null) {
@@ -78,4 +76,4 @@ class LilinaAPI {
 	}
 }
 
-add_action('controller-lateregister', array('LilinaAPI', 'register'), 10, 1);
+Controller::registerMethod('api', array('LilinaAPI', 'init'));

@@ -36,6 +36,5 @@ require_once(LILINA_INCPATH . '/core/class-itemupdater.php');
 
 do_action('init');
 //Templates::load();
-$controller = new Controller();
-$controller->dispatch();
+Controller::dispatch();
 ?>

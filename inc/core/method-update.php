@@ -196,13 +196,8 @@ class UpdaterMethod {
 </html>
 <?php
 	}
-
-	public function register(&$controller) {
-		global $updatemethod;
-		$controller->registerMethod('update', array($updatemethod, 'init'));
-	}
 }
 
 global $updatemethod;
 $updatemethod = new UpdaterMethod();
-add_action('controller-lateregister', array($updatemethod, 'register'), 10, 1);
+Controller::registerMethod('update', array($updatemethod, 'init'));

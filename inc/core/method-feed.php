@@ -130,10 +130,6 @@ class Resyndicate {
 				break;
 		}
 	}
-	
-	public static function register(&$controller) {
-		$controller->registerMethod('feed', array('Resyndicate', 'dispatch'));
-	}
 }
 
-add_action('controller-lateregister', array('Resyndicate', 'register'), 10, 1);
+Controller:registerMethod('feed', array('Resyndicate', 'dispatch'));
