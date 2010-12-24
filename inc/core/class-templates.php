@@ -372,3 +372,5 @@ class Templates {
 		);
 	}
 }
+
+Controller::registerMethod('default', array('Templates', 'load'));
