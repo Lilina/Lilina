@@ -193,6 +193,11 @@ class Feeds {
 		//Make a copy for later.
 		$removed = $this->feeds[$id];
 		$removed = apply_filters('feed-delete', $removed);
+		$cache = new DataHandler(get_option('cachedir'));
+		if($cache->load($id . '.ico') !== null) {
+			// Unlink here instead
+			$cache->delete($id . '.ico');
+		}
 
 		unset($this->feeds[$id]);
 		$this->save();
