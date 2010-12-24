@@ -57,7 +57,6 @@ class Options {
 	 * @return mixed Value set for the option.
 	 */
 	public static function get($option, $default = null) {
-		var_dump(self::$options);
 		global $settings;
 
 		/** Hardcoded settings in settings.php */
