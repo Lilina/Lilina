@@ -434,62 +434,6 @@ function enclosure_metadata() {
 }
 
 /**
- * @todo Document
- */
-function date_equals($args='') {
-	/*global $item, $item_number, $list, $total_items;
-	$defaults = array(
-		'equalto' => 'previous',
-		'format' => 'l d F, Y'
-	);
-	$args = lilina_parse_args($args, $defaults);
-	// Make sure we don't overwrite any current variables
-	extract($args, EXTR_SKIP);
-
-	if( 'previous' == $equalto )
-			$equalto = $item_number - 1;
-	elseif( 'next' == $equalto )
-			$equalto = $item_number + 1 ;
-
-	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
-		return false;
-	$temp_item = $list->get_item( $equalto );
-
-	$current_ts =  apply_filters('timestamp', $item->timestamp);
-	$other_ts =  apply_filters('timestamp', $temp_item->get_date('U'));
-	$equals = date($format, $current_ts) == date($format, $other_ts);
-	return apply_filters('date_equals', $equals, $equalto);
-	*/
-	return true;
-}
-
-/**
- * @todo Document
- */
-function feed_equals($args='') {
-	/*
-	global $item, $item_number, $list, $total_items;
-	$defaults = array(
-		'equalto' => 'previous'
-	);
-	$args = lilina_parse_args($args, $defaults);
-	// Make sure we don't overwrite any current variables
-	extract($args, EXTR_SKIP);
-
-	if( 'previous' == $equalto)
-		$equalto = $item_number - 1;
-	elseif( 'next' == $equalto)
-		$equalto = $item_number + 1;
-
-	if( !is_int( $equalto ) || $equalto >= $total_items || $equalto < 0 )
-		return false;
-	$equals = get_the_feed_id() == get_the_feed_id($equalto);
-	return apply_filters('feed_equals', $equals, $equalto);
-	*/
-	return false;
-}
-
-/**
 * Feeds available for parsing with {@link get_feeds}
 *
 * @return boolean Are feeds available?
@@ -538,7 +482,7 @@ function list_feeds($args = '') {
  *
  * @param array $a First feed array
  * @param array $b Second feed array
- * @return See strnatcmp()
+ * @return See strnatcasecmp()
  */
 function _sort_feeds($a, $b) {
     return strnatcasecmp($a['name'], $b['name']);
@@ -549,6 +493,7 @@ function _sort_feeds($a, $b) {
  *
  */
 function action_bar($args = '') {
+	global $item;
 	$defaults = array(
 		'header' => '<ul>',
 		'footer' => '</ul>',
@@ -559,13 +504,13 @@ function action_bar($args = '') {
 	/** Make sure we don't overwrite any current variables */
 	extract($args, EXTR_SKIP);
 
-	$actions = apply_filters('action_bar', array());
+	$services = Services::get_for_item($item);
 
-	if(!empty($actions)) {
+	if(!empty($services)) {
 		echo $header;
 
-		foreach ($actions as $action) {
-			echo $before . $action . $after;
+		foreach ($services as $id => $service) {
+			echo $before . '<a href="' . $service['action'] . '" class="service service-'. $service['type'] . ' service-' . $id . '">' . $service['label'] .'</a>' . $after;
 		}
 
 		echo $footer;
