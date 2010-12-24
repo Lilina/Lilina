@@ -1,8 +1,12 @@
 <?php
-/*
-Plugin Name: Instapaper
-Description: Save items to Instapaper.
-*/
+/**
+ * Instapaper
+ *
+ * Save items to Instapaper.
+ * @version 1.1
+ * @author Ryan McCue <ryan@getlilina.org>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 class InstapaperService extends Service_Local {
 	public function __construct() {
