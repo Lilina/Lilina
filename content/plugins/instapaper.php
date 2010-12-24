@@ -24,7 +24,7 @@ class Instapaper {
 		Controller::registerMethod('instapaper', array('Instapaper', 'page'));
 
 		// Register the Instapaper service
-		$service = new Instapaper();
+		$service = new InstapaperService();
 		Services::register('instapaper', $service);
 
 		// Register our options
