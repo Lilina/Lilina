@@ -31,9 +31,6 @@ require_once(LILINA_INCPATH . '/core/feed-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/skin.php');
 
-/** Load in different methods */
-require_once(LILINA_INCPATH . '/core/class-itemupdater.php');
-
 do_action('init');
 //Templates::load();
 Controller::dispatch();
