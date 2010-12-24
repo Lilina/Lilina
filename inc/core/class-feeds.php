@@ -58,6 +58,8 @@ class Feeds {
 
 			$url = 'http://' . $url;
 		}
+		$reporting = error_reporting();
+		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		// Need this for LILINA_USERAGENT
 		require_once(LILINA_INCPATH . '/core/class-httprequest.php');
@@ -91,14 +93,51 @@ class Feeds {
 			'id'	=> $id,
 			'name'	=> $name,
 			'cat'	=> $cat,
-			'icon'	=> $feed_info->get_favicon(),
+			'icon'	=> $this->discover_favicon($feed_info, $id),
 		);
 
 		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url, $feed_info);
 		$this->save();
+
+		error_reporting($reporting);
 		return array('msg' => sprintf( _r('Added feed "%1$s"'), $name ), 'id' => $id);;
 	}
 
+	/**
+	 * Find the feed's icon
+	 *
+	 * @param SimplePie $feed SimplePie object to retrieve logo for
+	 * @return string URL to feed icon
+	 */
+	protected function discover_favicon($feed, $id) {
+		if ($return = $feed->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'icon')) {
+			$favicon = SimplePie_Misc::absolutize_url($return[0]['data'], $feed->get_base($return[0]));
+		}
+		elseif (($url = $feed->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url)) {
+			$filename = $id . '.ico';
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
+		}
+		else {
+			return false;
+		}
+
+		$cache = new DataHandler(get_option('cachedir'));
+		$request = new HTTPRequest();
+		$file = $request->get($favicon, array('X-Forwarded-For' => $_SERVER['REMOTE_ADDR']));
+
+		if ($file->success && strlen($file->body) > 0) {
+			$sniffer = new $feed->content_type_sniffer_class($file);
+			if (substr($sniffer->get_type(), 0, 6) === 'image/') {
+				$body = array('type' => $sniffer->get_type(), 'body' => $file->body);
+				return $cache->save($filename, serialize($body));
+			}
+			// not an image
+			else {
+				return false;
+			}
+		}
+		return false;
+	}
 	public function get($id) {
 		$feed = false;
 		if(!empty($this->feeds[$id]))

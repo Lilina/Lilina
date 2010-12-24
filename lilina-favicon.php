@@ -23,11 +23,29 @@ ini_set('display_errors', false);
 
 require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
-if(!isset($_GET['i']))
-	die();
-
 require_once(LILINA_INCPATH . '/core/conf.php');
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+
+if(isset($_GET['feed'])) {
+	$feed = Feeds::get_instance()->get($_GET['feed']);
+	if ($feed !== false && $feed['icon'] === true) {
+		$data = new DataHandler(get_option('cachedir'));
+		$data = $data->load($feed['id'] . '.ico');
+		if ($data !== null) {
+			$icon = unserialize($data);
+
+			header('Content-Type: ' .  $icon['type']);
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
+
+			echo $icon['body'];
+			die();
+		}
+	}
+	$_GET['i'] = 'default';
+}
+
+if(!isset($_GET['i']))
+	die();
 
 function faux_hash($input) { return $input; }
 
