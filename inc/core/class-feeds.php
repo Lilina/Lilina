@@ -86,6 +86,13 @@ class Feeds {
 		}
 
 		$id = sha1($feed_url);
+		// Do a naive check to see if the feed already exists
+		if ($this->get($id) !== false) {
+			throw new Exception(
+				_r("Couldn't add feed: you have already added that feed"),
+				Errors::get_code('admin.feeds.feed_already_exists')
+			);
+		}
 
 		$this->feeds[$id] = array(
 			'feed'	=> $feed_url,
