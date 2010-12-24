@@ -71,6 +71,28 @@ class Items {
 	protected $data;
 
 	/**
+	 * Sorting of items
+	 *
+	 * Decides which item sorting to use. Defaults to 'time' (sorting reverse
+	 * chronologically)
+	 * @var string
+	 */
+	protected $sort = 'time';
+	
+	/**
+	 * Grouping of items
+	 *
+	 * Decides what to group items by. For example, 'feed' will group by feed
+	 * ID.
+	 *
+	 * Note: Regardless of grouping, Items::$items is always a single-level
+	 * associative array of items. Grouping simply orders the items by the
+	 * group first, then sorts within each group as per Items::$sort.
+	 * @var string
+	 */
+	protected $group = '';
+
+	/**
 	 * Object constructor
 	 *
 	 * Sets our used properties with user input
@@ -146,8 +168,37 @@ class Items {
 	public function sort_all() {
 		if(is_array($this->cached_items))
 			uasort($this->cached_items, array('Items', 'sort_items'));
-		if(is_array($this->items))
-			uasort($this->items, array('Items', 'sort_items'));
+		if(is_array($this->items)) {
+			switch($this->sort) {
+				case 'time':
+				default:
+					uasort($this->items, array('Items', 'sort_items'));
+					break;
+					
+			}
+			switch($this->group) {
+				case 'feed':
+					$this->group_by_feed();
+					break;
+				default:
+					// No grouping by default
+					break;
+			}
+		}
+	}
+
+	protected function group_by_feed(){
+		// Group by feed_id
+		foreach($this->items as $key => $value) {
+			$grouped[$value->feed_id][$key] = $value;
+		}
+		// Flattern
+		foreach($grouped as $group_items) {
+			foreach($group_items as $key => $value) {
+				$items[$key] = $value;
+			}
+		}
+		$this->items = $items;
 	}
 
 	/**
