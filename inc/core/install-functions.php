@@ -71,7 +71,7 @@ class Installer {
 
 		require_once(LILINA_INCPATH . '/core/class-user.php');
 		$user = new User($username, $password);
-		$user->set_cookies();
+		$user->identify();
 	?>
 	<h1 id="title">Installation Complete!</h1>
 	<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it <strong>won't be shown again</strong>!</p>

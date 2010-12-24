@@ -9,31 +9,31 @@ class User {
 	 * Contains the supplied username
 	 * @var string
 	 */
-	var $user;
+	protected $user;
 
 	/**
 	 * Contains the (hashed) supplied password
 	 * @var string
 	 */
-	var $password;
+	protected $password;
 
 	/**
 	 * Contains the unhashed supplied password
 	 * @var string
 	 */
-	var $raw;
+	protected $raw;
 
 	/**
 	 * Path on $domain the cookie is valid for
 	 * @var string
 	 */
-	var $path;
+	protected $path;
 
 	/**
 	 * Domain the cookie is valid for
 	 * @var string|bool
 	 */
-	var $domain;
+	protected $domain;
 
 	/**
 	 * Constructor for the class
@@ -63,7 +63,7 @@ class User {
 	 * 2 weeks/14 days.
 	 * @return mixed Boolean true if logged in, otherwise passes the result of {@link lilina_check_user_pass()}} through
 	 */
-	function identify() {
+	public function identify() {
 		if(isset($_COOKIE['lilina_user']) && isset($_COOKIE['lilina_pass'])) {
 			if( ( $status = $this->authenticate($_COOKIE['lilina_user'], $_COOKIE['lilina_pass']) ) !== 1)
 				return $status;
@@ -86,7 +86,7 @@ class User {
 	 * Generates the correct hash
 	 * @param string $password
 	 */
-	function hash($password) {
+	protected function hash($password) {
 		// Check for MD5
 		if(strlen(get_option('auth', 'pass')) === 32)
 			return hash('md5', $password);
@@ -102,7 +102,7 @@ class User {
 	 * @param string $p Overriding password
 	 * @return bool True if password has been "upgraded", false otherwise
 	 */
-	function upgrade() {
+	protected function upgrade() {
 		if(strlen($this->password) !== 32)
 			return true;
 
@@ -121,7 +121,7 @@ class User {
 	 * @param string $p Overriding password
 	 * @return int 1 for correct username and password, -1 if username or password is wrong or 0 if username or password is blank
 	 */
-	function authenticate($u = false, $p = false) {
+	public function authenticate($u = false, $p = false) {
 		if($u)
 			$this->user = $u;
 		if($p)
@@ -145,7 +145,7 @@ class User {
 	 * Does what it says on the tin. Uses HttpOnly for both cookies.
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
-	function set_cookies() {
+	protected function set_cookies() {
 		setcookie ( 'lilina_user', $this->user, time() + 1209600, $this->path, $this->domain, null, true );
 		setcookie ( 'lilina_pass', $this->password, time() + 1209600, $this->path, $this->domain, null, true );
 	}
@@ -156,7 +156,7 @@ class User {
 	 * Removes cookies by setting value to a blank string and setting the expiry time in the past.
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
-	function destroy_cookies() {
+	public function destroy_cookies() {
 		setcookie ( 'lilina_user', '', time() - 31536000, $this->path, $this->domain );
 		setcookie ( 'lilina_pass', '', time() - 31536000, $this->path, $this->domain );
 	}
