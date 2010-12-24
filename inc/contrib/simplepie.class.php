@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman and Geoffrey Sneddon
+ * Copyright (c) 2004-2010, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,10 +33,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2009 Ryan Parman, Geoffrey Sneddon
+ * @version 1.2.1-dev
+ * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
+ * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
@@ -12618,20 +12619,20 @@ class SimplePie_Parse_Date
 		'sonnabend' => 6,
 		'sonntag' => 7,
 		// Italian
-		'luned�' => 1,
-		'marted�' => 2,
-		'mercoled�' => 3,
-		'gioved�' => 4,
-		'venerd�' => 5,
+		'lunedì' => 1,
+		'martedì' => 2,
+		'mercoledì' => 3,
+		'giovedì' => 4,
+		'venerdì' => 5,
 		'sabato' => 6,
 		'domenica' => 7,
 		// Spanish
 		'lunes' => 1,
 		'martes' => 2,
-		'mi�rcoles' => 3,
+		'miércoles' => 3,
 		'jueves' => 4,
 		'viernes' => 5,
-		's�bado' => 6,
+		'sábado' => 6,
 		'domingo' => 7,
 		// Finnish
 		'maanantai' => 1,
@@ -12642,21 +12643,21 @@ class SimplePie_Parse_Date
 		'lauantai' => 6,
 		'sunnuntai' => 7,
 		// Hungarian
-		'h�tfo' => 1,
+		'hétfő' => 1,
 		'kedd' => 2,
 		'szerda' => 3,
-		'cs�t�rtok' => 4,
-		'p�ntek' => 5,
+		'csütörtok' => 4,
+		'péntek' => 5,
 		'szombat' => 6,
-		'vas�rnap' => 7,
+		'vasárnap' => 7,
 		// Greek
-		'?e?' => 1,
-		'???' => 2,
-		'?et' => 3,
-		'?e�' => 4,
-		'?a?' => 5,
-		'Sa�' => 6,
-		'???' => 7,
+		'Δευ' => 1,
+		'Τρι' => 2,
+		'Τετ' => 3,
+		'Πεμ' => 4,
+		'Παρ' => 5,
+		'Σαβ' => 6,
+		'Κυρ' => 7,
 	);
 
 	/**
@@ -12706,21 +12707,21 @@ class SimplePie_Parse_Date
 		'december' => 12,
 		// French
 		'janvier' => 1,
-		'f�vrier' => 2,
+		'février' => 2,
 		'mars' => 3,
 		'avril' => 4,
 		'mai' => 5,
 		'juin' => 6,
 		'juillet' => 7,
-		'ao�t' => 8,
+		'août' => 8,
 		'septembre' => 9,
 		'octobre' => 10,
 		'novembre' => 11,
-		'd�cembre' => 12,
+		'décembre' => 12,
 		// German
 		'januar' => 1,
 		'februar' => 2,
-		'm�rz' => 3,
+		'märz' => 3,
 		'april' => 4,
 		'mai' => 5,
 		'juni' => 6,
@@ -12763,45 +12764,45 @@ class SimplePie_Parse_Date
 		'maaliskuu' => 3,
 		'huhtikuu' => 4,
 		'toukokuu' => 5,
-		'kes�kuu' => 6,
-		'hein�kuu' => 7,
+		'kesäkuu' => 6,
+		'heinäkuu' => 7,
 		'elokuu' => 8,
 		'suuskuu' => 9,
 		'lokakuu' => 10,
 		'marras' => 11,
 		'joulukuu' => 12,
 		// Hungarian
-		'janu�r' => 1,
-		'febru�r' => 2,
-		'm�rcius' => 3,
-		'�prilis' => 4,
-		'm�jus' => 5,
-		'j�nius' => 6,
-		'j�lius' => 7,
+		'január' => 1,
+		'február' => 2,
+		'március' => 3,
+		'április' => 4,
+		'május' => 5,
+		'június' => 6,
+		'július' => 7,
 		'augusztus' => 8,
 		'szeptember' => 9,
-		'okt�ber' => 10,
+		'október' => 10,
 		'november' => 11,
 		'december' => 12,
 		// Greek
-		'?a?' => 1,
-		'Fe�' => 2,
-		'???' => 3,
-		'?a?' => 3,
-		'?p?' => 4,
-		'???' => 5,
-		'?a?' => 5,
-		'?a?' => 5,
-		'????' => 6,
-		'???' => 6,
-		'????' => 7,
-		'???' => 7,
-		'???' => 8,
-		'???' => 8,
-		'Sep' => 9,
-		'??t' => 10,
-		'???' => 11,
-		'?e?' => 12,
+		'Ιαν' => 1,
+		'Φεβ' => 2,
+		'Μάώ' => 3,
+		'Μαώ' => 3,
+		'Απρ' => 4,
+		'Μάι' => 5,
+		'Μαϊ' => 5,
+		'Μαι' => 5,
+		'Ιούν' => 6,
+		'Ιον' => 6,
+		'Ιούλ' => 7,
+		'Ιολ' => 7,
+		'Αύγ' => 8,
+		'Αυγ' => 8,
+		'Σεπ' => 9,
+		'Οκτ' => 10,
+		'Νοέ' => 11,
+		'Δεκ' => 12,
 	);
 
 	/**
@@ -13169,7 +13170,7 @@ class SimplePie_Parse_Date
 			6: Second
 			7: Decimal fraction of a second
 			8: Zulu
-			9: Timezone �
+			9: Timezone ±
 			10: Timezone hours
 			11: Timezone minutes
 			*/
@@ -13307,7 +13308,7 @@ class SimplePie_Parse_Date
 			5: Hour
 			6: Minute
 			7: Second
-			8: Timezone �
+			8: Timezone ±
 			9: Timezone hours
 			10: Timezone minutes
 			11: Alphabetic timezone
