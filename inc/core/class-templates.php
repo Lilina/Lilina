@@ -162,6 +162,20 @@ class Templates {
 	}
 
 	/**
+	 * Return the URL to a specified file
+	 *
+	 * Equivalent of {@link get_file} for URLs
+	 * @param string $file_name Filename to attempt to find
+	 * @return string|boolean Path to file found, false if none found
+	 */
+	public static function get_url($file_name) {
+		if ($path = Templates::get_file($file_name)) {
+			return Templates::path_to_url($path);
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the template root directory
 	 *
 	 * @return string
