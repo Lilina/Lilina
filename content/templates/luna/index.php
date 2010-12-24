@@ -45,6 +45,7 @@ while(has_items()):
 <p class="date">
 <?php the_author_link('before=by &after= at ') ?><a href="<?php the_link() ?>"><?php the_time('format=F d, Y h:i A') ?></a><!--<TMPL_IF category> under <TMPL_VAR category></TMPL_IF>-->
 </p>
+<?php action_bar('header=<ul class="services">&footer=</ul>'); ?>
 </div>
 </div>
 <?php

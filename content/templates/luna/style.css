@@ -66,14 +66,25 @@ img.face {
 	margin-bottom: 2em;
 }
 
-.entry .date {
+.entry .date, .entry .services {
 	font-family: "Bitstream Vera Sans", sans-serif;
 	color: grey;
 }
 
-.entry .date a {
+.entry .date a, .entry .services a {
 	text-decoration: none;
 	color: inherit;
+}
+
+.entry .services {
+	list-style-type: none;
+	overflow: hidden;
+	padding: 0;
+}
+
+.entry .services li {
+	float: left;
+	margin-right: 1em;
 }
 
 .sidebar {
