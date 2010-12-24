@@ -195,7 +195,6 @@ class Feeds {
 		$removed = apply_filters('feed-delete', $removed);
 		$cache = new DataHandler(get_option('cachedir'));
 		if($cache->load($id . '.ico') !== null) {
-			// Unlink here instead
 			$cache->delete($id . '.ico');
 		}
 
