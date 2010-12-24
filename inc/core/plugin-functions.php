@@ -364,6 +364,24 @@ function plugins_meta($plugin_file) {
 		$vals[$friendly] = $value;
 	}
 
+	// New-style docblock parsing
+	$docblock = parse_docblock($plugin_data);
+	// Use the short and long description as the name and description respectively
+	if (!empty($docblock['short'])) {
+		$vals['name'] = $docblock['short'];
+	}
+	if (!empty($docblock['long'])) {
+		$vals['description'] = $docblock['long'];
+	}
+	// Parse the docblock tags
+	if (!empty($docblock['tags']['author'])) {
+		$author = explode('<', $docblock['tags']['author']);
+		$vals['author'] = trim($author[0]);
+	}
+	if (!empty($docblock['tags']['version'])) {
+		$vals['version'] = $docblock['tags']['version'];
+	}
+
 	if (empty($vals['version']))
 		$vals['version'] = '1.0';
 
@@ -372,6 +390,59 @@ function plugins_meta($plugin_file) {
 
 	$plugin = (object) $vals;
 	return $plugin;
+}
+
+/**
+ * Parse a DocBlock into tags, short description and long description
+ *
+ * @param string $contents Contents of a PHP file
+ * @return array
+ */
+function parse_docblock($contents) {
+	$docblock = get_file_docblock($contents);
+	$docblock = preg_replace('#[ \t]*(?:\/\*\*|\*\/|\*)?[ ]{0,1}(.*)?#', '$1', $docblock);
+	$docblock = explode("\n", ltrim($docblock, "\r\n"));
+
+	$tags = array();
+	$short = '';
+	$long = '';
+	$done_short = false;
+	$line_number = 0;
+
+	foreach ($docblock as $line) {
+		$line_number++;
+
+		if (strpos($line, "@") === 0) {
+			list($key, $value) = explode(" ", $line, 2);
+			$key = substr($key, 1);
+			$tags[$key] = trim($value);
+		}
+		else {
+			if (empty($line) && !$done_short) {
+				$done_short = true;
+			}
+			if (!$done_short && $line_number < 3) {
+				$short .= $line;
+			}
+			else {
+				$long .= $line;
+			}
+		}
+	}
+	return array('tags' => $tags, 'short' => $short, 'long' => $long);
+}
+
+function get_file_docblock($contents) {
+	$tokens = token_get_all($contents);
+	foreach ($tokens as $token) {
+		if (($token[0] == T_OPEN_TAG) || ($token[0] == T_WHITESPACE)) {
+			continue;
+		} elseif ($token[0] == T_DOC_COMMENT) {
+			return $token[1];
+		} else {
+			return '';
+		}
+	}
 }
 
 /**
