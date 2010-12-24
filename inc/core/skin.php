@@ -355,13 +355,19 @@ function the_feed_url() {
 /**
  * @todo Document
  */
-function get_the_feed_favicon() {
+function get_the_feed_favicon($feed = null) {
 	global $item;
-	$feed = Feeds::get_instance()->get($item->feed_id);
+	if ($feed === null) {
+		$feed = Feeds::get_instance()->get($item->feed_id);
+	}
 	$icon = $feed['icon'];
+	// New favicons
+	if ($icon === true) {
+		$icon = get_option('baseurl') . 'lilina-favicon.php?feed=' . $feed['id'];
+	}
 	if(!$icon)
 		$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
-	return apply_filters( 'the_feed_favicon', $icon, $feed, $item->feed_id );
+	return apply_filters( 'the_feed_favicon', $icon, $feed, $feed['id'] );
 	
 }
 
@@ -468,9 +474,7 @@ function list_feeds($args = '') {
 		$feeds = get_feeds();
 		usort($feeds, '_sort_feeds');
 		foreach($feeds as $feed) {
-			$icon = $feed['icon'];
-			if(!$icon)
-				$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
+			$icon = get_the_feed_favicon($feed);
 			$title = ($title_length > 0) ? shorten($feed['name'], $title_length) : $feed['name'];
 			printf($format, $feed['url'], $icon, $title, $feed['feed']);
 		}
