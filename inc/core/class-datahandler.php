@@ -149,6 +149,15 @@ class DataHandler {
 	protected function check($filename){
 		return file_exists($filename);
 	}
+
+	/**
+	 * Delete a file
+	 *
+	 * @param string $filename Unique ID
+	 */
+	public function delete($filename) {
+		return unlink($this->directory . $filename);
+	}
 }
 
 ?>
