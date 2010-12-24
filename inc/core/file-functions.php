@@ -13,9 +13,7 @@ defined('LILINA_PATH') or die('Restricted access');
  * Save options to options.data
  */
 function save_options() {
-	global $options;
-	$data = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-	return $data->save('options.data', serialize($options));
+	return Options::save();
 }
 
 /**

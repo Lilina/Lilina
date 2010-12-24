@@ -67,25 +67,6 @@ if(!defined('LOADED_SETTINGS')) {
 
 	if(!defined('LILINA_DATA_DIR'))
 		define('LILINA_DATA_DIR', LILINA_CONTENT_DIR . '/system/data/');
-
-
-	if(!isset($settings['files']))
-		$settings['files'] = array(
-			'feeds'		=> LILINA_CONTENT_DIR . '/system/config/feeds.data',
-			'options'	=> LILINA_CONTENT_DIR . '/system/config/options.data',
-			'settings'	=> LILINA_CONTENT_DIR . '/system/config/settings.php',
-			'plugins'	=> LILINA_CONTENT_DIR . '/system/config/plugins.data'
-		);
-
-	global $options;
-	$data = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-	$options = $data->load('options.data');
-	if($options !== null)
-		$options = unserialize($options);
-	else
-		$options = array();
-	if(!isset($options['cachedir']))
-		$options['cachedir'] = LILINA_CACHE_DIR;
 }
 
 
@@ -103,4 +84,5 @@ function __autoload($class_name) {
 }
 
 spl_autoload_register('__autoload');
+Options::load();
 ?>

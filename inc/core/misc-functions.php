@@ -108,12 +108,7 @@ function is_admin() {
  * @param mixed $new_value New value of <tt>$option</tt>
  */
 function update_option($option_name, $new_value) {
-	if($option_name === 'auth' || $option_name === 'baseurl' || $option_name === 'files')
-		return false;
-
-	global $options;
-	$options[$option_name] = apply_filters("update_option-$option_name", $new_value);
-	return save_options();
+	return Options::update($option_name, $new_value);
 }
 
 /**
@@ -134,27 +129,7 @@ function update_option($option_name, $new_value) {
  * @return mixed Value set for the option.
  */
 function get_option($option, $default = null) {
-	global $settings;
-	
-	/** Hardcoded settings in settings.php */
-	if($option === 'auth' || $option === 'baseurl' || $option === 'files') {
-		if(!isset($settings[$option]))
-			return false;
-		
-		if($default) {
-			if(!isset($settings[$option][$default]))
-				return false;
-			return $settings[$option][$default];
-		}
-		return $settings[$option];
-	}
-
-	/** New-style options in options.data */
-	global $options;
-	if(!isset($options[$option]))
-		return $default;
-
-	return maybe_unserialize($options[$option]);
+	return Options::get($option, $default);
 }
 
 /**
