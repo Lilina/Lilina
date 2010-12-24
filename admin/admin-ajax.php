@@ -54,7 +54,6 @@ class AdminAjax {
 	 */
 	public static function feeds_add($url, $name = '') {
 		$result = Feeds::get_instance()->add( $url, $name );
-		clear_html_cache();
 		return array('success' => 1, 'msg' => $result['msg'], 'data' => Feeds::get_instance()->get($result['id']));
 	}
 	/**
@@ -67,7 +66,6 @@ class AdminAjax {
 		if(!empty($name))
 			$data['name'] = $name;
 		$result = Feeds::get_instance()->update($feed_id, $data);
-		clear_html_cache();
 
 		return array('success' => 1, 'msg' => $result, 'data' => Feeds::get_instance()->get($feed_id));
 	}
@@ -76,7 +74,6 @@ class AdminAjax {
 	 */
 	public static function feeds_remove($feed_id) {
 		$success = Feeds::get_instance()->delete($feed_id);
-		clear_html_cache();
 		return array('success' => 1, 'msg' => $success);
 	}
 	/**

@@ -31,7 +31,6 @@ elseif(isset($_REQUEST['deactivate_plugin'])) {
 if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['_nonce'])) {
 	if(!check_nonce($_POST['_nonce']))
 		lilina_nice_die('Nonces do not match.');
-	clear_html_cache();
 
 	$updatable_options = AdminOptions::instance()->whitelisted;
 	foreach($updatable_options as $option) {

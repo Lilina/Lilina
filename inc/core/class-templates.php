@@ -42,13 +42,10 @@ class Templates {
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
 		Templates::headers();
-		$cache = new CacheHandler();
-		$cache->begin_caching($prefix . $_SERVER['REQUEST_URI']);
 		if(file_exists($current['Template Dir'] . '/' . $view_file))
 			require_once($current['Template Dir'] . '/' . $view_file);
 		else
 			require_once($current['Template Dir'] . '/index.php');
-		$cache->end_caching($prefix . $_SERVER['REQUEST_URI']);
 	}
 
 	/**

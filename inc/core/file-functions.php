@@ -59,18 +59,4 @@ function validate_file( $file, $allowed_files = '' ) {
 
 	return 0;
 }
-
-/**
- * Delete all cached HTML pages from the CacheHandler class
- *
- * @return bool
- */
-function clear_html_cache() {
-	$files = glob(get_option('cachedir') . '*.cache');
-	foreach($files as $file) {
-		if(!unlink($file)) {
-			return false;
-		}
-	}
-}
 ?>
