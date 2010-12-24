@@ -102,7 +102,6 @@ class ItemUpdater {
 		$sp->set_stupidly_fast(true);
 		$sp->set_cache_location(get_option('cachedir'));
 		//$sp->set_cache_duration(0);
-		$sp->set_favicon_handler(get_option('baseurl') . 'lilina-favicon.php');
 		$sp = apply_filters('simplepie-config', $sp);
 
 		$sp->set_feed_url($feed['feed']);

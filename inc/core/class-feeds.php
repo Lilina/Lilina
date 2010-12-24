@@ -67,7 +67,6 @@ class Feeds {
 		$feed_info->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed_info->set_stupidly_fast(true);
 		$feed_info->set_cache_location(get_option('cachedir'));
-		$feed_info->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 		$feed_info->set_feed_url($url);
 		$feed_info->init();
 		$feed_error = $feed_info->error();
