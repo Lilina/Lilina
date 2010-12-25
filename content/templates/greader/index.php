@@ -23,6 +23,7 @@ $authenticated = !!$user->identify();
 	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/reset.css" media="screen"/>
 	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/style.css" media="screen"/>
 	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/content.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="<?php template_directory(); ?>/fancybox/fancybox.css" media="screen"/>
 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
@@ -134,6 +135,10 @@ else {
 <!-- Generated in: <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
 
 <script src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
+<script src="<?php template_directory(); ?>/fancybox/fancybox.unpack.js"></script>
 <script src="<?php template_directory(); ?>/greader.js"></script>
+<script>
+	Raincoat.baseURL = '<?php echo get_option('baseurl') ?>';
+</script>
 </body>
 </html>

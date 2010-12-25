@@ -14,6 +14,14 @@ Raincoat.init = function () {
 		}
 		return false;
 	});
+	$('.item .action-bar .service-inline').fancybox({
+		'width'				: '75%',
+		'height'			: '75%',
+        'autoScale'     	: false,
+        'transitionIn'		: 'none',
+		'transitionOut'		: 'none',
+		'type'				: 'iframe'
+	});
 
 	$('.item .title-bar').css('cursor', 'pointer');
 	Raincoat.resizer();
@@ -214,6 +222,15 @@ Raincoat.keyboardWatcher = function (e) {
 	return false;
 };
 Raincoat.showHelp = function () {
+	$.fancybox({
+		'href': Raincoat.baseURL + '?method=raincoat_help',
+		'width': '75%',
+		'height': '75%',
+	    'autoScale': false,
+	    'transitionIn': 'none',
+		'transitionOut': 'none',
+		'type': 'iframe'
+	});
 	
 };
 Raincoat.resizer = function () {
