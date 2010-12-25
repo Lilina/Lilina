@@ -33,8 +33,6 @@ $authenticated = !!$user->identify();
 </head>
 <body class="river-page">
 
-<div id="logo">&nbsp;</div>
-
 <div id="navigation">
 	<span class="site-name"><?php template_sitename() ?></span>
 <?php
@@ -56,13 +54,15 @@ else {
 <div id="main">
 	<div id="wrapper">
 		<div id="content">
-			<h1 id="page-title"><?php /*the_page_title();*/ ?>Hello</h1>
+			<h1 id="page-title"><?php /*the_page_title();*/ ?>Your Items</h1>
 			<div id="content-quicklinks"><?php /* Nothing yet */ ?></div>
-			<ul>
+			<ul id="items">
 <?php
 // We call it with false as a parameter to avoid incrementing the item number
 if(has_items()) {
 		while(has_items()): the_item();
+			$timestamp = get_the_time();
+			$midnight = (time() - (time() % 86400));
 ?>
 				<li class="feed-<?php the_feed_id(); ?> item" id="item-<?php the_id(); ?>">
 					<div class="title-bar">
@@ -74,15 +74,22 @@ if(has_items()) {
 						</div>
 						<div class="secondary-section">
 							<span class="feed"><?php the_feed_name() ?></span>
-							<span class="date"><?php the_time('format=l d F, Y H:i'); ?></span>
+							<span class="date"><?php 
+							if ($timestamp < $midnight) {
+								echo date('M n, Y', $timestamp);
+							}
+							else {
+								echo date('h:i A', $timestamp);
+							}
+							?></span>
 						</div>
 						<div class="clearer"></div>
 					</div>
 					<div class="content" id="content-<?php the_id(); ?>">
 						<?php the_content(); ?>
-					</div>
+					</div>	
 					<div class="action-bar">
-						<?php action_bar('before=&after= | '); ?>
+						<?php action_bar('header=&footer=&before=&after='); ?>
 						<?php the_enclosure(); ?>
 					</div>
 				</li><?php
