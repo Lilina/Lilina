@@ -115,12 +115,19 @@ a {
 	.item .title-bar .title {
 		color: #000;
 		float: left;
+		max-height: 31px;
+		overflow: hidden;
+		position: relative;
+		background: #fff;
+		z-index: 10;
 	}
 	.item .title-bar .excerpt, .item .title-bar .read {
 		height: 1.3em;
 		position: absolute;
+		top: 1.3em;
 		overflow: hidden;
 		display: none;
+		z-index: 9;
 	}
 	.item .title-bar .read {
 		display: block;
