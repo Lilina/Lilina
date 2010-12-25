@@ -26,10 +26,6 @@ Raincoat.init = function () {
 	$('.item .title-bar').css('cursor', 'pointer');
 	Raincoat.resizer();
 
-	if (window.location.hash.search('#item-') === 0 && $(window.location.hash).length !== 0) {
-		Raincoat.expand(window.location.hash);
-	}
-
 	//$(window).bind('keydown', Raincoat.keyboardWatcher);
 	$(window).bind('keypress', Raincoat.keyboardWatcher);
 	$(window).bind('resize', Raincoat.resizer);
