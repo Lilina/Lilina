@@ -47,7 +47,7 @@ class Instapaper {
 			Instapaper::error(sprintf(_r('Please set your username in the <a href="%s">settings</a>.', 'instapaper'), get_option('baseurl') . 'admin/settings.php'));
 
 
-		if(empty($_GET['id'])) {
+		if(empty($_GET['item'])) {
 			Instapaper::error(_r('No item ID specified.', 'instapaper'));
 		}
 
@@ -60,7 +60,7 @@ class Instapaper {
 	}
 
 	protected static function submit() {
-		$id = $_GET['id'];
+		$id = $_GET['item'];
 		$item = Items::get_instance()->get_item($id);
 
 		if ( false === $item ) {
