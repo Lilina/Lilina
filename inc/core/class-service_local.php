@@ -49,6 +49,14 @@ abstract class Service_Local implements Service {
 	protected $type = 'inline';
 
 	/**
+	 * Nonce action
+	 *
+	 * Defaults to the name of the service
+	 * @var string
+	 */
+	protected $nonce;
+
+	/**
 	 * Method name
 	 * @var string
 	 */
@@ -65,7 +73,11 @@ abstract class Service_Local implements Service {
 		if (empty($this->label)) {
 			$this->label = sprintf(_r('Send to %s'), $this->name);
 		}
-		$this->action = get_option('baseurl') . '?method=' . $this->method . '&item={hash}';
+		if (empty($this->nonce)) {
+			$this->nonce = $this->name;
+		}
+		$nonce = generate_nonce($this->nonce);
+		$this->action = get_option('baseurl') . '?method=' . $this->method . '&item={hash}&_nonce=' . $nonce;
 	}
 
 	public function action() {
