@@ -8,36 +8,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-/**
- * generate_nonce() - Generates nonce
- *
- * Uses the current time
- * @global array Need settings for user and password
- * @param string $nonce Supplied nonce
- * @return bool True if nonce is equal, false if not
- */
-function generate_nonce() {
-	$user_settings = get_option('auth');
-	$time = ceil(time() / 43200);
-	return md5($time . $user_settings['user'] . $user_settings['pass']);
-}
-
-/**
- * check_nonce() - Checks whether supplied nonce matches current nonce
- * @global array Need settings for user and password
- * @param string $nonce Supplied nonce
- * @return bool True if nonce is equal, false if not
- */
-function check_nonce($nonce) {
-	$user_settings = get_option('auth');
-	$time = ceil(time() / 43200);
-	$current_nonce = md5($time . $user_settings['user'] . $user_settings['pass']);
-	if($nonce !== $current_nonce) {
-		return false;
-	}
-	return true;
-}
-
 
 function admin_header($title, $parent_file = false) {
 	$self = preg_replace('|^.*/admin/|i', '', $_SERVER['PHP_SELF']);

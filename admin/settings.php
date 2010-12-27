@@ -29,7 +29,7 @@ elseif(isset($_REQUEST['deactivate_plugin'])) {
 
 
 if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['_nonce'])) {
-	if(!check_nonce($_POST['_nonce']))
+	if(!check_nonce('settings', $_POST['_nonce']))
 		lilina_nice_die('Nonces do not match.');
 
 	$updatable_options = AdminOptions::instance()->whitelisted;
@@ -126,7 +126,7 @@ if(!empty($_GET['deactivated']))
 	<?php do_action('options-form'); ?>
 	<?php AdminOptions::instance()->do_sections(); ?>
 	<input type="hidden" name="action" value="settings" />
-	<input type="hidden" name="_nonce" value="<?php echo generate_nonce() ?>" />
+	<input type="hidden" name="_nonce" value="<?php echo generate_nonce('settings') ?>" />
 	<p class="buttons"><button type="submit" class="positive"><?php _e('Save') ?></button></p>
 </form>
 <form action="settings.php" method="post">

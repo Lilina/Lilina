@@ -348,4 +348,42 @@ function timezone_get_gmt_offset($timezone) {
 		return $offset;
 	}
 }
+
+/**
+ * Generate a nonce
+ *
+ * Nonces are used to avoid CSRFs, by generating a time-, user- and
+ * action-dependent token.
+ *
+ * The implementation of these nonces is based on WordPress' implementation.
+ *
+ * @param string $action The current action taking place
+ * @return string Nonce string
+ */
+function generate_nonce($action) {
+	$user_settings = get_option('auth');
+	$time = ceil(time() / 43200);
+	return sha1($time . $action . $user_settings['user']);
+}
+
+/**
+ * Check validity of submitted nonce
+ *
+ * @param string $action The current action taking place
+ * @param string $nonce Supplied nonce
+ * @return bool True if nonce is equal, false if not
+ */
+function check_nonce($action, $nonce) {
+	$user_settings = get_option('auth');
+	$time = ceil(time() / 43200);
+	$current_nonce = sha1($time . $action . $user_settings['user']);
+	if ($nonce === $current_nonce) {
+		return true;
+	}
+	$old_nonce = sha1(($time - 1) . $action . $user_settings['user']);
+	if ($nonce === $old_nonce) {
+		return true;
+	}
+	return false;
+}
 ?>
