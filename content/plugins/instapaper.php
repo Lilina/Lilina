@@ -14,6 +14,7 @@ class InstapaperService extends Service_Local {
 		$this->description = 'Use the Instapaper service';
 		$this->label = 'Read Later';
 		$this->method = 'instapaper';
+		$this->nonce = 'instapaper-submit';
 		parent::__construct();
 	}
 }
@@ -36,8 +37,6 @@ class Instapaper {
 	 * instapaper method
 	 */
 	public static function page() {
-		require_once(LILINA_PATH . '/admin/includes/common.php');
-
 		$user = new User();
 		if(!$user->identify()) {
 			Instapaper::error(sprintf(_r('Please <a href="%s">log in</a> first', 'instapaper'), get_option('baseurl') . 'admin/login.php'));
@@ -71,7 +70,7 @@ class Instapaper {
 		if ( empty( $user ) )
 			throw new Exception(sprintf(_r('Please set your username and password in the <a href="%s">settings</a>.', 'instapaper'), get_option('baseurl') . 'admin/settings.php'));
 
-		if(!check_nonce($_GET['_nonce']))
+		if(!check_nonce('instapaper-submit', $_GET['_nonce']))
 			throw new Exception(_r('Nonces did not match. Try again.', 'instapaper'));
 
 		$data = array(
