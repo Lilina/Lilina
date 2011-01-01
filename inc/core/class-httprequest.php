@@ -286,7 +286,7 @@ class HTTPRequest_cURL {
 	 *
 	 * @return boolean True if the transport is valid, false otherwise.
 	 */
-	public function test() {
+	public static function test() {
 		return (function_exists('curl_init') && function_exists('curl_exec'));
 	}
 }
@@ -407,7 +407,7 @@ class HTTPRequest_fsockopen {
 	 *
 	 * @return boolean True if the transport is valid, false otherwise.
 	 */
-	public function test() {
+	public static function test() {
 		return function_exists('fsockopen');
 	}
 }
