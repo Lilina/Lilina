@@ -64,7 +64,8 @@ class Installer {
 		global $options;
 		$options['sitename'] = $sitename;
 
-		if(!save_options()) {
+		require_once(LILINA_INCPATH . '/core/class-options.php');
+		if(!Options::save()) {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
 			return false;
 		}

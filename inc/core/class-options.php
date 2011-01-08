@@ -25,13 +25,21 @@ class Options {
 	 */
 	protected static $handler;
 
+	public static function handler() {
+		if (is_null(self::$handler)) {
+			self::$handler = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
+		}
+	
+		return self::$handler;
+	}
+
 	/**
 	 * Load options
 	 */
 	public static function load() {
 		self::$handler = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
 
-		self::$options = self::$handler->load('options.data');
+		self::$options = self::handler()->load('options.data');
 		if(self::$options !== null)
 			self::$options = unserialize(self::$options);
 		else
@@ -109,7 +117,7 @@ class Options {
 	 * Serialize the options and save them using DataHandler
 	 */
 	public static function save() {
-		return self::$handler->save('options.data', serialize(self::$options));
+		return self::handler()->save('options.data', serialize(self::$options));
 	}
 }
 
