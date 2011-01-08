@@ -76,7 +76,7 @@ function has_items() {
 
 		$lilina_items = Items::get_instance();
 		$lilina_items->init();
-		$conditions = apply_filters('return_items-conditions', array('time' => (time() - 186400)));
+		$conditions = apply_filters('return_items-conditions', array('time' => (time() - get_offset())));
 		$lilina_items->set_conditions($conditions);
 		$lilina_items->filter();
 	}
