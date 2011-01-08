@@ -32,7 +32,6 @@ class Installer {
 	public function install($sitename, $username, $password) {
 		global $installer;
 		require_once(LILINA_INCPATH . '/core/version.php');
-		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 
 		$settings = $this->generate_default_settings($sitename, $username, $password);
 		if( !is_writable(LILINA_PATH . '/content/system/config/') || !($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+'))) {
@@ -64,13 +63,11 @@ class Installer {
 		global $options;
 		$options['sitename'] = $sitename;
 
-		require_once(LILINA_INCPATH . '/core/class-options.php');
 		if(!Options::save()) {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
 			return false;
 		}
 
-		require_once(LILINA_INCPATH . '/core/class-user.php');
 		$user = new User($username, $password);
 		$user->identify();
 	?>

@@ -39,6 +39,15 @@ if(lilina_is_installed()) {
 	}
 }
 
+function __autoload($class_name) {
+	$class_file = strtolower($class_name) . '.php';
+	if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
+		require_once(LILINA_INCPATH . '/core/class-' . $class_file);
+	}
+}
+
+spl_autoload_register('__autoload');
+
 global $installer;
 $installer = new Installer();
 
