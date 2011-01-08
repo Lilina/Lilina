@@ -132,4 +132,4 @@ class Resyndicate {
 	}
 }
 
-Controller:registerMethod('feed', array('Resyndicate', 'dispatch'));
+Controller::registerMethod('feed', array('Resyndicate', 'dispatch'));
