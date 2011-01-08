@@ -96,7 +96,7 @@ function get_offset($as_hours = false) {
 	if(!isset($offset_time)) {
 		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
 			if( -1 == $_REQUEST['hours'])
-				$offset_time = 0;
+				$offset_time = time();
 			else
 				$offset_time = (int) $_REQUEST['hours'] * 60 * 60;
 		}
