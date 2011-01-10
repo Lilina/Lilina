@@ -1,8 +1,10 @@
 <?php
 /**
- * @todo Move to admin/login.php
+ * Login handler
+ *
  * @author Ryan McCue <cubegames@gmail.com>
  * @package Lilina
+ * @subpackage Administration
  * @version 1.0
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
