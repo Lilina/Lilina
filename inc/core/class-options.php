@@ -104,11 +104,22 @@ class Options {
 	 * @param mixed $new_value New value of <tt>$option</tt>
 	 */
 	public static function update($option_name, $new_value) {
+		self::lazy_update($option_name, $new_value);
+		return self::save();
+	}
+
+	/**
+	 * Update the value of an option, but do not save it
+	 *
+	 * @see Options::update()
+	 * @param string $option Option key to change
+	 * @param mixed $new_value New value of <tt>$option</tt>
+	 */
+	public static function lazy_update($option_name, $new_value) {
 		if($option_name === 'auth' || $option_name === 'baseurl' || $option_name === 'files')
 			return false;
 
 		self::$options[$option_name] = apply_filters("update_option-$option_name", $new_value);
-		return self::save();
 	}
 
 	/**
