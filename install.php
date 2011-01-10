@@ -51,6 +51,16 @@ spl_autoload_register('__autoload');
 global $installer;
 $installer = new Installer();
 
+/**#@+
+ * Dummy function, for use before Lilina is installed.
+ */
+if (!function_exists('apply_filters')) {
+	function apply_filters($name, $value) {
+		return $value;
+	}
+}
+/**#@-*/
+
 /**
  * upgrade() - Run upgrade processes on supplied data
  *
@@ -215,49 +225,40 @@ function upgrade() {
 }
 
 function default_options() {
-	global $options;
-	$options['offset']					= 0;
-	$options['encoding']				= 'utf-8';
-	$options['template'] = 'default';
-	$options['locale'] = 'en';
-	$options['timezone'] = 'UTC';
-	$options['sitename'] = 'Lilina News Aggregator';
-	$options['updateon'] = 'pageview';
-	$options['feeds_version'] = LILINA_FEEDSTORAGE_VERSION;
+	Options::lazy_update('offset', 0);
+	Options::lazy_update('encoding', 'utf-8');
+	Options::lazy_update('template', 'default');
+	Options::lazy_update('locale', 'en');
+	Options::lazy_update('timezone', 'UTC');
+	Options::lazy_update('sitename', 'Lilina News Aggregator');
+	Options::lazy_update('feeds_version', LILINA_FEEDSTORAGE_VERSION);
 }
 function new_options_297() {
-	global $options;
-	$options['offset']					= 0;
-	$options['encoding']				= 'utf-8';
-	if(empty($options['template']))
-		$options['template'] = 'default';
-	if(empty($options['locale']))
-		$options['locale'] = 'en';
+	Options::lazy_update('offset', 0);
+	Options::lazy_update('encoding', 'utf-8');
+	if (!Options::get('template', false))
+		Options::lazy_update('template', 'default');
+	if (!Options::get('locale', false))
+		Options::lazy_update('locale', 'en');
 }
 function new_options_302() {
-	global $options;
-	$options['timezone'] = 'UTC';
+	Options::lazy_update('timezone', 'UTC');
 }
 /**
  * It appears we missed this at some point
  */
 function new_options_339() {
-	global $options;
-	if(empty($options['encoding']))
-		$options['encoding'] = 'utf-8';
+	if (!Options::get('encoding', false))
+		Options::lazy_update('encoding', 'utf-8');
 }
 function new_options_368() {
-	global $options, $settings;
-	if(empty($options['sitename'])) {
+	global $settings;
+	if (!Options::get('sitename', false)) {
 		if(!empty($settings['sitename']))
-			$options['sitename'] = $settings['sitename'];
+			Options::lazy_update('sitename', $settings['sitename']);
 		else
-			$options['sitename'] = 'Lilina News Aggregator';
+			Options::lazy_update('sitename', 'Lilina News Aggregator');
 	}
-}
-function new_options_480() {
-	global $options;
-	$options['updateon'] = 'pageview';
 }
 
 function create_settings_file() {

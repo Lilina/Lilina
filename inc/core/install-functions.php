@@ -30,7 +30,6 @@ class Installer {
 	 * @return bool True if the installer succeeded, false otherwise
 	 */
 	public function install($sitename, $username, $password) {
-		global $installer;
 		require_once(LILINA_INCPATH . '/core/version.php');
 
 		$settings = $this->generate_default_settings($sitename, $username, $password);
@@ -60,8 +59,7 @@ class Installer {
 
 		
 		default_options();
-		global $options;
-		$options['sitename'] = $sitename;
+		Options::lazy_update('sitename', $sitename);
 
 		if(!Options::save()) {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
