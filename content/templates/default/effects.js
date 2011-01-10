@@ -99,7 +99,7 @@ $(document).ready(function() {
 	/* Ajax loading if no items are found */
 	$('.river-page #viewallitems').click(function() {
 		$('#main').load('index.php?hours=-1 #main', {}, function () {
-			setup_items();
+			Items.setup();
 		});
 		
 		return false;
