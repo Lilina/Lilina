@@ -100,7 +100,7 @@ class Feeds {
 			'id'	=> $id,
 			'name'	=> $name,
 			'cat'	=> $cat,
-			'icon'	=> $this->discover_favicon($feed_info, $id),
+			'icon'	=> self::discover_favicon($feed_info, $id),
 		);
 
 		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url, $feed_info);
@@ -116,7 +116,7 @@ class Feeds {
 	 * @param SimplePie $feed SimplePie object to retrieve logo for
 	 * @return string URL to feed icon
 	 */
-	protected function discover_favicon($feed, $id) {
+	protected static function discover_favicon($feed, $id) {
 		if ($return = $feed->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'icon')) {
 			$favicon = SimplePie_Misc::absolutize_url($return[0]['data'], $feed->get_base($return[0]));
 		}
