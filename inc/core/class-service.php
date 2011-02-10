@@ -41,6 +41,7 @@ interface Service {
 	 *    label - Label to be used in the front-end
 	 *    type - One of 'inline' (shown in lightbox, etc.) or 'external'
 	 *    action - URL of the service. Tokens should already be replaced as per {@link Services::replace}
+	 *    icon - Icon for use in interface. Size should be 16px x 16px
 	 *
 	 * @return array Exported version of the service
 	 */

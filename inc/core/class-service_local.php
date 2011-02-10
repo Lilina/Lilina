@@ -57,6 +57,13 @@ abstract class Service_Local implements Service {
 	protected $nonce;
 
 	/**
+	 * Icon for use in UI
+	 *
+	 * Should be 16px x 16px
+	 */
+	protected $icon = false;
+
+	/**
 	 * Method name
 	 * @var string
 	 */
@@ -94,7 +101,8 @@ abstract class Service_Local implements Service {
 			'description' => $this->description,
 			'label' => $this->label,
 			'type' => $this->type,
-			'action' => $this->action
+			'action' => $this->action,
+			'icon' => $this->icon
 		);
 	}
 }
