@@ -381,7 +381,38 @@ class Items {
 	 *
 	 */
 	public function filter() {
+		if (isset($this->conditions['after'])) {
+			$ids = array_keys($this->items);
+			$pos = array_search($this->conditions['after'], $keys);
+			if ($pos !== false)
+				$this->items = array_slice($array, $pos + 1);
+		}
+		if (isset($this->conditions['until'])) {
+			$ids = array_keys($this->items);
+			$pos = array_search($this->conditions['until'], $keys);
+			if ($pos !== false)
+				$this->items = array_slice($array, 0, $pos);
+		}
+
 		$this->items = array_filter($this->items, array($this, 'filter_callback'));
+
+		if (isset($this->conditions['start']) || isset($this->conditions['limit'])) {
+			if (!empty($this->conditions['start'])) {
+				$start = $this->conditions['start'];
+			}
+			else {
+				$start = 0;
+			}
+
+			if (!empty($this->conditions['limit'])) {
+				$limit = $this->conditions['limit'];
+			}
+			else {
+				$limit = null;
+			}
+
+			$this->items = array_slice($this->items, $start, $limit);
+		}
 	}
 
 	protected function filter_callback($item) {
