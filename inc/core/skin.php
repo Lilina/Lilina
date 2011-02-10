@@ -64,8 +64,11 @@ function template_footer(){
  * @todo Document
  * @return boolean Are items available?
  */
-function has_items() {
+function has_items($conditions = null) {
 	global $lilina_items;
+	if ($conditions === null) {
+		$conditions = apply_filters('return_items-conditions', array('time' => (time() - get_offset())));
+	}
 
 	if(count(Feeds::get_instance()->getAll()) === 0)
 		return false;
@@ -76,7 +79,6 @@ function has_items() {
 
 		$lilina_items = Items::get_instance();
 		$lilina_items->init();
-		$conditions = apply_filters('return_items-conditions', array('time' => (time() - get_offset())));
 		$lilina_items->set_conditions($conditions);
 		$lilina_items->filter();
 	}
@@ -476,7 +478,7 @@ function list_feeds($args = '') {
 		foreach($feeds as $feed) {
 			$icon = get_the_feed_favicon($feed);
 			$title = ($title_length > 0) ? shorten($feed['name'], $title_length) : $feed['name'];
-			printf($format, $feed['url'], $icon, $title, $feed['feed']);
+			printf($format, $feed['url'], $icon, $title, $feed['feed'], $feed['id']);
 		}
 	}
 }
