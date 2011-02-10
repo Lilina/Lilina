@@ -53,7 +53,11 @@ class LilinaAPI {
 		$item->services = Services::get_for_item($item);
 		return $item;
 	}
-	public static function items_getList($start = 0, $limit = null) {
+	public static function items_getList($start = 0, $limit = null, $conditions = array()) {
+		Items::get_instance()->init();
+		if (!empty($conditions))
+			Items::get_instance()->set_conditions($conditions);
+		Items::get_instance()->filter();
 		$items = Items::get_instance()->retrieve();
 		if($limit == null)
 			return $items;
