@@ -15,7 +15,7 @@
  * @package Lilina
  * @subpackage Services
  */
-abstract class Service_Local implements Service {
+abstract class Lilina_Service_Local implements Lilina_Service {
 	/**
 	 * Name of the service
 	 *

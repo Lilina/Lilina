@@ -16,7 +16,7 @@
  * @package Lilina
  * @subpackage Services
  */
-interface Service {
+interface Lilina_Service {
 	/**
 	 * Retrieve the action URL
 	 *

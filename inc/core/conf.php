@@ -77,6 +77,15 @@ if(!defined('LOADED_SETTINGS')) {
  * @param string $class_name Class called by the user
  */
 function __autoload($class_name) {
+	if (strpos($class_name, '_') !== false) {
+		$file = str_replace('_', '/', $class_name);
+		$file = LILINA_INCPATH . '/core/' . $file . '.php';
+		if (file_exists($file)) {
+			require_once($file);
+		}
+		return;
+	}
+
 	$class_file = strtolower($class_name) . '.php';
 	if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
 		require_once(LILINA_INCPATH . '/core/class-' . $class_file);

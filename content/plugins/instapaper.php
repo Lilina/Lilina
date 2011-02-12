@@ -8,13 +8,14 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-class InstapaperService extends Service_Local {
+class InstapaperService extends Lilina_Service_Local {
 	public function __construct() {
 		$this->name = 'Instapaper';
 		$this->description = 'Use the Instapaper service';
 		$this->label = 'Read Later';
 		$this->method = 'instapaper';
 		$this->nonce = 'instapaper-submit';
+		$this->icon = 'http://www.instapaper.com/images/press-kit/icon-16.png';
 		parent::__construct();
 	}
 }
