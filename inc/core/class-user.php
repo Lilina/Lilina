@@ -38,21 +38,18 @@ class User {
 	/**
 	 * Constructor for the class
 	 */
-	public function __construct($user = false, $password = false, $domain = false, $path = null) {
+	public function __construct($user = false, $password = false) {
 		if(!$user)
 			$user = isset($_POST['user']) ? $_POST['user'] : false;
 
 		if(!$password)
 			$password = isset($_POST['pass']) ? $_POST['pass'] : false;
 
-		if($path === null)
-			$path = preg_replace('|https?://[^/]+|i', '', get_option('baseurl') );
-
 		$this->user = $user;
 		$this->raw = $password;
 		$this->password = $this->hash($password);
-		$this->domain = $domain;
-		$this->path = $path;
+		$this->domain = apply_filters('user.cookie.domain', parse_url( get_option('baseurl'), PHP_URL_HOST ));
+		$this->path   = apply_filters('user.cookie.path', parse_url( get_option('baseurl'), PHP_URL_PATH ));
 	}
 
 	/**
@@ -91,7 +88,8 @@ class User {
 		if(strlen(get_option('auth', 'pass')) === 32)
 			return hash('md5', $password);
 		
-		return hash('sha512', get_option('salt') . $password);
+		$hash = new PasswordHash(8, false);
+		return $hash->CheckPassword($password, get_option('auth', 'pass'));
 	}
 
 	/**
@@ -109,7 +107,8 @@ class User {
 		if($this->password !== get_option('auth', 'pass'))
 			return false;
 
-		$this->new_password = hash('sha512', get_option('salt') . $this->raw);
+		$hash = new PasswordHash(8, false);
+		$this->new_password = $hash->HashPassword($this->raw);
 		return true;
 	}
 
@@ -159,5 +158,10 @@ class User {
 	public function destroy_cookies() {
 		setcookie ( 'lilina_user', '', time() - 31536000, $this->path, $this->domain );
 		setcookie ( 'lilina_pass', '', time() - 31536000, $this->path, $this->domain );
+	}
+
+	public static function create($user, $password) {
+		
+		return new User($user, $password);
 	}
 }
