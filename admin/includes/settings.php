@@ -70,18 +70,56 @@ function available_templates() {
 		closedir($handle);
 	}
 	foreach($list as $the_template) {
-		$temp_data = implode('', file(LILINA_CONTENT_DIR . '/templates/' . $the_template . '/style.css'));
+		/*$temp_data = implode('', file(LILINA_CONTENT_DIR . '/templates/' . $the_template . '/style.css'));
 		preg_match("|Name:(.*)|i", $temp_data, $real_name);
 		preg_match("|Description:(.*)|i", $temp_data, $desc);
 		$templates[]	= array(
 								'name' => $the_template,
 								'real_name' => trim($real_name[1]),
 								'description' => trim($desc[1])
-								);
+								);*/
+		$meta = template_meta(LILINA_CONTENT_DIR . '/templates/' . $the_template . '/style.css');
+		$meta->slug      = $the_template;
+		$meta->directory = LILINA_CONTENT_DIR . '/templates/' . $the_template;
+		$templates[$the_template] = $meta;
 	}
 	return $templates;
 }
 
+function template_meta($filename) {
+	$template_data = implode('', file($filename));
+	$headers = array(
+		'name' => 'Name',
+		'uri' => 'URI',
+		'description' => 'Description',
+		'author' => 'Author',
+		'author_uri' => 'Author URI',
+		'version' => 'Version',
+		'min_version' => 'Min Version',
+	);
+	$headers = apply_filters('template_headers', $headers);
+	$vals = array();
+
+	foreach ( $headers as $friendly => $regex ) {
+		$value = null;
+
+		$success = preg_match('|' . preg_quote($regex, '|') . ':(.*)|i', $template_data, $value);
+		if (!$success) {
+			$value = array(1 => '');
+		}
+
+		$value = trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $value[1]));
+		$vals[$friendly] = $value;
+	}
+
+	$defaults = array(
+		'name' => 'Unnamed Template',
+		'description' => 'This template is missing a description!'
+	);
+
+	$template = (object) $vals;
+	return $template;
+}
 
 /**
  * Activate a plugin

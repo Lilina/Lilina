@@ -245,3 +245,17 @@ button.negative, .button.negative {
 	line-height: 1.4em;
 	padding: 10px;
 }
+
+#template-list {
+	overflow: hidden;
+	width: 100%;
+}
+	#template-list .template {
+		width: 30%;
+		float: left;
+		margin-right: 3.3%;
+		height: 250px;
+	}
+		#template-list img {
+			width: 180px;
+		}

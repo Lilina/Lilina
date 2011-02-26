@@ -11,7 +11,18 @@
 require_once('admin.php');
 require_once(LILINA_PATH . '/admin/includes/settings.php');
 do_action('register_options');
+$available = available_templates();
 
+if (isset($_POST['activate_template'])) {
+	$new = $_POST['activate_template'];
+	if (isset($available[$new])) {
+		update_option('template', $new);
+
+		header('HTTP/1.1 302 Found', true, 302);
+		header('Location: ' . get_option('baseurl') . 'admin/settings.php?template_changed=1');
+		die();
+	}
+}
 if(isset($_REQUEST['activate_plugin'])) {
 	activate_plugin($_REQUEST['activate_plugin']);
 	
@@ -57,6 +68,9 @@ if(!empty($_GET['activated']))
 
 if(!empty($_GET['deactivated']))
 	echo '<div class="message"><p>' . _r('Plugin <strong>deactivated</strong>.') . '</p></div>';
+
+if(!empty($_GET['template_changed']))
+	echo '<div class="message"><p>' . _r('Template changed.') . '</p></div>';
 ?>
 
 <h1><?php _e('Settings'); ?></h1>
@@ -75,20 +89,6 @@ if(!empty($_GET['deactivated']))
 	</fieldset>
 	<fieldset id="views">
 		<legend><?php _e('Viewing Settings'); ?></legend>
-		<div class="row">
-			<label for="template"><?php _e('Template'); ?>:</label>
-			<select id="template" name="template">
-				<?php
-				foreach(available_templates() as $template) {
-					echo '<option value="', $template['name'];
-					if($template['name'] === get_option('template')) {
-						echo '" selected="selected';
-					}
-					echo '">', $template['real_name'], '</option>';
-				}
-				?>
-			</select>
-		</div>
 		<div class="row">
 			<label for="locale"><?php _e('Language') ?></label>
 			<select id="locale" name="locale">
@@ -128,6 +128,47 @@ if(!empty($_GET['deactivated']))
 	<input type="hidden" name="action" value="settings" />
 	<input type="hidden" name="_nonce" value="<?php echo generate_nonce('settings') ?>" />
 	<p class="buttons"><button type="submit" class="positive"><?php _e('Save') ?></button></p>
+</form>
+<form action="settings.php" method="post">
+	<fieldset id="template">
+		<legend><?php _e('Template'); ?></legend>
+		<div id="template-list">
+<?php
+			foreach ($available as $key => $template) {
+				$class = 'template';
+				if ($template->slug === get_option('template')) {
+					$class .= ' current';
+				}
+?>
+				<div class="<?php echo $class ?>">
+<?php
+					if (file_exists($template->directory . '/screenshot.png')) {
+?>
+						<img src="<?php echo $template->directory ?>/screenshot.png" width="180" />
+<?php
+					}
+
+					if (!empty($template->author_uri)) {
+						$author = '<a href="' . $template->author_uri . '">' . $template->author . '</a>';
+					}
+					else {
+						$author = $template->author;
+					}
+
+					$title = sprintf(_r('%1$s %2$s by %3$s'), $template->name, $template->version, $author);
+					if ($template->slug === get_option('template')) {
+						$title .= ' (Current)';
+					}
+?>
+					<h2><?php echo $title ?></h2>
+					<p><?php echo $template->description ?></p>
+					<button type="submit" name="activate_template" value="<?php echo $template->slug ?>">Activate</button>
+				</div>
+<?php
+			}
+?>
+		</div>
+	</fieldset>
 </form>
 <form action="settings.php" method="post">
 	<fieldset id="plugins">
