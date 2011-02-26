@@ -40,15 +40,21 @@ class Gregarius_Import extends OPML_Import {
 	}
 	protected function import_feeds($feeds) {
 		foreach ($feeds as $feed) {
-			$result = Feeds::get_instance()->add($feed->url, $feed->title);
-			echo '<li>' . $result['msg'] . '</li>';
-			$this->old[$feed->id] = $result['id'];
+			try {
+				$result = Feeds::get_instance()->add($feed->url, $feed->title);
+				echo '<li>' . $result['msg'] . '</li>';
+				$this->old[$feed->id] = $result['id'];
+			}
+			catch (Exception $e) {
+				$id = sha1($feed->url);
+				$this->old[$feed->id] = $id;
+			}
 		}
 		return $feeds;
 	}
 	protected function import_item($old) {
 		$new = $this->convert_item($old);
-		Items::get_instance()->check_item($new);
+		return Items::get_instance()->check_item($new);
 	}
 	protected function convert_item($old) {
 		$new = (object) array(
@@ -138,11 +144,14 @@ class Gregarius_Import extends OPML_Import {
 			$items = $items->fetchAll(PDO::FETCH_OBJ);
 
 			echo '<p>' . _r('Importing items&hellip;') . '</p>';
+			$count = 0;
 			foreach ($items as $item) {
-				$this->import_item($item);
+				if ($this->import_item($item)) {
+					$count++;
+				}
 			}
 			Items::get_instance()->save_cache();
-			printf('<p>' . _r('Done! Imported %d items') . '</p>', count($items));
+			printf('<p>' . _r('Done! Imported %d items.') . '</p>', $count);
 		}
 		catch (Exception $e) {
 			$this->error($e);
