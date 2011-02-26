@@ -48,7 +48,7 @@ class Gregarius_Import extends OPML_Import {
 	}
 	protected function import_item($old) {
 		$new = $this->convert_item($old);
-		var_dump(Items::get_instance()->check_item($new));
+		Items::get_instance()->check_item($new);
 	}
 	protected function convert_item($old) {
 		$new = (object) array(
