@@ -10,43 +10,37 @@ Author URI: http://ryanmccue.info
 License: GPL
 */
 
-// Front-End
-/**
- * Add the link to the item actions
- *
- * @param array $actions Previous actions
- * @return array Array with Press It added.
- */
-function pressit_button($actions) {
-	$wp_url = get_option('pressit_wpurl', '');
-	if(empty($wp_url))
-		return $actions;
-
-	$wp_url .= 'wp-admin/press-this.php?u=%1$s&t=%2$s&s=%3$s';
-	$press_url = sprintf($wp_url, urlencode(get_the_link()), urlencode(get_the_title()), urlencode(get_the_summary()));
-	$actions[] = '<a href="' . $press_url  . '" class="pressit_button">Press It</a>';
-	return $actions;
+class PressItService implements Service {
+	public function __construct() {
+		$wp_url = get_option('pressit_wpurl', '');
+		$action = $wp_url . 'wp-admin/press-this.php?u={permalink}&t={title}&s={summary}';
+		$this->options = array(
+			'name' => _r('Press It', 'pressit'),
+			'description' => _r('Post an item to your WordPress blog', 'pressit'),
+			'label' => _r('Press It', 'pressit'),
+			'type' => 'external',
+			'action' => $action
+		);
+	}
+	public function action() {
+		return $this->options['action'];
+	}
+	public function set_action($action) {
+		$this->options['action'] = $action;
+	}
+	public function export() {
+		return $this->options;
+	}
 }
-add_filter('action_bar', 'pressit_button');
 
-/**
- * Javascript to open URL in new window
- */
-function pressit_js() {
-?>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".pressit_button").live("click", function() {
-			var result = window.open($(this).attr('href'),'t','toolbar=0,resizable=0,scrollbars=1,status=1,width=700,height=500');
-			if(!result)
-				return true;
-			return false;
-		});
-	});
-</script>
-<?php
+function pressit_register() {
+	if (get_option('pressit_wpurl', '') === '') {
+		return;
+	}
+	$pressit = new PressItService();
+	Services::register('pressit', $pressit);
 }
-add_action('template_header', 'pressit_js');
+add_action('init', 'pressit_register');
 
 // Admin
 /**
