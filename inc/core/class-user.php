@@ -108,8 +108,19 @@ class User {
 		if($this->password !== get_option('auth', 'pass'))
 			return false;
 
+		return $this->set_password($this->raw);
+	}
+
+	/**
+	 * Set the user's password
+	 *
+	 * @param string $new New password
+	 * @return bool
+	 */
+	public function set_password($new) {
 		$hash = new PasswordHash(8, false);
-		$this->new_password = $hash->HashPassword($this->raw);
+		$this->new_password = $hash->HashPassword($new);
+		// Need to save here
 		return true;
 	}
 
