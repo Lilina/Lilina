@@ -35,6 +35,8 @@ class User {
 	 */
 	protected $domain;
 
+	protected $site;
+
 	/**
 	 * Constructor for the class
 	 */
@@ -50,6 +52,7 @@ class User {
 		$this->password = $this->hash($password);
 		$this->domain = apply_filters('user.cookie.domain', parse_url( get_option('baseurl'), PHP_URL_HOST ));
 		$this->path   = apply_filters('user.cookie.path', parse_url( get_option('baseurl'), PHP_URL_PATH ));
+		$this->site = sha1(get_option('baseurl'));
 	}
 
 	/**
@@ -61,10 +64,8 @@ class User {
 	 * @return mixed Boolean true if logged in, otherwise passes the result of {@link lilina_check_user_pass()}} through
 	 */
 	public function identify() {
-		if(isset($_COOKIE['lilina_user']) && isset($_COOKIE['lilina_pass'])) {
-			if( ( $status = $this->authenticate($_COOKIE['lilina_user'], $_COOKIE['lilina_pass']) ) !== 1)
-				return $status;
-			return true;
+		if (isset($_COOKIE['lilinaauth_' . $this->site])) {
+			return $this->check_cookie($_COOKIE['lilinaauth_' . $this->site]);
 		}
 
 		if( ($status = $this->authenticate()) === 1 ) {
@@ -138,6 +139,33 @@ class User {
 		}
 	}
 
+	protected function create_cookie($expiration) {
+		$pass = substr($this->password, 8, 4);
+		$key = sha1($this->user . $pass . '|' . $expiration);
+		$hash = hash_hmac('sha1', $this->user . '|' . $expiration, $key);
+
+		$cookie = $this->user . '|' . $expiration . '|' . $hash;
+		return apply_filters('user.cookie.value', $cookie, $this);
+	}
+
+	protected function check_cookie($cookie) {
+		$bits = explode('|', $cookie);
+		if (count($bits) !== 3) {
+			return false;
+		}
+
+		$this->user = $bits[0];
+		$expiration = $bits[1];
+		// TODO: Fix this for multi-user
+		$this->password = get_option('auth', 'pass');
+		if ($expiration < time()) {
+			return false;
+		}
+
+		$real = $this->create_cookie($expiration);
+		return $cookie === $real;
+	}
+
 	/**
 	 * Set the authentication cookies for next use
 	 *
@@ -145,8 +173,8 @@ class User {
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
 	protected function set_cookies() {
-		setcookie ( 'lilina_user', $this->user, time() + 1209600, $this->path, $this->domain, null, true );
-		setcookie ( 'lilina_pass', $this->password, time() + 1209600, $this->path, $this->domain, null, true );
+		$expiration = time() + 1209600;
+		setcookie( 'lilinaauth_' . $this->site, $this->create_cookie($expiration), $expiration, $this->path, $this->domain, null, true );
 	}
 
 	/**
@@ -156,8 +184,7 @@ class User {
 	 * @internal Cookies are nom nom nom. (compared to those ugly sessions)
 	 */
 	public function destroy_cookies() {
-		setcookie ( 'lilina_user', '', time() - 31536000, $this->path, $this->domain );
-		setcookie ( 'lilina_pass', '', time() - 31536000, $this->path, $this->domain );
+		setcookie ( 'lilinaauth_' . $this->site, '', time() - 31536000, $this->path, $this->domain );
 	}
 
 	public static function create($user, $password) {
