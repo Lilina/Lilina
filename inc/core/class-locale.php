@@ -14,7 +14,7 @@ require_once(LILINA_INCPATH . '/contrib/pomo/mo.php');
  * @package Lilina
  * @subpackage Localisation
  */
-class Locale {
+class Localise {
 	private static $translations = array();
 	private static $plural_function;
 	private static $locale;
@@ -240,7 +240,7 @@ class Locale {
  * _r() is a convenience function which retrieves the translated
  * string from the translate().
  *
- * @see Locale::translate() An alias of translate()
+ * @see Localise::translate() An alias of translate()
  * @since 1.0
  *
  * @param string $text Text to translate
@@ -248,7 +248,7 @@ class Locale {
  * @return string Translated text
  */
 function _r($text, $domain = 'default') {
-	return Locale::translate($text, $domain);
+	return Localise::translate($text, $domain);
 }
 
 /**
@@ -257,14 +257,14 @@ function _r($text, $domain = 'default') {
  * _e() is a convenience function which displays the returned
  * translated text from translate().
  *
- * @see Locale::translate() Echos returned translate() string
+ * @see Localise::translate() Echos returned translate() string
  * @since 1.0
  *
  * @param string $text Text to translate
  * @param string $domain Optional. Domain to retrieve the translated text
  */
 function _e($text, $domain = 'default') {
-	echo Locale::translate($text, $domain);
+	echo Localise::translate($text, $domain);
 }
 
 /**
@@ -287,16 +287,16 @@ function _e($text, $domain = 'default') {
  * @return string Translated context string without pipe
  */
 function _c( $single, $context, $domain = 'default' ) {
-	return Locale::translate_with_gettext_context( $single, $context, $domain );
+	return Localise::translate_with_gettext_context( $single, $context, $domain );
 }
 
 /**
  * Display a translated string
  *
  * __ngettext() is a convenience function which displays the returned
- * translated text from Locale::ngettext().
+ * translated text from Localise::ngettext().
  *
- * @see Locale::ngettext() Echos returned Locale::ngettext() string
+ * @see Localise::ngettext() Echos returned Localise::ngettext() string
  * @since 1.0
  *
  * @param string $single The text that will be used if $number is 1
@@ -306,7 +306,7 @@ function _c( $single, $context, $domain = 'default' ) {
  * @return string Either $single or $plural translated text
  */
 function __ngettext($single, $plural, $number, $domain = 'default') {
-	echo Locale::ngettext($single, $plural, $number, $domain);
+	echo Localise::ngettext($single, $plural, $number, $domain);
 }
 
 /**

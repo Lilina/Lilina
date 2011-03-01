@@ -24,7 +24,7 @@ require_once(LILINA_INCPATH . '/core/install-functions.php');
 lilina_check_installed();
 
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
-Locale::load_default_textdomain();
+Localise::load_default_textdomain();
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/version.php');

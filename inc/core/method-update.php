@@ -54,7 +54,7 @@ class UpdaterMethod {
 		foreach(ItemUpdater::process() as $feed => $updated) {
 			$name = Feeds::get_instance()->get($feed);
 			$name = $name['name'];
-			$text = Locale::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);
+			$text = Localise::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);
 			$messages[] = array('msg' => sprintf($text, $name, $updated), 'updated' => $updated);
 		}
 		
@@ -132,7 +132,7 @@ class UpdaterMethod {
 				$text = 'An error occurred while updating feed "%1$s".';
 			}
 			else {
-				$text = Locale::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);	
+				$text = Localise::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);	
 			}
 			$messages[] = array('msg' => sprintf($text, $name, $updated), 'updated' => $updated);
 		}
