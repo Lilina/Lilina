@@ -395,9 +395,6 @@ FeedList.prototype.loadCallback = function (data) {
 };
 FeedList.prototype.add = function (data) {
 	this.feeds.push(new FeedRow(data));
-	if ($('#nofeeds').is(':visible')) {
-		$("#nofeeds").hide();
-	}
 };
 FeedList.prototype.reload = function () {
 	jQuery.each(this.feeds, function () {
@@ -484,10 +481,8 @@ FeedRow.prototype.remove = function () {
 	admin.ajax.post("feeds.remove", {feed_id: this.data.id}, function (data) { me.removeComplete(data); });
 };
 FeedRow.prototype.removeComplete = function (data) {
-	this.derender();
-	if ($('#feeds_list tbody tr').length < 2) {
-		$("#nofeeds").show();
-	}
+	this.row.remove();
+	this.render();
 	admin.messages.display(data.msg);
 };
 FeedRow.prototype.save = function () {
