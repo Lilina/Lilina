@@ -19,8 +19,18 @@ class SubscribePage {
 		if(empty($_POST['url']))
 			return self::sub_page();
 
+		if(empty($_POST['nonce']) || !check_nonce('subscribe', $_POST['nonce']))
+			return self::choose_page($_POST['url']);
+
 		try {
-			$_GET['url'] = $_POST['url'];
+			$feed = $_POST['url'];
+			$discovered = self::get_discovered($feed);
+			if (count($discovered) > 1) {
+				return self::choose_page($feed, $discovered);
+			}
+
+			if (!empty($discovered))
+				$feed = $discovered[0];
 			$result = Feeds::get_instance()->add( $_POST['url'], $_POST['name'] );
 		}
 		catch( Exception $e ) {
@@ -95,12 +105,54 @@ class SubscribePage {
 			</fieldset>
 
 			<input type="hidden" name="action" value="add" />
+			<input type="hidden" name="nonce" value="<?php echo generate_nonce('subscribe') ?>" />
 			<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
 		</form>
 	</div>
 <?php
 		self::foot();
 	} // function sub_main()
+
+	public static function choose_page($url, $discovered = false) {
+		self::head();
+		if (!$discovered)
+			$discovered = self::get_discovered($url);
+?>
+	<div id="main">
+		<h1><?php _e('Select a Feed') ?></h1>
+		<p>Multiple feeds were found for the given URL. Select which to add below.</p>
+		<form action="subscribe.php" method="post" id="add_form"<?php if(!empty($error)) echo ' class="errorform"' ?>>
+			<fieldset id="select">
+				<ul>
+<?php
+		foreach ($discovered as $feed) {
+			echo '<li><input type="radio" name="url" value="' . $feed['file']->url . '" /> ' . $feed['title'] . '</li>';
+		}
+?>
+				</ul>
+			</fieldset>
+			<input type="hidden" name="action" value="add" />
+			<input type="hidden" name="name" value="<?php echo htmlspecialchars($_POST['name']) // Possibly unsafe ?>" />
+			<input type="hidden" name="nonce" value="<?php echo generate_nonce('subscribe') ?>" />
+			<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
+		</form>
+	</div>
+<?php
+		self::foot();
+	}
+
+	public static function get_discovered($url) {
+		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
+		class_exists('HTTPRequest');
+		$feed = new SimplePie();
+		$feed->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
+		$feed->set_stupidly_fast(true);
+		$feed->enable_cache(false);
+		$feed->set_feed_url($url);
+		$feed->set_locator_class('Lilina_SimplePie_Locator');
+		$feed->init();;
+		return $feed->get_all_discovered_feeds();
+	}
 
 	public static function head() {
 ?>
