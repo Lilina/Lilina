@@ -50,7 +50,11 @@ class User {
 		$this->user = $user;
 		$this->raw = $password;
 		$this->password = $this->hash($password);
-		$this->domain = apply_filters('user.cookie.domain', parse_url( get_option('baseurl'), PHP_URL_HOST ));
+		$domain = parse_url( get_option('baseurl'), PHP_URL_HOST );
+		if (strpos($domain, '.') === false)
+			// If the domain doesn't have a dot, use blank
+			$domain = false;
+		$this->domain = apply_filters('user.cookie.domain', $domain);
 		$this->path   = apply_filters('user.cookie.path', parse_url( get_option('baseurl'), PHP_URL_PATH ));
 		$this->site = sha1(get_option('baseurl'));
 	}
