@@ -142,23 +142,26 @@ class HTTPRequest {
 		if (isset($return->headers['transfer-encoding'])) {
 			$return->body = HTTPRequest::decode_chunked($return->body);
 		}
-		if (isset($return->headers['content-encoding'])) {
+		if (isset($return->headers['content-encoding']) && $this->transport !== 'HTTPRequest_cURL') {
 			switch ($return->headers['content-encoding']) {
 				case 'gzip':
-					if (function_exists('gzdecode')) {
-						$return->body = gzdecode($return->body);
+					$decoder = new SimplePie_gzdecode($return->body);
+					if ($result = $decoder->parse()) {
+						$return->body = $decoder->data;
 					}
 					else {
-						throw new Exception(_r('gzdecode is missing'));
+						throw new Exception(_r('Unable to decode HTTP "gzip" stream'));
 					}
 					break;
 				case 'deflate':
-					if (function_exists('gzinflate')) {
-						$return->body = gzinflate($return->body);
+					if (($body = gzuncompress($return->body)) === false)
+					{
+						if (($body = gzinflate($return->body)) === false)
+						{
+							throw new Exception(_r('Unable to decode HTTP "deflate" stream'));
+						}
 					}
-					else {
-						throw new Exception(_r('gzinflate is missing'));
-					}
+					$return->body = $body;
 					break;
 			}
 		}
@@ -377,8 +380,7 @@ class HTTPRequest_fsockopen {
 		if ( function_exists( 'gzuncompress' ) )
 			$type[] = 'compress;q=0.5';
 
-		if ( function_exists( 'gzdecode' ) )
-			$type[] = 'gzip;q=0.5';
+		$type[] = 'gzip;q=0.5';
 
 		return implode(', ', $type);
 	}
