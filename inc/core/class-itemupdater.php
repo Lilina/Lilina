@@ -102,6 +102,7 @@ class ItemUpdater {
 		$sp->set_stupidly_fast(true);
 		$sp->set_cache_location(get_option('cachedir'));
 		//$sp->set_cache_duration(0);
+		$sp->set_file_class('Lilina_SimplePie_File');
 		$sp = apply_filters('simplepie-config', $sp);
 
 		$sp->set_feed_url($feed['feed']);
