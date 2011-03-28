@@ -260,7 +260,6 @@ class Feeds {
 		$sp->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$sp->set_stupidly_fast(true);
 		$sp->set_cache_location(get_option('cachedir'));
-		$sp->set_favicon_handler(get_option('baseurl') . '/lilina-favicon.php');
 		$sp->set_feed_url($feed['feed']);
 		$sp->init();
 		if(!isset($feed['icon'])) {

@@ -42,9 +42,9 @@ function relative_time($posted_date) {
 	switch (true) {
 		case $weeks > 0:
 			// weeks and days
-			$week = sprintf(Locale::ngettext('%d week', '%d weeks', $weeks), $weeks);
+			$week = sprintf(Localise::ngettext('%d week', '%d weeks', $weeks), $weeks);
 			if ($days > 0) {
-				$day = sprintf(Locale::ngettext('%d day', '%d days', $days), $days);
+				$day = sprintf(Localise::ngettext('%d day', '%d days', $days), $days);
 				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x weeks, x days ago"'), $week, $day);
 			}
 			else {
@@ -53,9 +53,9 @@ function relative_time($posted_date) {
 			break;
 		case $days > 0:
 			// days and hours
-			$day = sprintf(Locale::ngettext('%d day', '%d days', $days), $days);
+			$day = sprintf(Localise::ngettext('%d day', '%d days', $days), $days);
 			if ($hours > 0) {
-				$hour = sprintf(Locale::ngettext('%d hour', '%d hours', $hours), $hours);
+				$hour = sprintf(Localise::ngettext('%d hour', '%d hours', $hours), $hours);
 				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x days, x hours ago"'), $day, $hour);
 			}
 			else {
@@ -64,9 +64,9 @@ function relative_time($posted_date) {
 			break;
 		case $hours > 0:
 			// hours and minutes
-			$hour = sprintf(Locale::ngettext('%d hour', '%d hours', $hours), $hours);
+			$hour = sprintf(Localise::ngettext('%d hour', '%d hours', $hours), $hours);
 			if ($minutes > 0) {
-				$minute = sprintf(Locale::ngettext('%d minute', '%d minutes', $minutes), $minutes);
+				$minute = sprintf(Localise::ngettext('%d minute', '%d minutes', $minutes), $minutes);
 				$relative_date = sprintf(_c('%s, %s ago', 'relative time, "x hours, x minutes ago"'), $hour, $minute);
 			}
 			else {
@@ -75,11 +75,11 @@ function relative_time($posted_date) {
 			break;
 		case $minutes > 0:
 			// minutes only
-			return sprintf(Locale::ngettext('%d minute ago', '%d minutes ago', $minutes), $minutes);
+			return sprintf(Localise::ngettext('%d minute ago', '%d minutes ago', $minutes), $minutes);
 			break;
 		case $seconds > 0:
 			// seconds only
-			return sprintf(Locale::ngettext('%d second ago', '%d seconds ago', $seconds), $seconds);
+			return sprintf(Localise::ngettext('%d second ago', '%d seconds ago', $seconds), $seconds);
 			break;
 	}
 	return $relative_date;

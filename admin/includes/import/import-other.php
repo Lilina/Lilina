@@ -73,7 +73,7 @@ class OPML_Import {
 		$feeds_num = 0;
 		$feeds = $this->parse($opml->data);
 
-		MessageHandler::add(sprintf(Locale::ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
+		MessageHandler::add(sprintf(Localise::ngettext('Adding %d feed', 'Adding %d feeds', $feeds_num), $feeds_num));
 		return $feeds;
 	}
 

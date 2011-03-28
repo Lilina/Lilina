@@ -25,7 +25,7 @@ $timer_start = lilina_timer_start();
 
 require_once(LILINA_INCPATH . '/core/version.php');
 
-Locale::load_default_textdomain();
+Localise::load_default_textdomain();
 
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
