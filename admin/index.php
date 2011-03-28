@@ -109,7 +109,7 @@ else {
 <p><?php _e("We can import from any service which supports an open standard called OPML. Here's some services you can import from:") ?></p>
 <ul id="block-list">
 	<li class="greader"><a href="feed-import.php?service=greader"><?php _e('Google Reader') ?></a></li>
-	<li class="bloglines"><a href="feed-import.php?service=bloglines"><?php _e('Bloglines') ?></a></li>
+	<li class="gregarius"><a href="feed-import.php?service=gregarius"><?php _e('Gregarius') ?></a></li>
 	<li class="other"><a href="feed-import.php?service=opml"><?php _e('OPML (desktop readers)') ?></a></li>
 	<li class="other"><a href="feed-import.php"><?php _e('Others') ?></a></li>
 </ul>
