@@ -57,6 +57,7 @@ class Services {
 	 * @param Service $value Service to replace tokens for
 	 */
 	protected static function replace($value) {
+		$value = clone $value;
 		$value->set_action(
 			preg_replace_callback(
 				'#\{([^}]+)\}#i',
