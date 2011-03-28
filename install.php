@@ -292,20 +292,10 @@ $error					= ((!$sitename || !$username || !$password) && $page && $page != 1) ?
 
 if($page === "1" && !isset($_REQUEST['skip']))
 	$installer->compatibility_test();
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<title>Installation - Lilina News Aggregator</title>
-		<link rel="stylesheet" type="text/css" href="admin/resources/reset.css" />
-		<link rel="stylesheet" type="text/css" href="install.css" />
-	</head>
-	<body>
-		<div id="content">
-<?php
+
 switch($page) {
 	case 1:
+		Installer::header();
 ?>
 <h1 id="title">Setting Up</h1>
 <p>To install, we're going to need some quick details for your site. This includes the title and setting up your administrative user.</p>
@@ -335,11 +325,13 @@ switch($page) {
 	<input type="submit" value="Next" class="submit" />
 </form>
 <?php
+		Installer::footer();
 		break;
 	case 2:
 		$installer->install($sitename, $username, $password);
 		break;
 	default:
+		Installer::header();
 ?>
 <h1 id="title">Installation</h1>
 <p>Welcome to Lilina installation. We're now going to start installing. Make sure that the <code>content/system/</code> directory and all subdirectories are <a href="readme.html#permissions">writable</a>.</p>
@@ -348,12 +340,6 @@ switch($page) {
 <input type="submit" value="Install" class="submit" />
 </form>
 <?php
+		Installer::footer();
 		break;
 }
-?>
-		</div>
-		<div id="footer">
-			<p>Powered by <a href="http://getlilina.org/">Lilina</a> <span class="version"><?php echo LILINA_CORE_VERSION; ?></span>. Read the <a href="http://codex.getlilina.org/">documentation</a> or get help on the <a href="http://getlilina.org/forums/">forums</a></p>
-		</div>
-	</body>
-</html>

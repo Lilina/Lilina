@@ -31,6 +31,7 @@ class Installer {
 	 */
 	public function install($sitename, $username, $password) {
 		require_once(LILINA_INCPATH . '/core/version.php');
+		$messages = array();
 
 		$settings = $this->generate_default_settings($sitename, $username, $password);
 		if( !is_writable(LILINA_PATH . '/content/system/config/') || !($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+'))) {
@@ -41,7 +42,7 @@ class Installer {
 		fclose($settings_file);
 
 		if(file_exists(LILINA_PATH . '/content/system/config/feeds.data')) {
-			echo "<p>Using existing feeds data</p>\n";
+			$messages[] = 'Using existing feeds data';
 		}
 		else {
 			$feeds_file = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
@@ -54,7 +55,7 @@ class Installer {
 
 		/** Make sure it's writable now */
 		if(!$this->make_writable(LILINA_PATH . '/content/system/config/feeds.json')) {
-			echo "<p>Couldn't make <code>content/system/config/feeds.json</code> writable. Please ensure you make it writable yourself</p>\n";
+			$messages[] = "Couldn't make <code>content/system/config/feeds.json</code> writable. Please ensure you make it writable yourself";
 		}
 
 		
@@ -68,8 +69,20 @@ class Installer {
 
 		$user = new User($username, $password);
 		$user->identify();
+
+		Installer::header();
 	?>
 	<h1 id="title">Installation Complete!</h1>
+<?php
+	if (!empty($messages)) {
+?>
+	<h2>Messages</h2>
+	<ul>
+		<li><?php echo implode('</li><li>', $messages); ?></li>
+	</ul>
+<?php
+	}
+?>
 	<p>Lilina has been installed and is now ready to go. Please note your username and password below, as it <strong>won't be shown again</strong>!</p>
 	<dl id="logindetails">
 		<dt>Your username is</dt>
@@ -79,7 +92,8 @@ class Installer {
 	</dl>
 	<p><a href="admin/">Head to the admin panel</a> to get started!</p>
 	<?php
-			return true;
+		Installer::footer();
+		return true;
 	}
 	
 	/**
@@ -94,7 +108,6 @@ class Installer {
 	public function compatibility_test() {
 		$errors = array();
 		$warnings = array();
-		$output = "<p>The following errors were found with your installation:</p>";
 		$xml_ok = extension_loaded('xml');
 		$pcre_ok = extension_loaded('pcre');
 		$zlib_ok = extension_loaded('zlib');
@@ -115,32 +128,48 @@ class Installer {
 		if(!$zlib_ok)
 			$warnings[] = "<strong>Zlib:</strong> The <code>Zlib</code> extension is not available. You will not be able to use feeds with GZIP compression.";
 
+		Installer::header();
+?>
+		<p>The following errors were found with your installation:</p>
+<?php
 		if(!empty($errors)) {
-			$output .= "\n<h2>Errors</h2>\n<ul>\n<li>";
-			$output .= implode(" <em>Looks like Lilina won't run.</em></li>\n<li>", $errors);
-			$output .= "</li>\n</ul>\n";
+?>
+			<h2>Errors</h2>
+			<ul>
+				<li><?php echo implode(" <em>Looks like Lilina won't run.</em></li>\n<li>", $errors); ?></li>
+			</ul>
+<?php
 		}
 
 		if(!empty($warnings)) {
-			$output .= "\n<h2>Warnings</h2>\n<ul>\n<li>";
-			$output .= implode(" <em>This might cause some problems with some feeds.</em></li>\n<li>", $warnings);
-			$output .= "</li>\n</ul>\n";
+?>
+			<h2>Warnings</h2>
+			<ul>
+				<li><?php echo implode(" <em>This might cause some problems with some feeds.</em></li>\n<li>", $warnings); ?></li>
+			</ul>
+<?php
 		}
 
 		if(empty($errors)) {
-			$output .= "<p>These warnings might cause some feeds not to be read properly, however <em>you will be able to run Lilina.</em></p>\n";
-			$output .= '<form action="install.php" method="post">';
-			$output .= '<input type="hidden" name="page" value="1" /><input type="hidden" name="skip" value="1" />';
-			$output .= '<input class="submit" type="submit" value="Continue" /></form>';
-			$output .= "<p id='footnote-quote'>Danger, Will Robinson! &mdash; <em>Lost in Space</em></p>";
-			lilina_nice_die($output, 'Whoops!');
+?>
+			<p>These warnings might cause some feeds not to be read properly, however <em>you will be able to run Lilina.</em></p>
+			<form action="install.php" method="post">
+				<input type="hidden" name="page" value="1" />
+				<input type="hidden" name="skip" value="1" />
+				<input class="submit" type="submit" value="Continue" />
+			</form>
+			<p id='footnote-quote'>Danger, Will Robinson! &mdash; <em>Lost in Space</em></p>
+<?php
 		}
 
 		else {
-			$output .= '<p>These errors mean that <em>you will not be able to run Lilina.</em></p>';
-			$output .= "<p id='footnote-quote'>Kosa moja haliachi mke &mdash; <em>Swahili proverb ('One mistake isn't reason enough to leave your wife')</em></p>";
-			lilina_nice_die($output, 'Uh oh!');
+?>
+			<p>These errors mean that <em>you will not be able to run Lilina.</em></p>
+			<p id='footnote-quote'>Kosa moja haliachi mke &mdash; <em>Swahili proverb ('One mistake isn't reason enough to leave your wife')</em></p>
+<?php
 		}
+
+		Installer::footer();
 	}
 	
 	public function generate_default_settings($sitename, $username, $password) {
@@ -149,6 +178,17 @@ class Installer {
 		if($guessurl[count($guessurl)-1] != '/') {
 			$guessurl .= '/';
 		}
+
+		global $settings;
+		$settings = array();
+		$settings['baseurl'] = $guessurl;
+		$settings['auth'] = array(
+			'user' => $username,
+			'pass' => md5($password)
+		);
+		$settings['enabled_plugins'] = '';
+		$settings['settings_version'] = LILINA_SETTINGS_VERSION;
+
 		return "<?php
 // The URL to your server
 \$settings['baseurl'] = '$guessurl';
@@ -187,6 +227,7 @@ class Installer {
 	}
 
 	public function file_error_notice($filename, $sitename, $username, $password) {
+		Installer::header();
 		?>
 		<h1>Uh oh!</h1>
 		<p>Something happened and <code><?php echo $filename ?></code> couldn't be created. Check that the server has <a href="readme.html#permissions">permission</a> to create it.</p>
@@ -199,6 +240,33 @@ class Installer {
 		<p>If this keeps happening and you can't work out why, check out the <a href="http://getlilina.org/docs/">documentation</a>. If you still can't work it out, try asking on <a href="http://getlilina.org/forums/">the forums</a>.</p>
 		</form>
 		<?php
+		Installer::footer();
+	}
+
+	public static function header() {
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>Installation - Lilina News Aggregator</title>
+		<link rel="stylesheet" type="text/css" href="admin/resources/reset.css" />
+		<link rel="stylesheet" type="text/css" href="install.css" />
+	</head>
+	<body>
+		<div id="content">
+<?php
+	}
+
+	public static function footer() {
+?>
+		</div>
+		<div id="footer">
+			<p>Powered by <a href="http://getlilina.org/">Lilina</a> <span class="version"><?php echo LILINA_CORE_VERSION; ?></span>. Read the <a href="http://codex.getlilina.org/">documentation</a> or get help on the <a href="http://getlilina.org/forums/">forums</a></p>
+		</div>
+	</body>
+</html>
+<?php
 	}
 }
 
