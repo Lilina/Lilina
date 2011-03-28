@@ -214,7 +214,6 @@ function upgrade() {
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
 
-		require_once(LILINA_INCPATH . '/core/class-datahandler.php');
 		if(!save_options()) {
 			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
 		}

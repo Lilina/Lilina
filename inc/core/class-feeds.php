@@ -63,7 +63,6 @@ class Feeds {
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 		// Need this for LILINA_USERAGENT
 		class_exists('HTTPRequest');
-		require_once(LILINA_INCPATH . '/core/class-httprequest.php');
 		$feed_info = new SimplePie();
 		$feed_info->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed_info->set_stupidly_fast(true);
