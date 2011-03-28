@@ -170,6 +170,7 @@ class Installer {
 		}
 
 		Installer::footer();
+		die();
 	}
 	
 	public function generate_default_settings($sitename, $username, $password) {
