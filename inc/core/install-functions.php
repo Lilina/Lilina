@@ -130,6 +130,7 @@ class Installer {
 
 		Installer::header();
 ?>
+		<h1 id="title">We might have a problem!</h1>
 		<p>The following errors were found with your installation:</p>
 <?php
 		if(!empty($errors)) {
