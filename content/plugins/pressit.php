@@ -10,7 +10,7 @@ Author URI: http://ryanmccue.info
 License: GPL
 */
 
-class PressItService implements Service {
+class PressItService implements Lilina_Service {
 	public function __construct() {
 		$wp_url = get_option('pressit_wpurl', '');
 		$action = $wp_url . 'wp-admin/press-this.php?u={permalink}&t={title}&s={summary}';
