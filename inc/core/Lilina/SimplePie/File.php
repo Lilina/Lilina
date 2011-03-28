@@ -9,7 +9,12 @@ class Lilina_SimplePie_File extends SimplePie_File {
 		$this->timeout = $timeout;
 		$this->redirects = $redirects;
 		$this->headers = $headers;
+
 		$this->useragent = $useragent;
+		if ( SIMPLEPIE_USERAGENT === $this->useragent ) {
+			// Use LILINA_USERAGENT instead
+			$this->useragent = null;
+		}
 
 		$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
 

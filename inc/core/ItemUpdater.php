@@ -93,12 +93,7 @@ class ItemUpdater {
 	 * @return SimplePie
 	 */
 	public static function &load_feed($feed) {
-		// This loads the useragent
-		class_exists('HTTPRequest');
-		global $lilina;
-
 		$sp = new SimplePie();
-		$sp->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$sp->set_stupidly_fast(true);
 		$sp->set_cache_location(get_option('cachedir'));
 		//$sp->set_cache_duration(0);

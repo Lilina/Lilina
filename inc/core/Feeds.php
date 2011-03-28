@@ -61,13 +61,11 @@ class Feeds {
 		$reporting = error_reporting();
 		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
-		// Need this for LILINA_USERAGENT
-		class_exists('HTTPRequest');
 		$feed_info = new SimplePie();
-		$feed_info->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed_info->set_stupidly_fast(true);
 		$feed_info->set_cache_location(get_option('cachedir'));
 		$feed_info->set_feed_url($url);
+		$feed_info->set_file_class('Lilina_SimplePie_File');
 		$feed_info->init();
 		$feed_error = $feed_info->error();
 		$feed_url = $feed_info->subscribe_url();
