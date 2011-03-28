@@ -75,7 +75,7 @@ class Feeds {
 
 		if(!empty($feed_error)) {
 			throw new Exception(
-				sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery." ), $url ),
+				sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery. (%s)" ), $url, $feed_error ),
 				Errors::get_code('admin.feeds.invalid_url')
 			);
 		}
