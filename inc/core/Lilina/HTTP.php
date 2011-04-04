@@ -126,7 +126,6 @@ class Lilina_HTTP {
 			'filename' => false
 		);
 		$options = array_merge($defaults, $options);
-		var_dump($options);
 		$transport = Lilina_HTTP::get_transport();
 		$response = $transport->request($url, $headers, $data, $options);
 		return Lilina_HTTP::parse_response($response, $url, $headers, $data, $options);
