@@ -323,10 +323,12 @@ function _call_all_hook($args) {
 function _build_callback_string($callback) {
 	if(is_string($callback))
 		return $callback;
-	elseif(is_string($callback[0]))
+	elseif(is_array($callback) && is_string($callback[0]))
 		return $callback[0] . $callback[1];
-	elseif(is_object($callback[0]))
+	elseif(is_array($callback) && is_object($callback[0]))
 		return get_class($callback[0]).$callback[1];
+	elseif(is_object($callback) && function_exists('spl_object_hash'))
+		return spl_object_hash($callback);
 
 	throw new Exception('Invalid callback: ' . $callback);
 }
