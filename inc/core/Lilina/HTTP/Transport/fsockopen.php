@@ -46,7 +46,12 @@ class Lilina_HTTP_Transport_fsockopen implements Lilina_HTTP_Transport {
 					$path = '/';
 				}
 				$out = "POST $path HTTP/1.0\r\n";
-				$request_body = http_build_query($data, null, '&');
+				if (is_array($data)) {
+					$request_body = http_build_query($data, null, '&');
+				}
+				else {
+					$request_body = $data;
+				}
 				$headers['Content-Length'] = strlen($request_body);
 				$headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 				break;
