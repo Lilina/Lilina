@@ -186,6 +186,7 @@ class Lilina_HTTP {
 		}
 		if (isset($return->headers['transfer-encoding'])) {
 			$return->body = Lilina_HTTP::decode_chunked($return->body);
+			unset($return->headers['transfer-encoding']);
 		}
 		if (isset($return->headers['content-encoding'])) {
 			switch ($return->headers['content-encoding']) {
