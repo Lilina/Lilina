@@ -13,7 +13,7 @@
  * @subpackage HTTP
  */
 class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
-	public $headers = array();
+	public $headers = '';
 	public $info;
 
 	public function __construct() {
@@ -21,7 +21,7 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 		$this->version = $curl['version'];
 		$this->fp = curl_init();
 		curl_setopt($this->fp, CURLOPT_HEADER, 1);
-		curl_setopt($this->fp, CURLOPT_RETURNTRANSFER, 1);
+		//curl_setopt($this->fp, CURLOPT_RETURNTRANSFER, 1);
 		if (version_compare($this->version, '7.10.5', '>=')) {
 			curl_setopt($this->fp, CURLOPT_ENCODING, '');
 		}
@@ -51,16 +51,27 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 
 		if (true === $options['blocking']) {
 			curl_setopt($this->fp, CURLOPT_HEADER, true);
+			curl_setopt($this->fp, CURLOPT_HEADERFUNCTION, array(&$this, 'stream_headers'));
 		}
 		else {
 			curl_setopt($this->fp, CURLOPT_HEADER, false);
 		}
 
-		$this->headers = curl_exec($this->fp);
+		if ($options['filename'] !== false) {
+			$stream_handle = fopen($options['filename'], 'wb');
+			curl_setopt($this->fp, CURLOPT_FILE, $stream_handle);
+		}
+
+		$response = curl_exec($this->fp);
 		if ($options['blocking'] === false) {
 			curl_close($this->fp);
 			return false;
 		}
+		if ($options['filename'] !== false) {
+			fclose($stream_handle);
+			$this->headers = trim($this->headers);
+		}
+
 		if (curl_errno($this->fp) === 23 || curl_errno($this->fp) === 61) {
 			curl_setopt($this->fp, CURLOPT_ENCODING, 'none');
 			$this->headers = curl_exec($this->fp);
@@ -73,6 +84,11 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 		curl_close($this->fp);
 
 		return $this->headers;
+	}
+
+	protected function stream_headers($handle, $headers) {
+		$this->headers .= $headers;
+		return strlen($headers);
 	}
 
 	/**
