@@ -349,6 +349,7 @@ function plugins_meta($plugin_file) {
 		'author_uri' => 'Author URI',
 		'version' => 'Version',
 		'min_version' => 'Min Version',
+		'id' => 'ID',
 	);
 	$headers = apply_filters('plugin_headers', $headers);
 
@@ -373,13 +374,30 @@ function plugins_meta($plugin_file) {
 	if (!empty($docblock['long'])) {
 		$vals['description'] = $docblock['long'];
 	}
+
 	// Parse the docblock tags
-	if (!empty($docblock['tags']['author'])) {
-		$author = explode('<', $docblock['tags']['author']);
-		$vals['author'] = trim($author[0]);
-	}
-	if (!empty($docblock['tags']['version'])) {
-		$vals['version'] = $docblock['tags']['version'];
+	foreach ($docblock['tags'] as $name => $value) {
+		switch ($name) {
+			case 'author':
+				$value = explode('<', $value);
+				$vals['author'] = trim($value[0]);
+				if (!empty($value[1])) {
+					$vals['author_uri'] = trim($value[1], ' <>');
+				}
+				break;
+			case 'version':
+				$vals['version'] = $value;
+				break;
+			case 'link':
+				$vals['uri'] = $value;
+				break;
+			case 'id':
+				$vals['id'] = $value;
+				break;
+			case 'requires':
+				$vals['min_version'] = $value;
+				break;
+		}
 	}
 
 	if (empty($vals['version']))
@@ -387,6 +405,9 @@ function plugins_meta($plugin_file) {
 
 	if (empty($vals['min_version']))
 		$vals['min_version'] = LILINA_CORE_VERSION;
+	
+	if (empty($vals['id']))
+		$vals['id'] = 'unknown';
 
 	$plugin = (object) $vals;
 	return $plugin;
