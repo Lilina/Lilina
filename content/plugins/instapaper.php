@@ -3,6 +3,8 @@
  * Instapaper
  *
  * Save items to Instapaper.
+ *
+ * @id glo:instapaper
  * @version 1.1
  * @author Ryan McCue <ryan@getlilina.org>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License

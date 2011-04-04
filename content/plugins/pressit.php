@@ -1,14 +1,16 @@
 <?php
-/*
-Plugin Name: Press It
-Plugin URI: http://getlilina.org/
-Description: Adds a Press It link to each entry to post to a WordPress blog
-Author: Ryan McCue
-Version: 1.0
-Min Version: 1.0
-Author URI: http://ryanmccue.info
-License: GPL
-*/
+/**
+ * Press It
+ *
+ * Adds a Press It link to each entry to post to a WordPress blog
+ *
+ * @id glo:pressit
+ * @link http://getlilina.org/
+ * @author Ryan McCue <http://ryanmccue.info>
+ * @version 1.0
+ * @requires 1.0-bleeding
+ * @license GPL
+ */
 
 class PressItService implements Lilina_Service {
 	public function __construct() {
