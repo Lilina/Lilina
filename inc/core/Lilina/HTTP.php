@@ -216,7 +216,7 @@ class Lilina_HTTP {
 		if (in_array($return->status_code, array(300, 301, 302, 303, 307)) || $return->status_code > 307 && $return->status_code < 400) {
 			if (isset($return->headers['location']) && $options['redirected'] < $options['redirects']) {
 				$options['redirected']++;
-				$location = SimplePie_Misc::absolutize_url($return->headers['location'], $url);
+				$location = $return->headers['location'];
 				return Lilina_HTTP::request($location, $req_headers, $req_data, false, $options);
 			}
 			elseif ($options['redirected'] >= $options['redirects']) {
