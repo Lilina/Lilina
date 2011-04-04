@@ -4,6 +4,9 @@
  * @package Lilina
  * @subpackage HTTP
  */
+if (!defined('LILINA_USERAGENT')) {
+	define('LILINA_USERAGENT', 'Lilina/'. LILINA_CORE_VERSION . '; (' . get_option('baseurl') . '; http://getlilina.org/; Allow Like Gecko)');
+}
 
 /**
  * HTTP class
