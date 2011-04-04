@@ -21,7 +21,7 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 		$this->version = $curl['version'];
 		$this->fp = curl_init();
 		curl_setopt($this->fp, CURLOPT_HEADER, 1);
-		//curl_setopt($this->fp, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($this->fp, CURLOPT_RETURNTRANSFER, 1);
 		if (version_compare($this->version, '7.10.5', '>=')) {
 			curl_setopt($this->fp, CURLOPT_ENCODING, '');
 		}
@@ -49,12 +49,9 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 		curl_setopt($this->fp, CURLOPT_USERAGENT, $options['useragent']);
 		curl_setopt($this->fp, CURLOPT_HTTPHEADER, $headers);
 
+		curl_setopt($this->fp, CURLOPT_HEADER, false);
 		if (true === $options['blocking']) {
-			curl_setopt($this->fp, CURLOPT_HEADER, true);
 			curl_setopt($this->fp, CURLOPT_HEADERFUNCTION, array(&$this, 'stream_headers'));
-		}
-		else {
-			curl_setopt($this->fp, CURLOPT_HEADER, false);
 		}
 
 		if ($options['filename'] !== false) {
@@ -70,6 +67,9 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 		if ($options['filename'] !== false) {
 			fclose($stream_handle);
 			$this->headers = trim($this->headers);
+		}
+		else {
+			$this->headers .= $response;
 		}
 
 		if (curl_errno($this->fp) === 23 || curl_errno($this->fp) === 61) {
