@@ -135,6 +135,30 @@
 	text-align: center;
 }
 
+/*  Plugins page  */
+.plugin-row.deactivated {
+	color: #999;
+}
+	.plugin-row.activated, .plugin-row.deactivated:hover {
+		color: #333;
+	}
+	.plugin-row .name {
+		font-weight: bold;
+	}
+	.plugin-row p {
+		font-size: 11px;
+		margin: 0;
+	}
+		.plugin-row a, .plugin-row.deactivated:hover a {
+			text-decoration: none;
+			color: #00f;
+		}
+			.plugin-row a:visited {
+			}
+			.plugin-row.deactivated a {
+				color: #888;
+			}
+
 
 #footer {
 	margin: 0;
