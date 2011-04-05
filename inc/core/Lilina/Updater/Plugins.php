@@ -18,17 +18,38 @@ class Lilina_Updater_Plugins {
 	 */
 	protected $actionable = array();
 
-	public static function init() {
+	/**
+	 * Callback for the admin_init hook
+	 *
+	 * Don't call this manually.
+	 */
+	public static function admin_init() {
 		$data = new DataHandler();
 		$current = $data->load('plugins.updates.json');
-		if ($current !== null)
-			self::$actionable = unserialize($current);
+		if ($current === null) {
+			add_action('admin_footer', array('Lilina_Updater_Plugins', 'check_all'));
+			return;
+		}
+
+		$current = json_decode($current);
+		foreach ($current->plugins as $plugin) {
+			$plugin = Lilina_Updater_PluginInfo::load($plugin);
+			self::$actionable[$plugin->id] = $plugin;
+		}
+
+		if (43200 > (time() - $current->last_checked)) {
+			return;
+		}
+
+		add_action('admin_footer', array('Lilina_Updater_Plugins', 'check_all'));
 	}
 
 	/**
 	 * Check all current plugins for updates
+	 *
+	 * Don't call this manually.
 	 */
-	protected static function do_check() {
+	public static function check_all() {
 		$activated = array_values($GLOBALS['current_plugins']);
 		$plugins = array();
 		foreach ($activated as $plugin) {
@@ -61,19 +82,40 @@ class Lilina_Updater_Plugins {
 				self::$actionable[$repo_id . ':' . $plugin->id] = $plugin;
 			}
 		}
+
+		self::$actionable = apply_filters('updater.plugin.aftercheck', self::$actionable, $plugins);
+
+		$to_save = array();
+		foreach (self::$actionable as $id => $plugin) {
+			$to_save[$id] = $plugin->dump();
+		}
+		$values = array(
+			'plugins' => $to_save,
+			'last_checked' => time()
+		);
+		$data = new DataHandler();
+		$data->save('plugins.updates.json', json_encode($values));
 	}
 
+	/**
+	 * Check whether a plugin needs updating
+	 *
+	 * @param string $id
+	 * @return boolean
+	 */
 	public static function check($id) {
 		if (!empty(self::$actionable[$id])) {
-			return self::$actionable[$id];
+			return true;
 		}
-		return null;
+		return false;
 	}
 
-	public static function check_all() {
-		self::do_check();
-	}
-
+	/**
+	 * Retrieve the information for a plugin
+	 *
+	 * @param string $name ID string, with prefix
+	 * @return Lilina_Updater_PluginInfo
+	 */
 	public static function get_info($name) {
 		list($repo, $name) = explode(':', $name, 2);
 		$repo = Lilina_Updater::get_repository($repo);
