@@ -116,6 +116,30 @@ class Lilina_Updater_Plugins {
 	}
 
 	/**
+	 * Search repositories for by name
+	 *
+	 * @param string $name
+	 * @return array
+	 */
+	public static function search($name) {
+		$available = array();
+		if (strpos($name, ':') === false) {
+			foreach (Lilina_Updater::get_repositories() as $repository) {
+				if ($packages = $repository->search($name)) {
+					$available = array_merge($available, $packages);
+				}
+			}
+		}
+		else {
+			list($repo, $name) = explode(':', $name, 2);
+			$repo = Lilina_Updater::get_repository($repo);
+			$available = $repo->search($name);
+		}
+
+		return $available;
+	}
+
+	/**
 	 * Install a plugin
 	 *
 	 * If a non-prefixed name is specified, this will search all repositories
