@@ -16,7 +16,7 @@ class Lilina_Updater_Plugins {
 	/**
 	 * 
 	 */
-	protected $actionable = array();
+	protected static $actionable = array();
 
 	/**
 	 * Callback for the admin_init hook
@@ -32,10 +32,7 @@ class Lilina_Updater_Plugins {
 		}
 
 		$current = json_decode($current);
-		foreach ($current->plugins as $plugin) {
-			$plugin = Lilina_Updater_PluginInfo::load($plugin);
-			self::$actionable[$plugin->id] = $plugin;
-		}
+		self::$actionable = (array) $current->plugins;
 
 		if (43200 > (time() - $current->last_checked)) {
 			return;
@@ -78,19 +75,15 @@ class Lilina_Updater_Plugins {
 				continue;
 			}
 
-			foreach ($result as $plugin) {
-				self::$actionable[$repo_id . ':' . $plugin->id] = $plugin;
+			foreach ($result as $id => $version) {
+				self::$actionable[$repo_id . ':' . $id] = $version;
 			}
 		}
 
 		self::$actionable = apply_filters('updater.plugin.aftercheck', self::$actionable, $plugins);
 
-		$to_save = array();
-		foreach (self::$actionable as $id => $plugin) {
-			$to_save[$id] = $plugin->dump();
-		}
 		$values = array(
-			'plugins' => $to_save,
+			'plugins' => self::$actionable,
 			'last_checked' => time()
 		);
 		$data = new DataHandler();

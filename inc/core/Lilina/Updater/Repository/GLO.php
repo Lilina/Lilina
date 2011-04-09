@@ -50,8 +50,8 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 			'Content-Type' => 'application/json',
 		));
 		$request = new HTTPRequest();
-		$result = $request->post('http://www.postbin.org/oz8ixf', $headers, json_encode($plugins));
-		var_dump($plugins);
+		$result = $request->post('http://api.getlilina.org/plugins/version', $headers, json_encode($plugins));
+		var_dump(json_decode($result->body));
 		$insta = new Lilina_Updater_PluginInfo('instapaper');
 		$insta->download = 'http://downloads.wordpress.org/plugin/jetpack.1.1.1.zip';
 		$insta->version = '1.1.1';
