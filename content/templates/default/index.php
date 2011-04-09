@@ -17,7 +17,7 @@ if ($offset === 0) {
 <html>
 <head>
 	<title><?php template_sitename();?></title>
-	<link rel="stylesheet" type="text/css" href="<?php echo Templates::get_template_dir_url(); ?>/style.css" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="<?php echo Templates::get_url('style.css'); ?>" media="screen"/>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <?php
 	template_header();
@@ -84,7 +84,7 @@ if ($offset === 0) {
 	else {
 ?>
 		<div class="message">No items available in the last <?php echo get_offset(true) ?> hours. Try <a href="index.php?hours=-1" id="viewallitems">viewing all items.</a></div>
-		<div class="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
+		<div class="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php echo Templates::get_url('loading.gif'); ?>" alt="<?php _e('Loading...') ?>" /></div>
 <?php
 	}
 ?>
