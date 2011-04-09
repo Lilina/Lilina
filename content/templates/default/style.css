@@ -122,6 +122,9 @@ a img {
 	text-decoration: none;
 	cursor: pointer;
 }
+.title div { /* Atom flavored titles */
+        display:inline;
+}
 .source { /* Direct link to weblog post */
 }
 .source a {
