@@ -19,9 +19,9 @@ if ($offset === 0) {
 	<title><?php template_sitename();?></title>
 	<link rel="stylesheet" type="text/css" href="<?php echo Templates::get_template_dir_url(); ?>/style.css" media="screen"/>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-	<?php
+<?php
 	template_header();
-	?>
+?>
 </head>
 <body class="river-page hours-<?php echo $offset ?>">
 	<div id="navigation">
@@ -48,62 +48,61 @@ if ($offset === 0) {
 	</div>
 
 	<div id="main">
-	<?php
+<?php
 	$num = 0;
-	if(has_items()) {
-		while(has_items()): the_item();
-	?>
+	if (has_items()) {
+		while (has_items()):
+			the_item();
+?>
 		<?php the_date('before=<h1 title="' . _r('Click to expand/collapse date') . '" class="date">' . _r('News stories from') . ' &after=</h1>&format=l d F, Y') ?>
 		<div class="item c2 feed-<?php the_feed_id(); ?>" id="item-<?php echo $num++ ?>">
 			<img src="<?php the_feed_favicon(); ?>" alt="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" title="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" style="width:16px; height:16px;" />
 			<span class="time"><?php the_time('format=H:i'); ?></span>
 			<span class="title" title="<?php _e('Click to expand/collapse item') ?>"><?php the_title(); ?></span>
 			<span class="source"><a href="<?php the_link(); ?>">&#187; <?php printf(_r('Post from %s'), get_the_feed_name()); ?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link') ?>" /></a></span>
-	<?php
+<?php
 			if( has_enclosure() ){
-	?>
+?>
 			<span class="enclosure"><?php the_enclosure(); ?></span>
-	<?php
+<?php
 			}
-	?>
+?>
 			<div class="excerpt">
 				<?php the_content(); ?>
 			</div>
 			<?php do_action('river_entry'); ?>
 			<?php action_bar('before=&after= | '); ?>
-		</div><?php
+		</div>
+<?php
 		endwhile;
 	}
-	elseif(!has_feeds()) {
-	?>
+	elseif (!has_feeds()) {
+?>
 		<div class="message"><?php printf(_r('You haven\'t added any feeds yet. Add them from <a href="%s">your admin panel</a>'), 'admin/'); ?></div>
-	<?php
+<?php
 	}
 	else {
-	?>
+?>
 		<div class="message">No items available in the last <?php echo get_offset(true) ?> hours. Try <a href="index.php?hours=-1" id="viewallitems">viewing all items.</a></div>
 		<div style="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
-	<?php
+<?php
 	}
-	?>
+?>
 		</div>
 	</div>
 
-	<?php
-	if(has_feeds()) {
-		?>
+<?php
+	if (has_feeds()) {
+?>
 	<div id="sources">
 		<h3><?php _e('Sources') ?></h3>
 		<ul><?php list_feeds('format=<li><a href="%1$s">%3$s</a> <a href="%4$s" class="feed-link">(' . _r('Feed') . ")</a></li>\n"); ?>
 		</ul>
 		<div class="clearer">&nbsp;</div>
 	</div>
-	<?php
+<?php
 	}
-	else {
-		//Already handled above; if there are no feeds, then there should be no items...
-	}
-		?>
+?>
 	<div id="footer">
 	<p><?php printf(_r('%s is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>'), get_option('sitename')); ?></p>
 	<!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->

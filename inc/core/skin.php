@@ -106,8 +106,9 @@ function get_offset($as_hours = false) {
 			else
 				$offset_time = (int) $_REQUEST['hours'] * 60 * 60;
 		}
-		else
+		else {
 			$offset_time = (int) 24 * 60 * 60;
+		}
 		$offset_time = apply_filters('showtime', $offset_time);
 	}
 	if($as_hours == true)
