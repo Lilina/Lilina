@@ -49,13 +49,12 @@ if ($offset === 0) {
 
 	<div id="main">
 <?php
-	$num = 0;
 	if (has_items()) {
 		while (has_items()):
 			the_item();
 ?>
 		<?php the_date('before=<h1 title="' . _r('Click to expand/collapse date') . '" class="date">' . _r('News stories from') . ' &after=</h1>&format=l d F, Y') ?>
-		<div class="item c2 feed-<?php the_feed_id(); ?>" id="item-<?php echo $num++ ?>">
+		<div class="item c2 feed-<?php the_feed_id(); ?>" id="item-<?php the_id() ?>">
 			<img src="<?php the_feed_favicon(); ?>" alt="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" title="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" style="width:16px; height:16px;" />
 			<span class="time"><?php the_time('format=H:i'); ?></span>
 			<span class="title" title="<?php _e('Click to expand/collapse item') ?>"><?php the_title(); ?></span>
