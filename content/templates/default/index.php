@@ -7,6 +7,8 @@
 /**
 */
 header('Content-Type: text/html; charset=utf-8');
+
+$offset = get_offset(true);
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,7 +20,7 @@ header('Content-Type: text/html; charset=utf-8');
 	template_header();
 	?>
 </head>
-<body class="river-page">
+<body class="river-page hours-<?php echo $offset ?>">
 	<div id="navigation">
 		<a href="<?php template_siteurl();?>">
 		<img src="<?php template_siteurl() ?>admin/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
