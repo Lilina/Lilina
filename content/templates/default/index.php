@@ -8,7 +8,7 @@
 */
 header('Content-Type: text/html; charset=utf-8');
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title><?php template_sitename();?></title>
@@ -23,8 +23,8 @@ header('Content-Type: text/html; charset=utf-8');
 		<a href="<?php template_siteurl();?>">
 		<img src="<?php template_siteurl() ?>admin/logo-small.png" alt="<?php template_sitename();?>" title="<?php template_sitename();?>" />
 		</a>
-		<a href="?method=feed&type=rss2"><?php _e('RSS Feed') ?></a>
-		<a href="?method=feed&type=atom"><?php _e('Atom Feed') ?></a> |
+		<a href="?method=feed&amp;type=rss2"><?php _e('RSS Feed') ?></a>
+		<a href="?method=feed&amp;type=atom"><?php _e('Atom Feed') ?></a> |
 		<a href="<?php echo get_option('baseurl') ?>?method=opml"><?php _e('OPML'); ?></a>
 		|
 		<a href="#sources"><?php _e('List of sources'); ?></a>
