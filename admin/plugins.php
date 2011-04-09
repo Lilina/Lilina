@@ -1,10 +1,9 @@
 <?php
 /**
- * @todo Move to admin/settings.php
- * @author Ryan McCue <cubegames@gmail.com>
+ * Plugin management page
+ *
  * @package Lilina
- * @version 1.0
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @subpackage Admin
  */
 
 /** */
