@@ -1,6 +1,7 @@
 Razor = {};
 Razor.useFrame = false;
 Razor.currentItem = false;
+Razor.conditions = {};
 Razor.init = function () {
 	//RazorAPI.init();
 	RazorUI.init();
@@ -43,6 +44,10 @@ Razor.selectPrevious = function () {
 	}
 	var id = $('a', prev).data('item-id');
 	Razor.selectItem(id);
+};
+Razor.api = function (method, conditions, callback) {
+	$.extend(conditions, Razor.conditions);
+	LilinaAPI.call(method, conditions, callback);
 };
 
 
@@ -103,7 +108,7 @@ RazorUI.init = function () {
 
 	LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 	// We'll fix this hardcoded limit later.
-	LilinaAPI.call('items.getList', {"limit": RazorUI.itemCount}, RazorUI.initializeItemList);
+	Razor.api('items.getList', {"limit": RazorUI.itemCount}, RazorUI.initializeItemList);
 
 	$('#items-list li a').live('click', RazorUI.handleItemClick);
 	$('#sidebar .expandable > a .arrow')
@@ -288,7 +293,7 @@ RazorUI.populateItemList = function (list) {
 RazorUI.loadMoreItems = function () {
 	var oldCount = RazorUI.itemCount;
 	RazorUI.itemCount += 20;
-	LilinaAPI.call('items.getList', {"limit": 20, "start": oldCount}, RazorUI.populateItemList);
+	Razor.api('items.getList', {"limit": 20, "start": oldCount}, RazorUI.populateItemList);
 
 	return false;
 };
