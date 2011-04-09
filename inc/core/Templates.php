@@ -141,8 +141,8 @@ class Templates {
 		elseif (file_exists($current['Template Dir'] . '/' . $file_name))
 			return $current['Template Dir'] . '/' . $file_name;
 
-		elseif (file_exists(Templates::get_template_root() . '/default/' . $file_name))
-			return Templates::get_template_root() . '/default/' . $file_name;
+		elseif (file_exists(Templates::get_template_root() . '/razor/' . $file_name))
+			return Templates::get_template_root() . '/razor/' . $file_name;
 
 		else
 			return false;
@@ -215,7 +215,7 @@ class Templates {
 	 */
 	public static function get_current() {
 		if( !$data = Templates::get_template_data(get_option('template')) )
-			$data = Templates::get_template_data('default');
+			$data = Templates::get_template_data('razor');
 
 		return $data;
 	}

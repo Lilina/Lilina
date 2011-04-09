@@ -233,7 +233,7 @@ function upgrade() {
 function default_options() {
 	Options::lazy_update('offset', 0);
 	Options::lazy_update('encoding', 'utf-8');
-	Options::lazy_update('template', 'default');
+	Options::lazy_update('template', 'razor');
 	Options::lazy_update('locale', 'en');
 	Options::lazy_update('timezone', 'UTC');
 	Options::lazy_update('sitename', 'Lilina News Aggregator');
@@ -243,7 +243,7 @@ function new_options_297() {
 	Options::lazy_update('offset', 0);
 	Options::lazy_update('encoding', 'utf-8');
 	if (!Options::get('template', false))
-		Options::lazy_update('template', 'default');
+		Options::lazy_update('template', 'razor');
 	if (!Options::get('locale', false))
 		Options::lazy_update('locale', 'en');
 }
