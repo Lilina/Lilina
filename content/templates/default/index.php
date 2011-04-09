@@ -84,7 +84,7 @@ if ($offset === 0) {
 	else {
 ?>
 		<div class="message">No items available in the last <?php echo get_offset(true) ?> hours. Try <a href="index.php?hours=-1" id="viewallitems">viewing all items.</a></div>
-		<div style="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
+		<div class="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
 <?php
 	}
 ?>
