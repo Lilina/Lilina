@@ -58,7 +58,8 @@ if ($offset === 0) {
 			<img src="<?php the_feed_favicon(); ?>" alt="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" title="<?php printf(_r('Favicon for %s'), get_the_feed_name()) ?>" style="width:16px; height:16px;" />
 			<span class="time"><?php the_time('format=H:i'); ?></span>
 			<span class="title" title="<?php _e('Click to expand/collapse item') ?>"><?php the_title(); ?></span>
-			<span class="source"><a href="<?php the_link(); ?>">&#187; <?php printf(_r('Post from %s'), get_the_feed_name()); ?> <img src="<?php echo template_file_load('application_double.png'); ?>" alt="<?php _e('Visit off-site link') ?>" /></a></span>
+			<span class="source"><a href="<?php the_link(); ?>">&#187; <?php printf(_r('Post from %s'), get_the_feed_name()); ?>
+				<img src="<?php echo Templates::get_url('application_double.png'); ?>" alt="<?php _e('Visit off-site link') ?>" /></a></span>
 <?php
 			if( has_enclosure() ){
 ?>
