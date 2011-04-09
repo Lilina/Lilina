@@ -409,7 +409,7 @@ function plugins_meta($plugin_file) {
 		$vals['min_version'] = LILINA_CORE_VERSION;
 	
 	if (empty($vals['id']))
-		$vals['id'] = 'unknown';
+		$vals['id'] = sha1($plugin_file);
 
 	$plugin = (object) $vals;
 	return $plugin;
