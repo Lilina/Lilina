@@ -56,6 +56,7 @@ function admin_header($title, $parent_file = false) {
 	$navigation = array(
 		array(_r('Dashboard'), 'index.php', ''),
 		array(_r('Feeds'), 'feeds.php', 'feeds'),
+		array(_r('Plugins'), 'plugins.php', 'plugins'),
 		array(_r('Settings'), 'settings.php', 'settings'),
 	);
 	$navigation = apply_filters('navigation', $navigation);
@@ -67,6 +68,10 @@ function admin_header($title, $parent_file = false) {
 		'feeds.php' => array(
 			array(_r('Add/Manage'), 'feeds.php', 'feeds'),
 			array(_r('Import'), 'feed-import.php', 'feeds'),
+		),
+		'plugins.php' => array(
+			array(_r('Manage'), 'plugins.php', 'plugins'),
+			array(_r('Search & Install'), 'plugins-add.php', 'plugins'),
 		),
 		'settings.php' => array(
 			array(_r('General'), 'settings.php', 'settings'),
