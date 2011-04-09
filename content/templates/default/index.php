@@ -9,6 +9,9 @@
 header('Content-Type: text/html; charset=utf-8');
 
 $offset = get_offset(true);
+if ($offset === 0) {
+	$offset = 'all';
+}
 ?>
 <!DOCTYPE html>
 <html>
