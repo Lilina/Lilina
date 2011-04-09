@@ -1,0 +1,384 @@
+/*
+Theme Name: Razor
+Theme URI: http://getlilina.org/
+Author: Ryan McCue
+Description: A 3-column layout, designed to look like a desktop application
+*/
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+}
+a:active, a:focus {
+	outline: none;
+}
+#header {
+	width: 100%;
+	height: 59px;
+	/*background: #eee url("resources/_CPToolbarViewBackground.png") repeat-x;*/
+	background: #173057;
+	position: relative;
+}
+	#header h1 {
+		position: absolute;
+		left: 10px;
+		margin: 0;
+		font-size: 20px;
+		line-height: 50px;
+		font-weight: normal;
+	}
+		#header h1 a {
+			color: #eee;
+			text-decoration: none;
+		}
+	#menu {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+		line-height: 59px;
+		list-style-type: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+		#menu li {
+			float: left;
+			margin-right: 10px;
+			font-size: 11px;
+			color: #999;
+		}
+			#menu li a {
+				text-decoration: none;
+				color: #ccc;
+			}
+				#menu li a:hover {
+					color: #eee;
+				}
+			#menu .icon {
+				height: 32px;
+				width: 24px;
+				margin-top: 9px;
+				margin-bottom: 18px;
+				display: block;
+			}
+			#menu .text {
+				text-indent: -9999px;
+				display: block;
+			}
+			#menu li#updating {
+				background: url("resources/loading-blue.gif") no-repeat left center;
+				padding: 3px 0 3px 18px;
+			}
+#sidebar {
+	float: left;
+	position: relative;
+	width: 250px;
+
+	background: #D7DDE6;
+	border-right: 1px solid #aaa;
+}
+	#sidebar .item-list {
+		overflow: auto;
+	}
+		#sidebar .item-list h2 {
+			font-size: 11px;
+			text-transform: uppercase;
+			color: #627080;
+			text-shadow: 0 1px 0 #fff;
+			margin-left: 8px;
+		}
+		#sidebar .item-list ul {
+			list-style-type: none;
+			margin: 10px 0 11px;
+			padding: 0;
+
+			font-size: 11px;
+			line-height: 8px;
+		}
+			#sidebar .item-list li {
+				position: relative;
+			}
+				#sidebar .item-list a {
+					display: block;
+					position: relative;
+					padding: 6px 0 6px 39px;
+					height: 8px;
+
+					color: #191919;
+					text-decoration: none;
+				}
+					#sidebar .item-list img {
+						position: absolute;
+						left: 18px;
+						top: 3px;
+						border: 0;
+						height: 14px;
+						width: 14px;
+					}
+					#sidebar .item-list a:hover {
+						background: rgba(56, 117, 215, 0.1);
+					}
+					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected a {
+						background: rgba(56, 117, 215, 0.6);
+						background-image: url("resources/sidebar-selected.png");
+						color: #fff;
+						text-shadow: 0 1px 0 #22568C;
+					}
+					#sidebar .item-list .delete {
+						display: none;
+						position: absolute;
+						right: 10px;
+						top: -2px;
+					}
+						#sidebar .item-list a:hover .delete {
+							display: inline;
+						}
+						#sidebar .item-list .delete .text {
+							display: block;
+							text-indent: -9999px;
+						}
+				#sidebar .expandable > a {
+				}
+					#sidebar .expandable .arrow {
+						position: absolute;
+						color: #818F9E;
+						left: 6px;
+					}
+					#sidebar .expandable ul {
+						margin: 0 0 0 14px;
+					}
+#items-list {
+	float: left;
+	position: relative;
+	width: 340px;
+	overflow: auto;
+
+	border-right: 1px solid #aaa;
+	background: #fff;
+}
+	#items-list ol {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+		#items-list li a {
+			display: block;
+			overflow: hidden;
+			padding: 10px;
+			height: 35px;
+
+			font-size: 13px;
+			line-height: 1.5;
+			color: #222;
+			background: #fff;
+			text-decoration: none;
+		}
+			#items-list li:nth-child(odd) a {
+				background: #EDF3FE;
+			}
+			#items-list li a:hover, #items-list li a:focus, #items-list li.selected a {
+				background: #e5e5ff;
+			}
+			#items-list li a.current {
+				background: #3875D7;
+				color: #fff;
+			}
+				#items-list li a.current .item-source,
+				#items-list li a.current .item-date {
+					color: #ccc;
+				}
+				#items-list li a .sep {
+					display: none;
+				}
+				#items-list li a .item-title {
+					display: block;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
+				}
+				#items-list li a .item-source,
+				#items-list li a .item-date {
+					color: #999;
+					font-size: 11px;
+				}
+				#items-list li a .item-source {
+					float: left;
+				}
+				#items-list li a .item-date {
+					float: right;
+				}
+#item-view {
+	float: left;
+	position: relative;
+}
+	#item {
+	}
+	#heading {
+		border-bottom: 1px solid #aaa;
+		width: 100%;
+		position: relative;
+	}
+		#heading h2 {
+			margin: 0;
+			padding: 6px 10px 0;
+			font-size: 14px;
+		}
+		#heading a {
+			text-decoration: none;
+		}
+		#heading .item-meta {
+			font-size: 11px;
+			padding: 6px 10px 0;
+		}
+	#item-content {
+		padding: 10px;
+		overflow: auto;
+	}
+	#item-view .loading {
+		background: #EEEEEE url("resources/loading.gif") no-repeat center;
+		height: 100%;
+		width: 100%;
+		text-align: center;
+		text-indent: -9999px;
+	}
+	.keyboard-shortcuts dt {
+		font-family: Monaco, Consolas, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+		display: inline-block;
+		padding: 3px 6px;
+		background: #eee;
+	}
+	.keyboard-shortcuts dd {
+		display: inline;
+		margin: 0;
+		padding: 0;
+	}
+.footer {
+	position: absolute;
+	bottom: 0;
+	height: 32px;
+	width: 100%;
+	background: url("resources/_CPToolbarViewBackground.png") #eee;
+	border-top: 1px solid #aaa;
+}
+	.footer ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+		.footer li {
+			display: inline-block;
+			line-height: 32px;
+
+			font-size: 11px;
+		}
+			.footer li a {
+				display: block;
+				padding: 0 10px;
+
+				color: #333;
+				text-decoration: none;
+			}
+				.footer li a:hover {
+					background: rgba(56, 117, 215, 0.8);
+					color: #fff;
+				}
+				.footer li a:active {
+					background: rgba(56, 117, 215, 0.9);
+					color: #fff;
+				}
+
+/*	****************************************
+		Item Content: Actual content of item
+	****************************************	*/
+#item-content {
+	font-size: 13px;
+	line-height: 1.4em;
+}
+
+	#item-content p, #item-content ul, #item-content ol, #item-content dl {
+		font-size: 12px;
+		margin: 0 0 12px;
+		padding: 0;
+	}
+		#item-content ol li, #item-content ul li {
+			margin: 0 0 0 30px;
+			padding: 0;
+		}
+		#item-content a {
+			color: #00f;
+			text-decoration: none;
+		}
+			#item-content a:hover {
+				color: #f00;
+			}
+	#item-content blockquote {
+		margin: 0 0 15px 15px;
+		padding: 0 0 0 15px;
+
+		font-size: 12px;
+		border-left: 1px solid #AFAFAF;
+	}
+	#item-content h1,
+	#item-content h2,
+	#item-content h3,
+	#item-content h4 {
+		margin: 0 0 10px;
+	}
+		#item-content h1 {
+			font-size: 18px;
+		}
+		#item-content h2 {
+			font-size: 16px;
+		}
+		#item-content h3 {
+			font-size: 14px;
+		}
+		#item-content h4 {
+			font-size: 13px;
+			text-transform: uppercase;
+		}
+	#item-content img {
+		padding: 10px;
+		border: 1px solid #ccc;
+	}
+		#item-content a img {
+			border-color: #00f;
+		}
+			#item-content a:hover img {
+				border-color: #f00;
+			}
+
+#item-content.framed {
+	border: none;
+	width: 100%;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+
+#switcher {
+	display: none;
+}
+
+/*
+Two-Column Layout
+
+For smaller screens
+*/
+@media screen and (max-width: 920px) {
+	#sidebar {
+		display: none;
+		width: 340px;
+	}
+	#sidebar, #items-list {
+		margin-top: 33px;
+	}
+	#switcher {
+		display: block;
+		top: 59px;
+		width: 340px;
+		border-top: 0;
+		border-right: 1px solid #aaa;
+		border-bottom: 1px solid #aaa;
+	}
+}
