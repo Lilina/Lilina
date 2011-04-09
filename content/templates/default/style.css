@@ -122,6 +122,9 @@ a img {
 	text-decoration: none;
 	cursor: pointer;
 }
+.title div { /* Atom flavored titles */
+        display:inline;
+}
 .source { /* Direct link to weblog post */
 }
 .source a {
@@ -134,6 +137,10 @@ a img {
 	font-size: 11px;
 	width: 90%;
 }
+.excerpt > *:first-child { /* Subpixel hinting for smoother transitions  */
+        margin-top:0.5px;
+}
+
 
 /* Sources */
 #sources {
