@@ -188,6 +188,16 @@ a img {
 	clear: both;
 }
 
+.message {
+	border: 1px solid #e7dc2b;
+	background: #fff888;
+	margin: 15px;
+	padding: 10px;
+}
+.hidden {
+	display: none;
+}
+
 
 /* Edit */
 .item li {

@@ -76,13 +76,13 @@ if ($offset === 0) {
 	}
 	elseif(!has_feeds()) {
 	?>
-		<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;"><?php printf(_r('You haven\'t added any feeds yet. Add them from <a href="%s">your admin panel</a>'), 'admin/'); ?></div>
+		<div class="message"><?php printf(_r('You haven\'t added any feeds yet. Add them from <a href="%s">your admin panel</a>'), 'admin/'); ?></div>
 	<?php
 	}
 	else {
 	?>
-		<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;">No items available in the last <?php echo get_offset(true) ?> hours. Try <a href="index.php?hours=-1" id="viewallitems">viewing all items.</a></div>
-		<div style="border:1px solid #e7dc2b;background: #fff888;margin:15px;padding:10px;display:none;">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
+		<div class="message">No items available in the last <?php echo get_offset(true) ?> hours. Try <a href="index.php?hours=-1" id="viewallitems">viewing all items.</a></div>
+		<div style="message hidden">Now loading all available items - If they don't load within 20 seconds, click <a href="index.php?hours=-1">here</a><br /><img src="<?php template_directory(); ?>/loading.gif" alt="<?php _e('Loading...') ?>" /></div>
 	<?php
 	}
 	?>
