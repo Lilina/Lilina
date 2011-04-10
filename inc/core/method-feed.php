@@ -46,6 +46,7 @@ class Resyndicate {
 		</author>
 		<title type="html"><![CDATA[<?php the_title(); ?>]]></title>
 		<link rel="alternate" type="text/html" href="<?php the_link(); ?>" />
+		<link rel="via" href="<?php the_feed_url(); ?>" />
 		<id><?php the_id(); ?></id>
 		<updated><?php the_date('Y-m-d\TH:i:s\Z'); ?></updated>
 		<published><?php the_date('Y-m-d\TH:i:s\Z'); ?></published>
