@@ -132,7 +132,7 @@ class Lilina {
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<title><?php echo $title; ?> &mdash; Lilina News Aggregator</title>
+		<title><?php echo $title; ?> &mdash; Lilina</title>
 		<link rel="stylesheet" type="text/css" href="<?php echo $guessurl ?>admin/resources/reset.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $guessurl ?>install.css" />
 	</head>

@@ -219,7 +219,7 @@ function default_options() {
 	Options::lazy_update('template', 'razor');
 	Options::lazy_update('locale', 'en');
 	Options::lazy_update('timezone', 'UTC');
-	Options::lazy_update('sitename', 'Lilina News Aggregator');
+	Options::lazy_update('sitename', 'Lilina');
 	Options::lazy_update('feeds_version', LILINA_FEEDSTORAGE_VERSION);
 }
 function new_options_297() {
@@ -246,7 +246,7 @@ function new_options_368() {
 		if(!empty($settings['sitename']))
 			Options::lazy_update('sitename', $settings['sitename']);
 		else
-			Options::lazy_update('sitename', 'Lilina News Aggregator');
+			Options::lazy_update('sitename', 'Lilina');
 	}
 }
 
@@ -284,7 +284,7 @@ switch($page) {
 		<h2>General Settings</h2>
 		<div class="row">
 			<label for="sitename">Name of site</label>
-			<input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
+			<input type="text" value="<?php echo (!$sitename) ? 'Lilina' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
 			<p class="sidenote">Give your site something to identify it by. This can be changed later.</p>
 		</div>
 	</fieldset>

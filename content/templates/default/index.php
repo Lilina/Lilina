@@ -104,7 +104,7 @@ if ($offset === 0) {
 	}
 ?>
 	<div id="footer">
-	<p><?php printf(_r('%s is proudly powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>'), get_option('sitename')); ?></p>
+	<p><?php printf(_r('%s is proudly powered by <a href="http://getlilina.org/">Lilina</a>'), get_option('sitename')); ?></p>
 	<!-- <?php global $timer_start; echo lilina_timer_end($timer_start); ?> -->
 	<?php template_footer(); ?>
 	</div>

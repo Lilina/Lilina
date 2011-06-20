@@ -247,7 +247,7 @@ class Installer {
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<title>Installation - Lilina News Aggregator</title>
+		<title>Installation - Lilina</title>
 		<link rel="stylesheet" type="text/css" href="admin/resources/reset.css" />
 		<link rel="stylesheet" type="text/css" href="install.css" />
 	</head>
