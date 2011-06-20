@@ -149,8 +149,9 @@ class SubscribePage {
 		$feed->set_stupidly_fast(true);
 		$feed->enable_cache(false);
 		$feed->set_feed_url($url);
+		$feed->set_file_class('Lilina_SimplePie_File');
 		$feed->set_locator_class('Lilina_SimplePie_Locator');
-		$feed->init();;
+		$feed->init();
 		return $feed->get_all_discovered_feeds();
 	}
 
