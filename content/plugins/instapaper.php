@@ -84,8 +84,7 @@ class Instapaper {
 			//'selection' => $_GET['selection'] // Support for this coming later.
 		);
 
-		$request = new HTTPRequest('', 2);
-		$response = $request->post("https://www.instapaper.com/api/add", array(), $data);
+		$response = Lilina_HTTP::post("https://www.instapaper.com/api/add", array(), $data, array('redirects' => 2));
 
 		switch ( $response->status_code ) {
 			case 400:

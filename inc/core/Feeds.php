@@ -126,8 +126,7 @@ class Feeds {
 		}
 
 		$cache = new DataHandler(get_option('cachedir'));
-		$request = new HTTPRequest();
-		$file = $request->get($favicon, array('X-Forwarded-For' => $_SERVER['REMOTE_ADDR']));
+		$file = Lilina_HTTP::get($favicon, array('X-Forwarded-For' => $_SERVER['REMOTE_ADDR']));
 
 		if ($file->success && strlen($file->body) > 0) {
 			$sniffer = new $feed->content_type_sniffer_class($file);

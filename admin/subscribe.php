@@ -143,7 +143,7 @@ class SubscribePage {
 
 	public static function get_discovered($url) {
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
-		class_exists('HTTPRequest');
+		class_exists('Lilina_HTTP');
 		$feed = new SimplePie();
 		$feed->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed->set_stupidly_fast(true);

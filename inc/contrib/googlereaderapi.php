@@ -32,7 +32,6 @@ class GoogleReaderAPI {
 	}
 
 	public function connect() {
-		$this->request = new HTTPRequest('', 10, 'Lilina/' . LILINA_CORE_VERSION);
 		$this->authenticate();
 	}
 
@@ -45,7 +44,7 @@ class GoogleReaderAPI {
 			'source' => 'Lilina/' . LILINA_CORE_VERSION,
 		);
 
-		$response = $this->request->post($this->urls['auth'], array(), $data);
+		$response = Lilina_HTTP::post($this->urls['auth'], array(), $data);
 
 		if($response->success !== true) {
 			if($response->status_code == 403) {
@@ -66,7 +65,7 @@ class GoogleReaderAPI {
 		$action = 'http://www.google.com/reader/subscriptions/export';
 		// note that the hyphen above is a shortcut
 		// for "the currently logged-in user"
-		$response = $this->request->get($action, array('Cookie' => $this->cookie));
+		$response = Lilina_HTTP::get($action, array('Cookie' => $this->cookie));
 		
 		// and finally, let's take a look.
 		return $response->body;
