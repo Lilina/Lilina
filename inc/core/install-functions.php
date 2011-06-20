@@ -188,7 +188,6 @@ class Installer {
 			'user' => $username,
 			'pass' => md5($password)
 		);
-		$settings['enabled_plugins'] = '';
 		$settings['settings_version'] = LILINA_SETTINGS_VERSION;
 
 		return "<?php
@@ -201,9 +200,6 @@ class Installer {
 							'user' => '$username',
 							'pass' => '" . md5($password) . "'
 							);
-
-// All the enabled plugins, stored in a serialized string
-\$settings['enabled_plugins'] = '';
 
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . LILINA_SETTINGS_VERSION . ";

@@ -146,8 +146,6 @@ function upgrade() {
 							'user' => '$USERNAME',
 							'pass' => '" . md5($PASSWORD) . "'
 							);\n
-// All the enabled plugins, stored in a serialized string
-\$settings['enabled_plugins'] = '';\n
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>";
 
