@@ -20,8 +20,8 @@ define('LILINA_ADMIN', 1) ;
 define('LILINA_PAGE', 'admin');
 
 global $settings;
-require_once(LILINA_INCPATH . '/core/install-functions.php');
-lilina_check_installed();
+require_once(LILINA_INCPATH . '/core/Lilina.php');
+Lilina::check_installed();
 
 require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 Localise::load_default_textdomain();
@@ -44,7 +44,7 @@ else {
 }
 
 /** This sanitises all input variables, so we don't have to worry about them later */
-lilina_level_playing_field();
+Lilina::level_playing_field();
 
 require_once(LILINA_PATH . '/admin/includes/common.php');
 
