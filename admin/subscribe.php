@@ -207,6 +207,8 @@ class SubscribePage {
 				$(this).siblings(".optional").show();
 				$(this).hide();
 			});
+
+			$("#url").focus();
 		});
 	</script>
 </body>
