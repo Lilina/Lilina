@@ -137,7 +137,8 @@ RazorUI.init = function () {
 	$.hotkeys({
 		"?": RazorUI.showHelp,
 		"j": Razor.selectPrevious,
-		"k": Razor.selectNext
+		"k": Razor.selectNext,
+		"v": RazorUI.openCurrent
 	});
 	$('#footer-add').click(function () {
 		$.fancybox({
@@ -193,6 +194,15 @@ RazorUI.showHelp = function () {
 	var loading = $('<div class="loading">Loading...</div>');
 	$('#item-view').html(loading);
 	LilinaAPI.call('razor.help', {}, RazorUI.populateItemView);
+};
+RazorUI.openCurrent = function () {
+	var current = $('#heading .item-title a').attr('href');
+	if (current === undefined)
+		return;
+
+	if (!window.open(current)) {
+		alert("Looks like your browser is blocking popup windows. Try unblocking them to open links.");
+	}
 };
 RazorUI.headerHeight = 59;
 RazorUI.fitToWindow = function () {

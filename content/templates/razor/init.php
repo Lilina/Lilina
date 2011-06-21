@@ -29,6 +29,10 @@ function razor_help() {
 	<dt>k</dt>
 	<dd>Select the next item</dd>
 </dl>
+<dl class="keyboard-shortcuts">
+	<dt>v</dt>
+	<dd>View the current item</dd>
+</dl>
 <p>More coming soon!</p>
 <h2>About Razor</h2>
 <p>Razor was developed by <a href="http://ryanmccue.info/">Ryan McCue</a> as a proof-of-concept. It is intended to make Lilina act like a desktop feed reader, and to be as responsive.</p>',
