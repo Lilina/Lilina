@@ -196,11 +196,19 @@ a:active, a:focus {
 					text-overflow: ellipsis;
 					overflow: hidden;
 				}
+					#items-list li a.current .item-title {
+						text-shadow: 0 1px 0 #000;
+					}
 				#items-list li a .item-source,
 				#items-list li a .item-date {
 					color: #999;
 					font-size: 11px;
+					text-shadow: 0 1px 0 #fff;
 				}
+					#items-list li a.current .item-source,
+					#items-list li a.current .item-date {
+						text-shadow: 0 1px 0 #444;
+					}
 				#items-list li a .item-source {
 					float: left;
 				}
