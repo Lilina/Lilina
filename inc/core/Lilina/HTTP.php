@@ -189,24 +189,7 @@ class Lilina_HTTP {
 			unset($return->headers['transfer-encoding']);
 		}
 		if (isset($return->headers['content-encoding'])) {
-			switch ($return->headers['content-encoding']) {
-				case 'gzip':
-					if (function_exists('gzdecode')) {
-						$return->body = gzdecode($return->body);
-					}
-					else {
-						throw new Lilina_HTTP_Exception(_r('gzdecode is missing'), 'nogzdecode');
-					}
-					break;
-				case 'deflate':
-					if (function_exists('gzinflate')) {
-						$return->body = gzinflate($return->body);
-					}
-					else {
-						throw new Lilina_HTTP_Exception(_r('gzinflate is missing'), 'nogzinflate');
-					}
-					break;
-			}
+			$return->body = self::decompress($return->body);
 		}
 
 		//fsockopen and cURL compatibility
@@ -263,5 +246,57 @@ class Lilina_HTTP {
 			$return[] = "$key: $value";
 		}
 		return $return;
+	}
+
+	protected static function decompress($data) {
+		if (function_exists('gzdecode') && ($decoded = gzdecode($data)) !== false) {
+			$return->body = $decoded;
+		}
+		elseif (function_exists('gzinflate') && ($decoded = @gzinflate($data)) !== false) {
+			$return->body = $decoded;
+		}
+		elseif (($decoded = self::compatible_gzinflate($data)) !== false) {
+			return $decoded;
+		}
+		elseif (function_exists('gzuncompress') && ($decoded = @gzuncompress($data)) !== false) {
+			return $decoded;
+		}
+		
+		return $data;
+	}
+
+	/**
+	 * Decompress deflated string while staying compatible with the majority of servers.
+	 *
+	 * Certain servers will return deflated data with headers which PHP's gziniflate()
+	 * function cannot handle out of the box. The following function lifted from
+	 * http://au2.php.net/manual/en/function.gzinflate.php#77336 will attempt to deflate
+	 * the various return forms used.
+	 *
+	 * @link http://au2.php.net/manual/en/function.gzinflate.php#77336
+	 *
+	 * @param string $gzData String to decompress.
+	 * @return string|bool False on failure.
+	 */
+	protected static function compatible_gzinflate($gzData) {
+		if ( substr($gzData, 0, 3) == "\x1f\x8b\x08" ) {
+			$i = 10;
+			$flg = ord( substr($gzData, 3, 1) );
+			if ( $flg > 0 ) {
+				if ( $flg & 4 ) {
+					list($xlen) = unpack('v', substr($gzData, $i, 2) );
+					$i = $i + 2 + $xlen;
+				}
+				if ( $flg & 8 )
+					$i = strpos($gzData, "\0", $i) + 1;
+				if ( $flg & 16 )
+					$i = strpos($gzData, "\0", $i) + 1;
+				if ( $flg & 2 )
+					$i = $i + 2;
+			}
+			return gzinflate( substr($gzData, $i, -8) );
+		} else {
+			return false;
+		}
 	}
 }
