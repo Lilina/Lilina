@@ -182,11 +182,6 @@ class Lilina {
 			require_once($file);
 			return;
 		}
-
-		$class_file = strtolower($class_name) . '.php';
-		if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
-			require_once(LILINA_INCPATH . '/core/class-' . $class_file);
-		}
 	}
 }
 
