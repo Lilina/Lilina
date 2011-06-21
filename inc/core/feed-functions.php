@@ -22,8 +22,6 @@ defined('LILINA_PATH') or die('Restricted access');
  */
 function lilina_sanitize_item($item) {
 	static $config;
-	if (empty($input))
-		return $input;
 
 	require_once(LILINA_INCPATH . '/contrib/HTMLPurifier.standalone.php');
 	if(!isset($config)) {
