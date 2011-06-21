@@ -394,7 +394,8 @@ FeedList.prototype.loadCallback = function (data) {
 	});
 };
 FeedList.prototype.add = function (data) {
-	this.feeds.push(new FeedRow(data));
+	$("#nofeeds").hide();
+	this.feeds.push(new FeedRow(data, this));
 };
 FeedList.prototype.reload = function () {
 	jQuery.each(this.feeds, function () {
@@ -406,8 +407,9 @@ FeedList.prototype.reload = function () {
 }
 
 /* Row object (single feed), for use with FeedList */
-FeedRow = function(data) {
+FeedRow = function(data, list) {
 	this.data = data;
+	this.list = list;
 	this.render()
 };
 FeedRow.prototype.data = null;
@@ -482,7 +484,7 @@ FeedRow.prototype.remove = function () {
 };
 FeedRow.prototype.removeComplete = function (data) {
 	this.row.remove();
-	this.render();
+	this.list.reload();
 	admin.messages.display(data.msg);
 };
 FeedRow.prototype.save = function () {
