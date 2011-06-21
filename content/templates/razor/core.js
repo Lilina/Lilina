@@ -139,6 +139,19 @@ RazorUI.init = function () {
 		"j": Razor.selectPrevious,
 		"k": Razor.selectNext
 	});
+	$('#footer-add').click(function () {
+		$.fancybox({
+			'transitionIn' : 'none',
+			'transitionOut' : 'none',
+			'type': 'iframe',
+			'href': $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed'
+		});
+		$(document).bind('close-frame', function () {
+			$.fancybox.close();
+		});
+
+		return false;
+	})
 	$('#switcher-sidebar').click(function () {
 		RazorUI.showing = 'sidebar';
 		RazorUI.fitToWindow();
