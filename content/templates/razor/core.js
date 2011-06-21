@@ -106,7 +106,7 @@ RazorUI.init = function () {
 
 	$('.relative').toRelativeTime();
 
-	LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
+	RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 	// We'll fix this hardcoded limit later.
 	Razor.api('items.getList', {"limit": RazorUI.itemCount}, RazorUI.initializeItemList);
 
@@ -264,7 +264,9 @@ RazorUI.initializeItemList = function (list) {
 	$('#items-list ol').empty();
 	var li = $('<li id="load-more"><a href="#">Load More Items</a></li>');
 	$('#items-list ol').append(li);
-	RazorUI.populateItemList(list);
+	RazorUI.feedLoader.success(function () {
+		RazorUI.populateItemList(list);
+	});
 	$('#items-list').trigger('initialized');
 };
 RazorUI.populateItemList = function (list) {
@@ -275,7 +277,7 @@ RazorUI.populateItemList = function (list) {
 		a.data('item-id', id).attr('title', item.title).attr('href', '#!/item/' + id);
 		$('.item-title', li).html( item.title.shorten(40) );
 
-		if(item.feed_id != undefined)
+		if (item.feed_id != undefined && RazorUI.feeds[item.feed_id] !== undefined)
 			var feed = RazorUI.feeds[item.feed_id];
 		else
 			var feed = {"name": "Razor", "url": "http://getlilina.org/"};

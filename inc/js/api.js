@@ -8,7 +8,7 @@ LilinaAPI.call = function (method, params, callback, error_callback, type, locat
 
 	$.extend(request_params, params);
 
-	$.ajax({
+	return $.ajax({
 		'cache': false,
 		'data': request_params,
 		'dataType': 'json',
