@@ -148,9 +148,15 @@ class ItemUpdater {
 				'url' => false
 			);
 		}
+
+		$date = $item->get_date('U');
+		if ($date === 0 || $date === false || $date === null) {
+			$date = self::default_date($item);
+		}
+
 		$new_item = (object) array(
 			'hash'      => sha1($item->get_id()),
-			'timestamp' => $item->get_date('U'),
+			'timestamp' => $date,
 			'title'     => $item->get_title(),
 			'content'   => $item->get_content(),
 			'summary'   => $item->get_description(),
@@ -165,6 +171,24 @@ class ItemUpdater {
 		if(!empty($feed))
 			$new_item->feed_id = $feed;
 		return apply_filters('item_data', $new_item, $item);
+	}
+
+	protected static function default_date(&$item) {
+		$date = $item->get_feed()->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'pubDate');
+		$date = strtotime($date[0]['data']);
+
+		if ($date !== 0 && $date !== false && $date !== null) {
+			return $date;
+		}
+
+		$date = $item->get_feed()->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'lastBuildDate');
+		$date = strtotime($date[0]['data']);
+
+		if ($date !== 0 && $date !== false && $date !== null) {
+			return $date;
+		}
+
+		return 0;
 	}
 
 	/**
