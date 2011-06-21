@@ -169,6 +169,8 @@ class SubscribePage {
 		$feed->set_feed_url($url);
 		$feed->set_file_class('Lilina_SimplePie_File');
 		$feed->set_locator_class('Lilina_SimplePie_Locator');
+		// We set this higher, since we're explicitly autodiscovering
+		$feed->set_max_checked_feeds(50);
 		$feed->init();
 		return $feed->get_all_discovered_feeds();
 	}
