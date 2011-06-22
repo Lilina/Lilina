@@ -1,3 +1,70 @@
+/*
+ * Returns a description of this past date in relative terms.
+ * Example: '3 years ago'
+ */
+Date.prototype.toRelativeTime = function() {
+  var delta       = new Date() - this;
+  var units       = null;
+  var conversions = {
+	millisecond: 1, // ms    -> ms
+	second: 1000,   // ms    -> sec
+	minute: 60,     // sec   -> min
+	hour:   60,     // min   -> hour
+	day:    24,     // hour  -> day
+	month:  30,     // day   -> month (roughly)
+	year:   12      // month -> year
+  };
+
+  for(var key in conversions) {
+	if(delta < conversions[key]) {
+	  break;
+	} else {
+	  units = key; // keeps track of the selected key over the iteration
+	  delta = delta / conversions[key];
+	}
+  }
+
+  // pluralize a unit when the difference is greater than 1.
+  delta = Math.floor(delta);
+  if(delta !== 1) { units += "s"; }
+  return [delta, units, "ago"].join(" ");
+};
+
+/*
+ * Wraps up a common pattern used with this plugin whereby you take a String 
+ * representation of a Date, and want back a date object.
+ */
+Date.fromString = function(str) {
+  return new Date(Date.parse(str));
+};
+
+
+(function($) {
+	/*
+	 * A handy jQuery wrapper for converting tags with JavaScript parse()-able
+	 * time-stamps into relative time strings.
+	 *
+	 * Usage:
+	 *   Suppose numerous Date.parse()-able time-stamps are available in the 
+	 *   inner-HTML of some <span class="rel"> elements...
+	 *
+	 *   $("span.rel").toRelativeTime()
+	 *
+	 * Examples: '5 years ago', '45 minutes ago'
+	 *
+	 * Requires date.extensions.js to be loaded first.
+	 */
+	$.fn.toRelativeTime = function() {
+		this.each(function() {
+			var $this = $(this);
+			$this.text(Date.fromString($this.html()).toRelativeTime());
+		});
+	};
+})(jQuery);
+
+
+
+
 Razor = {};
 Razor.useFrame = false;
 Razor.currentItem = false;
@@ -140,19 +207,6 @@ RazorUI.init = function () {
 		"k": Razor.selectNext,
 		"v": RazorUI.openCurrent
 	});
-	$('#footer-add').click(function () {
-		$.fancybox({
-			'transitionIn' : 'none',
-			'transitionOut' : 'none',
-			'type': 'iframe',
-			'href': $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed'
-		});
-		$(document).bind('close-frame', function () {
-			$.fancybox.close();
-		});
-
-		return false;
-	})
 	$('#switcher-sidebar').click(function () {
 		RazorUI.showing = 'sidebar';
 		RazorUI.fitToWindow();
@@ -160,6 +214,52 @@ RazorUI.init = function () {
 	$('#switcher-items').click(function () {
 		RazorUI.showing = 'items';
 		RazorUI.fitToWindow();
+	});
+
+	$.getScript(Razor.scriptURL + '/resources/fancybox/fancybox.js', function () {
+		$('#footer-add').click(function (event) {
+			RazorUI.lightbox( $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed' );
+			event.preventDefault();
+		});
+		$('#item-services a.type-inline').live('click', function (event) {
+			RazorUI.lightbox($(this).attr('href'));
+			event.preventDefault();
+		});
+	});
+
+	$.when(
+		$.getScript(Razor.scriptURL + '/resources/raphael-min.js'),
+		$.getScript(Razor.scriptURL + '/resources/icons.js')
+	).then(function () {
+		$('#update a').iconify('refresh');
+		$('#settings a').iconify('gear');
+		$('#help a').iconify('?');
+		$('#login a').iconify('user');
+		$('#logout a').iconify('power');
+
+		// this should use deferred objects instead
+		$('#feeds-list').bind('populated', function () {
+			$('#feeds-list li .delete').iconify({
+				icon: 'cross',
+				style: {
+					initial: { scale: "0.5833 0.5833" },
+					normal: { fill: '#fff', stroke: 'none' },
+					hover: { fill: '#911515'},
+					active: { fill: '#911515', stroke: '#f00'}
+				}
+			});
+		});
+	});
+};
+RazorUI.lightbox = function (url) {
+	$.fancybox({
+		'transitionIn' : 'none',
+		'transitionOut' : 'none',
+		'type': 'iframe',
+		'href': url
+	});
+	$(document).bind('close-frame', function () {
+		$.fancybox.close();
 	});
 };
 RazorUI.maybeScroll = function (elem, parent) {
@@ -359,13 +459,6 @@ RazorUI.populateItemView = function (item) {
 				.html(service.label)
 				.addClass('type-' + service.type)
 				.attr('href', service.action);
-			if (service.type == 'inline') {
-				$('a', service_item).fancybox({
-					'transitionIn' : 'none',
-					'transitionOut' : 'none',
-					'type': 'iframe'
-				});
-			}
 			$('ul', item_footer).append(service_item);
 		});
 		$(basics).append(item_footer);

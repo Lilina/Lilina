@@ -16,15 +16,6 @@ $authenticated = !!$user->identify();
 	<title><?php echo get_option('sitename') ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php template_directory() ?>/style.css" />
 	<link rel="stylesheet" type="text/css" href="<?php template_directory() ?>/resources/fancybox/fancybox.css" />
-	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/raphael-min.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/icons.js"></script>
-	
-	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/date.extensions.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/to_relative_time.jquery.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/fancybox/fancybox.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
 	<?php
 	template_header();
 	?>
@@ -129,6 +120,15 @@ if($authenticated) {
 			</div>
 		</div>
 	</div>
+
 	<?php template_footer(); ?>
+
+	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
+
+	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
+	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
+	<script>
+		Razor.scriptURL = "<?php template_directory() ?>";
+	</script>
 </body>
 </html>
