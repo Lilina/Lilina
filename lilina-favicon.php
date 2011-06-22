@@ -21,6 +21,7 @@ define('LILINA_PAGE', 'favicon');
 // Hide errors
 ini_set('display_errors', false);
 
+require_once(LILINA_INCPATH . '/core/Lilina.php');
 require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 require_once(LILINA_INCPATH . '/core/conf.php');
