@@ -414,7 +414,7 @@ RazorUI.populateItemList = function (list) {
 		if (item.feed_id != undefined && RazorUI.feeds[item.feed_id] !== undefined)
 			var feed = RazorUI.feeds[item.feed_id];
 		else
-			var feed = {"name": "Razor", "url": "http://getlilina.org/"};
+			var feed = {"name": "Unknown", "url": ""};
 
 		$('.item-source', li).html(feed.name);
 
@@ -446,10 +446,10 @@ RazorUI.populateItemView = function (item) {
 		$('#item-content', basics).attr('src', item.permalink);
 	}
 
-	if(item.feed_id != undefined)
+	if(item.feed_id != undefined && RazorUI.feeds[item.feed_id] !== undefined)
 		var feed = RazorUI.feeds[item.feed_id];
 	else
-		var feed = {"name": "Razor", "url": "http://getlilina.org/"};
+		var feed = {"name": "Unknown", "url": ""};
 
 	var date = new Date(item.timestamp * 1000);
 
