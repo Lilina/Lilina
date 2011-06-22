@@ -19,7 +19,7 @@ a:active, a:focus {
 	background: #173057;
 	position: relative;
 }
-	#header h1 {
+	#title {
 		position: absolute;
 		left: 10px;
 		margin: 0;
@@ -27,7 +27,7 @@ a:active, a:focus {
 		line-height: 50px;
 		font-weight: normal;
 	}
-		#header h1 a {
+		#title a {
 			color: #eee;
 			text-decoration: none;
 		}
@@ -47,11 +47,11 @@ a:active, a:focus {
 			font-size: 11px;
 			color: #999;
 		}
-			#menu li a {
+			#menu a {
 				text-decoration: none;
 				color: #ccc;
 			}
-				#menu li a:hover {
+				#menu a:hover {
 					color: #eee;
 				}
 			#menu .icon {
@@ -65,9 +65,10 @@ a:active, a:focus {
 				text-indent: -9999px;
 				display: block;
 			}
-			#menu li#updating {
+			#menu #updating {
 				background: url("resources/loading-blue.gif") no-repeat left center;
 				padding: 3px 0 3px 18px;
+				display: none;
 			}
 #sidebar {
 	float: left;
@@ -176,7 +177,7 @@ a:active, a:focus {
 			#items-list li:nth-child(odd) a {
 				background: #EDF3FE;
 			}
-			#items-list li a:hover, #items-list li a:focus, #items-list li.selected a {
+			#items-list li a:hover, #items-list li a:focus, #items-list .selected a {
 				background: #e5e5ff;
 			}
 			#items-list li a.current {

@@ -23,7 +23,7 @@ $authenticated = !!$user->identify();
 <body>
 	<div id="header">
 
-		<h1><a href="<?php echo get_option('baseurl') ?>"><?php echo get_option('sitename') ?></a></h1>
+		<h1 id="title"><a href="<?php echo get_option('baseurl') ?>"><?php echo get_option('sitename') ?></a></h1>
 		<ul id="menu">
 			<li id="update"><a href="?method=update" title="Update your feeds">Update</a></li>
 			<li id="updating">Now updating&hellip; <span class="progress"></span></li>

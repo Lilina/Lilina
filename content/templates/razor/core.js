@@ -116,6 +116,16 @@ Razor.api = function (method, conditions, callback) {
 	$.extend(conditions, Razor.conditions);
 	LilinaAPI.call(method, conditions, callback);
 };
+Razor.getScript = function(url, callback){
+	// This allows caching, unlike $.getScript
+	return $.ajax({
+		type: "GET",
+		url: url,
+		success: callback,
+		dataType: "script",
+		cache: true
+	});
+};
 
 
 String.prototype.shorten = function(length) {
@@ -200,7 +210,6 @@ RazorUI.init = function () {
 	$('#items-list').bind('initialized', function() {
 		$('#load-more').click(RazorUI.loadMoreItems);
 	});
-	$('#updating').hide();
 	$.hotkeys({
 		"?": RazorUI.showHelp,
 		"j": Razor.selectPrevious,
@@ -216,7 +225,7 @@ RazorUI.init = function () {
 		RazorUI.fitToWindow();
 	});
 
-	$.getScript(Razor.scriptURL + '/resources/fancybox/fancybox.js', function () {
+	Razor.getScript(Razor.scriptURL + '/resources/fancybox/fancybox.js', function () {
 		$('#footer-add').click(function (event) {
 			RazorUI.lightbox( $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed' );
 			event.preventDefault();
@@ -228,8 +237,8 @@ RazorUI.init = function () {
 	});
 
 	$.when(
-		$.getScript(Razor.scriptURL + '/resources/raphael-min.js'),
-		$.getScript(Razor.scriptURL + '/resources/icons.js')
+		Razor.getScript(Razor.scriptURL + '/resources/raphael-min.js'),
+		Razor.getScript(Razor.scriptURL + '/resources/icons.js')
 	).then(function () {
 		$('#update a').iconify('refresh');
 		$('#settings a').iconify('gear');
