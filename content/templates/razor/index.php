@@ -73,7 +73,7 @@ foreach ($menu as $id => $item) {
 			<h2>Other</h2>
 			<ul>
 				<li class="expandable"><a href="#"><span class="arrow">&#x25B6;</span><span class="text">Some Folder</span></a></li>
-				<li><a href="#"><img src="http://images.betanews.com/betanews2/icon_feed.png" />Some Folder</a></li>
+				<li><a href="#"><img src="<?php template_directory() ?>/feed.png" />Some Folder</a></li>
 			</ul>
 			<h2>Feeds</h2>
 			<ul id="feeds-list">
