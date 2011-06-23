@@ -206,6 +206,7 @@ class Items {
 	 *
 	 * Depending on whether {@link init()} is called or not, this may include
 	 * new items.
+	 * @deprecated Use get_items() instead
 	 * @return array List of items
 	 */
 	public function retrieve() {

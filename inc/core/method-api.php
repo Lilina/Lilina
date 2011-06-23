@@ -58,7 +58,7 @@ class LilinaAPI {
 		if (!empty($conditions))
 			Items::get_instance()->set_conditions($conditions);
 		Items::get_instance()->filter();
-		$items = Items::get_instance()->retrieve();
+		$items = Items::get_instance()->get_items();
 		if($limit == null)
 			return $items;
 		return array_slice($items, $start, $limit, true);
