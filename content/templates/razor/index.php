@@ -124,7 +124,6 @@ if($authenticated) {
 	<?php template_footer(); ?>
 
 	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
-
 	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
 	<script>
