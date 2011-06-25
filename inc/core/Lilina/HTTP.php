@@ -39,7 +39,7 @@ class Lilina_HTTP {
 	 *
 	 * @param Lilina_HTTP_Transport $transport Transport to add, must support the Lilina_HTTP_Transport interface
 	 */
-	public static function add_transport(Lilina_HTTP_Transport $transport) {
+	public static function add_transport($transport) {
 		if (empty(Lilina_HTTP::$transports)) {
 			Lilina_HTTP::$transports = array(
 				'Lilina_HTTP_Transport_cURL',
