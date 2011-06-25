@@ -199,6 +199,7 @@ a:active, a:focus {
 					display: block;
 					white-space: nowrap;
 					text-overflow: ellipsis;
+					-o-text-overflow: ellipsis;
 					overflow: hidden;
 				}
 					#items-list li a.current .item-title {

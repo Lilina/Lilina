@@ -403,13 +403,20 @@ RazorUI.initializeItemList = function (list) {
 };
 RazorUI.populateItemList = function (list) {
 	var oldCount = RazorUI.itemCount;
+	var hasTextOverflow = ('textOverflow' in document.documentElement.style || 'OTextOverflow' in document.documentElement.style)
 
 	$.each(list, function (id, item) {
 		var li = $('<li><a href="#"><span class="item-title" /> <span class="sep">from</span> <span class="item-source" /> <span class="sep">at</span> <span class="item-date" /></a></li>');
 		var a = $('a', li);
 
 		a.data('item-id', id).attr('title', item.title).attr('href', '#!/item/' + id);
-		$('.item-title', li).html( item.title.shorten(40) );
+
+		if (!hasTextOverflow) {
+			$('.item-title', li).html( item.title.shorten(45) );
+		}
+		else {
+			$('.item-title', li).html( item.title/*.shorten(45)*/ );
+		}
 
 		if (item.feed_id != undefined && RazorUI.feeds[item.feed_id] !== undefined)
 			var feed = RazorUI.feeds[item.feed_id];
