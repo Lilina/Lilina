@@ -225,13 +225,13 @@ class Lilina_HTTP {
 			if (!$is_chunked) {
 				// Looks like it's not chunked after all
 				//throw new Exception('Not chunked after all: ' . $body);
-				return $body;
+				return $decoded;
 			}
 
 			$length = hexdec($matches[1]);
 			$chunk_length = strlen($matches[0]);
 			$decoded .= $part = substr($body, $chunk_length, $length);
-			$encoded = ltrim(substr($encoded, $chunk_length + $length), "\r\n");
+			$body = ltrim(substr($body, $chunk_length + $length), "\r\n");
 
 			if (trim($body) === '0') {
 				// We'll just ignore the footer headers
