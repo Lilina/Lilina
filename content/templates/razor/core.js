@@ -146,6 +146,7 @@ String.prototype.shorten = function(length) {
 	$.hotkeys.cache = {};
 	$.hotkeys.special = {
 		enter: 45,
+		space: 64,
 		"?": 191,
 		"/": 223,
 		"\\": 252,
