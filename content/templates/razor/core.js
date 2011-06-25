@@ -380,7 +380,7 @@ RazorUI.populateFeedList = function (list) {
 
 		a.data('feed-id', item.id).attr('title', item.name);
 		$('span:not(.delete)', a).text( item.name.shorten(25) );
-		if (item.icon === false) {
+		if (item.icon === false || item.icon === true) {
 			$('img', li).attr('src', 'lilina-favicon.php?feed=' + item.id);
 		}
 		else {
