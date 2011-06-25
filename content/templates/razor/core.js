@@ -290,14 +290,14 @@ RazorUI.maybeScroll = function (elem, parent) {
 };
 RazorUI.scrollToTop = function (elem, parent) {
 	pos = $(parent).scrollTop() + $(elem).position().top;
-	$(parent).animate({scrollTop: pos}, 200);
+	$(parent).stop(true).animate({scrollTop: pos}, 200);
 };
 RazorUI.scrollToBottom = function (elem, parent) {
 	var pos = $(elem).position().top;
 	var parentHeight = $(parent).innerHeight();
 	var height = $(elem).outerHeight();
 	pos = $(parent).scrollTop() + (pos - parentHeight) + height;
-	$(parent).animate({scrollTop: pos}, 200);
+	$(parent).stop(true).animate({scrollTop: pos}, 200);
 };
 RazorUI.showHelp = function () {
 	var loading = $('<div class="loading">Loading...</div>');

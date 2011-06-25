@@ -9,6 +9,9 @@ html, body {
 	padding: 0;
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 }
+body {
+	overflow: hidden;
+}
 a:active, a:focus {
 	outline: none;
 }
@@ -20,11 +23,10 @@ a:active, a:focus {
 	position: relative;
 }
 	#title {
-		position: absolute;
-		left: 10px;
-		margin: 0;
+		margin: 0 0 0 10px;
+		display: inline-block;
 		font-size: 20px;
-		line-height: 50px;
+		line-height: 59px;
 		font-weight: normal;
 	}
 		#title a {
@@ -64,6 +66,7 @@ a:active, a:focus {
 			#menu .text {
 				text-indent: -9999px;
 				display: block;
+				height: 0;
 			}
 			#menu #updating {
 				background: url("resources/loading-blue.gif") no-repeat left center;
@@ -153,6 +156,7 @@ a:active, a:focus {
 	position: relative;
 	width: 340px;
 	overflow: auto;
+	overflow-y: scroll;
 
 	border-right: 1px solid #aaa;
 	background: #fff;
