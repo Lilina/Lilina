@@ -75,6 +75,8 @@ if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi'
 	display_cached_file($_GET['i'], LILINA_CONTENT_DIR . '/system/cache');
 }
 else {
+	Localise::load_default_textdomain();
+
 	header('HTTP/1.1 302 Found', true, 302);
 	header('Location: ' . Templates::get_url('feed.png'));
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
