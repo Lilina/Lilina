@@ -1,3 +1,4 @@
+/* Relative time extensions */
 /*
  * Returns a description of this past date in relative terms.
  * Example: '3 years ago'
@@ -61,6 +62,62 @@ Date.fromString = function(str) {
 	};
 })(jQuery);
 
+
+
+/* Hotkeys */
+/* From GitHub's jquery.hotkeys.js */
+(function ($) {
+	$.hotkeys = function (c) {
+		for (key in c) $.hotkey(key, c[key]);
+		return this
+	};
+	$.hotkey = function (c, d) {
+		c = $.hotkeys.special[c] == null ? c.charCodeAt(0) : $.hotkeys.special[c];
+		$.hotkeys.cache[c] = d;
+		return this
+	};
+	$.hotkeys.cache = {};
+	$.hotkeys.special = {
+		enter: 45,
+		space: 64,
+		"?": 191,
+		"/": 223,
+		"\\": 252,
+		"`": 224
+	};
+	if ($.browser.mozilla && navigator.userAgent.indexOf('Macintosh') != -1) $.hotkeys.special["?"] = 0
+})(jQuery);
+jQuery(document).ready(function (a) {
+	$("a[hotkey]").each(function () {
+		$.hotkey($(this).attr("hotkey"), $(this).attr("href"))
+	});
+	$(document).bind("keydown.hotkey", function (c) {
+		if (!$(c.target).is(":input")) {
+			if (c.ctrlKey || c.altKey || c.metaKey) return true;
+			c = c.shiftKey ? c.keyCode : c.keyCode + 32;
+			if (c = $.hotkeys.cache[c]) {
+				$.isFunction(c) ? c.call(this) : (window.location = c);
+				return false
+			}
+		}
+	})
+});
+
+
+
+/* Shorten strings */
+String.prototype.shorten = function(length) {
+	if (this.length > length) {
+		var shorterLength = length - 4;
+		return this.substr(0, shorterLength) + "...";
+	} else {
+		return String(this);
+	}
+};
+
+
+
+/* Razor */
 Razor = {};
 Razor.useFrame = false;
 Razor.currentItem = false;
@@ -123,56 +180,10 @@ Razor.getScript = function(url, callback){
 	});
 };
 
-String.prototype.shorten = function(length) {
-	if (this.length > length) {
-		var shorterLength = length - 4;
-		return this.substr(0, shorterLength) + "...";
-	} else {
-		return String(this);
-	}
-};
-
-/* From GitHub's jquery.hotkeys.js */
-(function ($) {
-	$.hotkeys = function (c) {
-		for (key in c) $.hotkey(key, c[key]);
-		return this
-	};
-	$.hotkey = function (c, d) {
-		c = $.hotkeys.special[c] == null ? c.charCodeAt(0) : $.hotkeys.special[c];
-		$.hotkeys.cache[c] = d;
-		return this
-	};
-	$.hotkeys.cache = {};
-	$.hotkeys.special = {
-		enter: 45,
-		space: 64,
-		"?": 191,
-		"/": 223,
-		"\\": 252,
-		"`": 224
-	};
-	if ($.browser.mozilla && navigator.userAgent.indexOf('Macintosh') != -1) $.hotkeys.special["?"] = 0
-})(jQuery);
-jQuery(document).ready(function (a) {
-	$("a[hotkey]").each(function () {
-		$.hotkey($(this).attr("hotkey"), $(this).attr("href"))
-	});
-	$(document).bind("keydown.hotkey", function (c) {
-		if (!$(c.target).is(":input")) {
-			if (c.ctrlKey || c.altKey || c.metaKey) return true;
-			c = c.shiftKey ? c.keyCode : c.keyCode + 32;
-			if (c = $.hotkeys.cache[c]) {
-				$.isFunction(c) ? c.call(this) : (window.location = c);
-				return false
-			}
-		}
-	})
-});
-
 RazorUI = {};
 RazorUI.itemCount = 0;
 RazorUI.showing = 'full';
+RazorUI.headerHeight = 59;
 RazorUI.init = function () {
 	$(window).resize(RazorUI.fitToWindow);
 	RazorUI.fitToWindow();
@@ -309,7 +320,6 @@ RazorUI.openCurrent = function () {
 		alert("Looks like your browser is blocking popup windows. Try unblocking them to open links.");
 	}
 };
-RazorUI.headerHeight = 59;
 RazorUI.fitToWindow = function () {
 	var normalMode = $(window).width() > 920;
 
