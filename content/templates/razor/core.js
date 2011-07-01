@@ -275,6 +275,7 @@ RazorUI.lightbox = function (url) {
 		'href': url
 	});
 	$(document).bind('close-frame', function () {
+		RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 		$.fancybox.close();
 	});
 };
@@ -399,6 +400,7 @@ RazorUI.populateFeedList = function (list) {
 	$('#feeds-list').trigger('populated');
 };
 RazorUI.initializeItemList = function (list) {
+	RazorUI.itemCount = 0;
 	$('#items-list ol').empty();
 	var li = $('<li id="load-more"><a href="#">Load More Items</a></li>');
 	$('#items-list ol').append(li);
@@ -522,7 +524,8 @@ RazorUI.finishUpdate = function () {
 	$('#updating').hide();
 	$('#update').show();
 	if(Razor.updated > 0) {
-		$('#menu').prepend($('<li>New items are available. Reload to view.</li>'));
+		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
+		//$('#menu').prepend($('<li>New items are available. Reload to view.</li>'));
 	}
 };
 
