@@ -135,8 +135,9 @@ class Feeds {
 				return $cache->save($filename, serialize($body));
 			}
 			// not an image
-			else {
-				return false;
+			elseif (($type = $sniffer->unknown()) !== false && substr($type, 0, 6) === 'image/') {
+				$body = array('type' => $type, 'body' => $file->body);
+				return $cache->save($filename, serialize($body));
 			}
 		}
 		return false;
