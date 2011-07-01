@@ -141,12 +141,11 @@ Razor.selectNext = function () {
 		next = $('#items-list li:first');
 	}
 	else if (next.length == 0) {
-		alert('No next item');
+		RazorUI.showMessage('No next item', 1500);
 		return false;
 	}
 
 	if (next.attr('id') === 'load-more') {
-		alert('loading more');
 		RazorUI.loadMoreItems();
 		return;
 	}
@@ -167,7 +166,7 @@ Razor.selectPrevious = function () {
 };
 Razor.api = function (method, conditions, callback) {
 	$.extend(conditions, Razor.conditions);
-	LilinaAPI.call(method, conditions, callback);
+	return LilinaAPI.call(method, conditions, callback);
 };
 Razor.getScript = function(url, callback){
 	// This allows caching, unlike $.getScript
@@ -474,13 +473,14 @@ RazorUI.populateItemList = function (list) {
 	});
 
 	if (RazorUI.itemCount === oldCount) {
-		alert('No more items to load');
+		RazorUI.showMessage('No more items to load', 1500);
 		$("#load-more").remove();
 	}
 	$('#items-list').trigger('populated');
 };
 RazorUI.loadMoreItems = function () {
-	Razor.api('items.getList', {"limit": 20, "start": RazorUI.itemCount}, RazorUI.populateItemList);
+	RazorUI.showMessage('Loading&hellip;');
+	Razor.api('items.getList', {"limit": 20, "start": RazorUI.itemCount}, RazorUI.populateItemList).complete(RazorUI.hideMessage);
 
 	return false;
 };
