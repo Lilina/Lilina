@@ -73,10 +73,10 @@ class LibraryView {
 }
 function print_library_item(&$item, $parent) {
 	if ($item->has_children()) {
-		$return = '<li class="expandable"><a href="#!/view/' . $parent . '-' . $item->id  . '"><span class="arrow">&#x25B6;</span>' . $item->get_title() . '</a>';
+		$return = '<li class="expandable"><a href="#!/view/' . $parent . '-' . $item->id  . '" id="' . $parent . '-' . $item->id . '"><span class="arrow">&#x25B6;</span>' . $item->get_title() . '</a>';
 	}
 	else {
-		$return = '<li><a href="#!/view/' . $parent . '-' . $item->id  . '">' . $item->get_title() . '</a>';
+		$return = '<li><a href="#!/view/' . $parent . '-' . $item->id  . '" id="' . $parent . '-' . $item->id . '">' . $item->get_title() . '</a>';
 	}
 	
 	if ($item->has_children()) {

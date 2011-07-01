@@ -120,14 +120,17 @@ a:active, a:focus {
 						width: 14px;
 					}
 					#sidebar .item-list a:hover {
-						background: rgba(56, 117, 215, 0.1);
+						background-color: rgba(56, 117, 215, 0.1);
 					}
-					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected a {
+					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected {
 						background: rgba(56, 117, 215, 0.6);
 						background-image: url("resources/sidebar-selected.png");
 						color: #fff;
 						text-shadow: 0 1px 0 #22568C;
 					}
+						#sidebar .item-list .selected:hover {
+							background-color: rgba(56, 117, 215, 0.6);
+						}
 					#sidebar .item-list .delete {
 						display: none;
 						position: absolute;

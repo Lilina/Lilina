@@ -232,6 +232,25 @@ RazorUI.init = function () {
 		RazorUI.fitToWindow();
 	});
 
+	/* Sidebar bindings */
+	$('#library-everything').live('click', function () {
+		$('#sidebar .selected').removeClass('selected');
+		$(this).addClass('selected');
+		Razor.conditions.conditions = {};
+
+		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
+		return false;
+	});
+	$('#feeds-list .feed').live('click', function () {
+		$('#sidebar .selected').removeClass('selected');
+		$(this).addClass('selected');
+		Razor.conditions.conditions = {"feed": $(this).data('feed-id')};
+
+		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
+		return false;
+	});
+
+	/* Dynamically load scripts */
 	Razor.getScript(Razor.scriptURL + '/resources/fancybox/fancybox.js', function () {
 		$('#footer-add').click(function (event) {
 			RazorUI.lightbox( $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed' );
@@ -385,7 +404,7 @@ RazorUI.populateFeedList = function (list) {
 		var li = $('<li><a href="#"><img src="" /> <span /><span class="delete" /></a></li>');
 		var a = $('a', li);
 
-		a.data('feed-id', item.id).attr('title', item.name);
+		a.addClass('feed').data('feed-id', item.id).attr('title', item.name);
 		$('span:not(.delete)', a).text( item.name.shorten(25) );
 		if (item.icon === false || item.icon === true) {
 			$('img', li).attr('src', 'lilina-favicon.php?feed=' + item.id);
