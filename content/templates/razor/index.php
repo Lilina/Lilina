@@ -24,9 +24,9 @@ $authenticated = !!$user->identify();
 	<div id="header">
 
 		<h1 id="title"><a href="<?php echo get_option('baseurl') ?>"><?php echo get_option('sitename') ?></a></h1>
+		<p id="messagearea"></p>
 		<ul id="menu">
 			<li id="update"><a href="?method=update" title="Update your feeds">Update</a></li>
-			<li id="updating">Now updating&hellip; <span class="progress"></span></li>
 			<li id="help"><a href="#help" title="Learn how to use Razor">Help</a></li>
 <?php
 if($authenticated) {

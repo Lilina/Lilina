@@ -396,6 +396,18 @@ RazorUI.fitToWindow = function () {
 		'height': contentHeight
 	});
 };
+RazorUI.showMessage = function (html, duration) {
+	$('#messagearea').html(html).show();
+
+	if (duration) {
+		window.setTimeout(RazorUI.hideMessage, duration);
+	}
+};
+RazorUI.hideMessage = function () {
+	$('#messagearea').fadeOut(800, function () {
+		$('#messagearea').html('');
+	});
+};
 RazorUI.populateFeedList = function (list) {
 	$('#feeds-list').empty();
 
@@ -518,6 +530,7 @@ RazorUI.handleItemClick = function () {
 };
 RazorUI.beginUpdate = function () {
 	$('#update').hide();
+	RazorUI.showMessage('<span id="updating">Now updating&hellip; <span class="progress"></span></span>');
 	$('#updating').show();
 	Razor.feeds = [];
 	var feed;
@@ -540,12 +553,13 @@ RazorUI.updateFeed = function (data) {
 	Razor.currentID++;
 };
 RazorUI.finishUpdate = function () {
-	$('#updating').hide();
+	RazorUI.showMessage('Done!', 1000);
 	$('#update').show();
 	if(Razor.updated > 0) {
 		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
 		//$('#menu').prepend($('<li>New items are available. Reload to view.</li>'));
 	}
+
 };
 
 $(document).ready(Razor.init);
