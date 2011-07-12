@@ -26,7 +26,7 @@ if (isset($_POST['activate_template'])) {
 
 if(!empty($_POST['action']) && $_POST['action'] == 'settings' && !empty($_POST['_nonce'])) {
 	if(!check_nonce('settings', $_POST['_nonce']))
-		lilina_nice_die('Nonces do not match.');
+		Lilina::nice_die('Nonces do not match.');
 
 	$updatable_options = AdminOptions::instance()->whitelisted;
 	foreach($updatable_options as $option) {

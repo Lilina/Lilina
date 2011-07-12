@@ -29,6 +29,10 @@ function razor_help() {
 	<dt>k</dt>
 	<dd>Select the next item</dd>
 </dl>
+<dl class="keyboard-shortcuts">
+	<dt>v</dt>
+	<dd>View the current item</dd>
+</dl>
 <p>More coming soon!</p>
 <h2>About Razor</h2>
 <p>Razor was developed by <a href="http://ryanmccue.info/">Ryan McCue</a> as a proof-of-concept. It is intended to make Lilina act like a desktop feed reader, and to be as responsive.</p>',
@@ -69,10 +73,10 @@ class LibraryView {
 }
 function print_library_item(&$item, $parent) {
 	if ($item->has_children()) {
-		$return = '<li class="expandable"><a href="#!/view/' . $parent . '-' . $item->id  . '"><span class="arrow">&#x25B6;</span>' . $item->get_title() . '</a>';
+		$return = '<li class="expandable"><a href="#!/view/' . $parent . '-' . $item->id  . '" id="' . $parent . '-' . $item->id . '"><span class="arrow">&#x25B6;</span>' . $item->get_title() . '</a>';
 	}
 	else {
-		$return = '<li><a href="#!/view/' . $parent . '-' . $item->id  . '">' . $item->get_title() . '</a>';
+		$return = '<li><a href="#!/view/' . $parent . '-' . $item->id  . '" id="' . $parent . '-' . $item->id . '">' . $item->get_title() . '</a>';
 	}
 	
 	if ($item->has_children()) {

@@ -58,6 +58,10 @@ class SubscribePage {
 				timer--;
 			}
 			else {
+				if ($('body').hasClass('framed') && typeof window.parent.jQuery != 'undefined') {
+					window.parent.jQuery(window.parent.document).trigger('close-frame');
+					return;
+				}
 				self.close();
 			}
 		}
@@ -106,6 +110,13 @@ class SubscribePage {
 
 			<input type="hidden" name="action" value="add" />
 			<input type="hidden" name="nonce" value="<?php echo generate_nonce('subscribe') ?>" />
+<?php
+		if (isset($_REQUEST['framed'])) {
+?>
+			<input type="hidden" name="framed" value="true" />
+<?php
+		}
+?>
 			<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
 		</form>
 	</div>
@@ -134,6 +145,13 @@ class SubscribePage {
 			<input type="hidden" name="action" value="add" />
 			<input type="hidden" name="name" value="<?php echo htmlspecialchars($_POST['name']) // Possibly unsafe ?>" />
 			<input type="hidden" name="nonce" value="<?php echo generate_nonce('subscribe') ?>" />
+<?php
+		if (isset($_REQUEST['framed'])) {
+?>
+			<input type="hidden" name="framed" value="true" />
+<?php
+		}
+?>
 			<input type="submit" value="<?php _e('Add Feed'); ?>" class="submit" />
 		</form>
 	</div>
@@ -143,14 +161,17 @@ class SubscribePage {
 
 	public static function get_discovered($url) {
 		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
-		class_exists('HTTPRequest');
+		class_exists('Lilina_HTTP');
 		$feed = new SimplePie();
 		$feed->set_useragent(LILINA_USERAGENT . ' SimplePie/' . SIMPLEPIE_BUILD);
 		$feed->set_stupidly_fast(true);
 		$feed->enable_cache(false);
 		$feed->set_feed_url($url);
+		$feed->set_file_class('Lilina_SimplePie_File');
 		$feed->set_locator_class('Lilina_SimplePie_Locator');
-		$feed->init();;
+		// We set this higher, since we're explicitly autodiscovering
+		$feed->set_max_checked_feeds(50);
+		$feed->init();
 		return $feed->get_all_discovered_feeds();
 	}
 
@@ -167,7 +188,7 @@ class SubscribePage {
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.js"></script>
 </head>
-<body id="admin-subscribe" class="admin-page">
+<body id="admin-subscribe" class="admin-page<?php if (isset($_REQUEST['framed'])) echo ' framed'; ?>">
 <?php
 	} // function head()
 
@@ -175,11 +196,19 @@ class SubscribePage {
 ?>
 	<script type="text/javascript">
 		$(document).ready(function () {
+			$('.framed #backlink').click(function () {
+				if (typeof window.parent.jQuery != 'undefined') {
+					window.parent.jQuery(window.parent.document).trigger('close-frame');
+					return false;
+				}
+			});
 			$(".optional").hide();
 			$("<p class='hideshow'><span><?php _e('Show advanced options') ?></span></p>").insertBefore(".optional").click(function () {
 				$(this).siblings(".optional").show();
 				$(this).hide();
 			});
+
+			$("#url").focus();
 		});
 	</script>
 </body>

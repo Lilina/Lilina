@@ -122,7 +122,7 @@ function admin_footer() {
 ?>
 </div>
 <p id="footer"><?php
-_e('Powered by <a href="http://getlilina.org/">Lilina News Aggregator</a>');
+_e('Powered by <a href="http://getlilina.org/">Lilina</a>');
 do_action('admin_footer'); ?> | <a href="http://getlilina.org/docs/start"><?php _e('Documentation') ?></a> | <a href="http://getlilina.org/forums/" title="<?php _e('Support on the Forums') ?>"><?php _e('Support') ?></a></p>
 </body>
 </html>

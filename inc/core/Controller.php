@@ -51,7 +51,7 @@ class Controller {
 			$callback = Controller::$methods[$method];
 			call_user_func($callback);
 		} catch (Exception $e) {
-			lilina_nice_die('<p>' . sprintf(_r('An error occured dispatching a method: %s'), $e->getMessage()) . '</p>');
+			Lilina::nice_die('<p>' . sprintf(_r('An error occured dispatching a method: %s'), $e->getMessage()) . '</p>');
 		}
 	}
 }

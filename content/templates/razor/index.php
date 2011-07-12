@@ -16,15 +16,6 @@ $authenticated = !!$user->identify();
 	<title><?php echo get_option('sitename') ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php template_directory() ?>/style.css" />
 	<link rel="stylesheet" type="text/css" href="<?php template_directory() ?>/resources/fancybox/fancybox.css" />
-	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/raphael-min.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/icons.js"></script>
-	
-	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/date.extensions.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/to_relative_time.jquery.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/resources/fancybox/fancybox.js"></script>
-	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
 	<?php
 	template_header();
 	?>
@@ -32,10 +23,10 @@ $authenticated = !!$user->identify();
 <body>
 	<div id="header">
 
-		<h1><a href="#"><?php echo get_option('sitename') ?></a></h1>
+		<h1 id="title"><a href="<?php echo get_option('baseurl') ?>"><?php echo get_option('sitename') ?></a></h1>
+		<p id="messagearea"></p>
 		<ul id="menu">
 			<li id="update"><a href="?method=update" title="Update your feeds">Update</a></li>
-			<li id="updating">Now updating&hellip; <span class="progress"></span></li>
 			<li id="help"><a href="#help" title="Learn how to use Razor">Help</a></li>
 <?php
 if($authenticated) {
@@ -82,7 +73,7 @@ foreach ($menu as $id => $item) {
 			<h2>Other</h2>
 			<ul>
 				<li class="expandable"><a href="#"><span class="arrow">&#x25B6;</span><span class="text">Some Folder</span></a></li>
-				<li><a href="#"><img src="http://images.betanews.com/betanews2/icon_feed.png" />Some Folder</a></li>
+				<li><a href="#"><img src="<?php template_directory() ?>/feed.png" />Some Folder</a></li>
 			</ul>
 			<h2>Feeds</h2>
 			<ul id="feeds-list">
@@ -95,7 +86,7 @@ foreach ($menu as $id => $item) {
 <?php
 if($authenticated) {
 ?>
-				<li><a href="<?php echo get_option('baseurl') ?>admin/feeds.php#add">Add feed</a></li>
+				<li><a id="footer-add" href="<?php echo get_option('baseurl') ?>admin/feeds.php#add">Add feed</a></li>
 <?php
 }
 ?>
@@ -129,6 +120,14 @@ if($authenticated) {
 			</div>
 		</div>
 	</div>
+
 	<?php template_footer(); ?>
+
+	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/jquery.js"></script>
+	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
+	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
+	<script>
+		Razor.scriptURL = "<?php template_directory() ?>";
+	</script>
 </body>
 </html>

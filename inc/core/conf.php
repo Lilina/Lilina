@@ -69,27 +69,4 @@ if(!defined('LOADED_SETTINGS')) {
 		define('LILINA_DATA_DIR', LILINA_CONTENT_DIR . '/system/data/');
 }
 
-
-/**
- * Attempt to load the class before PHP fails with an error.
- *
- * This method is called automatically in case you are trying to use a class which hasn't been defined yet.
- * @param string $class_name Class called by the user
- */
-function __autoload($class_name) {
-	$file = str_replace('_', '/', $class_name);
-	$file = LILINA_INCPATH . '/core/' . $file . '.php';
-	if (file_exists($file)) {
-		require_once($file);
-		return;
-	}
-
-	$class_file = strtolower($class_name) . '.php';
-	if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
-		require_once(LILINA_INCPATH . '/core/class-' . $class_file);
-	}
-}
-
-spl_autoload_register('__autoload');
 Options::load();
-?>

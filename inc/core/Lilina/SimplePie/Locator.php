@@ -8,10 +8,13 @@ class Lilina_SimplePie_Locator extends SimplePie_Locator
 	{
 		parent::__construct($file, $timeout, $useragent, $file_class, $max_checked_feeds, $content_type_sniffer_class);
 
+		$old = libxml_use_internal_errors(true);
 		if (!$this->is_feed($this->file)) {
 			$this->document = new DOMDocument();
 			$this->document->loadHTML($this->file->body);
 		}
+
+		libxml_use_internal_errors($old);
 	}
 
 	public function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)

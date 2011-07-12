@@ -38,8 +38,7 @@ function lilina_version_check() {
 
 	try {
 		$headers = apply_filters('update_http_headers', array('X-Install-ID' => $id));
-		$request = new HTTPRequest('', 2);
-		$response = $request->get("http://api.getlilina.org/core/version-check/1.2/?version=$lilina_version&php=$php_version&locale=$locale", $headers);
+		$response = Lilina_HTTP::get("http://api.getlilina.org/core/version-check/1.2/?version=$lilina_version&php=$php_version&locale=$locale", $headers, array(), array('redirects' => 2));
 	}
 	catch (Exception $e) {
 		$response = (object) array('success' => false);

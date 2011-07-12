@@ -174,23 +174,3 @@ var icon = {
 		});
 	};
 })(jQuery);
-
-$(document).ready(function () {
-	$('#update a').iconify('refresh');
-	$('#settings a').iconify('gear');
-	$('#help a').iconify('?');
-	$('#login a').iconify('user');
-	$('#logout a').iconify('power');
-
-	$('#feeds-list').bind('populated', function () {
-		$('#feeds-list li .delete').iconify({
-			icon: 'cross',
-			style: {
-				initial: { scale: "0.5833 0.5833" },
-				normal: { fill: '#fff', stroke: 'none' },
-				hover: { fill: '#911515'},
-				active: { fill: '#911515', stroke: '#f00'}
-			}
-		});
-	});
-});

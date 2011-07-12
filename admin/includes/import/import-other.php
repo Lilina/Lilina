@@ -146,8 +146,7 @@ class OPML_Import {
 		try {
 			$opml = '';
 			if(!empty($_POST['url'])) {
-				$http = new HTTPRequest('', 10, 'Lilina/' . LILINA_CORE_VERSION);
-				$opml = $http->get($_POST['url']);
+				$opml = Lilina_HTTP::get($_POST['url']);
 				$opml = $opml->body;
 			}
 			elseif(!empty($_FILES['file']['tmp_name'])) {

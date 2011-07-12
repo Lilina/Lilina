@@ -1,9 +1,5 @@
 <?php
 class Lilina_SimplePie_File extends SimplePie_File {
-
-	function Lilina_SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false) {
-		$this->__construct($url, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
-	}
 	function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false) {
 		$this->url = $url;
 		$this->timeout = $timeout;
@@ -19,11 +15,14 @@ class Lilina_SimplePie_File extends SimplePie_File {
 		$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
 
 		if ( preg_match('/^http(s)?:\/\//i', $url) ) {
-			$args = array( 'timeout' => $this->timeout, 'redirection' => $this->redirects);
+			$args = array(
+				'timeout' => $this->timeout,
+				'redirects' => $this->redirects,
+				'useragent' => $this->useragent
+			);
 
-			$request = new HTTPRequest('', $this->timeout, $this->useragent);
 			try {
-				$response = $request->get($this->url, $this->headers);
+				$response = Lilina_HTTP::get($this->url, $this->headers, array(), $args);
 			}
 			catch (Exception $e) {
 				$this->error = 'HTTP Error: ' . $e->getMessage();

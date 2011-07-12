@@ -21,6 +21,7 @@ define('LILINA_PAGE', 'favicon');
 // Hide errors
 ini_set('display_errors', false);
 
+require_once(LILINA_INCPATH . '/core/Lilina.php');
 require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 require_once(LILINA_INCPATH . '/core/conf.php');
@@ -76,10 +77,10 @@ if($_GET['i'] != 'default' && file_exists(LILINA_CACHE_DIR . $_GET['i'] . '.spi'
 else {
 	Localise::load_default_textdomain();
 
-	header('Content-Type: image/png');
+	header('HTTP/1.1 302 Found', true, 302);
+	header('Location: ' . Templates::get_url('feed.png'));
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 
-	echo file_get_contents(Templates::get_file('feed.png'));
 	die();
 }
 

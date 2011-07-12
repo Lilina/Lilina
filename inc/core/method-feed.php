@@ -25,7 +25,7 @@ class Resyndicate {
 
 	<?php //Need to fix this ?>
 	<updated><?php echo date('Y-m-d\TH:i:s\Z'); ?></updated>
-	<generator uri="http://getlilina.org/" version="<?php echo LILINA_CORE_VERSION; ?>">Lilina News Aggregator</generator>
+	<generator uri="http://getlilina.org/" version="<?php echo LILINA_CORE_VERSION; ?>">Lilina</generator>
 
 	<link rel="alternate" type="text/html" href="<?php echo get_option('baseurl'); ?>" />
 	<id><?php echo get_option('baseurl');?>atom.php</id>

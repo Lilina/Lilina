@@ -9,6 +9,9 @@ html, body {
 	padding: 0;
 	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 }
+body {
+	overflow: hidden;
+}
 a:active, a:focus {
 	outline: none;
 }
@@ -19,17 +22,36 @@ a:active, a:focus {
 	background: #173057;
 	position: relative;
 }
-	#header h1 {
-		position: absolute;
-		left: 10px;
-		margin: 0;
+	#title {
+		margin: 0 0 0 10px;
+		display: inline-block;
 		font-size: 20px;
-		line-height: 50px;
+		line-height: 59px;
 		font-weight: normal;
 	}
-		#header h1 a {
+		#title a {
 			color: #eee;
 			text-decoration: none;
+		}
+	#messagearea {
+		display: none;
+		margin: 0;
+		padding: 12px 0;
+		position: absolute;
+		width: 30%;
+		top: 0;
+		left: 35%;
+
+		font-size: 14px;
+		text-align: center;
+		color: #bbb;
+		background: rgba(255, 255, 255, 0.2);
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+		#updating {
+			background: url("resources/loading-blue.gif") no-repeat left center;
+			padding: 3px 0 3px 18px;
 		}
 	#menu {
 		margin: 0;
@@ -47,11 +69,11 @@ a:active, a:focus {
 			font-size: 11px;
 			color: #999;
 		}
-			#menu li a {
+			#menu a {
 				text-decoration: none;
 				color: #ccc;
 			}
-				#menu li a:hover {
+				#menu a:hover {
 					color: #eee;
 				}
 			#menu .icon {
@@ -64,10 +86,7 @@ a:active, a:focus {
 			#menu .text {
 				text-indent: -9999px;
 				display: block;
-			}
-			#menu li#updating {
-				background: url("resources/loading-blue.gif") no-repeat left center;
-				padding: 3px 0 3px 18px;
+				height: 0;
 			}
 #sidebar {
 	float: left;
@@ -116,14 +135,17 @@ a:active, a:focus {
 						width: 14px;
 					}
 					#sidebar .item-list a:hover {
-						background: rgba(56, 117, 215, 0.1);
+						background-color: rgba(56, 117, 215, 0.1);
 					}
-					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected a {
+					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected {
 						background: rgba(56, 117, 215, 0.6);
 						background-image: url("resources/sidebar-selected.png");
 						color: #fff;
 						text-shadow: 0 1px 0 #22568C;
 					}
+						#sidebar .item-list .selected:hover {
+							background-color: rgba(56, 117, 215, 0.6);
+						}
 					#sidebar .item-list .delete {
 						display: none;
 						position: absolute;
@@ -152,6 +174,7 @@ a:active, a:focus {
 	position: relative;
 	width: 340px;
 	overflow: auto;
+	overflow-y: scroll;
 
 	border-right: 1px solid #aaa;
 	background: #fff;
@@ -176,7 +199,7 @@ a:active, a:focus {
 			#items-list li:nth-child(odd) a {
 				background: #EDF3FE;
 			}
-			#items-list li a:hover, #items-list li a:focus, #items-list li.selected a {
+			#items-list li a:hover, #items-list li a:focus, #items-list .selected a {
 				background: #e5e5ff;
 			}
 			#items-list li a.current {
@@ -194,13 +217,22 @@ a:active, a:focus {
 					display: block;
 					white-space: nowrap;
 					text-overflow: ellipsis;
+					-o-text-overflow: ellipsis;
 					overflow: hidden;
 				}
+					#items-list li a.current .item-title {
+						text-shadow: 0 1px 0 #000;
+					}
 				#items-list li a .item-source,
 				#items-list li a .item-date {
 					color: #999;
 					font-size: 11px;
+					text-shadow: 0 1px 0 #fff;
 				}
+					#items-list li a.current .item-source,
+					#items-list li a.current .item-date {
+						text-shadow: 0 1px 0 #444;
+					}
 				#items-list li a .item-source {
 					float: left;
 				}
@@ -354,7 +386,6 @@ a:active, a:focus {
 	padding-left: 0;
 	padding-right: 0;
 }
-
 
 #switcher {
 	display: none;

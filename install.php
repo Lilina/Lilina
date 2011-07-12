@@ -15,45 +15,30 @@ define('LILINA_INCPATH', LILINA_PATH . '/inc');
 define('LILINA_CONTENT_DIR', LILINA_PATH . '/content');
 header('Content-Type: text/html; charset=UTF-8');
 
+require_once(LILINA_INCPATH . '/core/Lilina.php');
 require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/version.php');
-lilina_level_playing_field();
+Lilina::level_playing_field();
 
 if(version_compare('5.2', phpversion(), '>'))
-	lilina_nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
+	Lilina::nice_die('<p>Your server is running PHP version ' . phpversion() . ' but Lilina needs PHP 5.2 or newer</p>');
 
 //Make sure Lilina's not installed
-if(lilina_is_installed()) {
-	if( !lilina_settings_current() ) {
+if (Lilina::is_installed()) {
+	if (!Lilina::settings_current()) {
 		if(isset($_GET['action']) && $_GET['action'] == 'upgrade') {
 			upgrade();
 		}
 		else {
-			lilina_nice_die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>');
+			Lilina::nice_die('<p>Your installation of Lilina is out of date. Please <a href="install.php?action=upgrade">upgrade your settings</a> first</p>');
 		}
 	}
 	else {
-		lilina_nice_die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p>');
+		Lilina::nice_die('<p>Lilina is already installed. <a href="index.php">Head back to the main page</a></p>');
 	}
 }
-
-function __autoload($class_name) {
-	$file = str_replace('_', '/', $class_name);
-	$file = LILINA_INCPATH . '/core/' . $file . '.php';
-	if (file_exists($file)) {
-		require_once($file);
-		return;
-	}
-
-	$class_file = strtolower($class_name) . '.php';
-	if(file_exists(LILINA_INCPATH . '/core/class-' . $class_file)) {
-		require_once(LILINA_INCPATH . '/core/class-' . $class_file);
-	}
-}
-
-spl_autoload_register('__autoload');
 
 global $installer;
 $installer = new Installer();
@@ -161,13 +146,11 @@ function upgrade() {
 							'user' => '$USERNAME',
 							'pass' => '" . md5($PASSWORD) . "'
 							);\n
-// All the enabled plugins, stored in a serialized string
-\$settings['enabled_plugins'] = '';\n
 // Version of these settings; don't change this
 \$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>";
 
 		if(!($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+')) || !is_resource($settings_file)) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
+			Lilina::nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
@@ -180,7 +163,7 @@ function upgrade() {
 							"\$settings['settings_version'] = " . $lilina['settings-storage']['version'] . ";\n?>", $raw_php);
 
 		if(!($settings_file = @fopen(LILINA_PATH . '/conf/settings.php', 'w+')) || !is_resource($settings_file)) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
+			Lilina::nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
@@ -209,25 +192,25 @@ function upgrade() {
 			$raw_php);
 
 		if(!($settings_file = @fopen(LILINA_PATH . '/content/system/config/settings.php', 'w+')) || !is_resource($settings_file)) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
+			Lilina::nice_die('<p>Failed to upgrade settings: Saving content/system/config/settings.php failed</p>', 'Upgrade failed');
 		}
 		fputs($settings_file, $raw_php);
 		fclose($settings_file);
 
 		if(!save_options()) {
-			lilina_nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
+			Lilina::nice_die('<p>Failed to upgrade settings: Saving content/system/config/options.data failed</p>', 'Upgrade failed');
 		}
 	}
 
 	$string = '';
 	if(count(MessageHandler::get()) === 0) {
-		lilina_nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
+		Lilina::nice_die('<p>Your installation has been upgraded successfully. Now, <a href="index.php">get back to reading!</a></p>', 'Upgrade Successful');
 		return;
 	}
 	else
 		$string .= '<p>Your installation has <strong>not</strong> been upgraded successfully. Here\'s the error:</p><ul><li>';
 
-	lilina_nice_die($string . implode('</li><li>', MessageHandler::get()) . '</li></ul>', 'Upgrade failed');
+	Lilina::nice_die($string . implode('</li><li>', MessageHandler::get()) . '</li></ul>', 'Upgrade failed');
 }
 
 function default_options() {
@@ -236,7 +219,7 @@ function default_options() {
 	Options::lazy_update('template', 'razor');
 	Options::lazy_update('locale', 'en');
 	Options::lazy_update('timezone', 'UTC');
-	Options::lazy_update('sitename', 'Lilina News Aggregator');
+	Options::lazy_update('sitename', 'Lilina');
 	Options::lazy_update('feeds_version', LILINA_FEEDSTORAGE_VERSION);
 }
 function new_options_297() {
@@ -263,7 +246,7 @@ function new_options_368() {
 		if(!empty($settings['sitename']))
 			Options::lazy_update('sitename', $settings['sitename']);
 		else
-			Options::lazy_update('sitename', 'Lilina News Aggregator');
+			Options::lazy_update('sitename', 'Lilina');
 	}
 }
 
@@ -301,7 +284,7 @@ switch($page) {
 		<h2>General Settings</h2>
 		<div class="row">
 			<label for="sitename">Name of site</label>
-			<input type="text" value="<?php echo (!$sitename) ? 'Lilina News Aggregator' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
+			<input type="text" value="<?php echo (!$sitename) ? 'Lilina' : $sitename;?>" name="sitename" id="sitename" class="input" size="40" />
 			<p class="sidenote">Give your site something to identify it by. This can be changed later.</p>
 		</div>
 	</fieldset>

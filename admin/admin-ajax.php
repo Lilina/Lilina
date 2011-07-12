@@ -12,7 +12,7 @@
 define('LILINA_LOGIN', true);
 
 require_once('admin.php');
-class_exists('HTTPRequest');
+class_exists('Lilina_HTTP');
 require_once(LILINA_PATH . '/admin/includes/feeds.php');
 
 //header('Content-Type: application/javascript');

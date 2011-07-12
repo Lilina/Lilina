@@ -206,53 +206,11 @@ class Items {
 	 *
 	 * Depending on whether {@link init()} is called or not, this may include
 	 * new items.
+	 * @deprecated Use get_items() instead
 	 * @return array List of items
 	 */
 	public function retrieve() {
 		return $this->items;
-	}
-
-	/**
-	 * Normalise a SimplePie_Item into a stdClass
-	 *
-	 * Converts a SimplePie_Item into a new-style stdClass
-	 */
-	public function normalise($item, $feed_id = '') {
-		if($enclosure = $item->get_enclosure()) {
-			$enclosure = $enclosure->get_link();
-		}
-		else {
-			// SimplePie_Item::get_enclosure() returns null, so we need to change this to false
-			$enclosure = false;
-		}
-		if($author = $item->get_author()) {
-			$author = array(
-				'name' => $item->get_author()->get_name(),
-				'url' => $item->get_author()->get_link()
-			);
-		}
-		else {
-			$author = array(
-				'name' => false,
-				'url' => false
-			);
-		}
-		$new_item = (object) array(
-			'hash'      => $item->get_id(true),
-			'timestamp' => $item->get_date('U'),
-			'title'     => $item->get_title(),
-			'content'   => $item->get_content(),
-			'summary'   => $item->get_description(),
-			'permalink' => $item->get_permalink(),
-			'metadata'  => (object) array(
-				'enclosure' => $enclosure
-			),
-			'author'    => (object) $author,
-			'feed'      => $item->get_feed()->get_link()
-		);
-		if(!empty($feed_id))
-			$new_item->feed_id = $feed_id;
-		return apply_filters('item_data', $new_item);
 	}
 	
 	/**

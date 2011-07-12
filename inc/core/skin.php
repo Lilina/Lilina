@@ -67,7 +67,11 @@ function template_footer(){
 function has_items($conditions = null) {
 	global $lilina_items;
 	if ($conditions === null) {
-		$conditions = apply_filters('return_items-conditions', array('time' => (time() - get_offset())));
+		$time = get_offset();
+		if ($time !== 0) {
+			$time = time() - get_offset();
+		}
+		$conditions = apply_filters('return_items-conditions', array('time' => $time));
 	}
 
 	if(count(Feeds::get_instance()->getAll()) === 0)
@@ -98,12 +102,13 @@ function get_offset($as_hours = false) {
 	if(!isset($offset_time)) {
 		if(isset($_REQUEST['hours']) && !empty($_REQUEST['hours'])) {
 			if( -1 == $_REQUEST['hours'])
-				$offset_time = time();
+				$offset_time = 0;
 			else
 				$offset_time = (int) $_REQUEST['hours'] * 60 * 60;
 		}
-		else
+		else {
 			$offset_time = (int) 24 * 60 * 60;
+		}
 		$offset_time = apply_filters('showtime', $offset_time);
 	}
 	if($as_hours == true)
