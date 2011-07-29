@@ -49,15 +49,42 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 		$headers = Lilina_Updater::update_headers(array(
 			'Content-Type' => 'application/json',
 		));
-		$request = new HTTPRequest();
-		$result = $request->post('http://api.getlilina.org/plugins/version', $headers, json_encode($plugins));
-		var_dump(json_decode($result->body));
+		$result = Lilina_HTTP::post('http://api.getlilina.org/plugins/version', $headers, json_encode($plugins));
+
+		$return = array();
+
+		$data = json_decode($result->body);
+		foreach ($data as $name => $pdata) {
+			if ($pdata->status === 200) {
+				$plugin = new Lilina_Updater_PluginInfo($name);
+				$plugin->download = $pdata->body->url;
+				$plugin->version = $pdata->body->version;
+				$return[$name] = $plugin;
+			}
+		}
+
+		// Temporarily, Instapaper is always out of date.
 		$insta = new Lilina_Updater_PluginInfo('instapaper');
 		$insta->download = 'http://downloads.wordpress.org/plugin/jetpack.1.1.1.zip';
 		$insta->version = '1.1.1';
-		$return = array(
-			$insta
-		);
+		$return['instapaper'] = $insta;
+
 		return $return;
+	}
+
+	public function search($query) {
+		$headers = Lilina_Updater::update_headers(array(
+			'Content-Type' => 'application/json',
+		));
+		$data = array(
+			'system' => array(
+				'php' => phpversion(),
+				'lilina' => LILINA_CORE_VERSION
+			),
+			'query' => $query
+		);
+		$request = Lilina_HTTP::get('http://api.getlilina.org/plugins/search', $headers, $data);
+		var_dump($request);
+		return null;
 	}
 }

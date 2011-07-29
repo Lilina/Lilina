@@ -49,6 +49,8 @@ class Lilina_Updater_Plugins {
 	public static function check_all() {
 		$activated = array_values($GLOBALS['current_plugins']);
 		$plugins = array();
+
+		// Firstly, collect all the plugin data
 		foreach ($activated as $plugin) {
 			$meta = plugins_meta(get_plugin_dir() . '/' . $plugin);
 			if ($meta->id === 'unknown' || strpos($meta->id, ':') === false) {
@@ -60,9 +62,12 @@ class Lilina_Updater_Plugins {
 			if (!isset($plugins[$repo])) {
 				$plugins[$repo] = array();
 			}
-			$plugins[$repo][$id] = $meta->version;
+			$plugins[$repo][$id] = array(
+				'version' => $meta->version
+			);
 		}
 
+		// Next, query each repository and work out which plugins need updating
 		self::$actionable = array();
 		foreach ($plugins as $repo_id => $tocheck) {
 			$repo = Lilina_Updater::get_repository($repo_id);
@@ -82,6 +87,7 @@ class Lilina_Updater_Plugins {
 
 		self::$actionable = apply_filters('updater.plugin.aftercheck', self::$actionable, $plugins);
 
+		// Finally, save the data for next time
 		$values = array(
 			'plugins' => self::$actionable,
 			'last_checked' => time()
