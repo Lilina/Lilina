@@ -94,8 +94,12 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 	$plugin_file = str_replace(get_plugin_dir(), '', $plugin);
 
 	$activated = isset($current_plugins[md5($plugin_file)]);
+	$needs_update = Lilina_Updater_Plugins::check($meta->id);
 
 	$class = 'plugin-row';
+	if ($needs_update) {
+		$class .= ' needs-update';
+	}
 	$nonce = generate_nonce('plugins.' . $meta->id);
 	if ($activated) {
 		$class .= ' activated';
@@ -129,6 +133,10 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 
 	if (!empty($meta->uri)) {
 		$info[] = apply_filters('settings.plugins.' . $meta->id . '.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $meta->uri));
+	}
+
+	if ($needs_update) {
+		$info[] = apply_filters('settings.plugins.' . $meta->id . '.update', sprintf(_r('<a href="%s" class="update-link">Update to %s</a>'), $meta->id, '1.0'));
 	}
 
 	$info = apply_filters('settings.plugins.' . $meta->id . '.info', $info);
