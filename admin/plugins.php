@@ -110,7 +110,7 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 		$actions = '<a href="plugins.php?activate=' . $meta->id . '&amp;_nonce=' . $nonce . '">' . _r('Activate') . '</a>';
 	}
 
-	$link = apply_filters('settings.plugins.' . $meta->id . '.settingslink', 'plugins.php?settings=' . $meta->id);
+	$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $meta->id, $meta);
 
 	if (!empty($settings)) {
 		$actions .= sprintf(' | <a href="%s">%s</a>', $link, _r('Settings'));
@@ -121,21 +121,21 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 
 	if (!empty($meta->author)) {
 		if ($meta->author_uri) {
-			$info[] = apply_filters('settings.plugins.' . $meta->id . '.author', sprintf(
+			$info[] = apply_filters('settings.plugins.author', sprintf(
 				_r('By %s</a>'),
 				'<a href="' . $meta->author_uri . '">' . $meta->author . '</a>'
-			), $meta->author, $meta->author_uri);
+			), $meta);
 		}
 		else {
-			$info[] = apply_filters('settings.plugins.' . $meta->id . '.author', sprintf(_r('By %s'), $meta->author), $meta_author);
+			$info[] = apply_filters('settings.plugins.author', sprintf(_r('By %s'), $meta->author), $meta);
 		}
 	}
 
 	if (!empty($meta->uri)) {
-		$info[] = apply_filters('settings.plugins.' . $meta->id . '.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $meta->uri));
+		$info[] = apply_filters('settings.plugins.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $meta->uri), $meta);
 	}
 
-	$info = apply_filters('settings.plugins.' . $meta->id . '.info', $info);
+	$info = apply_filters('settings.plugins.info', $info, $meta);
 ?>
 				<tr class="<?php echo $class ?>">
 					<td class="plugin-name"><span class="name"><?php echo $meta->name ?></span><p class="plugin-actions"><?php echo $actions ?></p></td>
