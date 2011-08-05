@@ -75,7 +75,7 @@ if(!empty($_GET['deactivated'])) {
 
 <h1><?php _e('Plugin Management'); ?></h1>
 
-<p><a href="plugins-add.php"><?php _e('Install a plugin') ?></a> | <a href="plugins-add.php?action=update"><?php _e('Check for updates') ?></a></p>
+<p><a href="plugins-add.php?action=update"><?php _e('Check for updates') ?></a></p>
 
 <form action="settings.php" method="post">
 	<fieldset id="plugins">

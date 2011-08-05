@@ -71,7 +71,7 @@ function admin_header($title, $parent_file = false) {
 		),
 		'plugins.php' => array(
 			array(_r('Manage'), 'plugins.php', 'plugins'),
-			array(_r('Search & Install'), 'plugins-add.php', 'plugins'),
+			//array(_r('Search & Install'), 'plugins-add.php', 'plugins'),
 		),
 		'settings.php' => array(
 			array(_r('General'), 'settings.php', 'settings'),
