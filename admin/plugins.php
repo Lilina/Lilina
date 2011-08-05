@@ -146,7 +146,13 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 	if ($new_version !== false) {
 ?>
 				<tr class="update-row">
-					<td colspan="2"><p><?php printf(_r('An update for %1$s v%2$s is available. <a href="%3$s" class="update-link">Update to v%4$s</a>'), $meta->name, $meta->version, $meta->id, $new_version->version); ?></p></td>
+					<td colspan="2"><p><?php printf(
+						_r('An update for %1$s v%2$s is available. <a href="%3$s" class="update-link">Update to v%4$s</a>'),
+						$meta->name,
+						$meta->version,
+						'plugins-add.php?action=update&amp;plugin=' . urlencode($meta->id),
+						$new_version->version
+					); ?></p></td>
 				</tr>
 <?php
 	}
