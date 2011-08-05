@@ -158,6 +158,16 @@
 			.plugin-row.deactivated a {
 				color: #888;
 			}
+	.update-row {
+		border-top: 0;
+	}
+		.update-row td {
+			text-align: center;
+			background: #ffd;
+		}
+		.update-row p {
+			margin: 0;
+		}
 
 
 #footer {

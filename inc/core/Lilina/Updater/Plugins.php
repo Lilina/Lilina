@@ -100,11 +100,11 @@ class Lilina_Updater_Plugins {
 	 * Check whether a plugin needs updating
 	 *
 	 * @param string $id
-	 * @return boolean
+	 * @return boolean|stdClass
 	 */
 	public static function check($id) {
 		if (!empty(self::$actionable[$id])) {
-			return true;
+			return self::$actionable[$id];
 		}
 		return false;
 	}

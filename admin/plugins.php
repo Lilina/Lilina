@@ -94,10 +94,10 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 	$plugin_file = str_replace(get_plugin_dir(), '', $plugin);
 
 	$activated = isset($current_plugins[md5($plugin_file)]);
-	$needs_update = Lilina_Updater_Plugins::check($meta->id);
+	$new_version = Lilina_Updater_Plugins::check($meta->id);
 
 	$class = 'plugin-row';
-	if ($needs_update) {
+	if ($new_version !== false) {
 		$class .= ' needs-update';
 	}
 	$nonce = generate_nonce('plugins.' . $meta->id);
@@ -135,10 +135,6 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 		$info[] = apply_filters('settings.plugins.' . $meta->id . '.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $meta->uri));
 	}
 
-	if ($needs_update) {
-		$info[] = apply_filters('settings.plugins.' . $meta->id . '.update', sprintf(_r('<a href="%s" class="update-link">Update to %s</a>'), $meta->id, '1.0'));
-	}
-
 	$info = apply_filters('settings.plugins.' . $meta->id . '.info', $info);
 ?>
 				<tr class="<?php echo $class ?>">
@@ -146,6 +142,14 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 					<td class="plugin-desc"><?php echo $meta->description ?><p><?php echo implode(' | ', $info) ?></p></td>
 				</tr>
 <?php
+
+	if ($new_version !== false) {
+?>
+				<tr class="update-row">
+					<td colspan="2"><p><?php printf(_r('An update for %1$s v%2$s is available. <a href="%3$s" class="update-link">Update to v%4$s</a>'), $meta->name, $meta->version, $meta->id, $new_version->version); ?></p></td>
+				</tr>
+<?php
+	}
 endforeach;
 ?>
 			</tbody>
