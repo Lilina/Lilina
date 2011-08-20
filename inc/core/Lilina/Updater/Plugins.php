@@ -63,6 +63,7 @@ class Lilina_Updater_Plugins {
 				$plugins[$repo] = array();
 			}
 			$plugins[$repo][$id] = array(
+				'meta' => $meta,
 				'version' => $meta->version
 			);
 		}
@@ -194,6 +195,43 @@ class Lilina_Updater_Plugins {
 			throw new Lilina_Updater_Exception(_r('Package could not be downloaded'), 'httperror', $response);
 		}
 		
+		Lilina_Updater::unzip($filename, LILINA_PATH . '/content/plugins/');
+
+		unlink($filename);
+		return true;
+	}
+
+	/**
+	 * Update a plugin
+	 *
+	 * If a non-prefixed name is specified, this will search all repositories
+	 * for a plugin matching the name. This is dangerous, and if more than one
+	 * package is found, this will fail. Please prefix all plugin names unless
+	 * you know what you're doing.
+	 *
+	 * @param string $name Either a raw plugin name, e.g. 'instapaper', or a prefixed one, e.g. 'glo:instapaper'
+	 * @return boolean
+	 */
+	public static function update($name) {
+		// Make sure we don't time out
+		@set_time_limit(300);
+
+		if (self::check($name) === false) {
+			throw new Lilina_Updater_Exception(_r('Plugin already up-to-date'), 'uptodate');
+		}
+
+		$info = self::$actionable[$name];
+
+		$filename = LILINA_PATH . '/content/system/temp/' . $info->id . '-' . $info->version . '.zip';
+		$headers = array();
+		$options = array(
+			'filename' => $filename
+		);
+		$response = Lilina_HTTP::get($info->download, $headers, array(), $options);
+		if (!$response->success) {
+			throw new Lilina_Updater_Exception(_r('Package could not be downloaded'), 'httperror', $response);
+		}
+
 		Lilina_Updater::unzip($filename, LILINA_PATH . '/content/plugins/');
 
 		unlink($filename);

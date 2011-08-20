@@ -14,7 +14,30 @@ if (!empty($_REQUEST['action'])) {
 }
 switch ($action) {
 	case 'update':
-		die();
+		try {
+			if (empty($_REQUEST['plugin'])) {
+				throw new Exception(_r('Plugin ID not specified'));
+			}
+			$new = Lilina_Updater_Plugins::check($_REQUEST['plugin']);
+			if ($new === false) {
+				throw new Exception(sprintf(_r('%s is up-to-date already.'), 'Plugin'));
+			}
+
+			Lilina_Updater_Plugins::update($_REQUEST['plugin']);
+
+			header('HTTP/1.1 302 Found', true, 302);
+			header('Location: ' . get_option('baseurl') . 'admin/plugins.php?updated=' . $_REQUEST['plugin']);
+			die();
+		}
+		catch (Exception $e) {
+			admin_header(_r('Update Plugin'), 'plugins.php');
+?>
+			<h1><?php _e('Whoops!') ?></h1>
+			<p><?php echo $e->getMessage() ?></p>
+<?php
+			admin_footer();
+			die();
+		}
 
 	/*case 'search':
 		if (!empty($_REQUEST['name'])) {

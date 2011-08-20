@@ -50,6 +50,9 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 			'Content-Type' => 'application/json',
 		));
 		$result = Lilina_HTTP::post('http://api.getlilina.org/plugins/version', $headers, json_encode($plugins));
+		if (!$result->success) {
+			return false;
+		}
 
 		$return = array();
 
@@ -84,7 +87,11 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 			'query' => $query
 		);
 		$request = Lilina_HTTP::get('http://api.getlilina.org/plugins/search', $headers, $data);
+		if (!$request->success) {
+			return false;
+		}
+
 		var_dump($request);
-		return null;
+		return false;
 	}
 }
