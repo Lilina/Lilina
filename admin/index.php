@@ -36,7 +36,7 @@ function relative_time($posted_date) {
 	$seconds = $diff;
  
 	if ($months > 0) {
-		return sprintf(_c('on %s', 'on <date>'), date('N, jS \o\f F, Y'));
+		return sprintf(_c('on %s', 'on <date>'), date('l, jS \o\f F, Y'));
 	}
 
 	switch (true) {
