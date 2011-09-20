@@ -147,6 +147,8 @@ class Lilina_HTTP {
 			return $return;
 		}
 
+		$return->url = $url;
+
 		if (!$options['filename']) {
 			$headers = explode("\r\n\r\n", $headers, 2);
 			$return->body = array_pop($headers);
@@ -218,20 +220,20 @@ class Lilina_HTTP {
 		}
 
 		$decoded = '';
-		$body = $data;
+		$body = ltrim($data, "\r\n");
 
 		while (true) {
-			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $body, $matches );
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/i', $body, $matches );
 			if (!$is_chunked) {
 				// Looks like it's not chunked after all
-				//throw new Exception('Not chunked after all: ' . $body);
-				return $decoded;
+				//throw new Exception('Not chunked after all: ' . $body);\
+				return $body;
 			}
 
 			$length = hexdec($matches[1]);
 			$chunk_length = strlen($matches[0]);
 			$decoded .= $part = substr($body, $chunk_length, $length);
-			$body = ltrim(substr($body, $chunk_length + $length), "\r\n");
+			$body = ltrim(substr($body, $chunk_length), "\r\n");
 
 			if (trim($body) === '0') {
 				// We'll just ignore the footer headers
@@ -250,10 +252,10 @@ class Lilina_HTTP {
 
 	protected static function decompress($data) {
 		if (function_exists('gzdecode') && ($decoded = gzdecode($data)) !== false) {
-			$return->body = $decoded;
+			return $decoded;
 		}
 		elseif (function_exists('gzinflate') && ($decoded = @gzinflate($data)) !== false) {
-			$return->body = $decoded;
+			return $decoded;
 		}
 		elseif (($decoded = self::compatible_gzinflate($data)) !== false) {
 			return $decoded;

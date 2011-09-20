@@ -139,6 +139,9 @@ class Lilina_HTTP_Transport_fsockopen implements Lilina_HTTP_Transport {
 
 	protected static function format_get($url_parts, $data) {
 		if (!empty($data)) {
+			if (empty($url_parts['query']))
+				$url_parts['query'] = '';
+
 			$url_parts['query'] .= '&' . http_build_query($data, null, '&');
 			$url_parts['query'] = trim($url_parts['query'], '&');
 		}

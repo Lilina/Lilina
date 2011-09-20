@@ -37,11 +37,17 @@ class Lilina_HTTP_Response {
 	 * Whether the request succeeded or not
 	 * @var boolean
 	 */
-	public $success = true;
+	public $success = false;
 
 	/**
 	 * Number of redirects the request used
 	 * @var integer
 	 */
 	public $redirects = 0;
+
+	/**
+	 * URL requested
+	 * @var string
+	 */
+	public $url = '';
 }

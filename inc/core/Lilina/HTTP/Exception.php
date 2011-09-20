@@ -16,8 +16,8 @@ class Lilina_HTTP_Exception extends Exception {
 	protected $type;
 	protected $data;
 
-	public function __construct($message, $type, $data = null, $previous = null) {
-		parent::__construct($message, 0, $previous);
+	public function __construct($message, $type, $data = null) {
+		parent::__construct($message, 0);
 
 		$this->type = $type;
 		$this->data = $data;
