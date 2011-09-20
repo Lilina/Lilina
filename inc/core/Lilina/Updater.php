@@ -31,7 +31,7 @@ class Lilina_Updater {
 	 * @return boolean
 	 */
 	public static function unzip($package, $destination) {
-		if (class_exists('ZipArchive') and false) {
+		if (class_exists('ZipArchive')) {
 			return Lilina_Updater::unzip_ziparchive($package, $destination);
 		}
 		else {
@@ -56,9 +56,31 @@ class Lilina_Updater {
 			throw new Lilina_Updater_Exception('Incompatible archive', 'ziparchive_incompat');
 		}
 
+		// If they all have a single root directory, substr it out
+		$first = $zip->statIndex(0);
+		if ($first && '/' == substr($first['name'], -1)) {
+			$root = $first['name'];
+			$length = strlen($root);
+			$hasroot = true;
+
+			for ( $num = 0; $num < $zip->numFiles; $num++ ) {
+				$file = $zip->statIndex(0);
+				if (substr($file['name'], 0, $length) !== $root) {
+					$hasroot = false;
+					break;
+				}
+			}
+		}
+
 		for ( $num = 0; $num < $zip->numFiles; $num++ ) {
 			if ( ! $info = $zip->statIndex($num) ) {
 				throw new Lilina_Updater_Exception('Could not retrieve file from archive', 'ziparchive_stat_failed');
+			}
+			if ($hasroot) {
+				$info['name'] = substr($info['name'], $length);
+				if (empty($info['name'])) {
+					continue;
+				}
 			}
 
 			if ('/' == substr($info['name'], -1)) { // directory
@@ -78,7 +100,7 @@ class Lilina_Updater {
 				throw new Lilina_Updater_Exception(_r('Could not extract file from archive'), 'ziparchive_extract_failed', $info['name']);
 			}
 
-			if (!file_put_contents($destination . $info['name'], $contents)) {
+			if (!@file_put_contents($destination . $info['name'], $contents)) {
 				throw new Lilina_Updater_Exception(_r('Could not copy file'), 'ziparchive_copy_fail', $destination . $info['name']);
 			}
 		}
@@ -124,6 +146,9 @@ class Lilina_Updater {
 		foreach ($archive_files as $file) {
 			if ($hasroot) {
 				$file['filename'] = substr($file['filename'], $length);
+				if (empty($info['name'])) {
+					continue;
+				}
 			}
 
 			if ($file['folder']) {
@@ -138,7 +163,7 @@ class Lilina_Updater {
 				continue;
 			}
 
-			if (!file_put_contents($destination . $file['filename'], $file['content'])) {
+			if (!@file_put_contents($destination . $file['filename'], $file['content'])) {
 				throw new Lilina_Updater_Exception(_r('Could not copy file'), 'pclzip_copy_fail', $destination . $file['filename']);
 			}
 		}
@@ -212,6 +237,7 @@ class Lilina_Updater {
 		if (file_exists($tempdir) && is_dir($tempdir)) {
 			Lilina_Updater::rmdir($tempdir);
 		}
+		mkdir($tempdir, 0755);
 
 		Lilina_Updater::unzip($zip, $tempdir);
 		unlink($zip);
