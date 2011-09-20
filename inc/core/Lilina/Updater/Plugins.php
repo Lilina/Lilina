@@ -14,7 +14,16 @@
  */
 class Lilina_Updater_Plugins {
 	/**
-	 * 
+	 * Interval between checking for updates
+	 *
+	 * = 12 hours (in seconds)
+	 */
+	const CHECKINTERVAL = 43200;
+
+	/**
+	 * Plugins which require updating
+	 *
+	 * @param array
 	 */
 	protected static $actionable = array();
 
@@ -34,7 +43,7 @@ class Lilina_Updater_Plugins {
 		$current = json_decode($current);
 		self::$actionable = (array) $current->plugins;
 
-		if (43200 > (time() - $current->last_checked)) {
+		if (self::CHECKINTERVAL > (time() - $current->last_checked)) {
 			return;
 		}
 
@@ -44,7 +53,7 @@ class Lilina_Updater_Plugins {
 	/**
 	 * Check all current plugins for updates
 	 *
-	 * Don't call this manually.
+	 * Don't call this manually, it is registered by admin_init()
 	 */
 	public static function check_all() {
 		$activated = array_values($GLOBALS['current_plugins']);
