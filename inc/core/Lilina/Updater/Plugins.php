@@ -194,10 +194,10 @@ class Lilina_Updater_Plugins {
 		if (!$response->success) {
 			throw new Lilina_Updater_Exception(_r('Package could not be downloaded'), 'httperror', $response);
 		}
-		
-		Lilina_Updater::unzip($filename, LILINA_PATH . '/content/plugins/');
 
-		unlink($filename);
+		$tempdir = LILINA_PATH . '/content/system/temp/' . $info->id . '-' . $info->version . '/';
+		$realdir = LILINA_PATH . '/content/plugins/' . $repo->get_id() . '-' . $info->id;
+		Lilina_Updater::unzipandcopy($filename, $tempdir, $realdir);
 		return true;
 	}
 
@@ -232,9 +232,9 @@ class Lilina_Updater_Plugins {
 			throw new Lilina_Updater_Exception(_r('Package could not be downloaded'), 'httperror', $response);
 		}
 
-		Lilina_Updater::unzip($filename, LILINA_PATH . '/content/plugins/');
-
-		unlink($filename);
+		$tempdir = LILINA_PATH . '/content/system/temp/' . $info->id . '-' . $info->version . '/';
+		$realdir = LILINA_PATH . '/content/plugins/' . $repo->get_id() . '-' . $info->id;
+		Lilina_Updater::unzipandcopy($filename, $tempdir, $realdir);
 		return true;
 	}
 }

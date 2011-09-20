@@ -126,6 +126,86 @@ class Lilina_Updater {
 		}
 		return true;
 	}
+
+	/**
+	 * Copy a directory recursively
+	 *
+	 * @param string $from Directory to copy from
+	 * @param string $to Directory to copy to
+	 * @throws Lilina_Updater_Exception
+	 */
+	public static function copydir($from, $to) {
+		if (substr($to, -1) !== '/') {
+			$to .= '/';
+		}
+		$from = new RecursiveDirectoryIterator($from, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_SELF | FilesystemIterator::SKIP_DOTS);
+		$from = new RecursiveIteratorIterator($from, RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($from as $path => $file) {
+			if ($file->isFile()) {
+				if (!copy($path, $to . $file->getSubPathName())) {
+					chmod($to . $file->getSubPathName(), 0644);
+					if (!copy($path, $to . $file->getSubPathName())) {
+						throw new Lilina_Updater_Exception(_r('Could not copy file'), 'copydir_copy_fail', $to . $file->getSubPathName());
+					}
+				}
+			}
+			else {
+				if (file_exists($to . $file->getSubPathName()) && is_dir($to . $file->getSubPathName())) {
+					continue;
+				}
+				if (!mkdir($to . $file->getSubPathName(), 0755)) {
+					throw new Lilina_Updater_Exception(_r('Could not create directory'), 'copydir_kdir_fail', $to . $file->getSubPathName());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Remove a directory recursively
+	 *
+	 * @param string $path
+	 * @return boolean
+	 */
+	public static function rmdir($root) {
+		$dir = new RecursiveDirectoryIterator($root, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_SELF | FilesystemIterator::SKIP_DOTS);
+		$dir = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::CHILD_FIRST);
+		foreach ($dir as $path => $file) {
+			if ($file->isFile()) {
+				unlink($path);
+			}
+			else {
+				rmdir($path);
+			}
+		}
+
+		return rmdir($root);
+	}
+
+	/**
+	 * Unzip into a temporary directory and copy the files into the actual directory
+	 *
+	 * @param string $zip Zip filename
+	 * @param string $tempdir
+	 * @param string $realdir
+	 * @return boolean
+	 */
+	public static function unzipandcopy($zip, $tempdir, $realdir) {
+		// Ensure we clean up if last time failed
+		if (file_exists($tempdir) && is_dir($tempdir)) {
+			Lilina_Updater::rmdir($tempdir);
+		}
+
+		Lilina_Updater::unzip($zip, $tempdir);
+		unlink($zip);
+
+		// Now, move the files into the correct directory
+		if (!file_exists($realdir) || !is_dir($realdir)) {
+			mkdir($realdir, 0755);
+		}
+		Lilina_Updater::copydir($tempdir, $realdir);
+		Lilina_Updater::rmdir($tempdir);
+		return true;
+	}
 }
 
 $glo = new Lilina_Updater_Repository_GLO();
