@@ -107,7 +107,25 @@ class Lilina_Updater {
 			throw new Lilina_Updater_Exception('Empty archive', 'pclzip_empty');
 		}
 
+		// If they all have a single root directory, substr it out
+		if ($archive_files[0]['folder']) {
+			$root = $archive_files[0]['filename'];
+			$length = strlen($root);
+			$hasroot = true;
+
+			foreach ($archive_files as $file) {
+				if (substr($file['filename'], 0, $length) !== $root) {
+					$hasroot = false;
+					break;
+				}
+			}
+		}
+
 		foreach ($archive_files as $file) {
+			if ($hasroot) {
+				$file['filename'] = substr($file['filename'], $length);
+			}
+
 			if ($file['folder']) {
 				if (!file_exists($destination . $file['filename'])) {
 					mkdir($destination . $file['filename'], 0755);
