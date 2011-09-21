@@ -218,8 +218,8 @@ RazorUI.init = function () {
 	});
 	$.hotkeys({
 		"?": RazorUI.showHelp,
-		"j": Razor.selectPrevious,
-		"k": Razor.selectNext,
+		"k": Razor.selectPrevious,
+		"j": Razor.selectNext,
 		"v": RazorUI.openCurrent
 	});
 	$('#switcher-sidebar').click(function () {
