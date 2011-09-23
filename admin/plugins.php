@@ -21,11 +21,11 @@ if (isset($_GET['_nonce'])) {
 		$plugin = $_GET['deactivate'];
 	}
 	else {
-		lilina_nice_die(_r('Incorrect action specified.'));
+		Lilina::nice_die(_r('Incorrect action specified.'));
 	}
 
 	if (!check_nonce('plugins.' . $plugin, $_GET['_nonce'])) {
-		lilina_nice_die(_r('Nonces do not match.'));
+		Lilina::nice_die(_r('Nonces do not match.'));
 	}
 
 	if ($type === 'activate') {
@@ -48,7 +48,7 @@ if (isset($_GET['settings'])) {
 	$succeeded = apply_filters('settings.plugins.' . $_GET['settings'] . '.settingspage', false);
 	if (!$succeeded) {
 		header('HTTP/1.1 500 Internal Server Error', true, 500);
-		lilina_nice_die(_r('Plugin page not found'));
+		Lilina::nice_die(_r('Plugin page not found'));
 	}
 	die();
 }
