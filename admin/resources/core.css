@@ -29,6 +29,13 @@ p, ul, pre {
 ul ul {
 	font-size: 1em;
 }
+a {
+	text-decoration: none;
+	color: #00f;
+}
+	a:hover {
+		text-decoration: underline;
+	}
 #header {
 	font: 1.1em/1em Arial,sans-serif;
 	width: 90%;
