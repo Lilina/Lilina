@@ -147,7 +147,13 @@ if(!empty($_GET['template_changed']))
 ?>
 					<h2><?php echo $title ?></h2>
 					<p><?php echo $template->description ?></p>
+<?php
+					if ($template->slug !== get_option('template')) {
+?>
 					<button type="submit" name="activate_template" value="<?php echo $template->slug ?>">Activate</button>
+<?php
+					}
+?>
 				</div>
 <?php
 			}
