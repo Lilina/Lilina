@@ -80,6 +80,9 @@ class Lilina_Plugins {
 
 		foreach (self::$activated_files as $file) {
 			$info = self::get_meta(self::$directory . $file);
+			if ($info === false) {
+				continue;
+			}
 			self::$activated[$info->id] = $info;
 
 			if (file_exists(self::$directory . $file)) {
@@ -454,8 +457,14 @@ class Lilina_Plugins {
 		if (empty($vals['min_version']))
 			$vals['min_version'] = LILINA_CORE_VERSION;
 		
-		if (empty($vals['id']))
+		// Only create an ID for plugins not using docblocks that also have a name.
+		// This avoids accidentally adding random files
+		if (empty($vals['id']) && !empty($vals['name']) && empty($docblock['short'])) {
 			$vals['id'] = sha1($plugin_file);
+		}
+		elseif (empty($vals['id'])) {
+			return false;
+		}
 
 		$plugin = (object) $vals;
 		return $plugin;
@@ -572,6 +581,9 @@ class Lilina_Plugins {
 		$available = array();
 		foreach ($files as $file) {
 			$meta = self::get_meta($file);
+			if ($meta === false) {
+				continue;
+			}
 			$available[$meta->id] = $meta;
 		}
 
