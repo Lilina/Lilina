@@ -50,9 +50,9 @@ else {
 
 $library = new LibraryView('library', 'Library');
 $everything = new LibraryView('everything', 'Everything');
-$everything->add_child(new LibraryView('most', 'Well, Most Things'));
 $library->add_child($everything);
-$library->add_child(new LibraryView('unread', 'Unread'));
+/*$everything->add_child(new LibraryView('most', 'Well, Most Things'));
+$library->add_child(new LibraryView('unread', 'Unread'));*/
 
 $menu = array(
 	'library' => $library
@@ -70,11 +70,6 @@ foreach ($menu as $id => $item) {
 <?php
 }
 ?>
-			<h2>Other</h2>
-			<ul>
-				<li class="expandable"><a href="#"><span class="arrow">&#x25B6;</span><span class="text">Some Folder</span></a></li>
-				<li><a href="#"><img src="<?php template_directory() ?>/feed.png" />Some Folder</a></li>
-			</ul>
 			<h2>Feeds</h2>
 			<ul id="feeds-list">
 				<li><a href="#">Loading feeds...</a></li>
