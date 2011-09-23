@@ -228,6 +228,8 @@ a:active, a:focus {
 					color: #999;
 					font-size: 11px;
 					text-shadow: 0 1px 0 #fff;
+					position: absolute;
+					background: inherit;
 				}
 					#items-list li a.current .item-source,
 					#items-list li a.current .item-date {
@@ -237,7 +239,9 @@ a:active, a:focus {
 					float: left;
 				}
 				#items-list li a .item-date {
-					float: right;
+					padding-left: 15px;
+					padding-right: 10px;
+					right: 0;
 				}
 #item-view {
 	float: left;
