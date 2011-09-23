@@ -12,10 +12,6 @@ require_once('admin.php');
 class SubscribePage {
 
 	public static function run() {
-		if(isset($_GET['test']))
-			return self::success_page('xyz');
-		if(isset($_GET['test2']))
-			return self::sub_page('FAIL');
 		if(empty($_POST['url']))
 			return self::sub_page();
 
