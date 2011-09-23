@@ -23,7 +23,7 @@ global $settings;
 require_once(LILINA_INCPATH . '/core/Lilina.php');
 Lilina::check_installed();
 
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+Lilina_Plugins::init();
 Localise::load_default_textdomain();
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
