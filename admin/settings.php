@@ -75,7 +75,7 @@ if(!empty($_GET['template_changed']))
 	<fieldset id="views">
 		<legend><?php _e('Viewing Settings'); ?></legend>
 		<div class="row">
-			<label for="locale"><?php _e('Language') ?></label>
+			<label for="locale"><?php _e('Language') ?>:</label>
 			<select id="locale" name="locale">
 				<?php
 				foreach(available_locales() as $locale) {
@@ -92,13 +92,33 @@ if(!empty($_GET['template_changed']))
 			<label for="timezone"><?php _e('Timezone'); ?>:</label>
 			<select id="timezone" name="timezone">
 				<?php
-				foreach(timezone_identifiers_list() as $tz) {
-					echo '<option';
-					if($tz === get_option('timezone')) {
-						echo ' selected="selected"';
+					$ids = DateTimeZone::listIdentifiers();
+					$real = array();
+					foreach ($ids as $id) {
+						if (strpos($id, '/') !== false) {
+							list($continent, $city) = explode('/', $id);
+						}
+						else {
+							$continent = 'Other';
+							$city = $id;
+						}
+						if (empty($real[$continent])) {
+							$real[$continent] = array();
+						}
+						$real[$continent][$city] = $id;
 					}
-					echo '>', $tz, '</option>';
-				}
+
+					foreach ($real as $continent => $cities) {
+						echo '<optgroup label="' . $continent . '">';
+						foreach($cities as $city => $tz) {
+							echo '<option';
+							if($tz === get_option('timezone')) {
+								echo ' selected="selected"';
+							}
+							echo ' value="' . $tz . '">' . $city . '</option>';
+						}
+						echo '</optgroup>';
+					}
 				?>
 			</select>
 		</div>
