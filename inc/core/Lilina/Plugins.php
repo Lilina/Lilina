@@ -565,8 +565,6 @@ class Lilina_Plugins {
 			}
 		}
 
-		//$available = array_filter($available, array(get_class(), 'filter_plugin_files'));
-
 		self::$available_files = $available;
 		return self::$available_files;
 	}
