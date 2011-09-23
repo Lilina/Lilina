@@ -79,15 +79,17 @@ class Lilina_Plugins {
 		require_once(LILINA_INCPATH . '/core/default-actions.php');
 
 		foreach (self::$activated_files as $file) {
+			if (!file_exists(self::$directory . $file)) {
+				continue;
+			}
+
 			$info = self::get_meta(self::$directory . $file);
 			if ($info === false) {
 				continue;
 			}
 			self::$activated[$info->id] = $info;
 
-			if (file_exists(self::$directory . $file)) {
-				include_once(self::$directory . $file);
-			}
+			include_once(self::$directory . $file);
 		}
 	}
 
