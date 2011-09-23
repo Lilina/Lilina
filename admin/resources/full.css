@@ -311,6 +311,7 @@
 	background: url("feed.png") no-repeat left center;
 	text-decoration: none;
 	padding-left: 26px;
+	display: inline-block;
 }
 #block-list .greader a { background-image: url("greader.png"); }
 
