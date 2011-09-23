@@ -41,6 +41,11 @@ var admin = {
 
 		$("body").append("<div id='loading'></div>");
 		$(".nojs").remove();
+
+		$('.bookmarklet').click(function () {
+			alert('Drag this to your bookmarks bar');
+			return false;
+		})
 		
 		admin.messages.setup();
 	},

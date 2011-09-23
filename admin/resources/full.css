@@ -322,3 +322,16 @@
 		color: #00f;
 		text-decoration: none;
 	}
+
+.bookmarklet {
+	display: inline-block;
+	background: #eee;
+	color: #222;
+	padding: 3px 10px;
+	text-decoration: none;
+	border: 1px solid #BABDB6;
+	border-radius: 5px;
+}
+	.bookmarklet:hover {
+		border-color: #9f9f9f;
+	}

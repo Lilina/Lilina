@@ -115,8 +115,8 @@ else {
 </ul>
 <p class="sidenote"><?php echo sprintf(_r('Looking to import from another service? Try our <a href="%s">open documentation</a> to see what other users have found.'), 'http://getlilina.org/wiki/importing') ?></p>
 <h2><?php _e('Quick Adding') ?></h2>
-<p><?php _e('Use this bookmarlet to subscribe to feeds straight from your browser:')?> 
-<a href="javascript:void(sp=window.open('<?php echo get_option('baseurl') ?>admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,resizable=no,width=450,height=430,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));"><?php _e('Subscribe') ?></a></p>
+<p><?php _e('Use this bookmarlet to subscribe to feeds straight from your browser:')?><br />
+<a href="javascript:void(sp=window.open('<?php echo get_option('baseurl') ?>admin/subscribe.php?url='+escape(document.location),'lilina','toolbar=no,resizable=no,width=450,height=430,scrollbars=yes'));%20void(setTimeout(function(){sp.focus()},100));" class="bookmarklet"><?php _e('Subscribe') ?></a></p>
 <h2><?php _e('Updating Your Feeds') ?></h2>
 <p><?php _e('Lilina offers several ways to update your feeds. Some templates offer an update button, while others leave it to you to work out.') ?></p>
 <p><?php printf(_r('To update your feeds from your browser, simply access <a href="%1$s">the updater</a> in your browser. You can also access this URL via cron, by appending <code>&amp;cron</code>.'), get_option('baseurl') . '?method=update') ?></p>
