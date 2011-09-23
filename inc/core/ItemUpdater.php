@@ -114,7 +114,7 @@ class ItemUpdater {
 		usort($sp->data['ordered_items'], array(&$sp, 'sort_items'));
 		usort($sp->data['items'], array(&$sp, 'sort_items'));
 
-		do_action_ref_array('iu-load-feed', array(&$sp, $feed));
+		Lilina_Plugins::filter_reference('iu-load-feed', array(&$sp, $feed));
 		return $sp;
 	}
 

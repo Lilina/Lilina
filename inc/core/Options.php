@@ -158,4 +158,12 @@ function update_option($option_name, $new_value) {
 function save_options() {
 	return Options::save();
 }
-?>
+
+/**
+ * Get the plugin storage directory
+ *
+ * @return string Path to plugin directory
+ */
+function get_plugin_dir() {
+	return LILINA_CONTENT_DIR . '/plugins/';
+}

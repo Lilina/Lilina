@@ -28,23 +28,15 @@ if (isset($_GET['_nonce'])) {
 		lilina_nice_die(_r('Nonces do not match.'));
 	}
 
-	$names = lilina_plugins_list(get_plugin_dir());
-	foreach ($names as $name) {
-		$meta = plugins_meta($name);
-		if ($meta->id === $plugin) {
-			$file = str_replace(get_plugin_dir(), '', $name);
-		}
-	}
-
 	if ($type === 'activate') {
-		activate_plugin($file);
+		Lilina_Plugins::activate($plugin);
 		
 		header('HTTP/1.1 302 Found', true, 302);
 		header('Location: ' . get_option('baseurl') . 'admin/plugins.php?activated=1');
 		die();
 	}
 	else {
-		deactivate_plugin($file);
+		Lilina_Plugins::deactivate($plugin);
 		
 		header('HTTP/1.1 302 Found', true, 302);
 		header('Location: ' . get_option('baseurl') . 'admin/plugins.php?deactivated=1');
@@ -88,58 +80,55 @@ if(!empty($_GET['deactivated'])) {
 			</thead>
 			<tbody>
 <?php
-foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
-	global $current_plugins;
-	$meta = plugins_meta($plugin);
-	$plugin_file = str_replace(get_plugin_dir(), '', $plugin);
 
-	$activated = isset($current_plugins[md5($plugin_file)]);
-	$new_version = Lilina_Updater_Plugins::check($meta->id);
+foreach (Lilina_Plugins::get_available() as $plugin):
+	$activated = Lilina_Plugins::is_activated($plugin->id);
+	$new_version = Lilina_Updater_Plugins::check($plugin->id);
 
 	$class = 'plugin-row';
 	if ($new_version !== false) {
 		$class .= ' needs-update';
 	}
-	$nonce = generate_nonce('plugins.' . $meta->id);
+	$nonce = generate_nonce('plugins.' . $plugin->id);
 	if ($activated) {
 		$class .= ' activated';
-		$actions = '<a href="plugins.php?deactivate=' . $meta->id . '&amp;_nonce=' . $nonce . '">' . _r('Deactivate') . '</a>';
+		$actions = '<a href="plugins.php?deactivate=' . $plugin->id . '&amp;_nonce=' . $nonce . '">' . _r('Deactivate') . '</a>';
 	}
 	else {
 		$class .= ' deactivated';
-		$actions = '<a href="plugins.php?activate=' . $meta->id . '&amp;_nonce=' . $nonce . '">' . _r('Activate') . '</a>';
+		$actions = '<a href="plugins.php?activate=' . $plugin->id . '&amp;_nonce=' . $nonce . '">' . _r('Activate') . '</a>';
 	}
 
-	$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $meta->id, $meta);
+	$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $plugin->id, $plugin);
 
 	if (!empty($settings)) {
 		$actions .= sprintf(' | <a href="%s">%s</a>', $link, _r('Settings'));
 	}
 
 	$info = array();
-	$info[] = sprintf(_r('Version %s'), $meta->version);
+	$info[] = sprintf(_r('Version %s'), $plugin->version);
 
-	if (!empty($meta->author)) {
-		if ($meta->author_uri) {
+	if (!empty($plugin->author)) {
+		if ($plugin->author_uri) {
 			$info[] = apply_filters('settings.plugins.author', sprintf(
 				_r('By %s</a>'),
-				'<a href="' . $meta->author_uri . '">' . $meta->author . '</a>'
-			), $meta);
+				'<a href="' . $plugin->author_uri . '">' . $plugin->author . '</a>'
+			), $plugin);
 		}
 		else {
-			$info[] = apply_filters('settings.plugins.author', sprintf(_r('By %s'), $meta->author), $meta);
+			$info[] = apply_filters('settings.plugins.author', sprintf(_r('By %s'), $plugin->author), $plugin);
 		}
 	}
 
-	if (!empty($meta->uri)) {
-		$info[] = apply_filters('settings.plugins.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $meta->uri), $meta);
+	if (!empty($plugin->uri)) {
+		$info[] = apply_filters('settings.plugins.link', sprintf(_r('<a href="%s">Visit plugin site</a>'), $plugin->uri), $plugin);
 	}
 
-	$info = apply_filters('settings.plugins.info', $info, $meta);
+	$info = apply_filters('settings.plugins.info', $info, $plugin);
 ?>
 				<tr class="<?php echo $class ?>">
-					<td class="plugin-name"><span class="name"><?php echo $meta->name ?></span><p class="plugin-actions"><?php echo $actions ?></p></td>
-					<td class="plugin-desc"><?php echo $meta->description ?><p><?php echo implode(' | ', $info) ?></p></td>
+					<td class="plugin-name"><span class="name"><?php echo $plugin->name ?></span><p class="plugin-actions"><?php echo $actions ?></p></td>
+					<td class="plugin-desc"><?php echo $plugin->description ?><p><?php echo implode(' | ', $info) ?></p></td>
 				</tr>
 <?php
 
@@ -148,9 +137,9 @@ foreach (lilina_plugins_list(get_plugin_dir()) as $plugin):
 				<tr class="update-row">
 					<td colspan="2"><p><?php printf(
 						_r('An update for %1$s v%2$s is available. <a href="%3$s" class="update-link">Update to v%4$s</a>'),
-						$meta->name,
-						$meta->version,
-						'plugins-add.php?action=update&amp;plugin=' . urlencode($meta->id),
+						$plugin->name,
+						$plugin->version,
+						'plugins-add.php?action=update&amp;plugin=' . urlencode($plugin->id),
 						$new_version->version
 					); ?></p></td>
 				</tr>

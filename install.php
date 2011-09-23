@@ -60,7 +60,6 @@ if (!function_exists('apply_filters')) {
  */
 function upgrade() {
 	global $lilina;
-	//require_once(LILINA_INCPATH . '/core/plugin-functions.php');
 	require_once(LILINA_INCPATH . '/core/feed-functions.php');
 	require_once(LILINA_INCPATH . '/core/version.php');
 	require_once(LILINA_INCPATH . '/core/misc-functions.php');

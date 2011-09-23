@@ -25,7 +25,7 @@ require_once(LILINA_INCPATH . '/core/Lilina.php');
 require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 require_once(LILINA_INCPATH . '/core/conf.php');
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+Lilina_Plugins::init();
 
 if(isset($_GET['feed'])) {
 	$feed = Feeds::get_instance()->get($_GET['feed']);

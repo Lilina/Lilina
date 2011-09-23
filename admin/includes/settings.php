@@ -130,20 +130,7 @@ function template_meta($filename) {
  * @return bool Whether plugin was activated
  */
 function activate_plugin($plugin_file) {
-	global $current_plugins;
-	$plugin_file = trim($plugin_file);
-
-	try {
-		validate_plugin($plugin_file);
-	}
-	catch (Exception $e) {
-		return false;
-	}
-	$current_plugins[md5($plugin_file)] = $plugin_file;
-	
-	$data = new DataHandler();
-	$data->save('plugins.data', serialize($current_plugins));
-	return true;
+	throw new Exception('Deprecated function');
 }
 
 /**
@@ -155,23 +142,7 @@ function activate_plugin($plugin_file) {
  * @return bool Whether plugin was deactivated
  */
 function deactivate_plugin($plugin_file) {
-	global $current_plugins;
-	
-	if(!isset($current_plugins[md5($plugin_file)]))
-		return false;
-
-	try {
-		validate_plugin($plugin_file);
-	}
-	catch (Exception $e) {
-		return false;
-	}
-
-	unset($current_plugins[md5($plugin_file)]);
-	
-	$data = new DataHandler();
-	$data->save('plugins.data', serialize($current_plugins));
-	return true;
+	throw new Exception('Deprecated function');
 }
 
 /**

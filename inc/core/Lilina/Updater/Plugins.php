@@ -56,24 +56,23 @@ class Lilina_Updater_Plugins {
 	 * Don't call this manually, it is registered by admin_init()
 	 */
 	public static function check_all() {
-		$activated = array_values($GLOBALS['current_plugins']);
+		$activated = Lilina_Plugins::get_activated();
 		$plugins = array();
 
 		// Firstly, collect all the plugin data
 		foreach ($activated as $plugin) {
-			$meta = plugins_meta(get_plugin_dir() . '/' . $plugin);
-			if ($meta->id === 'unknown' || strpos($meta->id, ':') === false) {
+			if ($plugin->id === 'unknown' || strpos($plugin->id, ':') === false) {
 				continue;
 			}
 
-			list($repo, $id) = explode(':', $meta->id, 2);
+			list($repo, $id) = explode(':', $plugin->id, 2);
 
 			if (!isset($plugins[$repo])) {
 				$plugins[$repo] = array();
 			}
 			$plugins[$repo][$id] = array(
-				'meta' => $meta,
-				'version' => $meta->version
+				'meta' => $plugin,
+				'version' => $plugin->version
 			);
 		}
 

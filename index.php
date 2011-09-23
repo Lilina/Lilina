@@ -20,7 +20,7 @@ Lilina::check_installed();
 require_once(LILINA_INCPATH . '/core/conf.php');
 Lilina::level_playing_field();
 
-require_once(LILINA_INCPATH . '/core/plugin-functions.php');
+Lilina_Plugins::init();
 $timer_start = lilina_timer_start();
 
 require_once(LILINA_INCPATH . '/core/version.php');
