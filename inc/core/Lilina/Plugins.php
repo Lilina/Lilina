@@ -117,8 +117,13 @@ class Lilina_Plugins {
 	 * @return array|null
 	 */
 	public static function get($id) {
-		if (!empty(self::$plugins[$id])) {
-			return self::$plugins[$id];
+		if (!empty(self::$activated[$id])) {
+			return self::$activated[$id];
+		}
+
+		$all = self::get_available();
+		if (!empty($all[$id])) {
+			return $all[$id];
 		}
 
 		return null;
