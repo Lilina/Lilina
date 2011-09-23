@@ -33,10 +33,19 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 	 * @return Lilina_Updater_PluginInfo
 	 */
 	public function get($name) {
-		$obj = new Lilina_Updater_PluginInfo($name);
-		$obj->download = 'http://downloads.wordpress.org/plugin/jetpack.1.1.1.zip';
-		$obj->version = '1.1.1';
-		//$obj->download = 'http://google.com/';
+		$headers = Lilina_Updater::update_headers(array(
+			'Content-Type' => 'application/json',
+		));
+		$data = array(
+			'component' => $name
+		);
+		$request = Lilina_HTTP::get('http://api.getlilina.org/plugins/info', $headers, $data);
+		if (!$request->success) {
+			return false;
+		}
+
+		$data = json_decode($request->body);
+		$obj = Lilina_Updater_PluginInfo::load($data);
 		return $obj;
 	}
 	
