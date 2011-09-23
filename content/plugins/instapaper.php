@@ -5,8 +5,10 @@
  * Save items to Instapaper.
  *
  * @id glo:instapaper
+ * @link http://getlilina.org/
+ * @requires 1.0-bleeding
  * @version 1.1
- * @author Ryan McCue <ryan@getlilina.org>
+ * @author Ryan McCue <http://ryanmccue.info/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 

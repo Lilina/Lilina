@@ -67,12 +67,6 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 			}
 		}
 
-		// Temporarily, Instapaper is always out of date.
-		$insta = new Lilina_Updater_PluginInfo('instapaper');
-		$insta->download = 'http://downloads.wordpress.org/plugin/jetpack.1.1.1.zip';
-		$insta->version = '1.1.1';
-		$return['instapaper'] = $insta;
-
 		return $return;
 	}
 
@@ -92,7 +86,6 @@ class Lilina_Updater_Repository_GLO implements Lilina_Updater_Repository {
 			return false;
 		}
 
-		var_dump($request);
 		return false;
 	}
 }
