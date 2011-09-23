@@ -101,7 +101,7 @@ foreach (Lilina_Plugins::get_available() as $plugin):
 
 	$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $plugin->id, $plugin);
 
-	if (!empty($settings)) {
+	if ($activated && !empty($settings)) {
 		$actions .= sprintf(' | <a href="%s">%s</a>', $link, _r('Settings'));
 	}
 
