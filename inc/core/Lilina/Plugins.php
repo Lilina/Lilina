@@ -404,8 +404,7 @@ class Lilina_Plugins {
 			'author' => 'Author',
 			'author_uri' => 'Author URI',
 			'version' => 'Version',
-			'min_version' => 'Min Version',
-			'id' => 'ID',
+			'min_version' => 'Min Version'
 		);
 		$headers = apply_filters('plugin_headers', $headers);
 
