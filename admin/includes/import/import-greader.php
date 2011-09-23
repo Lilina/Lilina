@@ -46,9 +46,7 @@ class GoogleReader_Import extends OPML_Import {
 <h2><?php _e('Method 2'); ?></h2>
 <p><?php _e("We can grab your OPML file for you, but we'll need your username and password. This information won't be stored anywhere and is only used once. (It sucks, we know, but Google doesn't offer any other way.)"); ?>
 <form action="feed-import.php" method="POST">
-	<button id="continue"><?php _e('Start Method 2'); ?></button>
 	<fieldset id="greader">
-		<legend><?php _e('Import Feeds'); ?></legend>
 		<div class="row">
 			<label for="user"><?php _e('Username (Email address)'); ?>:</label>
 			<input type="text" name="user" id="user" />
@@ -57,7 +55,7 @@ class GoogleReader_Import extends OPML_Import {
 			<label for="pass"><?php _e('Password'); ?>:</label>
 			<input type="password" name="pass" id="pass" />
 		</div>
-		<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
+		<input type="submit" value="<?php _e('Import'); ?>" class="button positive" name="submit" />
 		<input type="hidden" name="step" value="1" />
 		<input type="hidden" name="service" value="greader" />
 	</fieldset>

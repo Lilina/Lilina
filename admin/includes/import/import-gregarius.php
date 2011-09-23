@@ -107,7 +107,7 @@ class Gregarius_Import extends OPML_Import {
 		<input type="text" name="dsn" id="dsn" value="mysql:dbname=gregarius;host=127.0.0.1" />
 		<p class="sidenote"><?php _e("If you don't know how to format a DSN, just replace 'gregarius' with your database name.") ?></p>
 	</div>
-	<input type="submit" value="<?php _e('Import'); ?>" class="submit" name="submit" />
+	<input type="submit" value="<?php _e('Import'); ?>" class="button positive" name="submit" />
 	<input type="hidden" name="step" value="1" />
 	<input type="hidden" name="service" value="gregarius" />
 </form>
