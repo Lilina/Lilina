@@ -122,18 +122,23 @@ Razor = {};
 Razor.useFrame = false;
 Razor.currentItem = false;
 Razor.conditions = {};
+Razor.currentlyLoading = null;
 Razor.init = function () {
 	//RazorAPI.init();
 	RazorUI.init();
 };
 Razor.selectItem = function (item) {
 	Razor.currentItem = item;
+	if (Razor.currentlyLoading !== null) {
+		Razor.currentlyLoading.abort();
+	}
 	var loading = $('<div class="loading">Loading...</div>');
 	$('#items-list li a.current').removeClass('current');
 	$('#list-item-' + item).children('a').addClass('current');
 	RazorUI.maybeScroll($("#list-item-" + item), $("#items-list"));
 	$('#item-view').html(loading);
-	LilinaAPI.call('items.get', {'id': item}, RazorUI.populateItemView);
+
+	Razor.currentlyLoading = LilinaAPI.call('items.get', {'id': item}, RazorUI.populateItemView);
 };
 Razor.selectNext = function () {
 	var next = $('#items-list li:has(a.current)').next();
