@@ -276,7 +276,18 @@ RazorUI.init = function () {
 		$('#login a').iconify('user');
 		$('#logout a').iconify('power');
 
-		// this should use deferred objects instead
+		// in case it has already loaded, since we're not using
+		// deferred objects
+		$('#feeds-list li .delete').iconify({
+			icon: 'cross',
+			style: {
+				initial: { scale: "0.5833 0.5833" },
+				normal: { fill: '#fff', stroke: 'none' },
+				hover: { fill: '#911515'},
+				active: { fill: '#911515', stroke: '#f00'}
+			}
+		});
+
 		$('#feeds-list').bind('populated', function () {
 			$('#feeds-list li .delete').iconify({
 				icon: 'cross',
