@@ -241,7 +241,15 @@ class Lilina_Updater_Plugins {
 		}
 
 		$tempdir = LILINA_PATH . '/content/system/temp/' . $info->id . '-' . $info->version . '/';
-		$realdir = LILINA_PATH . '/content/plugins/' . $repo->get_id() . '-' . $info->id;
+
+		$meta = Lilina_Plugins::get($name);
+		if ($meta !== null && dirname($meta->filename) != LILINA_PATH . '/content/plugins') {
+			$realdir = dirname($meta->filename);
+		}
+		else {
+			$dir = str_replace(':', '-', $name);
+			$realdir = LILINA_PATH . '/content/plugins/' . $dir;
+		}
 		Lilina_Updater::unzipandcopy($filename, $tempdir, $realdir);
 		return true;
 	}
