@@ -81,7 +81,8 @@ foreach ($menu as $id => $item) {
 <?php
 if($authenticated) {
 ?>
-				<li><a id="footer-add" href="<?php echo get_option('baseurl') ?>admin/feeds.php#add">Add feed</a></li>
+				<li><a id="footer-add" href="<?php echo get_option('baseurl') ?>admin/feeds.php#add">Add</a></li>
+				<li><a href="<?php echo get_option('baseurl') ?>admin/feeds.php">Manage</a></li>
 <?php
 }
 ?>
@@ -96,10 +97,15 @@ if($authenticated) {
 		</ul>
 	</div>
 
-	<div id="items-list">
-		<ol>
+	<div id="items-list-container">
+		<ol id="items-list">
 			<li><a href="#">Loading items...</a></li>
 		</ol>
+		<div class="footer">
+			<ul>
+				<li><a id="items-reload" href="<?php echo get_option('baseurl') ?>">Reload</a></li>
+			</ul>
+		</div>
 	</div>
 
 	<div id="item-view">
@@ -113,6 +119,10 @@ if($authenticated) {
 				<p>	Razor is a template for Lilina, built to feel and act like
 					a desktop feed reader.</p>
 			</div>
+		</div>
+		<div class="footer">
+			<ul>
+			</ul>
 		</div>
 	</div>
 
