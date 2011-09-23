@@ -99,9 +99,10 @@ foreach (Lilina_Plugins::get_available() as $plugin):
 		$actions = '<a href="plugins.php?activate=' . $plugin->id . '&amp;_nonce=' . $nonce . '">' . _r('Activate') . '</a>';
 	}
 
-	$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $plugin->id, $plugin);
+	$usesettings = apply_filters('settings.plugins.showsettingslink', false, $plugin);
 
-	if ($activated && !empty($settings)) {
+	if ($activated && $usesettings === true) {
+		$link = apply_filters('settings.plugins.settingslink', 'plugins.php?settings=' . $plugin->id, $plugin);
 		$actions .= sprintf(' | <a href="%s">%s</a>', $link, _r('Settings'));
 	}
 
