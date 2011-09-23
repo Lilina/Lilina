@@ -494,7 +494,7 @@ class Lilina_Plugins {
 		foreach ($docblock as $line) {
 			$line_number++;
 
-			if (strpos($line, "@") === 0) {
+			if (strpos($line, "@") === 0 && strpos($line, ' ') !== false) {
 				list($key, $value) = explode(" ", $line, 2);
 				$key = substr($key, 1);
 				$tags[$key] = trim($value);
@@ -545,7 +545,7 @@ class Lilina_Plugins {
 			return self::$available_files;
 		}
 		$available = array();
-		$iterator = new RecursiveDirectoryIterator(self::$directory, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_SELF | FilesystemIterator::SKIP_DOTS);
+		$iterator = new RecursiveDirectoryIterator(self::$directory, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_SELF | FilesystemIterator::SKIP_DOTS | FilesystemIterator::FOLLOW_SYMLINKS);
 		foreach ($iterator as $path => $file) {
 			if ($file->hasChildren()) {
 				$children = $file->getChildren();
