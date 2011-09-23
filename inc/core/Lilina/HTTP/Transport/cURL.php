@@ -31,6 +31,9 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 
 	public function request($url, $headers = array(), $data = array(), $options = array()) {
 		$headers = Lilina_HTTP::flattern($headers);
+		if (($options['type'] === Lilina_HTTP::HEAD || $options['type'] === Lilina_HTTP::GET) & !empty($data)) {
+			$url = Lilina_HTTP_Transport_cURL::format_get($url, $data);
+		}
 
 		switch ($options['type']) {
 			case Lilina_HTTP::POST:
@@ -89,6 +92,29 @@ class Lilina_HTTP_Transport_cURL implements Lilina_HTTP_Transport {
 	protected function stream_headers($handle, $headers) {
 		$this->headers .= $headers;
 		return strlen($headers);
+	}
+
+	protected static function format_get($url, $data) {
+		if (!empty($data)) {
+			$url_parts = parse_url($url);
+			if (empty($url_parts['query'])) {
+				$query = $url_parts['query'] = '';
+			}
+			else {
+				$query = $url_parts['query'];
+			}
+
+			$query .= '&' . http_build_query($data, null, '&');
+			$query = trim($query, '&');
+
+			if (empty($url_parts['query'])) {
+				$url .= '?' . $query;
+			}
+			else {
+				$url = str_replace($url_parts['query'], $query, $url);
+			}
+		}
+		return $url;
 	}
 
 	/**
