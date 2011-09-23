@@ -150,7 +150,13 @@ class Feeds {
 	}
 
 	public function getAll() {
-		return apply_filters('feeds-get_all', $this->feeds);
+		$feeds = $this->feeds;
+		uasort($feeds, array(get_class(), 'sort_feeds'));
+		return apply_filters('feeds-get_all', $feeds);
+	}
+
+	protected static function sort_feeds($a, $b) {
+		return strnatcasecmp($a['name'], $b['name']);
 	}
 
 	/**
