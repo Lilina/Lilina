@@ -39,15 +39,15 @@ a:active, a:focus {
 		padding: 12px 0;
 		position: absolute;
 		width: 30%;
-		top: 0;
+		top: 9px;
 		left: 35%;
 
 		font-size: 14px;
 		text-align: center;
 		color: #bbb;
-		background: rgba(255, 255, 255, 0.2);
+		/*background: rgba(255, 255, 255, 0.2);
 		border-bottom-left-radius: 8px;
-		border-bottom-right-radius: 8px;
+		border-bottom-right-radius: 8px;*/
 	}
 		#updating {
 			background: url("resources/loading-blue.gif") no-repeat left center;
