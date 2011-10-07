@@ -197,11 +197,7 @@ RazorUI.init = function () {
 	RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 	// We'll fix this hardcoded limit later.
 	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
-	$('#items-reload').click(function () {
-		RazorUI.showMessage('Loading&hellip;');
-		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList).complete(RazorUI.hideMessage);
-		return false;
-	});
+	$('#items-reload').click(RazorUI.reloadItems);
 
 	$('#items-list li a').live('click', RazorUI.handleItemClick);
 	$('#sidebar .expandable > a .arrow')
@@ -223,9 +219,18 @@ RazorUI.init = function () {
 		RazorUI.beginUpdate();
 		return false;
 	});
-	$('#items-list').bind('initialized', function() {
-		$('#load-more').click(RazorUI.loadMoreItems);
-	});
+	$('#items-list')
+		.bind('initialized', function() {
+			$('#load-more').click(RazorUI.loadMoreItems);
+		})
+		.bind('scroll', function () {
+			if (Razor.loading)
+				return;
+
+			var remaining = RazorUI.itemCount - ($('#items-list').scrollTop() + $('#items-list').height()) / $('#items-list li').height();
+			if (remaining < 8)
+				RazorUI.loadMoreItems();
+		});
 	$.hotkeys({
 		"?": RazorUI.showHelp,
 		"k": Razor.selectPrevious,
@@ -468,7 +473,7 @@ RazorUI.populateItemList = function (list) {
 		var li = $('<li><a href="#"><span class="item-title" /> <span class="sep">from</span> <span class="item-source" /> <span class="sep">at</span> <span class="item-date" /></a></li>');
 		var a = $('a', li);
 
-		a.data('item-id', id).attr('title', item.title).attr('href', '#!/item/' + id);
+		a.data('item-id', id).attr('title', item.title);
 
 		if (!hasTextOverflow) {
 			$('.item-title', li).html( item.title.shorten(45) );
@@ -500,9 +505,18 @@ RazorUI.populateItemList = function (list) {
 	$('#items-list').trigger('populated');
 };
 RazorUI.loadMoreItems = function () {
+	Razor.loading = true
 	RazorUI.showMessage('Loading&hellip;');
-	Razor.api('items.getList', {"limit": 20, "start": RazorUI.itemCount}, RazorUI.populateItemList).complete(RazorUI.hideMessage);
+	Razor.api('items.getList', {"limit": 20, "start": RazorUI.itemCount}, RazorUI.populateItemList).complete(function () {
+		RazorUI.hideMessage();
+		Razor.loading = false;
+	});
 
+	return false;
+};
+RazorUI.reloadItems = function () {
+	RazorUI.showMessage('Loading&hellip;');
+	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList).complete(RazorUI.hideMessage);
 	return false;
 };
 RazorUI.populateItemView = function (item) {
@@ -548,6 +562,8 @@ RazorUI.populateItemView = function (item) {
 RazorUI.handleItemClick = function () {
 	var id = $(this).data('item-id');
 	Razor.selectItem(id);
+
+	return false;
 };
 RazorUI.beginUpdate = function () {
 	$('#update').hide();
@@ -577,8 +593,7 @@ RazorUI.finishUpdate = function () {
 	RazorUI.showMessage('Done!', 1000);
 	$('#update').show();
 	if(Razor.updated > 0) {
-		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
-		//$('#menu').prepend($('<li>New items are available. Reload to view.</li>'));
+		Razor.reloadItems();
 	}
 
 };
