@@ -47,13 +47,14 @@ else {
 	<div id="sidebar">
 		<div class="item-list">
 <?php
-
+/*
 $library = new LibraryView('library', 'Library');
 $everything = new LibraryView('everything', 'Everything');
 $library->add_child($everything);
+*/
 /*$everything->add_child(new LibraryView('most', 'Well, Most Things'));
 $library->add_child(new LibraryView('unread', 'Unread'));*/
-
+/*
 $menu = array(
 	'library' => $library
 );
@@ -68,8 +69,12 @@ foreach ($menu as $id => $item) {
 ?>
 	</ul>
 <?php
-}
+}*/
 ?>
+			<h2>Library</h2>
+			<ul id="library">
+				<li id="library-everything" class="selected"><a href="#library">Everything</a></li>
+			</ul>
 			<h2>Feeds</h2>
 			<ul id="feeds-list">
 				<li><a href="#">Loading feeds...</a></li>

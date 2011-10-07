@@ -195,12 +195,11 @@ RazorUI.init = function () {
 	$('.relative').toRelativeTime();
 
 	RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
-	// We'll fix this hardcoded limit later.
 	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
 	$('#items-reload').click(RazorUI.reloadItems);
 
 	$('#items-list li a').live('click', RazorUI.handleItemClick);
-	$('#sidebar .expandable > a .arrow')
+	/*$('#sidebar .expandable > a .arrow')
 		.live('click', function() {
 			$(this).parent().blur();
 			$(this).parent().parent().toggleClass('expanded').children('ul').toggle();
@@ -213,7 +212,7 @@ RazorUI.init = function () {
 			return false;
 		})
 		.parent().parent().children('ul')
-			.hide();
+			.hide();*/
 	$('#help a').click(RazorUI.showHelp);
 	$('#update a').click(function () {
 		RazorUI.beginUpdate();
