@@ -199,7 +199,7 @@ Razor.selectPrevious = function () {
 };
 Razor.api = function (method, conditions, callback) {
 	$.extend(conditions, Razor.conditions);
-	return LilinaAPI.call(method, conditions, callback);
+	return LilinaAPI.call(method, conditions, callback, false, 'GET', Razor.baseURL);
 };
 Razor.getScript = function(url, callback){
 	// This allows caching, unlike $.getScript
@@ -381,9 +381,8 @@ RazorUI.scrollToBottom = function (elem, parent) {
 	$(parent).stop(true).animate({scrollTop: pos}, 200);
 };
 RazorUI.showHelp = function () {
-	var loading = $('<div class="loading">Loading...</div>');
-	$('#item-view').html(loading);
-	LilinaAPI.call('razor.help', {}, RazorUI.populateItemView);
+	RazorUI.lightbox(Razor.baseURL + "?method=razor.help");
+	return false;
 };
 RazorUI.openCurrent = function () {
 	var current = $('#heading .item-title a').attr('href');

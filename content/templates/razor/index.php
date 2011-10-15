@@ -137,6 +137,7 @@ if($authenticated) {
 	<script type="text/javascript" src="<?php echo get_option('baseurl') ?>inc/js/api.js"></script>
 	<script type="text/javascript" src="<?php template_directory() ?>/core.js"></script>
 	<script>
+		Razor.baseURL = <?php echo json_encode(get_option('baseurl')) ?>;
 		Razor.scriptURL = "<?php template_directory() ?>";
 	</script>
 </body>
