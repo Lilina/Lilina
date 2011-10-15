@@ -39,6 +39,34 @@ Date.fromString = function(str) {
 	return new Date(Date.parse(str));
 };
 
+String.prototype.lpad = function (padding, length) {
+	var string = this;
+	while (string.length < length) {
+		string = padding + string;
+	}
+
+	return string;
+};
+String.prototype.rpad = function (padding, length) {
+	var string = this;
+	while (string.length < length) {
+		string += padding;
+	}
+
+	return string;
+};
+
+Date.prototype.toHumanString = function () {
+	var string = this.getFullYear();
+	string += '-' + (this.getMonth() + 1).toString().lpad("0", 2);
+	string += '-' + (this.getDate() + 1).toString().lpad("0", 2);
+	string += ' ' + this.getHours().toString().lpad("0", 2);
+	string += ':' + this.getMinutes().toString().lpad("0", 2);
+	string += ':' + this.getSeconds().toString().lpad("0", 2);
+
+	return string;
+};
+
 (function($) {
 	/*
 	 * A handy jQuery wrapper for converting tags with JavaScript parse()-able
@@ -489,7 +517,7 @@ RazorUI.populateItemList = function (list) {
 		$('.item-source', li).html(feed.name);
 
 		var date = new Date(item.timestamp * 1000);
-		$('.item-date', li).text(date.toUTCString()).toRelativeTime();
+		$('.item-date', li).attr("title", date.toHumanString()).text(date.toRelativeTime());
 
 		li.attr('id', 'list-item-' + id);
 		li.insertBefore('#load-more');
@@ -535,7 +563,7 @@ RazorUI.populateItemView = function (item) {
 
 	$('.item-title a', basics).html(item.title).attr('href', item.permalink);
 	$('.item-source a', basics).html(feed.name).attr('href', feed.url).addClass('external');
-	$('.item-date abbr', basics).text(date.toUTCString()).attr('title', date.toUTCString()).toRelativeTime();
+	$('.item-date abbr', basics).attr("title", date.toHumanString()).text(date.toRelativeTime());
 	if (!Razor.useFrame) {
 		$('#item-content', basics).html(item.content);
 	}
