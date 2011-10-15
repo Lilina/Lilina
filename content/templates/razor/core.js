@@ -445,6 +445,10 @@ RazorUI.fitToWindow = function () {
 		});
 	}
 	var contentHeight = $("#item-view").innerHeight() - ($('#item-content').position().top + $('#item-services').outerHeight() + 20); //header + footer + item header + padding
+	if (Razor.useFrame) {
+		contentHeight += 20;
+	}
+
 	$('#item-content').css( {
 		'height': contentHeight
 	});

@@ -391,8 +391,7 @@ a:active, a:focus {
 #item-content.framed {
 	border: none;
 	width: 100%;
-	padding-left: 0;
-	padding-right: 0;
+	padding: 0;
 }
 
 #switcher {
