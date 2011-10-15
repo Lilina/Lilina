@@ -262,7 +262,9 @@ RazorUI.init = function () {
 		"?": RazorUI.showHelp,
 		"k": Razor.selectPrevious,
 		"j": Razor.selectNext,
-		"v": RazorUI.openCurrent
+		"v": RazorUI.openCurrent,
+		"r": RazorUI.reloadItems,
+		"h": RazorUI.showHelp
 	});
 	$('#switcher-sidebar').click(function () {
 		RazorUI.showing = 'sidebar';
