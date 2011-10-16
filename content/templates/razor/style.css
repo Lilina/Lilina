@@ -274,7 +274,7 @@ a:active, a:focus {
 		padding: 10px;
 		overflow: auto;
 	}
-	#item-view .loading {
+	#item-view .loading, #items-list .loading {
 		background: #EEEEEE url("resources/loading.gif") no-repeat center;
 		height: 100%;
 		width: 100%;

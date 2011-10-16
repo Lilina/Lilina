@@ -221,6 +221,8 @@ RazorUI.init = function () {
 	RazorUI.fitToWindow();
 
 	$('.relative').toRelativeTime();
+	var loading = $('<div class="loading">Loading...</div>');
+	$("#items-list").html(loading);
 
 	RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
 	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
@@ -277,6 +279,8 @@ RazorUI.init = function () {
 
 	/* Sidebar bindings */
 	$('#library-everything').live('click', function () {
+		var loading = $('<div class="loading">Loading...</div>');
+		$("#items-list").html(loading);
 		$('#sidebar .selected').removeClass('selected');
 		$(this).addClass('selected');
 		Razor.conditions.conditions = {};
@@ -285,6 +289,8 @@ RazorUI.init = function () {
 		return false;
 	});
 	$('#feeds-list .feed').live('click', function () {
+		var loading = $('<div class="loading">Loading...</div>');
+		$("#items-list").html(loading);
 		$('#sidebar .selected').removeClass('selected');
 		$(this).addClass('selected');
 		Razor.conditions.conditions = {"feed": $(this).data('feed-id')};
@@ -547,6 +553,8 @@ RazorUI.loadMoreItems = function () {
 	return false;
 };
 RazorUI.reloadItems = function () {
+	var loading = $('<div class="loading">Loading...</div>');
+	$("#items-list").html(loading);
 	RazorUI.showMessage('Loading&hellip;');
 	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList).complete(RazorUI.hideMessage);
 	return false;
