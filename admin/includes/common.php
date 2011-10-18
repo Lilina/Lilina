@@ -31,21 +31,27 @@ function admin_header($title, $parent_file = false) {
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>inc/js/jquery.scrollTo.js"></script>
 <script type="text/javascript" src="<?php echo get_option('baseurl'); ?>admin/admin.js"></script>
 <script type="text/javascript">
-	admin.localisations = {
-		"No feed URL supplied": "<?php _e('No feed URL supplied') ?>",
-		"No feed ID supplied": "<?php _e('No feed ID supplied') ?>",
-		"Failed to parse response: ": "<?php _e('Failed to parse response: ') ?>",
-		"Are You Sure?": "<?php _e('Are You Sure?') ?>",
-		"Whoops!": "<?php _e('Whoops!') ?>",
-		"OK": "<?php _e('OK') ?>",
-		"Cancel": "<?php _e('Cancel') ?>",
-		"Something Went Wrong!": "<?php _e('Something Went Wrong!') ?>",
-		"Error message:": "<?php _e('Error message:') ?>",
-		'If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.': '<?php echo str_replace("'", '\\\'', _r('If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.')) ?>',
-		"Double-click to edit": "<?php _e('Double-click to edit') ?>",
-		"Delete": "<?php _e('Delete') ?>",
-		"Show advanced options": "<?php _e('Show advanced options') ?>"
-	};
+<?php
+	$localisations = array(
+		'nofeedurl'      => _r('No feed URL supplied'),
+		'nofeedid'       => _r('No feed ID supplied'),
+		'failedtoparse'  => _r('Failed to parse response: '),
+		'ays'            => _r('Are You Sure?'),
+		'whoops'         => _r('Whoops!'),
+		'ok'             => _r('OK'),
+		'cancel'         => _r('Cancel'),
+		'delete'         => _r('Delete'),
+		'somethingwrong' => _r('Something Went Wrong!'),
+		'error'          => _r('Error message:'),
+		'weirderror'     => _r('If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.'),
+		'edithint'       => _r('Double-click to edit'),
+		'delete'         => _r('Delete'),
+		'showadvanced'   => _r('Show advanced options'),
+		'dragme'         => _r('Drag this to your bookmarks bar'),
+		'log'            => _r('Log'),
+	);
+?>
+	admin.localisations = <?php echo json_encode($localisations) ?>;
 </script>
 </head>
 <body id="admin-<?php echo basename($self, '.php'); ?>" class="admin-page">

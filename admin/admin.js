@@ -6,7 +6,7 @@ var admin = {
 	 * Initialise the page
 	 */
 	init: function () {
-		$('#utilities').append('<li id="log_toggle"><a href="#log">Log</a></li>');
+		$('#utilities').append('<li id="log_toggle"><a href="#log">' + _r('log') + '</a></li>');
 		// Feeds page only
 		if ( $('body#admin-feeds').length != 0 ) {
 			$("#add_form").submit(function () {
@@ -28,7 +28,7 @@ var admin = {
 			});
 		}
 		$(".optional").hide();
-		$("<p class='hideshow'><span>" + _r("Show advanced options") + "</span></p>").insertBefore(".optional").click(function () {
+		$("<p class='hideshow'><span>" + _r('showadvanced') + "</span></p>").insertBefore(".optional").click(function () {
 			$(this).siblings(".optional").show();
 			$(this).hide();
 		});
@@ -43,7 +43,7 @@ var admin = {
 		$(".nojs").remove();
 
 		$('.bookmarklet').click(function () {
-			alert('Drag this to your bookmarks bar');
+			alert(_r('dragme'));
 			return false;
 		})
 		
@@ -56,10 +56,10 @@ var admin = {
 					message: msg
 				}
 			}
-			msg.title = (msg.title != undefined) ? msg.title: _r("Something Went Wrong!");
+			msg.title = (msg.title != undefined) ? msg.title: _r('somethingwrong');
 			msg.isError = (msg.isError != undefined) ? msg.isError: true;
 			if (msg.isError) {
-				var dialog = $('<div id="dialog" title="' + msg.title + '"><p>' + _r("Error message:") + '</p><p class="error-message">' + msg.message + '</p><p>' + _r('If you think you shouldn\'t have received this error then <a href="http://code.google.com/p/lilina/issues">report a bug</a> quoting that message and how it happened.') + '</p></div>')
+				var dialog = $('<div id="dialog" title="' + msg.title + '"><p>' + _r('error') + '</p><p class="error-message">' + msg.message + '</p><p>' + _r('weirderror') + '</p></div>')
 			} else {
 				var dialog = $("<div id='dialog' title='" + msg.title + "'><p>" + msg.message + "</p></div>")
 			}
@@ -80,9 +80,9 @@ var admin = {
 					message: msg
 				}
 			}
-			msg.title = (msg.title != undefined) ? msg.title: _r("Are You Sure?");
-			msg.ok = (msg.ok != undefined) ? msg.ok: _r("OK");
-			msg.cancel = (msg.cancel != undefined) ? msg.cancel: _r("Cancel");
+			msg.title = (msg.title != undefined) ? msg.title: _r('ays');
+			msg.ok = (msg.ok != undefined) ? msg.ok: _r('ok');
+			msg.cancel = (msg.cancel != undefined) ? msg.cancel: _r('cancel');
 			var dialog = $("<div title='" + msg.title + "'><p>" + msg.message + "</p><button type='button' class='doit positive'>" + msg.ok + "</button> <span class='cancel'>or <a href='#Cancel' class='button negative'>" + msg.cancel + "</a></span></p></div>");
 			$("body").append(dialog);
 			var dialogClasses = (additional_classes == undefined) ? "confirmation": "confirmation " + additional_classes;
@@ -283,7 +283,7 @@ var admin = {
 						if (10 <= code) {
 							msg.message = res.msg;
 							msg.isError = false;
-							msg.title = _r("Whoops!")
+							msg.title = _r('whoops')
 						} else {
 							// 900-999 means something needs updating
 							if (900 <= code && code < 1000) {
@@ -294,7 +294,7 @@ var admin = {
 							}
 						}
 					} catch(e) {
-						msg.message = _r("Failed to parse response: ") + request.responseText
+						msg.message = _r('failedtoparse') + request.responseText
 					}
 
 					if (msg) {
@@ -328,7 +328,7 @@ var feeds = {
 
 	add: function () {
 		if( !$("#add_url").val() ) {
-			admin.messages.display(_r('No feed URL supplied'), 'error');
+			admin.messages.display(_r('nofeedurl'), 'error');
 			return false;
 		}
 		admin.ajax.post('feeds.add', {
@@ -427,9 +427,9 @@ FeedRow.prototype.render = function() {
 	}
 	$(this.row).attr('id', 'feed-' + this.data.id);
 	$("td", this.row).html("<span />");
-	$(".name-col span", this.row).text(this.data.name).attr("title", _r("Double-click to edit"));
-	$(".url-col span", this.row).text(this.data.feed).attr("title", _r("Double-click to edit"));
-	$(".remove-col span", this.row).text(_r('Delete')).addClass("button negative");
+	$(".name-col span", this.row).text(this.data.name).attr("title", _r('edithint'));
+	$(".url-col span", this.row).text(this.data.feed).attr("title", _r('edithint'));
+	$(".remove-col span", this.row).text(_r('delete')).addClass("button negative");
 	if(!exists)
 		$('#feeds_list tbody').append(this.row);
 	this.bindEvents();
