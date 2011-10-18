@@ -561,9 +561,9 @@ RazorUI.reloadItems = function () {
 };
 RazorUI.populateItemView = function (item) {
 	$('#item-view').empty();
-	var basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span></p></div><div id="item-content" /></div>');
+	var basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span><span class="item-author"> by <a /></span>.</p></div><div id="item-content" /></div>');
 	if (Razor.useFrame) {
-		basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span></p></div><iframe id="item-content" class="framed" /></div>');
+		basics = $('<div id="item"><div id="heading"><h2 class="item-title"><a /></h2><p class="item-meta"><span class="item-source">From <a /></span>. <span class="item-date">Posted <abbr /></span><span class="item-author"> by <a /></span>.</p></div><iframe id="item-content" class="framed" /></div>');
 		$('#item-content', basics).attr('src', item.permalink);
 	}
 
@@ -576,6 +576,19 @@ RazorUI.populateItemView = function (item) {
 
 	$('.item-title a', basics).html(item.title).attr('href', item.permalink);
 	$('.item-source a', basics).html(feed.name).attr('href', feed.url).addClass('external');
+	if (item.author.name == null || item.author.name == false || item.author.name.length == 0) {
+		$('.item-author', basics).remove();
+	}
+	else {
+		$('.item-author a', basics).text(item.author.name);
+
+		if (item.author.url != null && item.author.name != false && item.author.url.length != 0 && item.author.url != false) {
+			$('.item-author a', basics).attr('href', item.author.url).addClass('external');
+		}
+		else {
+			$('.item-author a', basics).replaceWith($('<span />').text(item.author.name));
+		}
+	}
 	$('.item-date abbr', basics).attr("title", date.toHumanString()).text(date.toRelativeTime());
 	if (!Razor.useFrame) {
 		$('#item-content', basics).html(item.content);
