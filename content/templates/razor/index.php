@@ -91,6 +91,7 @@ if($authenticated) {
 <?php
 }
 ?>
+				<li><span class="resize-handle">||</span></li>
 			</ul>
 		</div>
 	</div>
@@ -109,6 +110,7 @@ if($authenticated) {
 		<div class="footer">
 			<ul>
 				<li><a id="items-reload" href="<?php echo get_option('baseurl') ?>">Reload</a></li>
+				<li><span class="resize-handle">||</span></li>
 			</ul>
 		</div>
 	</div>

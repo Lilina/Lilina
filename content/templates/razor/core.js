@@ -92,6 +92,55 @@ Date.prototype.toHumanString = function () {
 
 
 
+/* Resizer */
+(function($){
+	$.resizeHandle = {
+		drag: function (event) {
+			event.data.element.css({
+				width: Math.max(event.pageX - event.data.posX + event.data.width, 0)
+			});
+
+			if (typeof event.data.callback != 'undefined') {
+				event.data.callback.call();
+			}
+			return false;
+		},
+		stop: function (event) {
+			event.data.element.css('opacity', event.data.opacity);
+			$(document).unbind('mousemove.resizer', $.resizeHandle.drag).unbind('mouseup.resizer', $.resizeHandle.stop);
+		}
+	};
+
+	var prop = function (name, elem) {
+		return parseInt(elem.css(name)) || false;
+	};
+
+	$.fn.resizeHandle = function (handle, callback) {
+		return this.each(function() {
+			handle = (handle) ? $(handle) : $(this);
+			handle.bind('mousedown', {elem: $(this), callback: callback}, function (event) {
+				var elem = event.data.elem,
+					data = {
+						element: elem,
+						callback: event.data.callback,
+						width: prop('width', elem) || elem[0].scrollWidth || 0,
+						posX: event.pageX,
+						opacity: elem.css('opacity')
+					};
+				elem.css( {opacity:0.8} );
+
+				$(document)
+					.bind('mousemove.resizer', data, $.resizeHandle.drag)
+					.bind('mouseup.resizer', data, $.resizeHandle.stop);
+
+				return false;
+			});
+		});
+	};
+})(jQuery);
+
+
+
 /* Hotkeys */
 /* From GitHub's jquery.hotkeys.js */
 (function ($) {
@@ -217,6 +266,8 @@ RazorUI.headerHeight = 59;
 RazorUI.init = function () {
 	$(window).resize(RazorUI.fitToWindow);
 	RazorUI.fitToWindow();
+	$('#items-list-container').resizeHandle('#items-list-container .footer .resize-handle', RazorUI.fitToWindow);
+	$('#sidebar').resizeHandle('#sidebar .footer .resize-handle', RazorUI.fitToWindow);
 
 	$('.relative').toRelativeTime();
 	var loading = $('<div class="loading">Loading...</div>');
