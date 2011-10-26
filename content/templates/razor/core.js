@@ -155,48 +155,6 @@ Razor.init = function () {
 	//RazorAPI.init();
 	RazorUI.init();
 };
-Razor.selectItem = function (item) {
-	Razor.currentItem = item;
-	if (Razor.currentlyLoading !== null) {
-		Razor.currentlyLoading.abort();
-	}
-	var loading = $('<div class="loading">Loading...</div>');
-	$('#items-list li a.current').removeClass('current');
-	$('#list-item-' + item).children('a').addClass('current');
-	RazorUI.maybeScroll($("#list-item-" + item), $("#items-list"));
-	$('#item-view').html(loading);
-
-	Razor.currentlyLoading = LilinaAPI.call('items.get', {'id': item}, RazorUI.populateItemView);
-};
-Razor.selectNext = function () {
-	var next = $('#items-list li:has(a.current)').next();
-	if (next.length == 0 && !Razor.currentItem) {
-		next = $('#items-list li:first');
-	}
-	else if (next.length == 0) {
-		RazorUI.showMessage('No next item', 1500);
-		return false;
-	}
-
-	if (next.attr('id') === 'load-more') {
-		RazorUI.loadMoreItems();
-		return;
-	}
-	var id = $('a', next).data('item-id');
-	Razor.selectItem(id);
-};
-Razor.selectPrevious = function () {
-	var prev = $('#items-list li:has(a.current)').prev();
-	if (prev.length == 0 && !Razor.currentItem) {
-		prev = $('#items-list li:first');
-	}
-	else if (prev.length == 0) {
-		alert('No previous item');
-		return false;
-	}
-	var id = $('a', prev).data('item-id');
-	Razor.selectItem(id);
-};
 Razor.api = function (method, conditions, callback) {
 	$.extend(conditions, Razor.conditions);
 	return LilinaAPI.call(method, conditions, callback, false, 'GET', Razor.baseURL);
@@ -210,6 +168,46 @@ Razor.getScript = function(url, callback){
 		dataType: "script",
 		cache: true
 	});
+};
+Razor.lightbox = function (url) {
+	$.fancybox({
+		'transitionIn' : 'none',
+		'transitionOut' : 'none',
+		'type': 'iframe',
+		'href': url
+	});
+	$(document).bind('close-frame', function () {
+		RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
+		$.fancybox.close();
+	});
+};
+Razor.maybeScroll = function (elem, parent) {
+	elem = $(elem);
+	parent = $(parent);
+
+	var pos = elem.position().top;
+	var parentHeight = parent.innerHeight();
+	var height = elem.outerHeight();
+	if (pos < 0) {
+		Razor.scrollToTop(elem, parent);
+		return true;
+	}
+	else if ((pos + height) > parentHeight) {
+		Razor.scrollToBottom(elem, parent);
+		return true;
+	}
+	return false;
+};
+Razor.scrollToTop = function (elem, parent) {
+	pos = $(parent).scrollTop() + $(elem).position().top;
+	$(parent).stop(true).animate({scrollTop: pos}, 200);
+};
+Razor.scrollToBottom = function (elem, parent) {
+	var pos = $(elem).position().top;
+	var parentHeight = $(parent).innerHeight();
+	var height = $(elem).outerHeight();
+	pos = $(parent).scrollTop() + (pos - parentHeight) + height;
+	$(parent).stop(true).animate({scrollTop: pos}, 200);
 };
 
 RazorUI = {};
@@ -262,8 +260,8 @@ RazorUI.init = function () {
 		});
 	$.hotkeys({
 		"?": RazorUI.showHelp,
-		"k": Razor.selectPrevious,
-		"j": Razor.selectNext,
+		"k": RazorUI.selectPrevious,
+		"j": RazorUI.selectNext,
 		"v": RazorUI.openCurrent,
 		"r": RazorUI.reloadItems,
 		"h": RazorUI.showHelp
@@ -322,11 +320,11 @@ RazorUI.init = function () {
 	/* Dynamically load scripts */
 	Razor.getScript(Razor.scriptURL + '/resources/fancybox/fancybox.js', function () {
 		$('#footer-add').click(function (event) {
-			RazorUI.lightbox( $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed' );
+			Razor.lightbox( $('#header > h1 > a').attr('href') + 'admin/subscribe.php?framed' );
 			event.preventDefault();
 		});
 		$('#item-services a.type-inline').live('click', function (event) {
-			RazorUI.lightbox($(this).attr('href'));
+			Razor.lightbox($(this).attr('href'));
 			event.preventDefault();
 		});
 	});
@@ -366,48 +364,50 @@ RazorUI.init = function () {
 		});*/
 	});
 };
-RazorUI.lightbox = function (url) {
-	$.fancybox({
-		'transitionIn' : 'none',
-		'transitionOut' : 'none',
-		'type': 'iframe',
-		'href': url
-	});
-	$(document).bind('close-frame', function () {
-		RazorUI.feedLoader = LilinaAPI.call('feeds.getList', {}, RazorUI.populateFeedList);
-		$.fancybox.close();
-	});
-};
-RazorUI.maybeScroll = function (elem, parent) {
-	elem = $(elem);
-	parent = $(parent);
+RazorUI.selectItem = function (item) {
+	Razor.currentItem = item;
+	if (Razor.currentlyLoading !== null) {
+		Razor.currentlyLoading.abort();
+	}
+	var loading = $('<div class="loading">Loading...</div>');
+	$('#items-list li a.current').removeClass('current');
+	$('#list-item-' + item).children('a').addClass('current');
+	Razor.maybeScroll($("#list-item-" + item), $("#items-list"));
+	$('#item-view').html(loading);
 
-	var pos = elem.position().top;
-	var parentHeight = parent.innerHeight();
-	var height = elem.outerHeight();
-	if (pos < 0) {
-		RazorUI.scrollToTop(elem, parent);
-		return true;
-	}
-	else if ((pos + height) > parentHeight) {
-		RazorUI.scrollToBottom(elem, parent);
-		return true;
-	}
-	return false;
+	Razor.currentlyLoading = LilinaAPI.call('items.get', {'id': item}, RazorUI.populateItemView);
 };
-RazorUI.scrollToTop = function (elem, parent) {
-	pos = $(parent).scrollTop() + $(elem).position().top;
-	$(parent).stop(true).animate({scrollTop: pos}, 200);
+RazorUI.selectNext = function () {
+	var next = $('#items-list li:has(a.current)').next();
+	if (next.length == 0 && !Razor.currentItem) {
+		next = $('#items-list li:first');
+	}
+	else if (next.length == 0) {
+		RazorUI.showMessage('No next item', 1500);
+		return false;
+	}
+
+	if (next.attr('id') === 'load-more') {
+		RazorUI.loadMoreItems();
+		return;
+	}
+	var id = $('a', next).data('item-id');
+	RazorUI.selectItem(id);
 };
-RazorUI.scrollToBottom = function (elem, parent) {
-	var pos = $(elem).position().top;
-	var parentHeight = $(parent).innerHeight();
-	var height = $(elem).outerHeight();
-	pos = $(parent).scrollTop() + (pos - parentHeight) + height;
-	$(parent).stop(true).animate({scrollTop: pos}, 200);
+RazorUI.selectPrevious = function () {
+	var prev = $('#items-list li:has(a.current)').prev();
+	if (prev.length == 0 && !Razor.currentItem) {
+		prev = $('#items-list li:first');
+	}
+	else if (prev.length == 0) {
+		alert('No previous item');
+		return false;
+	}
+	var id = $('a', prev).data('item-id');
+	RazorUI.selectItem(id);
 };
 RazorUI.showHelp = function () {
-	RazorUI.lightbox(Razor.baseURL + "?method=razor.help");
+	Razor.lightbox(Razor.baseURL + "?method=razor.help");
 	return false;
 };
 RazorUI.openCurrent = function () {
@@ -642,7 +642,7 @@ RazorUI.handleItemClick = function (e) {
 	e.preventDefault();
 
 	var id = $(this).data('item-id');
-	Razor.selectItem(id);
+	RazorUI.selectItem(id);
 };
 RazorUI.beginUpdate = function () {
 	$('#update').hide();
