@@ -146,18 +146,19 @@ a:active, a:focus {
 						#sidebar .item-list .selected:hover {
 							background-color: rgba(56, 117, 215, 0.6);
 						}
-					#sidebar .item-list .delete {
+					#sidebar .item-list .menu {
 						display: none;
 						position: absolute;
-						right: 10px;
-						top: -2px;
+						top: 0;
+						right: 0;
+						padding: 6px 10px 6px 6px;
+						color: #aaa;
 					}
-						#sidebar .item-list a:hover .delete {
-							display: inline;
-						}
-						#sidebar .item-list .delete .text {
+						#sidebar .item-list a:hover .menu {
 							display: block;
-							text-indent: -9999px;
+						}
+						#sidebar .item-list .menu:hover {
+							color: #fff;
 						}
 				#sidebar .expandable > a {
 				}
@@ -397,6 +398,20 @@ a:active, a:focus {
 #switcher {
 	display: none;
 }
+
+#context-menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #fff;
+	border: 1px solid #aaa;
+	padding: 4px 6px;
+	display: none;
+	font-size: 11px;
+}
+	#context-menu.active {
+		display: block;
+	}
 
 /*
 Two-Column Layout

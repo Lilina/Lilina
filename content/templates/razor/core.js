@@ -244,9 +244,9 @@ RazorUI.init = function () {
 		.parent().parent().children('ul')
 			.hide();*/
 	$('#help a').click(RazorUI.showHelp);
-	$('#update a').click(function () {
+	$('#update a').click(function (e) {
+		e.preventDefault();
 		RazorUI.beginUpdate();
-		return false;
 	});
 	$('#items-list')
 		.bind('initialized', function() {
@@ -278,7 +278,9 @@ RazorUI.init = function () {
 	});
 
 	/* Sidebar bindings */
-	$('#library-everything').live('click', function () {
+	$('#library-everything').live('click', function (e) {
+		e.preventDefault();
+
 		var loading = $('<div class="loading">Loading...</div>');
 		$("#items-list").html(loading);
 		$('#sidebar .selected').removeClass('selected');
@@ -286,9 +288,10 @@ RazorUI.init = function () {
 		Razor.conditions.conditions = {};
 
 		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
-		return false;
 	});
-	$('#feeds-list .feed').live('click', function () {
+	$('#feeds-list .feed').live('click', function (e) {
+		e.preventDefault();
+
 		var loading = $('<div class="loading">Loading...</div>');
 		$("#items-list").html(loading);
 		$('#sidebar .selected').removeClass('selected');
@@ -296,6 +299,23 @@ RazorUI.init = function () {
 		Razor.conditions.conditions = {"feed": $(this).data('feed-id')};
 
 		Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList);
+	});
+	$('body').click(function () {
+		$('#context-menu').removeClass('active');
+	});
+	$('#feeds-list .feed .menu').live('click', function (e) {
+		var offset = $(this).offset();
+		offset.top += $(this).outerHeight();
+		var feed = 'feed-' + $(this).parent().data('feed-id');
+		var oldFeed = $('#context-menu').data('current');
+		$('#context-menu').data('current', feed).css(offset);
+		if (oldFeed == feed) {
+			$('#context-menu').removeClass('active').data('current', false);
+		}
+		else {
+			$('#context-menu').addClass('active');
+		}
+
 		return false;
 	});
 
@@ -323,7 +343,7 @@ RazorUI.init = function () {
 
 		// in case it has already loaded, since we're not using
 		// deferred objects
-		$('#feeds-list li .delete').iconify({
+		/*$('#feeds-list li .delete').iconify({
 			icon: 'cross',
 			style: {
 				initial: { scale: "0.5833 0.5833" },
@@ -343,7 +363,7 @@ RazorUI.init = function () {
 					active: { fill: '#911515', stroke: '#f00'}
 				}
 			});
-		});
+		});*/
 	});
 };
 RazorUI.lightbox = function (url) {
@@ -476,7 +496,7 @@ RazorUI.populateFeedList = function (list) {
 
 	RazorUI.feeds = list;
 	$.each(list, function (index, item) {
-		var li = $('<li><a href="#"><img src="" /> <span /><span class="delete" /></a></li>');
+		var li = $('<li><a href="#"><img src="" /> <span /><span class="menu" /></a></li>');
 		var a = $('a', li);
 
 		a.addClass('feed').data('feed-id', item.id).attr('title', item.name);
@@ -487,11 +507,14 @@ RazorUI.populateFeedList = function (list) {
 		else {
 			$('img', li).attr('src', item.icon);
 		}
-		$('.delete', a).addClass('delete').text('Delete');
+		$('.menu', a).text('\u25BC');
 		//a.append(span);
 		$('#feeds-list').append(li);
 	});
 	$('#feeds-list').trigger('populated');
+};
+RazorUI.feedContextMenu = function () {
+	
 };
 RazorUI.initializeItemList = function (list) {
 	RazorUI.itemCount = 0;
@@ -542,22 +565,25 @@ RazorUI.populateItemList = function (list) {
 	}
 	$('#items-list').trigger('populated');
 };
-RazorUI.loadMoreItems = function () {
+RazorUI.loadMoreItems = function (e) {
+	if (e)
+		e.preventDefault();
+
 	Razor.loading = true
 	RazorUI.showMessage('Loading&hellip;');
 	Razor.api('items.getList', {"limit": 20, "start": RazorUI.itemCount}, RazorUI.populateItemList).complete(function () {
 		RazorUI.hideMessage();
 		Razor.loading = false;
 	});
-
-	return false;
 };
-RazorUI.reloadItems = function () {
+RazorUI.reloadItems = function (e) {
+	if (e)
+		e.preventDefault();
+
 	var loading = $('<div class="loading">Loading...</div>');
 	$("#items-list").html(loading);
 	RazorUI.showMessage('Loading&hellip;');
 	Razor.api('items.getList', {"limit": 40}, RazorUI.initializeItemList).complete(RazorUI.hideMessage);
-	return false;
 };
 RazorUI.populateItemView = function (item) {
 	$('#item-view').empty();
@@ -612,11 +638,11 @@ RazorUI.populateItemView = function (item) {
 	RazorUI.fitToWindow();
 	$('#item-view').trigger('populated');
 };
-RazorUI.handleItemClick = function () {
+RazorUI.handleItemClick = function (e) {
+	e.preventDefault();
+
 	var id = $(this).data('item-id');
 	Razor.selectItem(id);
-
-	return false;
 };
 RazorUI.beginUpdate = function () {
 	$('#update').hide();
