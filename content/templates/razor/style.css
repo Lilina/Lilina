@@ -137,7 +137,7 @@ a:active, a:focus {
 					#sidebar .item-list a:hover {
 						background-color: rgba(56, 117, 215, 0.1);
 					}
-					#sidebar .item-list a:active, #sidebar .item-list a:focus, #sidebar .item-list .selected, #sidebar .item-list .selected a {
+					/*#sidebar .item-list a:active, #sidebar .item-list a:focus,*/ #sidebar .item-list .selected, #sidebar .item-list .selected a {
 						background: rgba(56, 117, 215, 0.6);
 						background-image: url("resources/sidebar-selected.png");
 						color: #fff;
