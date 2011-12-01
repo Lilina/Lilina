@@ -37,7 +37,7 @@ class Templates {
 	 */
 	public static function load($view = 'chrono', $prefix = '') {
 		if(empty($prefix))
-			$prefix = get_option('template');
+			$prefix = get_option('template', 'razor');
 
 		$current = Templates::get_current();
 		$view_file = $view . '.php';
@@ -196,7 +196,7 @@ class Templates {
 	 * @return string
 	 */
 	public static function get_template_dir() {
-		return LILINA_CONTENT_DIR . '/templates/' . get_option('template');
+		return LILINA_CONTENT_DIR . '/templates/' . get_option('template', 'razor');
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Templates {
 	 * @return string
 	 */
 	public static function get_template_dir_url() {
-		return get_option('baseurl') . 'content/templates/' . get_option('template');
+		return get_option('baseurl') . 'content/templates/' . get_option('template', 'razor');
 	}
 
 	/**
@@ -214,7 +214,7 @@ class Templates {
 	 * @see get_option
 	 */
 	public static function get_current() {
-		if( !$data = Templates::get_template_data(get_option('template')) )
+		if( !$data = Templates::get_template_data(get_option('template', 'razor')) )
 			$data = Templates::get_template_data('razor');
 
 		return $data;
