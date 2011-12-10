@@ -7,7 +7,7 @@ class Lilina_Item extends Lilina_Object {
 	public $content;
 	public $summary;
 	public $permalink;
-	public $feed = false;
+	//public $feed = false;
 	public $feed_id;
 
 	// These are actually public
@@ -30,8 +30,9 @@ class Lilina_Item extends Lilina_Object {
 
 	public function __set($name, $value) {
 		switch ($name) {
-			case 'data':
-				throw new Exception();
+			case 'feed':
+				// Simply ignore it
+				return;
 			case 'author':
 				if (is_string($value)) {
 					$value = unserialize($value);
@@ -42,7 +43,7 @@ class Lilina_Item extends Lilina_Object {
 				else {
 					$this->author = Lilina_Author::from_obj($value);
 				}
-				break;
+				return;
 			case 'enclosure':
 				if (is_string($value)) {
 					$value = unserialize($value);
@@ -56,14 +57,16 @@ class Lilina_Item extends Lilina_Object {
 				else {
 					$this->enclosure = Lilina_Enclosure::from_obj($value);
 				}
-				break;
+				return;
 			case 'metadata':
 				if (is_string($value)) {
 					$value = unserialize($value);
 				}
 				$this->metadata = $value;
-				break;
+				return;
 		}
+
+		throw new Exception($name . ' is not settable');
 	}
 	
 	/**
