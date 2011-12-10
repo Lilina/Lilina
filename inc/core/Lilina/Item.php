@@ -7,26 +7,64 @@ class Lilina_Item extends Lilina_Object {
 	public $content;
 	public $summary;
 	public $permalink;
-	public $metadata;
 	public $feed = false;
 	public $feed_id;
 
-	public $author = false;
-	public $enclosure = false;
+	// These are actually public
+	protected $author = false;
+	protected $enclosure = false;
+	protected $metadata = false;
 
 	protected $data;
 
 	public function __get($name) {
-		if ($name === 'data') {
-			return $this->get_data();
+		switch ($name) {
+			case 'data':
+				return $this->get_data();
+			case 'enclosure':
+				return $this->get_enclosure();
+			case 'author':
+				return $this->get_author();
 		}
 	}
 
-	/*public function __set($name, $value) {
-		if ($name === 'data') {
-			throw new Exception();
+	public function __set($name, $value) {
+		switch ($name) {
+			case 'data':
+				throw new Exception();
+			case 'author':
+				if (is_string($value)) {
+					$value = unserialize($value);
+				}
+				if ($value instanceof Lilina_Author) {
+					$this->author = $value;
+				}
+				else {
+					$this->author = Lilina_Author::from_obj($value);
+				}
+				break;
+			case 'enclosure':
+				if (is_string($value)) {
+					$value = unserialize($value);
+				}
+				if ($value === null) {
+					return;
+				}
+				if ($value instanceof Lilina_Enclosure) {
+					$this->enclosure = $value;
+				}
+				else {
+					$this->enclosure = Lilina_Enclosure::from_obj($value);
+				}
+				break;
+			case 'metadata':
+				if (is_string($value)) {
+					$value = unserialize($value);
+				}
+				$this->metadata = $value;
+				break;
 		}
-	}*/
+	}
 	
 	/**
 	 * Check whether the current item has an enclosure or not
@@ -39,7 +77,7 @@ class Lilina_Item extends Lilina_Object {
 	 * @return bool
 	 */
 	public function has_enclosure() {
-		return (!empty($this->metadata->enclosure) || !empty($this->enclosure));
+		return !empty($this->enclosure);
 	}
 	
 	/**
@@ -50,13 +88,25 @@ class Lilina_Item extends Lilina_Object {
 	 * @return string Absolute URL to the enclosure
 	 */
 	public function get_enclosure() {
-		if (!empty($this->metadata->enclosure)) {
-			return $this->metadata->enclosure;
-		}
 		if (!empty($this->enclosure)) {
 			return $this->enclosure;
 		}
+		if (!empty($this->metadata['enclosure']) && $this->metadata['enclosure'] !== false) {
+			$enclosure = new Lilina_Enclosure();
+			$enclosure->url = $this->metadata['enclosure'];
+			$enclosure->type = $this->metadata['enclosure_data']['type'];
+			$enclosure->length = $this->metadata['enclosure_data']['length'];
+			return $enclosure;
+		}
 		return false;
+	}
+
+	public function get_feed() {
+		return Feeds::get_instance()->get($this->feed_id);
+	}
+
+	public function get_author() {
+		return $this->author;
 	}
 
 	public function get_data($name) {
@@ -65,10 +115,6 @@ class Lilina_Item extends Lilina_Object {
 
 	public function set_data($name, $value) {
 		// Lilina_Item_Data::set($this->hash, $this->data)
-	}
-
-	public function get_feed() {
-		return Feeds::get_instance()->get($this->feed_id);
 	}
 
 	// -- Static Methods -- \\
@@ -102,8 +148,6 @@ class Lilina_Item extends Lilina_Object {
 			$new_item->author = new Lilina_Author();
 			$new_item->author->name = $item->get_author()->get_name();
 			$new_item->author->url = $item->get_author()->get_link();
-		}
-		else {
 		}
 
 		if(!empty($feed))
