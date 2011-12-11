@@ -38,7 +38,8 @@ interface Lilina_DB_Adapter {
 	 *
 	 * The $data parameter is a key => value partial data array. It is
 	 * merged with the existing data. It can also be an object, and the
-	 * public properties will be taken via `get_object_vars`
+	 * public properties will be taken either from the result of
+	 * `$data->_db_export()` (if it exists) or from `get_object_vars($data)`
 	 *
 	 * The $options parameter specifies an associative array of options:
 	 *

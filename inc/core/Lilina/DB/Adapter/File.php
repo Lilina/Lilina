@@ -1,6 +1,6 @@
 <?php
 
-class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
+class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter_Base {
 	protected $directory;
 	protected $options;
 	protected $tables = array();
@@ -138,7 +138,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		}
 
 		if (is_object($data)) {
-			$data = get_object_vars($data);
+			$data = self::object_to_array($data);
 		}
 		if (!is_array($data)) {
 			throw new Lilina_DB_Exception('Data must be an object or array');
