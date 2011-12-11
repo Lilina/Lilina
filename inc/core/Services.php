@@ -78,6 +78,9 @@ class Services {
 		if (!empty(Services::$current->$matches[1])) {
 			return urlencode(Services::$current->$matches[1]);
 		}
+		if (!empty(Services::$current[$matches[1]])) {
+			return urlencode(Services::$current[$matches[1]]);
+		}
 		return $matches[0];
 	}
 
