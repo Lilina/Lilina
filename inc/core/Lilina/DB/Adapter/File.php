@@ -91,13 +91,13 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 
 			switch ($options['orderby']['compare']) {
 				case 'str':
-					usort($data, array($this, 'order_str'));
+					uasort($data, array($this, 'order_str'));
 					break;
 				case 'strcase':
-					usort($data, array($this, 'order_strcase'));
+					uasort($data, array($this, 'order_strcase'));
 					break;
 				case 'int':
-					usort($data, array($this, 'order_int'));
+					uasort($data, array($this, 'order_int'));
 					break;
 			}
 			$this->temp = null;
