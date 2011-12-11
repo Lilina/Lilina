@@ -351,7 +351,7 @@ function the_feed_name() {
  */
 function get_the_feed_url() {
 	global $item;
-	$feed = Feeds::get_instance()->get($item->feed_id);
+	$feed = $item->get_feed();
 	$url = $feed['url'];
 	return apply_filters( 'the_feed_url', $url, $feed, $item->feed_id );
 }
@@ -366,7 +366,7 @@ function the_feed_url() {
 function get_the_feed_favicon($feed = null) {
 	global $item;
 	if ($feed === null) {
-		$feed = Feeds::get_instance()->get($item->feed_id);
+		$feed = $item->get_feed();
 	}
 	$icon = $feed['icon'];
 	// New favicons
@@ -406,8 +406,7 @@ function the_feed_id() {
  */
 function has_enclosure() {
 	global $item;
-	$enclosure = apply_filters( 'has_enclosure', $item->metadata->enclosure );
-	return !empty($enclosure);
+	return $item->has_enclosure();
 }
 
 if(!function_exists('the_enclosure')) {
@@ -419,12 +418,12 @@ if(!function_exists('the_enclosure')) {
 		if(!has_enclosure()) {
 			return false;
 		}
-		$metadata = enclosure_metadata();
+		$enclosure = $item->get_enclosure();
 		$type = '';
-		if(!empty($metadata->type))
-			$type = ' (' . $metadata->type . ')';
+		if(!empty($enclosure->type))
+			$type = ' (' . $enclosure->type . ')';
 
-		echo apply_filters( 'the_enclosure', '<a href="' . $item->metadata->enclosure . '" rel="enclosure">' . _r('View media') . $type .'</a>' . "\n" );
+		echo apply_filters( 'the_enclosure', '<a href="' . $enclosure->url . '" rel="enclosure">' . _r('View media') . $type .'</a>' . "\n" );
 	}
 }
 
@@ -437,14 +436,10 @@ function atom_enclosure() {
 		return false;
 
 	//echo apply_filters('atom_enclosure', '<link href="' . $enclosure . '" rel="enclosure" length="' . $enclosure->get_length() . '" type="' . $enclosure->get_type() . '" />' . "\n");
-	echo apply_filters('atom_enclosure', '<link href="' . $item->metadata->enclosure . '" rel="enclosure" />' . "\n");
+	echo apply_filters('atom_enclosure', '<link href="' . $item->get_enclosure()->url . '" rel="enclosure" />' . "\n");
 }
 
 function enclosure_metadata() {
-	global $item;
-	if(!isset($item->metadata->enclosure_data))
-		return false;
-	return $item->metadata->enclosure_data;
 }
 
 /**
