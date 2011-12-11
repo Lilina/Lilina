@@ -19,6 +19,11 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		return $this->tables[$table];
 	}
 
+	protected function save($table, $data) {
+		$this->tables[$table] = $data;
+		return true;
+	}
+
 	/**
 	 * Retrieve rows from the database
 	 *
