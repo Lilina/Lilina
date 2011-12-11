@@ -137,6 +137,13 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 			throw new Lilina_DB_Exception('Condition must be specified for update');
 		}
 
+		if (is_object($data)) {
+			$data = get_object_vars($data);
+		}
+		if (!is_array($data)) {
+			throw new Lilina_DB_Exception('Data must be an object or array');
+		}
+
 		$current = $this->load($options['table']);
 
 		$actual = $current;
