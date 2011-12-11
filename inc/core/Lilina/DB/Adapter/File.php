@@ -39,7 +39,8 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	 */
 	protected function save($table, $data) {
 		$this->tables[$table] = $data;
-		return true;
+		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.data';
+		return file_put_contents($file, json_encode($this->tables[$table]));
 	}
 
 	/**
