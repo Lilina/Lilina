@@ -89,6 +89,10 @@ interface Lilina_DB_Adapter {
 	 *        - 0: Column name to compare
 	 *        - 1: Comparsion type (==, !=, ===, !== <, >, <=, >=)
 	 *        - 2: Value to compare against
+	 *    - 'orderby': Associative array:
+	 *        - 'key': Key to sort against
+	 *        - 'direction': Direction, either asc or desc
+	 *        - 'compare': Type of comparison to use (int, str, strcase (case insensitive))
 	 *    - 'limit': Maximum number of rows to return
 	 *
 	 * @param array|object $data Data array, see source for reference
@@ -96,4 +100,26 @@ interface Lilina_DB_Adapter {
 	 * @return boolean
 	 */
 	public function update($data, $options);
+
+	/**
+	 * Delete rows from the database
+	 *
+	 * The $options parameter specifies an associative array of options:
+	 *
+	 *    - 'table': The data set name
+	 *    - 'where': An array of conditions to apply, each condition is
+	 *       an associative array:
+	 *        - 0: Column name to compare
+	 *        - 1: Comparsion type (==, !=, ===, !== <, >, <=, >=)
+	 *        - 2: Value to compare against
+	 *    - 'orderby': Associative array:
+	 *        - 'key': Key to sort against
+	 *        - 'direction': Direction, either asc or desc
+	 *        - 'compare': Type of comparison to use (int, str, strcase (case insensitive))
+	 *    - 'limit': Maximum number of rows to return
+	 *
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
+	public function delete($options);
 }
