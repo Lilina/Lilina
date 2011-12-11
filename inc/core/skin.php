@@ -84,6 +84,9 @@ function has_items($conditions = null) {
 		$lilina_items = Lilina_Items::get_instance();
 		$lilina_items->query($conditions);
 	}
+	else {
+		$lilina_items->next();
+	}
 
 	return $lilina_items->getIterator()->valid();
 }
