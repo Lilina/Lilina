@@ -147,7 +147,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
 		}
 		if (empty($options['primary'])) {
-			throw new Lilina_DB_Exception('Primary key must be specified for insert');
+			throw new Lilina_DB_Exception('Primary key must be specified for insert', 'db.insert.missingprimary');
 		}
 
 		if (is_object($data)) {
@@ -186,7 +186,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
 		}
 		if (empty($options['where'])) {
-			throw new Lilina_DB_Exception('Condition must be specified for update');
+			throw new Lilina_DB_Exception('Condition must be specified for update', 'db.update.missingwhere');
 		}
 
 		if (is_object($data)) {

@@ -43,6 +43,10 @@ class Errors {
 
 		// 220-239 = db.insert
 		self::$codes['db.insert.duplicate'] = 220;
+		self::$codes['db.insert.missingprimary'] = 221;
+
+		// 240-259 = db.update
+		self::$codes['db.update.missingwhere'] = 240;
 
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
