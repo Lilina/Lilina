@@ -42,6 +42,7 @@ class Lilina_Items implements Countable, IteratorAggregate {
 			),
 			'limit' => 10,
 			'fetchas' => 'Lilina_Item',
+			'reindex' => 'hash'
 		);
 		$options = array_merge($defaults, $options);
 
