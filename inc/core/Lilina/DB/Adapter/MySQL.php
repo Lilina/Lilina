@@ -89,7 +89,7 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 
 		// Order our data
 		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
-			$sql .= ' ORDER BY ' . $this->db->quote($options['orderby']['key']);
+			$sql .= ' ORDER BY `' . $options['orderby']['key'] .'`';
 			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
 				 $sql .= ' DESC';
 			}
