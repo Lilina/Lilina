@@ -23,8 +23,8 @@ abstract class Lilina_DB_Adapter_Base {
 	 * @return array Associative array of properties
 	 */
 	protected static function object_to_array(&$obj, $options) {
-		if (is_callable(array($obj, '_db_export'), false, $callable)) {
-			return $callable($options);
+		if (method_exists($obj, '_db_export') && is_callable(array($obj, '_db_export'))) {
+			return call_user_func(array($obj, '_db_export'), $options);
 		}
 		else {
 			return get_object_vars($obj);
