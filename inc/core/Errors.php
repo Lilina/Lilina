@@ -40,6 +40,7 @@ class Errors {
 		// 200-299 = db.
 		// 200-219 = db.general
 		self::$codes['db.general.missingtable'] = 200;
+		self::$codes['db.general.datatypewrong'] = 201;
 
 		// 220-239 = db.insert
 		self::$codes['db.insert.duplicate'] = 220;

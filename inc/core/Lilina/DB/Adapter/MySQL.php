@@ -161,6 +161,9 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 		if (is_object($data)) {
 			$data = self::object_to_array($data, $options);
 		}
+		if (!is_array($data)) {
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
+		}
 
 		$sql = 'INSERT INTO ' . $options['table'] . ' SET ';
 		$fields = array();
@@ -218,7 +221,7 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 			$data = self::object_to_array($data);
 		}
 		if (!is_array($data)) {
-			throw new Lilina_DB_Exception('Data must be an object or array');
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
 		}
 
 		$sql = 'UPDATE ' . $options['table'] . ' SET ';

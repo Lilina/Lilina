@@ -153,6 +153,9 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		if (is_object($data)) {
 			$data = self::object_to_array($data, $options);
 		}
+		if (!is_array($data)) {
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
+		}
 
 		$primary = $data[$options['primary']];
 
@@ -193,7 +196,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			$data = self::object_to_array($data, $options);
 		}
 		if (!is_array($data)) {
-			throw new Lilina_DB_Exception('Data must be an object or array');
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
 		}
 
 		$current = $this->load($options['table']);
