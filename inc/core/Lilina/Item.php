@@ -122,7 +122,7 @@ class Lilina_Item extends Lilina_Object {
 
 	public function _db_export($options) {
 		$vars = array('hash', 'timestamp', 'title', 'content', 'summary',
-			'permalink', 'feed_id', 'author', 'enclosure', 'metadata');
+			'permalink', 'feed_id', 'author', 'metadata');
 
 		$data = array();
 		foreach ($vars as $var) {
@@ -133,6 +133,7 @@ class Lilina_Item extends Lilina_Object {
 				$data[$var] = $this->$var;
 			}
 		}
+		$data['enclosure'] = serialize($this->get_enclosure());
 
 		return $data;
 	}
