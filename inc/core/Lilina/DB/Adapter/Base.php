@@ -22,7 +22,7 @@ abstract class Lilina_Adapter_Base {
 	 * @param object $obj
 	 * @return array Associative array of properties
 	 */
-	protected static function object_to_array(&$obj) {
+	protected static function object_to_array(&$obj, $options) {
 		if (is_callable(array($obj, '_db_export'), false, $callable)) {
 			return $callable($options);
 		}

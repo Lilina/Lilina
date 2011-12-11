@@ -159,7 +159,7 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter extends Lilina_Adapte
 		}
 
 		if (is_object($data)) {
-			$data = self::object_to_array($data);
+			$data = self::object_to_array($data, $options);
 		}
 
 		$sql = 'INSERT INTO ' . $options['table'] . ' SET ';

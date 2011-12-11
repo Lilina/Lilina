@@ -133,7 +133,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter
 		}
 
 		if (is_object($data)) {
-			$data = self::object_to_array($data);
+			$data = self::object_to_array($data, $options);
 		}
 
 		$primary = $data[$options['primary']];
@@ -169,7 +169,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter
 		}
 
 		if (is_object($data)) {
-			$data = self::object_to_array($data);
+			$data = self::object_to_array($data, $options);
 		}
 		if (!is_array($data)) {
 			throw new Lilina_DB_Exception('Data must be an object or array');
