@@ -34,6 +34,25 @@ interface Lilina_DB_Adapter {
 	public function retrieve($options);
 
 	/**
+	 * Insert rows into the database
+	 *
+	 * The $data parameter is a key => value partial data array. It is
+	 * merged with the existing data. It can also be an object, and the
+	 * public properties will be taken either from the result of
+	 * `$data->_db_export()` (if it exists) or from `get_object_vars($data)`
+	 *
+	 * The $options parameter specifies an associative array of options:
+	 *
+	 *    - 'table': The data set name
+	 *    - 'primary': The primary key name
+	 *
+	 * @param array|object $data Data array, see source for reference
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
+	public function insert($data, $options);
+
+	/**
 	 * Update rows in the database
 	 *
 	 * The $data parameter is a key => value partial data array. It is

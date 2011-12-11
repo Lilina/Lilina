@@ -111,8 +111,39 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter
 		return $data;
 	}
 
+	/**
+	 * Insert rows into the database
+	 *
+	 * @param array|object $data Data array, see source for reference
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
 	public function insert($data, $options) {
-		
+		$default = array(
+			'table' => null,
+			'primary' => null,
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified');
+		}
+		if (empty($options['primary'])) {
+			throw new Lilina_DB_Exception('Primary key must be specified for insert');
+		}
+
+		if (is_object($data)) {
+			$data = self::object_to_array($data);
+		}
+
+		$primary = $data[$options['primary']];
+
+		$current = $this->load($options['table']);
+		$current[$primary] = $data;
+
+		$this->save($options['table'], $current);
+
+		return true;
 	}
 
 	/**
