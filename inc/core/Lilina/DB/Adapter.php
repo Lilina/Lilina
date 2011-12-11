@@ -15,11 +15,11 @@ interface Lilina_DB_Adapter {
 	 *
 	 *    - 'table': The data set name
 	 *    - 'fields': The field names to return for each row
-	 *    - 'conditions': An array of conditions to apply, each condition is
+	 *    - 'where': An array of conditions to apply, each condition is
 	 *       an associative array:
-	 *        - 'type': Comparsion type (=, !=, <, >, <=, >=)
-	 *        - 'key': Column name to compare
-	 *        - 'value': Value to compare against
+	 *        - 0: Column name to compare
+	 *        - 1: Comparsion type (==, !=, ===, !== <, >, <=, >=)
+	 *        - 2: Value to compare against
 	 *    - 'limit': Maximum number of rows to return
 	 *    - 'offset': Row number to start from
 	 *    - 'orderby': Associative array:

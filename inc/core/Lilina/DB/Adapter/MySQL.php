@@ -56,7 +56,7 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 		$default = array(
 			'table' => null,
 			'fields' => null,
-			'conditions' => array(),
+			'where' => array(),
 			'limit' => null,
 			'offset' => 0,
 			'orderby' => array(),
@@ -77,9 +77,19 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 
 		// Check conditions
 		$values = array();
-		if (!empty($options['conditions'])) {
+		if (!empty($options['where'])) {
 			$sql .= ' WHERE (';
-			foreach ($options['conditions'] as $condition) {
+			foreach ($options['where'] as $condition) {
+				switch ($condition['type']) {
+					case '==':
+					case '===':
+						$condition['type'] = '=';
+						break;
+					case '!=':
+					case '!==':
+						$condition['type'] = '!=';
+						break;
+				}
 				$conditions[] = $condition['key'] . ' ' . $condition['type'] . ' :' . $condition['key'];
 				$values[$condition['key']] = $condition['value'];
 			}

@@ -29,7 +29,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		$default = array(
 			'table' => null,
 			'fields' => null,
-			'conditions' => array(),
+			'where' => array(),
 			'limit' => null,
 			'offset' => 0,
 			'orderby' => array(),
@@ -40,10 +40,10 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		$data = $this->load($options['table']);
 
 		// Check conditions
-		if (!empty($options['conditions'])) {
-			foreach ($options['conditions'] as $condition) {
-				$this->options = $condition;
-				$data = array_filter($data, array($this, 'condition'));
+		if (!empty($options['where'])) {
+			foreach ($options['where'] as $condition) {
+				$this->temp = $condition;
+				$data = array_filter($data, array($this, 'where_filter'));
 			}
 		}
 
@@ -130,38 +130,6 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	}
 
 	/**
-	 * Checks whether the row matches the given condition
-	 *
-	 * @param array $row
-	 * @return boolean True to keep, false to drop
-	 */
-	protected function condition($row) {
-		$key = $this->options['key'];
-		$value = $this->options['value'];
-
-		if (!isset($row[$key])) {
-			return false;
-		}
-
-		switch ($this->options['type']) {
-			case '=':
-				return ($row[$key] === $value);
-			case '!=':
-				return ($row[$key] !== $value);
-			case '<':
-				return ($row[$key] < $value);
-			case '>':
-				return ($row[$key] > $value);
-			case '<=':
-				return ($row[$key] <= $value);
-			case '>=':
-				return ($row[$key] >= $value);
-			default:
-				return true;
-		}
-	}
-
-	/**
 	 * Order for an integer value
 	 *
 	 * @see usort()
@@ -195,5 +163,29 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	 */
 	protected function order_strcase($a, $b) {
 		return strcasecmp($a[$this->options], $b[$this->options]);
+	}
+
+	protected function where_filter($row) {
+		list($key, $op, $val) = $this->temp;
+		switch ($op) {
+			case '==':
+				return $row[$key] == $val;
+			case '===':
+				return $row[$key] === $val;
+			case '!=':
+				return $row[$key] != $val;
+			case '!==':
+				return $row[$key] !== $val;
+			case '>':
+				return $row[$key] > $val;
+			case '>=':
+				return $row[$key] >= $val;
+			case '<':
+				return $row[$key] <= $val;
+			case '<=':
+				return $row[$key] <= $val;
+			default:
+				throw new Lilina_DB_Exception('Operator not valid');
+		}
 	}
 }
