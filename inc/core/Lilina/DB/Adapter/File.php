@@ -312,13 +312,6 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			throw new Lilina_DB_Exception('Condition must be specified for delete', 'db.delete.missingwhere');
 		}
 
-		if (is_object($data)) {
-			$data = self::object_to_array($data, $options);
-		}
-		if (!is_array($data)) {
-			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
-		}
-
 		$current = $this->load($options['table']);
 
 		$actual = $current;

@@ -362,23 +362,11 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 			throw new Lilina_DB_Exception('Condition must be specified for update', 'db.update.missingwhere');
 		}
 
-		if (is_object($data)) {
-			$data = self::object_to_array($data);
-		}
-		if (!is_array($data)) {
-			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
-		}
-
 		$sql = 'DELETE FROM ' . $options['table'];
-		$fields = array();
-		foreach ($data as $key => $value) {
-			$fields[] = '`' . $key . '` = :' . $key;
-		}
-		$sql .= implode(', ', $fields);
 
 		$where = self::build_where($options['where']);
 		$sql .= $where[0];
-		$data = array_merge($data, $where[1]);
+		$data = $where[1];
 
 		// Order our data
 		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
