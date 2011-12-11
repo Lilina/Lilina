@@ -37,7 +37,8 @@ interface Lilina_DB_Adapter {
 	 * Update rows in the database
 	 *
 	 * The $data parameter is a key => value partial data array. It is
-	 * merged with the existing data.
+	 * merged with the existing data. It can also be an object, and the
+	 * public properties will be taken via `get_object_vars`
 	 *
 	 * The $options parameter specifies an associative array of options:
 	 *
@@ -49,7 +50,7 @@ interface Lilina_DB_Adapter {
 	 *        - 2: Value to compare against
 	 *    - 'limit': Maximum number of rows to return
 	 *
-	 * @param array $data Data array, see source for reference
+	 * @param array|object $data Data array, see source for reference
 	 * @param array $options Options array, see source for reference
 	 * @return boolean
 	 */
