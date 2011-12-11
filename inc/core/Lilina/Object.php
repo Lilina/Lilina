@@ -6,6 +6,9 @@ abstract class Lilina_Object {
 			$vars = get_object_vars($vars);
 		}
 		$real = new $class();
+		if (!is_array($vars)) {
+			return $real;
+		}
 		foreach ($vars as $name => $value) {
 			$real->$name = $value;
 		}
