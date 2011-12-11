@@ -74,14 +74,6 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			}
 		}
 
-		// Cut down to just what we need
-		if ($options['limit'] !== null) {
-			$data = array_slice($data, $options['offset'], $options['limit'], true);
-		}
-		elseif ($options['offset'] !== null) {
-			$data = array_slice($data, $options['offset'], null, true);
-		}
-
 		// Order our data
 		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
 			$this->temp = $options['orderby']['key'];
@@ -105,6 +97,14 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
 				 $data = array_reverse($data);
 			}
+		}
+
+		// Cut down to just what we need
+		if ($options['limit'] !== null) {
+			$data = array_slice($data, $options['offset'], $options['limit'], true);
+		}
+		elseif ($options['offset'] !== null) {
+			$data = array_slice($data, $options['offset'], null, true);
 		}
 
 		// Finally, filter fields we don't want
