@@ -19,14 +19,25 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 	protected $db;
 
 	/**
+	 * Table prefix
+	 */
+	protected $prefix;
+
+	/**
 	 * Create new MySQL DB adapter
 	 *
 	 * @param array $options Associative array, with keys 'host', 'db', 'user' and 'pass'
 	 */
 	public function __construct($options) {
+		$defaults = array(
+			'prefix' = 'lilina_'
+		);
+		$options = array_merge($defaults, $options);
+
 		// This is probably unsafe
 		$dsn = 'mysql:host=' . $options['host'] . ';dbname=' . $options['db'];
 		$this->db = new PDO($dsn, $options['user'], $options['pass']);
+		$this->prefix = $options['prefix'];
 
 		// We need this so that `int`s are fetched as integers, etc
 		// when using mysqlnd
@@ -52,6 +63,8 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 			'fetchas' => 'array'
 		);
 		$options = array_merge($default, $options);
+
+		$options['table'] = $this->prefix . $options['table'];
 
 		if ($options['fields'] === null) {
 			$fields = '*';
