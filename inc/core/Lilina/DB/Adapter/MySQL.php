@@ -78,22 +78,9 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 		// Check conditions
 		$values = array();
 		if (!empty($options['where'])) {
-			$sql .= ' WHERE (';
-			foreach ($options['where'] as $condition) {
-				switch ($condition['type']) {
-					case '==':
-					case '===':
-						$condition['type'] = '=';
-						break;
-					case '!=':
-					case '!==':
-						$condition['type'] = '!=';
-						break;
-				}
-				$conditions[] = $condition['key'] . ' ' . $condition['type'] . ' :' . $condition['key'];
-				$values[$condition['key']] = $condition['value'];
-			}
-			$sql .= implode(' AND ', $conditions) . ')';
+			$where = self::build_where($options['where']);
+			$sql .= $where[0];
+			$values = $where[1];
 		}
 
 		// Order our data
@@ -145,5 +132,80 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Update rows in the database
+	 *
+	 * @param array $data Data array, see source for reference
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
+	public function update($data, $options) {
+		$default = array(
+			'table' => null,
+			'where' => array(),
+			'limit' => null,
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified');
+		}
+		if (empty($options['where'])) {
+			throw new Lilina_DB_Exception('Condition must be specified for update');
+		}
+
+		$sql = 'UPDATE ' . $options['table'] . ' SET ';
+		$fields = array();
+		foreach ($data as $key => $value) {
+			$fields[] = '`' . $key . '` = :' . $key;
+		}
+		$sql .= implode(', ', $fields);
+
+		if (!empty($options['where'])) {
+			$where = self::build_where($options['where']);
+			$sql .= $where[0];
+			$data = array_merge($data, $where[1]);
+		}
+
+		if ($options['limit'] !== null) {
+			$sql .= ' LIMIT ' . $options['limit'];
+		}
+
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($data as $key => $value) {
+			$stmt->bindValue(':' . $key, $value);
+		}
+
+		if (!$stmt->execute()) {
+			$error = $stmt->errorInfo();
+			throw new Lilina_DB_Exception($error[2]);
+		}
+
+		return true;
+	}
+
+	protected function build_where($where) {
+		$sql = ' WHERE (';
+		$conditions = array();
+		foreach ($where as $condition) {
+			switch ($condition[1]) {
+				case '==':
+				case '===':
+					$condition[1] = '=';
+					break;
+				case '!=':
+				case '!==':
+					$condition[1] = '!=';
+					break;
+			}
+			$conditions[] = $condition[0] . ' ' . $condition[1] . ' :' . $condition[0];
+			$values[$condition[0]] = $condition[2];
+		}
+		$sql .= implode(' AND ', $conditions) . ')';
+
+		return array($sql, $values);
 	}
 }
