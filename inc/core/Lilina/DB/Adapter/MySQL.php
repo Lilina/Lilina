@@ -185,7 +185,7 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter extends Lilina_Adapte
 	/**
 	 * Update rows in the database
 	 *
-	 * @param array $data Data array, see source for reference
+	 * @param array|object $data Data array, see source for reference
 	 * @param array $options Options array, see source for reference
 	 * @return boolean
 	 */
