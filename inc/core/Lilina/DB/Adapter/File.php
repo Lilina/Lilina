@@ -44,6 +44,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 			foreach ($options['where'] as $condition) {
 				$this->temp = $condition;
 				$data = array_filter($data, array($this, 'where_filter'));
+				$this->temp = null;
 			}
 		}
 
@@ -57,7 +58,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 
 		// Order our data
 		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
-			$this->options = $options['orderby']['key'];
+			$this->temp = $options['orderby']['key'];
 			if (empty($options['orderby']['compare'])) {
 				$options['orderby']['compare'] = 'str';
 			}
@@ -73,6 +74,8 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 					usort($data, array($this, 'order_int'));
 					break;
 			}
+			$this->temp = null;
+
 			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
 				 $data = array_reverse($data);
 			}
@@ -80,8 +83,9 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 
 		// Finally, filter fields we don't want
 		if ($options['fields'] !== null) {
-			$this->options = $options['fields'];
+			$this->temp = $options['fields'];
 			$data = array_map(array($this, 'fields'), $data);
+			$this->temp = null;
 
 			// This removes all the rows which have missing fields
 			$data = array_filter($data);
@@ -96,7 +100,6 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 			}
 		}
 
-		$this->options = null;
 		return $data;
 	}
 
@@ -124,8 +127,11 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		}
 
 		$current = $this->load($options['table']);
+
 		$this->temp = $options['where'];
 		$actual = array_filter($current, array($this, 'where_filter'));
+		$this->temp = null;
+
 		$actual = array_keys($actual);
 		if ($options['limit'] !== null) {
 			$actual = array_slice($actual, 0, $options['limit']);
@@ -148,7 +154,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	 * @return array|boolean Returns the filtered array, or false if the row is missing fields
 	 */
 	protected function fields($row) {
-		$keys = array_fill_keys($this->options, true);
+		$keys = array_fill_keys($this->temp, true);
 		$row = array_intersect_key($row, $keys);
 		$missing = array_diff_key($keys, $row);
 
@@ -170,7 +176,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	 * @return integer
 	 */
 	protected function order_int($a, $b) {
-		return $a[$this->options] - $b[$this->options];
+		return $a[$this->temp] - $b[$this->temp];
 	}
 
 	/**
@@ -182,7 +188,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	 * @return integer
 	 */
 	protected function order_str($a, $b) {
-		return strcmp($a[$this->options], $b[$this->options]);
+		return strcmp($a[$this->temp], $b[$this->temp]);
 	}
 
 	/**
@@ -194,7 +200,7 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 	 * @return integer
 	 */
 	protected function order_strcase($a, $b) {
-		return strcasecmp($a[$this->options], $b[$this->options]);
+		return strcasecmp($a[$this->temp], $b[$this->temp]);
 	}
 
 	protected function where_filter($row) {
