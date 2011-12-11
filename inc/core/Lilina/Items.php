@@ -20,7 +20,7 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * Sets our used properties with user input
 	 */
 	public function __construct() {
-		$this->adapter = Lilina_DB::get_adapter(LILINA_PATH . '/content/system/data');
+		$this->adapter = Lilina_DB::get_adapter(get_option('dboptions', LILINA_PATH . '/content/system/data'), get_option('dbdriver', 'Lilina_DB_Adapter_File'));
 	}
 
 	public static function get_instance() {
