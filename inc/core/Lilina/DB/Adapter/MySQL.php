@@ -150,6 +150,67 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 	}
 
 	/**
+	 * Retrieve rows from the database
+	 *
+	 * @param array $options Options array, see Lilina_DB
+	 * @return array Row count
+	 */
+	public function count($options) {
+		$default = array(
+			'table' => null,
+			'where' => array(),
+			'limit' => null,
+			'offset' => 0
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
+		}
+		$options['table'] = $this->prefix . $options['table'];
+
+		$sql = 'SELECT COUNT(*) FROM ' . $options['table'];
+
+		// Check conditions
+		$values = array();
+		if (!empty($options['where'])) {
+			$where = self::build_where($options['where']);
+			$sql .= $where[0];
+			$values = $where[1];
+		}
+
+		// Cut down to just what we need
+		if ($options['limit'] !== null) {
+			if ($options['offset'] !== 0) {
+				$sql .= ' LIMIT ' . $options['limit'] . ' OFFSET ' . $options['offset'];
+			}
+			else {
+				$sql .= ' LIMIT ' . $options['limit'];
+			}
+		}
+		elseif ($options['offset'] !== 0) {
+			// absurdly large number, since we can't use an offset otherwise
+			$sql .= ' LIMIT 18446744073709551615 OFFSET ' . $options['offset'];
+		}
+
+		$sql .= ';';
+		$stmt = $this->db->prepare($sql);
+
+		if (!empty($values)) {
+			foreach ($values as $key => $value) {
+				$stmt->bindValue(':' . $key, $value);
+			}
+		}
+
+		if (!$stmt->execute()) {
+			$error = $stmt->errorInfo();
+			throw new Lilina_DB_Exception($error[2]);
+		}
+
+		return $stmt->fetchColumn(0);
+	}
+
+	/**
 	 * Insert rows into the database
 	 *
 	 * @param array|object $data Data array, see source for reference

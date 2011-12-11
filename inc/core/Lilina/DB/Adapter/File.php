@@ -130,6 +130,46 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	}
 
 	/**
+	 * Count rows from the DB
+	 *
+	 * @param array $options Options array, see source for reference
+	 * @return array Row count
+	 */
+	public function count($options) {
+		$default = array(
+			'table' => null,
+			'where' => array(),
+			'limit' => null,
+			'offset' => 0
+		);
+		$options = array_merge($default, $options);
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
+		}
+
+		$data = $this->load($options['table']);
+
+		// Check conditions
+		if (!empty($options['where'])) {
+			foreach ($options['where'] as $condition) {
+				$this->temp = $condition;
+				$data = array_filter($data, array($this, 'where_filter'));
+				$this->temp = null;
+			}
+		}
+
+		// Cut down to just what we need
+		if ($options['limit'] !== null) {
+			$data = array_slice($data, $options['offset'], $options['limit']);
+		}
+		elseif ($options['offset'] !== null) {
+			$data = array_slice($data, $options['offset']);
+		}
+
+		return count($data);
+	}
+
+	/**
 	 * Insert rows into the database
 	 *
 	 * @param array|object $data Data array, see source for reference

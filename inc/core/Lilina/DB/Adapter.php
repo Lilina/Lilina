@@ -36,6 +36,25 @@ interface Lilina_DB_Adapter {
 	public function retrieve($options);
 
 	/**
+	 * Count rows from the DB
+	 *
+	 * The $options parameter specifies an associative array of options:
+	 *
+	 *    - 'table': The data set name
+	 *    - 'where': An array of conditions to apply, each condition is
+	 *       an associative array:
+	 *        - 0: Column name to compare
+	 *        - 1: Comparsion type (==, !=, ===, !== <, >, <=, >=)
+	 *        - 2: Value to compare against
+	 *    - 'limit': Maximum number of rows to return
+	 *    - 'offset': Row number to start from
+	 *
+	 * @param array $options Options array, see source for reference
+	 * @return array Row count
+	 */
+	public function count($options);
+
+	/**
 	 * Insert rows into the database
 	 *
 	 * The $data parameter is a key => value partial data array. It is
