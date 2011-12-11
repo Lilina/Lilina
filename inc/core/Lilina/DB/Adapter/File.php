@@ -5,10 +5,21 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter
 	protected $options;
 	protected $tables = array();
 
+	/**
+	 * Create new file DB adapter
+	 *
+	 * @param array $options String to directory containing files
+	 */
 	public function __construct($options) {
 		$this->directory = $options;
 	}
 
+	/**
+	 * Load data from file
+	 *
+	 * @param string $table Table name used as filename
+	 * @return array
+	 */
 	protected function load($table) {
 		if (!empty($this->tables[$table])) {
 			return $this->tables[$table];
@@ -19,6 +30,13 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter
 		return $this->tables[$table];
 	}
 
+	/**
+	 * Save data to file
+	 *
+	 * @param string $table Table name used as filename
+	 * @param array $data
+	 * @return boolean
+	 */
 	protected function save($table, $data) {
 		$this->tables[$table] = $data;
 		return true;
