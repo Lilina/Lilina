@@ -86,8 +86,13 @@ class Lilina_Items implements Countable, IteratorAggregate {
 		return $this->getIterator()->next();
 	}
 
+	/**
+	 * Apply a callback to all items
+	 *
+	 * @param callback $callback
+	 */
 	public function each($callback) {
-		$this->getIterator()->each($callback);
+		return $this->getIterator()->each($callback);
 	}
 
 	/**
