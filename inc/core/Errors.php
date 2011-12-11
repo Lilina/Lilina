@@ -37,6 +37,13 @@ class Errors {
 		// 110-119 = api.items.
 		self::$codes['api.items.no_method'] = 110;
 
+		// 200-299 = db.
+		// 200-219 = db.general
+		self::$codes['db.general.missingtable'] = 200;
+
+		// 220-239 = db.insert
+		self::$codes['db.insert.duplicate'] = 220;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.

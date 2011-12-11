@@ -157,6 +157,9 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		$primary = $data[$options['primary']];
 
 		$current = $this->load($options['table']);
+		if (isset($current[$primary])) {
+			throw new Lilina_DB_Exception('Duplicate entry', 'db.insert.duplicate');
+		}
 		$current[$primary] = $data;
 
 		$this->save($options['table'], $current);

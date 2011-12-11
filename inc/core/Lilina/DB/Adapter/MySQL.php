@@ -174,9 +174,19 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 			$stmt->bindValue(':' . $key, $value);
 		}
 
-		if (!$stmt->execute()) {
-			$error = $stmt->errorInfo();
-			throw new Lilina_DB_Exception($error[2]);
+		try {
+			if (!$stmt->execute()) {
+				$error = $stmt->errorInfo();
+				throw new Lilina_DB_Exception($error[2]);
+			}
+		}
+		catch (PDOException $e) {
+			switch ($e->getCode()) {
+				case '23000':
+					throw new Lilina_DB_Exception($e->getMessage(), 'db.insert.duplicate');
+				default:
+					throw $e;
+			}
 		}
 
 		return true;
