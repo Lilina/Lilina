@@ -41,6 +41,9 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 			'fetchas' => 'array'
 		);
 		$options = array_merge($default, $options);
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified');
+		}
 
 		$data = $this->load($options['table']);
 
