@@ -60,7 +60,7 @@ class LilinaAPI {
 			$conditions['offset'] = $start;
 		}
 		if ($limit !== 0) {
-			$conditions['limit'] = $limit
+			$conditions['limit'] = $limit;
 		}
 		Lilina_Items::get_instance()->query($conditions);
 		$items = Lilina_Items::get_instance()->get_items();
