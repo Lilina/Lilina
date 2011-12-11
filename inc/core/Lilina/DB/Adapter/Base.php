@@ -12,7 +12,7 @@
  * @package Lilina
  * @subpackage Database
  */
-abstract class Lilina_Adapter_Base {
+abstract class Lilina_DB_Adapter_Base {
 	/**
 	 * Convert an object to an array
 	 *

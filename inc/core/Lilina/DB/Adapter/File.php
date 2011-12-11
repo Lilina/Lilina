@@ -1,6 +1,6 @@
 <?php
 
-class Lilina_DB_Adapter_File implements Lilina_DB_Adapter extends Lilina_Adapter_Base {
+class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB_Adapter {
 	protected $directory;
 	protected $options;
 	protected $tables = array();

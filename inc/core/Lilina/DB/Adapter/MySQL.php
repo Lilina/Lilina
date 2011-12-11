@@ -12,7 +12,7 @@
  * @package Lilina
  * @subpackage Database
  */
-class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter extends Lilina_Adapter_Base {
+class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_DB_Adapter {
 	/**
 	 * PDO handle
 	 */
