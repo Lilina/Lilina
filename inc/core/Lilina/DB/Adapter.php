@@ -27,6 +27,8 @@ interface Lilina_DB_Adapter {
 	 *        - 'direction': Direction, either asc or desc
 	 *        - 'compare': Type of comparison to use (int, str, strcase (case insensitive))
 	 *    - 'fetchas': Type to return (array, or class name)
+	 *    - 'reindex': For some adapters, we might need to reindex. If so,
+	 *       specify which parameter we should get the key from (e.g. MySQL)
 	 *
 	 * @param array $options Options array, see source for reference
 	 * @return array Rows which match all the conditions

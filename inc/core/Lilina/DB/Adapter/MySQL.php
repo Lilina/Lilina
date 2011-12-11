@@ -60,7 +60,8 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 			'limit' => null,
 			'offset' => 0,
 			'orderby' => array(),
-			'fetchas' => 'array'
+			'fetchas' => 'array',
+			'reindex' => null
 		);
 		$options = array_merge($default, $options);
 
@@ -132,6 +133,17 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 					$data[$id]->$k = $v;
 				}
 			}
+		}
+
+		if (!empty($options['reindex'])) {
+			$new = array();
+			$index = $options['reindex'];
+			foreach ($data as $row) {
+				$key = $row->$index;
+				$new[$key] = $row;
+			}
+
+			$data = $new;
 		}
 
 		return $data;
