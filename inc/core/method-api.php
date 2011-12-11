@@ -47,21 +47,24 @@ class LilinaAPI {
 	public static function items_get($id) {
 		// This is to make sure get_the_link() etc. work.
 		global $item;
-		$item = Items::get_instance()->get_item($id);
+		$item = Lilina_Items::get_instance()->get($id);
 		if($item != false)
 			$item->actions = apply_filters('action_bar', array());
 		$item->services = Services::get_for_item($item);
 		return $item;
 	}
 	public static function items_getList($start = 0, $limit = null, $conditions = array()) {
-		Items::get_instance()->init();
-		if (!empty($conditions))
-			Items::get_instance()->set_conditions($conditions);
-		Items::get_instance()->filter();
-		$items = Items::get_instance()->get_items();
-		if($limit == null)
-			return $items;
-		return array_slice($items, $start, $limit, true);
+		$start = (int) $start;
+		$limit = (int) $limit;
+		if ($start !== 0) {
+			$conditions['offset'] = $start;
+		}
+		if ($limit !== 0) {
+			$conditions['limit'] = $limit
+		}
+		Lilina_Items::get_instance()->query($conditions);
+		$items = Lilina_Items::get_instance()->get_items();
+		return $items;
 	}
 
 	// Feed methods

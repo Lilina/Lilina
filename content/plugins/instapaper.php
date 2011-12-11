@@ -65,7 +65,7 @@ class Instapaper {
 
 	protected static function submit() {
 		$id = $_GET['item'];
-		$item = Items::get_instance()->get_item($id);
+		$item = Lilina_Items::get_instance()->get($id);
 
 		if ( false === $item ) {
 			throw new Exception(_r('Invalid item ID specified', 'instapaper'));

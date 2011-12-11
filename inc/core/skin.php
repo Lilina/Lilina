@@ -81,13 +81,11 @@ function has_items($conditions = null) {
 		foreach(Feeds::get_instance()->getAll() as $the_feed)
 			$feed_list[] = $the_feed['feed'];
 
-		$lilina_items = Items::get_instance();
-		$lilina_items->init();
-		$lilina_items->set_conditions($conditions);
-		$lilina_items->filter();
+		$lilina_items = Lilina_Items::get_instance();
+		$lilina_items->query($conditions);
 	}
 
-	return $lilina_items->has_items();
+	return $lilina_items->getIterator()->valid();
 }
 
 /**
@@ -122,7 +120,7 @@ function get_offset($as_hours = false) {
 function the_item() {
 	global $lilina_items, $item;
 
-	$item = apply_filters('the_item', $lilina_items->current_item());
+	$item = apply_filters('the_item', $lilina_items->current());
 }
 
 /**
@@ -255,8 +253,8 @@ function get_the_date($args = '') {
 	extract($args, EXTR_SKIP);
 
 	$previous = false;
-	if($lilina_items->previous_item()) {
-		$previous = get_the_time($format, $lilina_items->previous_item()->timestamp);
+	if ($prev = $lilina_items->previous()) {
+		$previous = get_the_time($format, $prev->timestamp);
 	}
 	$current = get_the_time($format, $item->timestamp);
 	if ( $previous == $current ) {
@@ -318,7 +316,7 @@ function the_time($args='') {
 function get_the_id($id = null) {
 	global $lilina_items, $item;
 	if($id !== null)
-		$current_item = $lilina_items->get_item( $id );
+		$current_item = $lilina_items->get( $id );
 	else
 		$current_item = $item;
 	return apply_filters( 'get_the_id', $current_item->hash, $current_item, $id );

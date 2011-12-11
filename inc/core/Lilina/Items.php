@@ -23,6 +23,15 @@ class Lilina_Items implements Countable, IteratorAggregate {
 		$this->adapter = Lilina_DB::get_adapter(LILINA_PATH . '/content/system/data');
 	}
 
+	public static function get_instance() {
+		static $instance = false;
+		if ($instance === false) {
+			$instance = new Lilina_Items();
+		}
+
+		return $instance;
+	}
+
 	public function query($options = array()) {
 		$defaults = array(
 			'table' => 'items',
