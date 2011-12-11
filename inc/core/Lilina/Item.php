@@ -120,6 +120,19 @@ class Lilina_Item extends Lilina_Object {
 		// Lilina_Item_Data::set($this->hash, $this->data)
 	}
 
+	public function json_export() {
+		$vars = array('hash', 'timestamp', 'title', 'content', 'summary',
+			'permalink', 'feed_id', 'author');
+
+		$data = array();
+		foreach ($vars as $var) {
+			$data[$var] = $this->$var;
+		}
+		$data['enclosure'] = $this->get_enclosure();
+
+		return $data;
+	}
+
 	public function _db_export($options) {
 		$vars = array('hash', 'timestamp', 'title', 'content', 'summary',
 			'permalink', 'feed_id', 'author', 'metadata');

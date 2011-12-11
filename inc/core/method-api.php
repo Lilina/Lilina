@@ -47,24 +47,34 @@ class LilinaAPI {
 	public static function items_get($id) {
 		// This is to make sure get_the_link() etc. work.
 		global $item;
-		$item = Lilina_Items::get_instance()->get($id);
-		if($item != false)
-			$item->actions = apply_filters('action_bar', array());
-		$item->services = Services::get_for_item($item);
+		$item = self::item_convert(Lilina_Items::get_instance()->get($id));
+		$item['services'] = Services::get_for_item($item);
 		return $item;
 	}
 	public static function items_getList($start = 0, $limit = null, $conditions = array()) {
+		$args = array();
 		$start = (int) $start;
 		$limit = (int) $limit;
 		if ($start !== 0) {
-			$conditions['offset'] = $start;
+			$args['offset'] = $start;
 		}
 		if ($limit !== 0) {
-			$conditions['limit'] = $limit;
+			$args['limit'] = $limit;
 		}
-		Lilina_Items::get_instance()->query($conditions);
+		if (isset($conditions['feed'])) {
+			if (empty($args['where'])) {
+				$args['where'] = array();
+			}
+			$args['where'][] = array('feed_id', '==', $conditions['feed']);
+		}
+		Lilina_Items::get_instance()->query($args);
 		$items = Lilina_Items::get_instance()->get_items();
+		$items = array_map(array(__CLASS__, 'item_convert'), $items);
 		return $items;
+	}
+
+	protected static function item_convert($item) {
+		return $item->json_export();
 	}
 
 	// Feed methods
