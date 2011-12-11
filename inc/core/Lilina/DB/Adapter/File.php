@@ -76,10 +76,10 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 
 		// Cut down to just what we need
 		if ($options['limit'] !== null) {
-			$data = array_slice($data, $options['offset'], $options['limit']);
+			$data = array_slice($data, $options['offset'], $options['limit'], true);
 		}
 		elseif ($options['offset'] !== null) {
-			$data = array_slice($data, $options['offset']);
+			$data = array_slice($data, $options['offset'], null, true);
 		}
 
 		// Order our data
