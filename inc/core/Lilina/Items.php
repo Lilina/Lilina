@@ -75,6 +75,17 @@ class Lilina_Items implements Countable, IteratorAggregate {
 		return $previous;
 	}
 
+	/**
+	 * Get the next item
+	 *
+	 * @since 1.0
+	 *
+	 * @return bool|Lilina_Item False if item doesn't exist, otherwise returns the specified item
+	 */
+	public function &next() {
+		return $this->getIterator()->next();
+	}
+
 	public function each($callback) {
 		$this->getIterator()->each($callback);
 	}
