@@ -126,6 +126,17 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 		// We have to do this because PDO::FETCH_CLASS doesn't call __set()
 		$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+		if (!empty($options['reindex'])) {
+			$new = array();
+			$index = $options['reindex'];
+			foreach ($data as $row) {
+				$key = $row[$index];
+				$new[$key] = $row;
+			}
+
+			$data = $new;
+		}
+
 		if ($options['fetchas'] !== 'array') {
 			foreach ($data as $id => $row) {
 				$data[$id] = new $options['fetchas']();
@@ -133,17 +144,6 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 					$data[$id]->$k = $v;
 				}
 			}
-		}
-
-		if (!empty($options['reindex'])) {
-			$new = array();
-			$index = $options['reindex'];
-			foreach ($data as $row) {
-				$key = $row->$index;
-				$new[$key] = $row;
-			}
-
-			$data = $new;
 		}
 
 		return $data;
