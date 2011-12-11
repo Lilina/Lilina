@@ -98,9 +98,9 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @return int
 	 */
 	public function total_count() {
-		return $this->adapter->count(
+		return $this->adapter->count(array(
 			'table' => 'items'
-		);
+		));
 	}
 	
 	/**
