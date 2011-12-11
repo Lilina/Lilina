@@ -10,6 +10,7 @@
  *
  */
 class Lilina_Items implements Countable, IteratorAggregate {
+	protected $adapter;
 	protected $data = array();
 	protected $iterator;
 
@@ -18,22 +19,26 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 *
 	 * Sets our used properties with user input
 	 */
-	protected function __construct() {
-		$handler = new DataHandler();
-		$current = $handler->load('items.data');
-		if ($current !== null) {
-			$this->data = json_decode($current);
-			if ($this->data === $current || $this->data === null) {
-				$this->data = unserialize($current);
-			}
+	public function __construct() {
+		$this->adapter = Lilina_DB::get_adapter(LILINA_PATH . '/content/system/data');
+		$this->query();
+	}
 
-			$this->data = (array) $this->data;
-		}
+	public function query($options = array()) {
+		$defaults = array(
+			'table' => 'items',
+			'orderby' => array(
+				'key' => 'timestamp',
+				'direction' => 'desc',
+				'compare' => 'int'
+			),
+			'limit' => 40,
+			'fetchas' => 'Lilina_Item',
+		);
+		$options = array_merge($defaults, $options);
 
-		foreach ($this->data as $key => $value) {
-			$this->data[$key] = Lilina_Item::from_obj($value);
-		}
-		$this->sort_all();
+		$this->data = $this->adapter->retrieve($options);
+		unset($this->iterator);
 	}
 
 	/**
@@ -61,6 +66,10 @@ class Lilina_Items implements Countable, IteratorAggregate {
 		return $previous;
 	}
 
+	public function each($callback) {
+		$this->getIterator()->each($callback);
+	}
+
 	/**
 	 * Get the items iterator
 	 *
@@ -83,6 +92,17 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	public function count() {
 		return count($this->data);
 	}
+
+	/**
+	 * Get the total number of items
+	 *
+	 * @return int
+	 */
+	public function total_count() {
+		return $this->adapter->count(
+			'table' => 'items'
+		);
+	}
 	
 	/**
 	 * Get an item
@@ -93,11 +113,23 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @return bool|Lilina_Item False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function get($id) {
-		if (!isset($this->items[$id])) {
+		if (!isset($this->data[$id])) {
+			$items = $this->adapter->retrieve(array(
+				'table' => 'items',
+				'limit' => 1,
+				'where' => array(
+					array('hash', '==', $id)
+				),
+				'fetchas' => 'Lilina_Item',
+			));
+			if (!empty($items)) {
+				return array_shift($items);
+			}
+
 			return false;
 		}
 
-		return $this->items[$id];
+		return $this->data[$id];
 	}
 
 	public function get_items() {
@@ -115,13 +147,22 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @return bool
 	 */
 	public function check($item) {
-		if (!isset($this->data[$item->hash])) {
-			$this->update($item);
+		$items = $this->adapter->retrieve(array(
+			'table' => 'items',
+			'limit' => 1,
+			'where' => array(
+				array('hash', '==', $item->hash)
+			),
+			'fetchas' => 'Lilina_Item',
+		));
+
+		if (count($items) !== 1) {
+			$this->insert($item);
 			do_action('insert_item', $item);
 			return true;
 		}
 
-		$existing = $this->data[$item->hash];
+		$existing = array_shift($items);
 		if ($existing->timestamp !== $item->timestamp) {
 			$this->update($item);
 			do_action('update_item', $item, $existing);
@@ -140,7 +181,12 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @param Lilina_Item $item Item to update
 	 */
 	protected function insert($item) {
-		$this->data[$item->hash] = $item;
+		var_dump(__METHOD__, $item);
+		return;
+		$this->adapter->insert($item, array(
+			'table' => 'items',
+			'primary' => 'hash'
+		));
 	}
 
 	/**
@@ -152,30 +198,15 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @param Lilina_Item $item Item to update
 	 */
 	protected function update($item) {
-		$this->data[$item->hash] = $item;
-	}
-
-	/**
-	 * Save items
-	 *
-	 * Stores current items back into cache.
-	 *
-	 * @since 1.0
-	 */
-	public function save() {
-		$this->data = apply_filters('save_items', $this->data, $this);
-		$handler = new DataHandler();
-		$handler->save('items.data', json_encode($this->data));
-	}
-
-	/**
-	 * usort callback for items
-	 *
-	 * @param stdObject $a First item
-	 * @param stdObject $b Second item
-	 * @param bool
-	 */
-	public static function sort_items($a, $b) {
-		return $b->timestamp - $a->timestamp;
+		var_dump(__METHOD__, $item);
+		return;
+		$this->adapter->update($item, array(
+			'table' => 'items',
+			'where' => array(
+				array(
+					'hash', '==', $item->hash
+				)
+			)
+		));
 	}
 }
