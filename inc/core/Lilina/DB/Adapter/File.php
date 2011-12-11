@@ -122,15 +122,21 @@ class Lilina_DB_Adapter_File implements Lilina_DB_Adapter {
 		);
 		$options = array_merge($default, $options);
 
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified');
+		}
 		if (empty($options['where'])) {
 			throw new Lilina_DB_Exception('Condition must be specified for update');
 		}
 
 		$current = $this->load($options['table']);
 
-		$this->temp = $options['where'];
-		$actual = array_filter($current, array($this, 'where_filter'));
-		$this->temp = null;
+		$actual = $current;
+		foreach ($options['where'] as $condition) {
+			$this->temp = $condition;
+			$actual = array_filter($actual, array($this, 'where_filter'));
+			$this->temp = null;
+		}
 
 		$actual = array_keys($actual);
 		if ($options['limit'] !== null) {
