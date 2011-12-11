@@ -60,7 +60,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		);
 		$options = array_merge($default, $options);
 		if (empty($options['table'])) {
-			throw new Lilina_DB_Exception('Table must be specified');
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
 		}
 
 		$data = $this->load($options['table']);
@@ -144,7 +144,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		$options = array_merge($default, $options);
 
 		if (empty($options['table'])) {
-			throw new Lilina_DB_Exception('Table must be specified');
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
 		}
 		if (empty($options['primary'])) {
 			throw new Lilina_DB_Exception('Primary key must be specified for insert');
@@ -183,7 +183,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		$options = array_merge($default, $options);
 
 		if (empty($options['table'])) {
-			throw new Lilina_DB_Exception('Table must be specified');
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
 		}
 		if (empty($options['where'])) {
 			throw new Lilina_DB_Exception('Condition must be specified for update');
