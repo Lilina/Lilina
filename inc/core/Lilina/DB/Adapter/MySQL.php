@@ -30,7 +30,7 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 	 */
 	public function __construct($options) {
 		$defaults = array(
-			'prefix' = 'lilina_'
+			'prefix' => 'lilina_'
 		);
 		$options = array_merge($defaults, $options);
 
