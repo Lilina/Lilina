@@ -64,6 +64,9 @@ class Lilina_DB_Adapter_MySQL implements Lilina_DB_Adapter {
 		);
 		$options = array_merge($default, $options);
 
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified');
+		}
 		$options['table'] = $this->prefix . $options['table'];
 
 		if ($options['fields'] === null) {
