@@ -190,8 +190,6 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @param Lilina_Item $item Item to update
 	 */
 	protected function insert($item) {
-		var_dump(__METHOD__, $item);
-		return;
 		$this->adapter->insert($item, array(
 			'table' => 'items',
 			'primary' => 'hash'
@@ -207,8 +205,6 @@ class Lilina_Items implements Countable, IteratorAggregate {
 	 * @param Lilina_Item $item Item to update
 	 */
 	protected function update($item) {
-		var_dump(__METHOD__, $item);
-		return;
 		$this->adapter->update($item, array(
 			'table' => 'items',
 			'where' => array(
