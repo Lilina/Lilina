@@ -280,6 +280,7 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 		$default = array(
 			'table' => null,
 			'where' => array(),
+			'orderby' => array(),
 			'limit' => null,
 		);
 		$options = array_merge($default, $options);
@@ -310,6 +311,81 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 			$where = self::build_where($options['where']);
 			$sql .= $where[0];
 			$data = array_merge($data, $where[1]);
+		}
+
+		// Order our data
+		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
+			$sql .= ' ORDER BY `' . $options['orderby']['key'] .'`';
+			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
+				 $sql .= ' DESC';
+			}
+		}
+
+		if ($options['limit'] !== null) {
+			$sql .= ' LIMIT ' . $options['limit'];
+		}
+
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($data as $key => $value) {
+			$stmt->bindValue(':' . $key, $value);
+		}
+
+		if (!$stmt->execute()) {
+			$error = $stmt->errorInfo();
+			throw new Lilina_DB_Exception($error[2]);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Delete rows from the database
+	 *
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
+	public function delete($options) {
+		$default = array(
+			'table' => null,
+			'where' => array(),
+			'orderby' => array(),
+			'limit' => null,
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
+		}
+		$options['table'] = $this->prefix . $options['table'];
+		if (empty($options['where'])) {
+			throw new Lilina_DB_Exception('Condition must be specified for update', 'db.update.missingwhere');
+		}
+
+		if (is_object($data)) {
+			$data = self::object_to_array($data);
+		}
+		if (!is_array($data)) {
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
+		}
+
+		$sql = 'DELETE FROM ' . $options['table'];
+		$fields = array();
+		foreach ($data as $key => $value) {
+			$fields[] = '`' . $key . '` = :' . $key;
+		}
+		$sql .= implode(', ', $fields);
+
+		$where = self::build_where($options['where']);
+		$sql .= $where[0];
+		$data = array_merge($data, $where[1]);
+
+		// Order our data
+		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
+			$sql .= ' ORDER BY `' . $options['orderby']['key'] .'`';
+			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
+				 $sql .= ' DESC';
+			}
 		}
 
 		if ($options['limit'] !== null) {

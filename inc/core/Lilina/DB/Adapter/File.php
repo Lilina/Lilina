@@ -222,6 +222,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		$default = array(
 			'table' => null,
 			'where' => array(),
+			'orderby' => array(),
 			'limit' => null,
 		);
 		$options = array_merge($default, $options);
@@ -249,6 +250,31 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			$this->temp = null;
 		}
 
+		// Order our data
+		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
+			$this->temp = $options['orderby']['key'];
+			if (empty($options['orderby']['compare'])) {
+				$options['orderby']['compare'] = 'str';
+			}
+
+			switch ($options['orderby']['compare']) {
+				case 'str':
+					uasort($actual, array($this, 'order_str'));
+					break;
+				case 'strcase':
+					uasort($actual, array($this, 'order_strcase'));
+					break;
+				case 'int':
+					uasort($actual, array($this, 'order_int'));
+					break;
+			}
+			$this->temp = null;
+
+			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
+				 $actual = array_reverse($actual);
+			}
+		}
+
 		$actual = array_keys($actual);
 		if ($options['limit'] !== null) {
 			$actual = array_slice($actual, 0, $options['limit']);
@@ -256,6 +282,84 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 
 		foreach ($actual as $key) {
 			$current[$key] = array_merge($current[$key], $data);
+		}
+
+		$this->save($options['table'], $current);
+
+		return true;
+	}
+
+	/**
+	 * Update rows in the database
+	 *
+	 * @param array|object $data Data array, see source for reference
+	 * @param array $options Options array, see source for reference
+	 * @return boolean
+	 */
+	public function delete($options) {
+		$default = array(
+			'table' => null,
+			'where' => array(),
+			'orderby' => array(),
+			'limit' => null,
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($options['table'])) {
+			throw new Lilina_DB_Exception('Table must be specified', 'db.general.missingtable');
+		}
+		if (empty($options['where'])) {
+			throw new Lilina_DB_Exception('Condition must be specified for delete', 'db.delete.missingwhere');
+		}
+
+		if (is_object($data)) {
+			$data = self::object_to_array($data, $options);
+		}
+		if (!is_array($data)) {
+			throw new Lilina_DB_Exception('Data must be an object or array', 'db.general.datatypewrong');
+		}
+
+		$current = $this->load($options['table']);
+
+		$actual = $current;
+		foreach ($options['where'] as $condition) {
+			$this->temp = $condition;
+			$actual = array_filter($actual, array($this, 'where_filter'));
+			$this->temp = null;
+		}
+
+		// Order our data
+		if ($options['orderby'] !== null && !empty($options['orderby']['key'])) {
+			$this->temp = $options['orderby']['key'];
+			if (empty($options['orderby']['compare'])) {
+				$options['orderby']['compare'] = 'str';
+			}
+
+			switch ($options['orderby']['compare']) {
+				case 'str':
+					uasort($actual, array($this, 'order_str'));
+					break;
+				case 'strcase':
+					uasort($actual, array($this, 'order_strcase'));
+					break;
+				case 'int':
+					uasort($actual, array($this, 'order_int'));
+					break;
+			}
+			$this->temp = null;
+
+			if (!empty($options['orderby']['direction']) && $options['orderby']['direction'] === 'desc') {
+				 $actual = array_reverse($actual);
+			}
+		}
+
+		$actual = array_keys($actual);
+		if ($options['limit'] !== null) {
+			$actual = array_slice($actual, 0, $options['limit']);
+		}
+
+		foreach ($actual as $key) {
+			unset($current[$key]);
 		}
 
 		$this->save($options['table'], $current);

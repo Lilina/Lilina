@@ -49,6 +49,9 @@ class Errors {
 		// 240-259 = db.update
 		self::$codes['db.update.missingwhere'] = 240;
 
+		// 260-279 = db.delete
+		self::$codes['db.delete.missingwhere'] = 260;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.
