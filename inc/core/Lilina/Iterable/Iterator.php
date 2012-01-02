@@ -1,6 +1,6 @@
 <?php
 
-class Lilina_Items_Iterator extends ArrayIterator {
+class Lilina_Iterable_Iterator extends ArrayIterator {
 	/**
 	 * Apply a callback to all items
 	 *
