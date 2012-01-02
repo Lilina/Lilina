@@ -41,9 +41,10 @@ class Gregarius_Import extends OPML_Import {
 	protected function import_feeds($feeds) {
 		foreach ($feeds as $feed) {
 			try {
-				$result = Feeds::get_instance()->add($feed->url, $feed->title);
-				echo '<li>' . $result['msg'] . '</li>';
-				$this->old[$feed->id] = $result['id'];
+				$real = Lilina_Feed::create($feed->url, $feed->title);
+				Lilina_Feeds::get_instance()->insert($real);
+				echo '<li>' . sprintf(_r('Added feed "%1$s"'), $real->name) . '</li>';
+				$this->old[$feed->id] = $real->id;
 			}
 			catch (Exception $e) {
 				$id = sha1($feed->url);

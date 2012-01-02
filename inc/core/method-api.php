@@ -79,10 +79,11 @@ class LilinaAPI {
 
 	// Feed methods
 	public static function feeds_get($id) {
-		return Feeds::get_instance()->get($id);
+		return Lilina_Feeds::get_instance()->get($id);
 	}
 	public static function feeds_getList() {
-		return Feeds::get_instance()->getAll();
+		Lilina_Feeds::get_instance()->query();
+		return Lilina_Feeds::get_instance()->get_items();
 	}
 
 	// Updater methods

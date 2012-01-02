@@ -20,11 +20,10 @@ function export_opml() {
 	</head>
 	<body>
 <?php
-if(has_feeds()) {
-	foreach(get_feeds() as $feed) {
-		$feed = array_map('htmlspecialchars', $feed)
+if (has_feeds()) {
+	foreach (get_feeds() as $feed) {
 		?>
-		<outline text="<?php echo $feed['name']; ?>" title="<?php echo $feed['name']; ?>" type="rss" xmlUrl="<?php echo $feed['feed']; ?>" htmlUrl="<?php echo $feed['url']; ?>" />
+		<outline text="<?php echo htmlspecialchars($feed->name) ?>" title="<?php echo htmlspecialchars($feed->name) ?>" type="rss" xmlUrl="<?php echo htmlspecialchars($feed->feed) ?>" htmlUrl="<?php echo htmlspecialchars($feed->url) ?>" />
 		<?php
 	}
 }

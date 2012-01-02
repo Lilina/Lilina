@@ -28,10 +28,10 @@ require_once(LILINA_INCPATH . '/core/conf.php');
 Lilina_Plugins::init();
 
 if(isset($_GET['feed'])) {
-	$feed = Feeds::get_instance()->get($_GET['feed']);
-	if ($feed !== false && $feed['icon'] === true) {
+	$feed = Lilina_Feeds::get_instance()->get($_GET['feed']);
+	if ($feed !== false && $feed->icon === true) {
 		$data = new DataHandler(get_option('cachedir'));
-		$data = $data->load($feed['id'] . '.ico');
+		$data = $data->load($feed->id . '.ico');
 		if ($data !== null) {
 			$icon = unserialize($data);
 

@@ -53,28 +53,51 @@ class AdminAjax {
 	 * Callback for feeds.add
 	 */
 	public static function feeds_add($url, $name = '') {
-		$result = Feeds::get_instance()->add( $url, $name );
-		return array('success' => 1, 'msg' => $result['msg'], 'data' => Feeds::get_instance()->get($result['id']));
+		$feed = Lilina_Feed::create($url, $name);
+		$result = Lilina_Feeds::get_instance()->insert($feed);
+		return array(
+			'success' => 1,
+			'msg' => sprintf(_r('Added feed "%1$s"'), $feed->name),
+			'data' => $feed
+		);
 	}
 	/**
 	 * Callback for feeds.change
 	 */
 	public static function feeds_change($feed_id, $url = '', $name = '') {
-		$data = array();
-		if(!empty($url))
-			$data['feed'] = $url;
-		if(!empty($name))
-			$data['name'] = $name;
-		$result = Feeds::get_instance()->update($feed_id, $data);
+		$feed = Lilina_Feeds::get_instance()->get($feed_id);
 
-		return array('success' => 1, 'msg' => $result, 'data' => Feeds::get_instance()->get($feed_id));
+		if (!empty($url)) {
+			$feed->feed = $url;
+		}
+
+		if (!empty($name)) {
+			$feed->name = $name;
+		}
+
+		Lilina_Feeds::get_instance()->update($feed);
+
+		return array(
+			'success' => 1,
+			'msg' => sprintf(_r('Changed "%s"'), $feed->name),
+			'data' => $feed
+		);
 	}
 	/**
 	 * Callback for feeds.remove
 	 */
 	public static function feeds_remove($feed_id) {
-		$success = Feeds::get_instance()->delete($feed_id);
-		return array('success' => 1, 'msg' => $success);
+		$feed = Lilina_Feeds::get_instance()->get($feed_id);
+		Lilina_Feeds::get_instance()->delete($feed);
+
+		return array(
+			'success' => 1,
+			'msg' => sprintf(
+				_r('Removed "%1$s" &mdash; <a href="%2$s">Undo</a>?'),
+				$feed->name,
+				'feeds.php?action=add&amp;add_name=' . urlencode($feed->name) . '&amp;add_url=' . urlencode($feed->feed)
+			)
+		);
 	}
 	/**
 	 * Callback for feeds.list
@@ -85,8 +108,20 @@ class AdminAjax {
 	/**
 	 * Callback for feeds.get
 	 */
-	public static function feeds_get() {
-		return Feeds::get_instance()->getAll();
+	public static function feeds_get($start = 0, $limit = 0) {
+		$args = array();
+		$start = (int) $start;
+		$limit = (int) $limit;
+		if ($start !== 0) {
+			$args['offset'] = $start;
+		}
+		if ($limit !== 0) {
+			$args['limit'] = $limit;
+		}
+
+		Lilina_Feeds::get_instance()->query($args);
+
+		return Lilina_Feeds::get_instance()->get_items();
 	}
 }
 

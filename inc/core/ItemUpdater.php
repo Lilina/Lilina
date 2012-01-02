@@ -36,7 +36,7 @@ class ItemUpdater {
 			$result = self::process_single($feed);
 			if ($result > 0)
 				$updated = true;
-			$return[ $feed['id'] ] = $result;
+			$return[ $feed->id ] = $result;
 		}
 
 		if ($updated) {
@@ -53,12 +53,15 @@ class ItemUpdater {
 	 * @param array $feed Feed information (required elements are 'name' for error reporting, 'feed' for the feed URL and 'id' for the feed's unique internal ID)
 	 * @return int Number of items added
 	 */
-	public static function process_single($feed) {
+	public static function process_single($feed, $sp = null) {
 		do_action('iu-feed-start', $feed);
 
-		$sp = &self::load_feed($feed);
+		if ($sp === null) {
+			$sp = &self::load_feed($feed);
+		}
+
 		if($error = $sp->error()) {
-			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed->name), Errors::get_code('api.itemupdater.itemerror'));
 			do_action('iu-feed-finish', $feed);
 			return -1;
 		}
@@ -66,7 +69,7 @@ class ItemUpdater {
 		$count = 0;
 		$items = $sp->get_items();
 		foreach($items as $item) {
-			$new_item = Lilina_Item::from_sp($item, $feed['id']);
+			$new_item = Lilina_Item::from_sp($item, $feed->id);
 			$new_item = apply_filters('item_data_precache', $new_item, $feed);
 			if(Lilina_Items::get_instance()->check($new_item)) {
 				$count++;
@@ -97,7 +100,7 @@ class ItemUpdater {
 		$sp->set_file_class('Lilina_SimplePie_File');
 		$sp = apply_filters('simplepie-config', $sp);
 
-		$sp->set_feed_url($feed['feed']);
+		$sp->set_feed_url($feed->feed);
 		$sp->init();
 
 		/** We need this so we have something to work with. */

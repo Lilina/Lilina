@@ -87,7 +87,7 @@ function relative_time($posted_date) {
 ?>
 <h1><?php _e('Welcome!') ?></h1>
 <?php
-if (count(Feeds::get_instance()->getAll()) === 0) {
+if (Lilina_Feeds::get_instance()->total_count() === 0) {
 ?>
 <p><?php _e("Firstly, thanks for using Lilina! To help you settle in, we've included a few nifty tools in Lilina, just to help you get started.") ?></p>
 <?php
@@ -95,10 +95,10 @@ if (count(Feeds::get_instance()->getAll()) === 0) {
 else {
 	$updated = get_option('last_updated');
 	if (!$updated) {
-		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.', Lilina_Items::get_instance()->total_count(), count(Feeds::get_instance()->getAll())));
+		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.', Lilina_Items::get_instance()->total_count(), Lilina_Feeds::get_instance()->total_count()));
 	}
 	else {
-		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), Lilina_Items::get_instance()->total_count(), count(Feeds::get_instance()->getAll()), relative_time($updated));
+		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), Lilina_Items::get_instance()->total_count(), Lilina_Feeds::get_instance()->total_count(), relative_time($updated));
 	}
 ?>
 <p><?php echo $message ?></p>

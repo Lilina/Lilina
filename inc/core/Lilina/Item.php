@@ -105,7 +105,7 @@ class Lilina_Item extends Lilina_Object {
 	}
 
 	public function get_feed() {
-		return Feeds::get_instance()->get($this->feed_id);
+		return Lilina_Feeds::get_instance()->get($this->feed_id);
 	}
 
 	public function get_author() {

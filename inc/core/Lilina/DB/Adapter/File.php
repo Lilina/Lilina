@@ -4,6 +4,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	protected $directory;
 	protected $options;
 	protected $tables = array();
+	protected $ext = 'data';
 
 	/**
 	 * Create new file DB adapter
@@ -11,6 +12,10 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	 * @param array $options String to directory containing files
 	 */
 	public function __construct($options) {
+		if (is_array($options)) {
+			list($options, $ext) = $options;
+			$this->ext = $ext;
+		}
 		$this->directory = $options;
 	}
 
@@ -25,7 +30,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			return $this->tables[$table];
 		}
 
-		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.data';
+		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.' . $this->ext;
 		$this->tables[$table] = json_decode(file_get_contents($file), true);
 		return $this->tables[$table];
 	}
@@ -39,7 +44,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	 */
 	protected function save($table, $data) {
 		$this->tables[$table] = $data;
-		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.data';
+		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.' . $this->ext;
 		return file_put_contents($file, json_encode($this->tables[$table]));
 	}
 

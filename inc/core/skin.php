@@ -74,12 +74,13 @@ function has_items($conditions = null) {
 		$conditions = apply_filters('return_items-conditions', array('time' => $time));
 	}
 
-	if(count(Feeds::get_instance()->getAll()) === 0)
+	if (Lilina_Feeds::get_instance()->count() === 0)
 		return false;
 
 	if(empty($lilina_items)) {
-		foreach(Feeds::get_instance()->getAll() as $the_feed)
-			$feed_list[] = $the_feed['feed'];
+		Lilina_Feeds::get_instance()->query();
+		foreach(Lilina_Feeds::get_instance()->get_items() as $the_feed)
+			$feed_list[] = $the_feed->feed;
 
 		$lilina_items = Lilina_Items::get_instance();
 		$lilina_items->query($conditions);
@@ -337,9 +338,8 @@ function the_id($id = null) {
  */
 function get_the_feed_name() {
 	global $item;
-	$feed = Feeds::get_instance()->get($item->feed_id);
-	$name = $feed['name'];
-	return apply_filters( 'the_feed_name', $name, $feed, $item->feed_id );
+	$feed = $item->get_feed();
+	return apply_filters( 'the_feed_name', $feed->name, $feed, $item->feed_id );
 }
 
 function the_feed_name() {
@@ -352,7 +352,7 @@ function the_feed_name() {
 function get_the_feed_url() {
 	global $item;
 	$feed = $item->get_feed();
-	$url = $feed['url'];
+	$url = $feed->url;
 	return apply_filters( 'the_feed_url', $url, $feed, $item->feed_id );
 }
 
@@ -368,14 +368,14 @@ function get_the_feed_favicon($feed = null) {
 	if ($feed === null) {
 		$feed = $item->get_feed();
 	}
-	$icon = $feed['icon'];
+	$icon = $feed->icon;
 	// New favicons
 	if ($icon === true) {
-		$icon = get_option('baseurl') . 'lilina-favicon.php?feed=' . $feed['id'];
+		$icon = get_option('baseurl') . 'lilina-favicon.php?feed=' . $feed->id;
 	}
 	if(!$icon)
 		$icon = get_option('baseurl') . 'lilina-favicon.php?i=default';
-	return apply_filters( 'the_feed_favicon', $icon, $feed, $feed['id'] );
+	return apply_filters( 'the_feed_favicon', $icon, $feed, $feed->id );
 	
 }
 
@@ -448,8 +448,8 @@ function enclosure_metadata() {
 * @return boolean Are feeds available?
 */
 function has_feeds() {
-	$feeds = Feeds::get_instance()->getAll();
-	return apply_filters('has_feeds', count($feeds === 0));
+	Lilina_Feeds::get_instance()->query();
+	return apply_filters('has_feeds', (Lilina_Feeds::get_instance()->count() > 0));
 }
 
 /**
@@ -458,7 +458,8 @@ function has_feeds() {
 * @return array List of feeds and associated data
 */
 function get_feeds() {
-	return apply_filters('get_feeds', Feeds::get_instance()->getAll());
+	Lilina_Feeds::get_instance()->query();
+	return apply_filters('get_feeds', Lilina_Feeds::get_instance()->get_items());
 }
 
 /**
@@ -475,24 +476,12 @@ function list_feeds($args = '') {
 
 	if(has_feeds()) {
 		$feeds = get_feeds();
-		usort($feeds, '_sort_feeds');
 		foreach($feeds as $feed) {
 			$icon = get_the_feed_favicon($feed);
-			$title = ($title_length > 0) ? shorten($feed['name'], $title_length) : $feed['name'];
-			printf($format, $feed['url'], $icon, $title, $feed['feed'], $feed['id']);
+			$title = ($title_length > 0) ? shorten($feed->name, $title_length) : $feed->name;
+			printf($format, $feed->url, $icon, $title, $feed->feed, $feed->id);
 		}
 	}
-}
-
-/**
- * Sort feeds by name (internal)
- *
- * @param array $a First feed array
- * @param array $b Second feed array
- * @return See strnatcasecmp()
- */
-function _sort_feeds($a, $b) {
-    return strnatcasecmp($a['name'], $b['name']);
 }
 
 /**
