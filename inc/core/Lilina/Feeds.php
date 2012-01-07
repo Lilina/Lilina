@@ -157,6 +157,12 @@ class Lilina_Feeds extends Lilina_Iterable implements Countable {
 			)
 		));
 
+		Lilina_Items::get_instance()->delete_bulk(array(
+			'where' => array(
+				array('feed_id', '==', $feed->id)
+			)
+		));
+
 		// This should be considered legacy support, as this should
 		// be replaced with a database entry instead
 		$cache = new DataHandler(get_option('cachedir'));

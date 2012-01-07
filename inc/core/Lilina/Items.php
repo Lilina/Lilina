@@ -176,4 +176,40 @@ class Lilina_Items extends Lilina_Iterable implements Countable {
 			)
 		));
 	}
+
+	/**
+	 * Delete the item
+	 *
+	 * @param Lilina_Item $item Item to delete
+	 */
+	public function delete($item) {
+		$this->adapter->delete(array(
+			'table' => 'items',
+			'where' => array(
+				array(
+					'hash', '==', $item->hash
+				)
+			)
+		));
+	}
+
+	/**
+	 * Delete items en masse
+	 *
+	 * Delete more than one item. Used for removing feeds, etc.
+	 *
+	 * @param array $options Options to pass to the DB. Must include where clause
+	 */
+	public function delete_bulk($options) {
+		$defaults = array(
+			'table' => 'items',
+			'where' => array(
+				array(
+					'hash', '==', 'protecting_whereless_queries'
+				)
+			)
+		);
+		$options = array_merge($defaults, $options);
+		$this->adapter->delete($options);
+	}
 }
