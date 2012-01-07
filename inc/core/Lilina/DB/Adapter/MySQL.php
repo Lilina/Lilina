@@ -308,7 +308,7 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 		$sql .= implode(', ', $fields);
 
 		if (!empty($options['where'])) {
-			$where = self::build_where($options['where']);
+			$where = self::build_where($options['where'], $data);
 			$sql .= $where[0];
 			$data = array_merge($data, $where[1]);
 		}
@@ -394,10 +394,13 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 		return true;
 	}
 
-	protected function build_where($where) {
+	protected function build_where($where, $data = array()) {
 		$sql = ' WHERE (';
 		$conditions = array();
 		foreach ($where as $condition) {
+			if (!is_array($condition)) {
+				throw new Lilina_DB_Exception('WHERE conditions must be arrays of arrays', 'db.general.invalidwhere');
+			}
 			switch ($condition[1]) {
 				case '==':
 				case '===':
@@ -408,8 +411,13 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 					$condition[1] = '!=';
 					break;
 			}
-			$conditions[] = $condition[0] . ' ' . $condition[1] . ' :' . $condition[0];
-			$values[$condition[0]] = $condition[2];
+			$key = $condition[0];
+			if (isset($data[$key])) {
+				$key = '__noconflict_' . $key;
+			}
+
+			$conditions[] = $condition[0] . ' ' . $condition[1] . ' :' . $key;
+			$values[$key] = $condition[2];
 		}
 		$sql .= implode(' AND ', $conditions) . ')';
 
