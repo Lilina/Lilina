@@ -53,7 +53,7 @@ class UpdaterMethod {
 		ItemUpdater::set_feeds($this->feeds);
 		foreach(ItemUpdater::process() as $feed => $updated) {
 			$name = Lilina_Feeds::get_instance()->get($feed);
-			$name = $name['name'];
+			$name = $name->name;
 			$text = Localise::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);
 			$messages[] = array('msg' => sprintf($text, $name, $updated), 'updated' => $updated);
 		}

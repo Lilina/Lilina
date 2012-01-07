@@ -46,7 +46,7 @@ class Lilina_Feeds extends Lilina_Iterable implements Countable {
 				'compare' => 'strcase'
 			),
 			'fetchas' => 'Lilina_Feed',
-			'reindex' => 'hash',
+			'reindex' => 'id',
 			// intentionally no limit set
 		);
 		$options = array_merge($defaults, $options);
@@ -80,7 +80,7 @@ class Lilina_Feeds extends Lilina_Iterable implements Countable {
 	 *
 	 * Get an item by ID
 	 *
-	 * @param int $hash Item index to retrieve
+	 * @param int $id Feed index to retrieve
 	 * @return bool|Lilina_Item False if item doesn't exist, otherwise returns the specified item
 	 */
 	public function get($id) {
