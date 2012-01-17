@@ -31,6 +31,11 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		}
 
 		$file = $this->directory . DIRECTORY_SEPARATOR . $table . '.' . $this->ext;
+		if (!file_exists($file)) {
+			$this->tables[$table] = array();
+			return $this->tables[$table];
+		}
+
 		$this->tables[$table] = json_decode(file_get_contents($file), true);
 		return $this->tables[$table];
 	}
