@@ -25,6 +25,10 @@ Date.prototype.toRelativeTime = function() {
 		}
 	}
 
+	if (delta < 1) {
+		return this.toHumanString();
+	}
+
 	// pluralize a unit when the difference is greater than 1.
 	delta = Math.floor(delta);
 	if(delta !== 1) { units += "s"; }
