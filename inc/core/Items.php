@@ -1,6 +1,8 @@
 <?php
 /**
  * The Lilina items class
+ *
+ * @deprecated
  * @package Lilina
  * @subpackage Classes
  */
