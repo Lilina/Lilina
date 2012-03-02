@@ -19,13 +19,7 @@ class Lilina_Items extends Lilina_Iterable implements Countable {
 	 * Sets our used properties with user input
 	 */
 	public function __construct() {
-		$this->adapter = apply_filters('lilina_items_db', false);
-		if ($this->adapter === false) {
-			$this->adapter = Lilina_DB::get_adapter(
-				get_option('dboptions', LILINA_PATH . '/content/system/data'),
-				get_option('dbdriver', 'Lilina_DB_Adapter_File')
-			);
-		}
+		$this->adapter = Lilina_DB::get_adapter();
 	}
 
 	public static function &get_instance() {

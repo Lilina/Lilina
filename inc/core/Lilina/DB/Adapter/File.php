@@ -16,7 +16,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			list($options, $ext) = $options;
 			$this->ext = $ext;
 		}
-		$this->directory = $options;
+		$this->directory = get_option('dboptions', LILINA_PATH . '/content/system/data');
 	}
 
 	/**

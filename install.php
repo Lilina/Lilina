@@ -182,6 +182,8 @@ function upgrade() {
 				new_options_368();
 			case $settings['settings_version'] < 480:
 				new_options_368();
+			case $settings['settings_version'] < 500:
+				new_options_480();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -246,6 +248,14 @@ function new_options_368() {
 			Options::lazy_update('sitename', $settings['sitename']);
 		else
 			Options::lazy_update('sitename', 'Lilina');
+	}
+}
+function new_options_480() {
+	if (file_exists(LILINA_PATH . '/content/system/config/feeds.json')) {
+		rename(LILINA_PATH . '/content/system/config/feeds.json', LILINA_PATH . '/content/system/data/feeds.data');
+	}
+	if (file_exists(LILINA_PATH . '/content/system/config/options.data')) {
+		rename(LILINA_PATH . '/content/system/config/options.data', LILINA_PATH . '/content/system/data/options.data');
 	}
 }
 
