@@ -61,6 +61,7 @@ class Installer {
 		
 		default_options();
 		Options::lazy_update('sitename', $sitename);
+		Options::lazy_update('baseurl', Lilina::guess_baseurl());
 
 		if(!Options::save()) {
 			$this->file_error_notice(LILINA_PATH . '/content/system/config/options.data', $sitename, $username, $password);
@@ -191,9 +192,6 @@ class Installer {
 		$settings['settings_version'] = LILINA_SETTINGS_VERSION;
 
 		return "<?php
-// The URL to your server
-\$settings['baseurl'] = '$guessurl';
-
 // Username and password to log into the administration panel
 // 'pass' is MD5ed
 \$settings['auth'] = array(

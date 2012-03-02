@@ -187,7 +187,7 @@ class AdminOptions {
 	public $sections = array();
 
 	public function __construct() {
-		$this->whitelisted = array('sitename', 'template', 'locale', 'timezone', 'updateon');
+		$this->whitelisted = array('sitename', 'baseurl', 'template', 'locale', 'timezone', 'updateon');
 	}
 
 	public static function &instance() {

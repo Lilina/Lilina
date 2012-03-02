@@ -68,7 +68,7 @@ class Options {
 		global $settings;
 
 		/** Hardcoded settings in settings.php */
-		if($option === 'auth' || $option === 'baseurl' || $option === 'files') {
+		if($option === 'auth' || $option === 'files') {
 			if(!isset($settings[$option]))
 				return false;
 
@@ -116,7 +116,7 @@ class Options {
 	 * @param mixed $new_value New value of <tt>$option</tt>
 	 */
 	public static function lazy_update($option_name, $new_value) {
-		if($option_name === 'auth' || $option_name === 'baseurl' || $option_name === 'files')
+		if($option_name === 'auth' || $option_name === 'files')
 			return false;
 
 		self::$options[$option_name] = apply_filters("update_option-$option_name", $new_value);

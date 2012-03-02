@@ -68,8 +68,7 @@ if(!empty($_GET['template_changed']))
 		</div>
 		<div class="row">
 			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
-			<input type="text" name="baseurl" id="baseurl" value="<?php echo get_option('baseurl'); ?>" disabled="disabled" />
-			<p class="sidenote"><?php _e('This option must be changed in content/system/config/settings.php manually.'); ?></p>
+			<input type="text" name="baseurl" id="baseurl" value="<?php echo get_option('baseurl'); ?>" />
 		</div>
 	</fieldset>
 	<fieldset id="views">

@@ -20,6 +20,17 @@ require_once(LILINA_INCPATH . '/core/misc-functions.php');
 require_once(LILINA_INCPATH . '/core/install-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
 require_once(LILINA_INCPATH . '/core/version.php');
+
+/**#@+
+ * Dummy function, for use before Lilina is installed.
+ */
+if (!function_exists('apply_filters')) {
+	function apply_filters($name, $value) {
+		return $value;
+	}
+}
+/**#@-*/
+
 Lilina::level_playing_field();
 
 if(version_compare('5.2', phpversion(), '>'))
@@ -42,16 +53,6 @@ if (Lilina::is_installed()) {
 
 global $installer;
 $installer = new Installer();
-
-/**#@+
- * Dummy function, for use before Lilina is installed.
- */
-if (!function_exists('apply_filters')) {
-	function apply_filters($name, $value) {
-		return $value;
-	}
-}
-/**#@-*/
 
 /**
  * upgrade() - Run upgrade processes on supplied data
@@ -184,6 +185,8 @@ function upgrade() {
 				new_options_368();
 			case $settings['settings_version'] < 500:
 				new_options_480();
+			case $settings['settings_version'] < 501:
+				new_options_500();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -256,6 +259,12 @@ function new_options_480() {
 	}
 	if (file_exists(LILINA_PATH . '/content/system/config/options.data')) {
 		rename(LILINA_PATH . '/content/system/config/options.data', LILINA_PATH . '/content/system/data/options.data');
+	}
+}
+function new_options_500() {
+	global $settings;
+	if (!Options::get('baseurl', false)) {
+		Options::lazy_update('baseurl', $settings['baseurl']);
 	}
 }
 
