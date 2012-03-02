@@ -9,6 +9,7 @@
 /**
  * Feed management class
  *
+ * @deprecated
  * @package Lilina
  * @subpackage Administration
  */
@@ -54,10 +55,7 @@ class Feeds {
 	}
 
 	public function get($id) {
-		$feed = false;
-		if(!empty($this->feeds[$id]))
-			$feed = $this->feeds[$id];
-		return apply_filters('feeds-get', $feed, $id);
+		return ailina_Feeds::get_instance()->get($id);
 	}
 
 	public function getAll() {
