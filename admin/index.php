@@ -95,7 +95,7 @@ if (Lilina_Feeds::get_instance()->total_count() === 0) {
 else {
 	$updated = get_option('last_updated');
 	if (!$updated) {
-		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.', Lilina_Items::get_instance()->total_count(), Lilina_Feeds::get_instance()->total_count()));
+		$message = sprintf(_r('You currently have %d items in %d feeds. Never updated.'), Lilina_Items::get_instance()->total_count(), Lilina_Feeds::get_instance()->total_count());
 	}
 	else {
 		$message = sprintf(_r('You currently have %d items in %d feeds. Last updated %s.'), Lilina_Items::get_instance()->total_count(), Lilina_Feeds::get_instance()->total_count(), relative_time($updated));
