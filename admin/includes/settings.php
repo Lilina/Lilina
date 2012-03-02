@@ -270,4 +270,10 @@ class AdminOptions {
 			echo '</div>';
 		}
 	}
+
+	public static function checked($a, $b) {
+		if ($a === $b) {
+			echo ' checked="checked"';
+		}
+	}
 }
