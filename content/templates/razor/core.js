@@ -25,7 +25,7 @@ Date.prototype.toRelativeTime = function() {
 		}
 	}
 
-	if (delta < 1) {
+	if (delta < 0) {
 		return this.toHumanString();
 	}
 
