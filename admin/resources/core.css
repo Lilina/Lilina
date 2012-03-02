@@ -123,6 +123,18 @@ legend {
 	padding: 2px 2em 2px 0;
 	font-size: 1.2em;
 }
+.row label.checkbox {
+	float: none;
+	display: inline;
+	text-align: left;
+	width: auto;
+	margin: 0 10px 0 0;
+	padding: 0;
+}
+	.row label.checkbox input {
+		width: auto;
+		padding: 0 2px;
+	}
 .row input, .row select, .row .input {
 	width: 56%;
 	padding: 3px;
