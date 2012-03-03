@@ -119,7 +119,6 @@ class Options {
 			));
 		}
 		else {
-			var_dump($option_name, $new_value);
 			self::handler()->update(array('value' => $new_value), array(
 				'table' => 'options',
 				'where' => array(
