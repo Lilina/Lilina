@@ -33,8 +33,8 @@ class Lilina_Updater_Plugins {
 	 * Don't call this manually.
 	 */
 	public static function admin_init() {
-		$current = get_option('plugin_update_status', array());
-		if (empty($current)) {
+		$current = get_option('plugin_update_status');
+		if (empty($current) || empty($current->last_checked)) {
 			add_action('admin_footer', array('Lilina_Updater_Plugins', 'check_all'));
 			return;
 		}
