@@ -111,7 +111,7 @@ if(!empty($_GET['template_changed']))
 						echo '<optgroup label="' . $continent . '">';
 						foreach($cities as $city => $tz) {
 							echo '<option';
-							if($tz === get_option('timezone')) {
+							if($tz === get_option('timezone', 'UTC')) {
 								echo ' selected="selected"';
 							}
 							echo ' value="' . $tz . '">' . $city . '</option>';
