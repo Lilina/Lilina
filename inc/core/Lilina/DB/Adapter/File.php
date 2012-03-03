@@ -37,6 +37,11 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 		}
 
 		$this->tables[$table] = json_decode(file_get_contents($file), true);
+
+		if ($this->tables[$table] === null) {
+			$this->tables[$table] = array();
+		}
+
 		return $this->tables[$table];
 	}
 
