@@ -257,7 +257,10 @@ function new_options_368() {
 }
 function new_options_480() {
 	if (file_exists(LILINA_PATH . '/content/system/config/feeds.json')) {
-		rename(LILINA_PATH . '/content/system/config/feeds.json', LILINA_PATH . '/content/system/data/feeds.data');
+		if (!is_writable(LILINA_PATH . '/content/system/config/feeds.json') || !rename(LILINA_PATH . '/content/system/config/feeds.json', LILINA_PATH . '/content/system/data/feeds.data') ) {
+			Lilina::nice_die('<p>Unable to move <code>content/system/config/feeds.json</code> to <code>content/system/data/feeds.data</code>.
+				Make sure your permissions are set correctly then <a href="?action=upgrade">try again</a>.</p>', 'Incorrect Permissions');
+		}
 	}
 }
 function new_options_500() {
@@ -269,18 +272,26 @@ function new_options_500() {
 function new_options_501() {
 	if (file_exists(LILINA_PATH . '/content/system/config/options.data') || file_exists(LILINA_PATH . '/content/system/data/options.data')) {
 		// We need to recreate this
-		if (file_exists(LILINA_PATH . '/content/system/data/options.data')) {
-			$data = file_get_contents(LILINA_PATH . '/content/system/data/options.data');
-		}
-		else {
-			$data = file_get_contents(LILINA_PATH . '/content/system/config/options.data');
+		$options = array();
+
+		if (!is_writable(LILINA_PATH . '/content/system/data/options.data')) {
+			Lilina::nice_die('<p>Unable to write to <code>content/system/data/options.data</code>.
+				Make sure your permissions are set correctly then <a href="?action=upgrade">try again</a>.</p>', 'Incorrect Permissions');
 		}
 
-		$options = unserialize($data);
+		if (file_exists(LILINA_PATH . '/content/system/data/options.data')) {
+			$data = file_get_contents(LILINA_PATH . '/content/system/data/options.data');
+			$options = unserialize($data);
+		}
+
+		if ($options === false) {
+			$data = file_get_contents(LILINA_PATH . '/content/system/config/options.data');
+			$options = unserialize($data);
+		}
 
 		$adapter = new Lilina_DB_Adapter_File();
 		foreach ($options as $key => $value) {
-			Options::update($key, $value);
+			Options::lazy_update($key, $value);
 		}
 
 		unlink(LILINA_PATH . '/content/system/config/options.data');
