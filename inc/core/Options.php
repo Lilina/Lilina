@@ -14,6 +14,8 @@
  * @package Lilina
  */
 class Options {
+	protected static $lazy = array();
+
 	/**
 	 * @var DataHandler
 	 */
@@ -137,6 +139,7 @@ class Options {
 	 * @param mixed $new_value New value of <tt>$option</tt>
 	 */
 	public static function lazy_update($option_name, $new_value) {
+		self::$lazy[$option_name] = $new_value;
 		return self::update($option_name, $new_value);
 	}
 
@@ -146,6 +149,9 @@ class Options {
 	 * Serialize the options and save them using DataHandler
 	 */
 	public static function save() {
+		foreach (self::$lazy as $key => $value) {
+			self::update($key, $value);
+		}
 		return true;
 	}
 }
