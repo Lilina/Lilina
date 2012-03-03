@@ -17,19 +17,6 @@ class Options {
 	protected static $lazy = array();
 
 	/**
-	 * @var DataHandler
-	 */
-	protected static $handler;
-
-	public static function handler() {
-		if (is_null(self::$handler)) {
-			self::$handler = Lilina_DB::get_adapter();
-		}
-	
-		return self::$handler;
-	}
-
-	/**
 	 * Load options
 	 */
 	public static function load() {
@@ -69,7 +56,7 @@ class Options {
 			return $settings[$option];
 		}
 
-		$option = self::handler()->retrieve(array(
+		$option = Lilina_DB::get_adapter()->retrieve(array(
 			'table' => 'options',
 			'where' => array(array('key', '===', $option)),
 			'limit' => 1,
@@ -113,13 +100,13 @@ class Options {
 		$previous = self::get($option_name);
 
 		if ($previous === null) {
-			self::handler()->insert(array('key' => $option_name, 'value' => $new_value), array(
+			Lilina_DB::get_adapter()->insert(array('key' => $option_name, 'value' => $new_value), array(
 				'table' => 'options',
 				'primary' => 'key'
 			));
 		}
 		else {
-			self::handler()->update(array('value' => $new_value), array(
+			Lilina_DB::get_adapter()->update(array('value' => $new_value), array(
 				'table' => 'options',
 				'where' => array(
 					array('key', '==', $option_name)
@@ -144,8 +131,6 @@ class Options {
 
 	/**
 	 * Save options to database
-	 *
-	 * Serialize the options and save them using DataHandler
 	 */
 	public static function save() {
 		foreach (self::$lazy as $key => $value) {
