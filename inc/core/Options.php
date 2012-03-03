@@ -14,7 +14,7 @@
  * @package Lilina
  */
 class Options {
-	protected static $cached = array();
+	protected static $cache = array();
 	protected static $lazy = array();
 
 	/**
