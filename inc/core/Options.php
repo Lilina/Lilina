@@ -14,6 +14,7 @@
  * @package Lilina
  */
 class Options {
+	protected static $cached = array();
 	protected static $lazy = array();
 
 	/**
@@ -56,14 +57,18 @@ class Options {
 			return $settings[$option];
 		}
 
-		$option = Lilina_DB::get_adapter()->retrieve(array(
+		if (isset(self::$cache[$option])) {
+			return self::$cache[$option];
+		}
+
+		$value = Lilina_DB::get_adapter()->retrieve(array(
 			'table' => 'options',
 			'where' => array(array('key', '===', $option)),
 			'limit' => 1,
 			'reindex' => 'key'
 		));
 
-		if (empty($option)) {
+		if (empty($value)) {
 			// Backwards compatibility, this gets upgraded out
 			if ($option === 'baseurl' && !empty($settings['baseurl'])) {
 				return $settings['baseurl'];
@@ -71,9 +76,10 @@ class Options {
 			return $default;
 		}
 
-		$option = array_shift($option);
+		$value = array_shift($value);
+		$value = maybe_unserialize($value['value']);
 
-		return maybe_unserialize($option['value']);
+		self::$cache[$option] = $value;
 	}
 
 	/**
@@ -114,6 +120,8 @@ class Options {
 				'limit' => 1
 			));
 		}
+
+		self::$cache[$option_name] = $new_value;
 	}
 
 	/**
@@ -126,7 +134,8 @@ class Options {
 	 */
 	public static function lazy_update($option_name, $new_value) {
 		self::$lazy[$option_name] = $new_value;
-		return self::update($option_name, $new_value);
+		self::$cache[$option_name] = $new_value;
+		return true;
 	}
 
 	/**
