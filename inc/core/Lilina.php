@@ -11,6 +11,9 @@ class Lilina {
 		// Step 2: Based on step 1, load up the database
 		self::load_db();
 
+		// Step 2a: Load up the options
+		Options::load();
+
 		// Step 3: Fix magic quotes, register globals, and other stuff
 		self::level_playing_field();
 
