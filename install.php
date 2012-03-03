@@ -187,6 +187,8 @@ function upgrade() {
 				new_options_480();
 			case $settings['settings_version'] < 501:
 				new_options_500();
+			case $settings['settings_version'] < 502:
+				new_options_501();
 		}
 
 		$raw_php		= file_get_contents(LILINA_PATH . '/content/system/config/settings.php');
@@ -257,14 +259,31 @@ function new_options_480() {
 	if (file_exists(LILINA_PATH . '/content/system/config/feeds.json')) {
 		rename(LILINA_PATH . '/content/system/config/feeds.json', LILINA_PATH . '/content/system/data/feeds.data');
 	}
-	if (file_exists(LILINA_PATH . '/content/system/config/options.data')) {
-		rename(LILINA_PATH . '/content/system/config/options.data', LILINA_PATH . '/content/system/data/options.data');
-	}
 }
 function new_options_500() {
 	global $settings;
 	if (!Options::get('baseurl', false)) {
 		Options::lazy_update('baseurl', $settings['baseurl']);
+	}
+}
+function new_options_501() {
+	if (file_exists(LILINA_PATH . '/content/system/config/options.data') || file_exists(LILINA_PATH . '/content/system/data/options.data')) {
+		// We need to recreate this
+		if (file_exists(LILINA_PATH . '/content/system/data/options.data')) {
+			$data = file_get_contents(LILINA_PATH . '/content/system/data/options.data');
+		}
+		else {
+			$data = file_get_contents(LILINA_PATH . '/content/system/config/options.data');
+		}
+
+		$options = unserialize($data);
+
+		$adapter = new Lilina_DB_Adapter_File();
+		foreach ($options as $key => $value) {
+			Options::update($key, $value);
+		}
+
+		unlink(LILINA_PATH . '/content/system/config/options.data');
 	}
 }
 

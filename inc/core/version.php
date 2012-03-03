@@ -10,7 +10,7 @@
 
 /** */
 define('LILINA_CORE_VERSION', '1.0-bleeding');
-define('LILINA_SETTINGS_VERSION', 501);
+define('LILINA_SETTINGS_VERSION', 502);
 define('LILINA_FEEDSTORAGE_VERSION', 237);
 
 $lilina = array(
