@@ -68,5 +68,3 @@ if(!defined('LOADED_SETTINGS')) {
 	if(!defined('LILINA_DATA_DIR'))
 		define('LILINA_DATA_DIR', LILINA_CONTENT_DIR . '/system/data/');
 }
-
-Options::load();
