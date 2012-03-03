@@ -140,7 +140,7 @@ if(!empty($_GET['template_changed']))
 <?php
 			foreach ($available as $key => $template) {
 				$class = 'template';
-				if ($template->slug === get_option('template')) {
+				if ($template->slug === get_option('template', 'razor')) {
 					$class .= ' current';
 				}
 ?>
@@ -160,14 +160,14 @@ if(!empty($_GET['template_changed']))
 					}
 
 					$title = sprintf(_r('%1$s %2$s by %3$s'), $template->name, $template->version, $author);
-					if ($template->slug === get_option('template')) {
+					if ($template->slug === get_option('template', 'razor')) {
 						$title .= ' (Current)';
 					}
 ?>
 					<h2><?php echo $title ?></h2>
 					<p><?php echo $template->description ?></p>
 <?php
-					if ($template->slug !== get_option('template')) {
+					if ($template->slug !== get_option('template', 'razor')) {
 ?>
 					<button type="submit" name="activate_template" value="<?php echo $template->slug ?>">Activate</button>
 <?php
