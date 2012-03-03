@@ -1,6 +1,52 @@
 <?php
 
 class Lilina {
+	public static function bootstrap() {
+		// Step 0: Check that we're actually installed
+		self::check_installed();
+
+		// Step 1: Load in the hardcoded stuff
+		require_once(LILINA_INCPATH . '/core/conf.php');
+
+		// Step 2: Based on step 1, load up the database
+		self::load_db();
+
+		// Step 3: Fix magic quotes, register globals, and other stuff
+		self::level_playing_field();
+
+		// Step 4: Initialise the plugin subsystem
+		Lilina_Plugins::init();
+
+		// Step 5: Start the timer
+		global $timer_start;
+		$timer_start = lilina_timer_start();
+
+		// Step 6: Load the version constants
+		global $lilina;
+		require_once(LILINA_INCPATH . '/core/version.php');
+
+		// Step 7: Load translations
+		Localise::load_default_textdomain();
+	}
+
+	protected static function load_db() {
+		$storage_type = 'Lilina_DB_Adapter_File';
+		if (!empty($settings['storage']['type'])) {
+			$storage_type = $settings['storage']['type'];
+		}
+
+		if (!class_exists($storage_type)) {
+			throw new Exception('Database adapter not found', Errors::get_code('db.general.adapternotfound'));
+		}
+
+		$storage_options = null;
+		if (!empty($settings['storage']['options'])) {
+			$storage_options = $settings['storage']['options'];
+		}
+
+		$adapter = new $storage_type($storage_options);
+	}
+
 	/**
 	 * Turn register globals off.
 	 *

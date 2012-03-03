@@ -22,10 +22,9 @@ define('LILINA_PAGE', 'favicon');
 ini_set('display_errors', false);
 
 require_once(LILINA_INCPATH . '/core/Lilina.php');
-require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
+Lilina::bootstrap();
 
-require_once(LILINA_INCPATH . '/core/conf.php');
-Lilina_Plugins::init();
+require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
 
 if(isset($_GET['feed'])) {
 	$feed = Lilina_Feeds::get_instance()->get($_GET['feed']);

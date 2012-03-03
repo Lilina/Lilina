@@ -1,18 +1,22 @@
 <?php
 
 class Lilina_DB {
-	public static function &get_adapter($args = null, $class = null) {
-		static $adapter = null;
+	protected static $adapter = null;
 
-		if (!empty($adapter)) {
-			return $adapter;
+	public static function &get_adapter($args = null, $class = null) {
+		if (!empty(self::$adapter)) {
+			return self::$adapter;
 		}
 
 		if (empty($class)) {
 			$class = 'Lilina_DB_Adapter_File';
 		}
 
-		$adapter = new $class($args);
-		return $adapter;
+		self::$adapter = new $class($args);
+		return self::$adapter;
+	}
+
+	public static function set_adapter(Lilina_DB_Adapter &$adapter) {
+		self::$adapter = $adapter;
 	}
 }

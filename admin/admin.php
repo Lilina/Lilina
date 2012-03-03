@@ -19,15 +19,13 @@ define('LILINA_INCPATH', LILINA_PATH . '/inc');
 define('LILINA_ADMIN', 1) ;
 define('LILINA_PAGE', 'admin');
 
-global $settings;
-require_once(LILINA_INCPATH . '/core/Lilina.php');
-Lilina::check_installed();
 
-Lilina_Plugins::init();
-Localise::load_default_textdomain();
+require_once(LILINA_INCPATH . '/core/Lilina.php');
+Lilina::bootstrap();
+
+
 require_once(LILINA_INCPATH . '/core/update-functions.php');
 require_once(LILINA_INCPATH . '/core/file-functions.php');
-require_once(LILINA_INCPATH . '/core/version.php');
 require_once(LILINA_INCPATH . '/core/feed-functions.php');
 require_once(LILINA_INCPATH . '/contrib/parseopml.php');
 require_once(LILINA_INCPATH . '/core/auth-functions.php');
@@ -42,9 +40,6 @@ if(isset($_POST['user']) && isset($_POST['pass'])) {
 else {
 	lilina_login_form('', '');
 }
-
-/** This sanitises all input variables, so we don't have to worry about them later */
-Lilina::level_playing_field();
 
 require_once(LILINA_PATH . '/admin/includes/common.php');
 

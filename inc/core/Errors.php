@@ -42,6 +42,7 @@ class Errors {
 		self::$codes['db.general.missingtable'] = 200;
 		self::$codes['db.general.datatypewrong'] = 201;
 		self::$codes['db.general.invalidwhere'] = 202;
+		self::$codes['db.general.adapternotfound'] = 203;
 
 		// 220-239 = db.insert
 		self::$codes['db.insert.duplicate'] = 220;
