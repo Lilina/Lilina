@@ -59,7 +59,7 @@ class Installer {
 		}
 
 		
-		default_options();
+		self::default_options();
 		Options::lazy_update('sitename', $sitename);
 		Options::lazy_update('baseurl', Lilina::guess_baseurl());
 
@@ -95,6 +95,16 @@ class Installer {
 	<?php
 		Installer::footer();
 		return true;
+	}
+
+	protected static function default_options() {
+		Options::lazy_update('offset', 0);
+		Options::lazy_update('encoding', 'utf-8');
+		Options::lazy_update('template', 'razor');
+		Options::lazy_update('locale', 'en');
+		Options::lazy_update('timezone', 'UTC');
+		Options::lazy_update('sitename', 'Lilina');
+		Options::lazy_update('feeds_version', LILINA_FEEDSTORAGE_VERSION);
 	}
 	
 	/**
