@@ -80,6 +80,7 @@ class Options {
 		$value = maybe_unserialize($value['value']);
 
 		self::$cache[$option] = $value;
+		return $value;
 	}
 
 	/**
