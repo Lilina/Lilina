@@ -416,7 +416,7 @@ class Lilina_DB_Adapter_MySQL extends Lilina_DB_Adapter_Base implements Lilina_D
 				$key = '__noconflict_' . $key;
 			}
 
-			$conditions[] = $condition[0] . ' ' . $condition[1] . ' :' . $key;
+			$conditions[] = '`' . $condition[0] . '` ' . $condition[1] . ' :' . $key;
 			$values[$key] = $condition[2];
 		}
 		$sql .= implode(' AND ', $conditions) . ')';
