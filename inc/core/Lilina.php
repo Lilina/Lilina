@@ -48,6 +48,7 @@ class Lilina {
 		}
 
 		$adapter = new $storage_type($storage_options);
+		Lilina_DB::set_adapter($adapter);
 	}
 
 	/**
