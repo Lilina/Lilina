@@ -33,6 +33,8 @@ class Lilina {
 	}
 
 	protected static function load_db() {
+		global $settings;
+
 		$storage_type = 'Lilina_DB_Adapter_File';
 		if (!empty($settings['storage']['type'])) {
 			$storage_type = $settings['storage']['type'];
