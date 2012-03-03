@@ -9,7 +9,7 @@ class Lilina_DB {
 		}
 
 		if (empty($class)) {
-			$class = get_option('dbdriver', 'Lilina_DB_Adapter_File');
+			$class = 'Lilina_DB_Adapter_File';
 		}
 
 		$adapter = new $class($args);

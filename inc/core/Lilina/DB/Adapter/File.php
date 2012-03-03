@@ -11,12 +11,12 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 	 *
 	 * @param array $options String to directory containing files
 	 */
-	public function __construct($options) {
+	public function __construct($options = null) {
 		if (is_array($options)) {
 			list($options, $ext) = $options;
 			$this->ext = $ext;
 		}
-		$this->directory = get_option('dboptions', LILINA_PATH . '/content/system/data');
+		$this->directory = LILINA_PATH . '/content/system/data';
 	}
 
 	/**
@@ -452,7 +452,7 @@ class Lilina_DB_Adapter_File extends Lilina_DB_Adapter_Base implements Lilina_DB
 			case '<=':
 				return $row[$key] <= $val;
 			default:
-				throw new Lilina_DB_Exception('Operator not valid');
+				throw new Lilina_DB_Exception('Operator not valid: ' . $op, 'db.general.invalidwhere');
 		}
 	}
 }
