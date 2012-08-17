@@ -18,10 +18,7 @@ function lilina_version_check() {
 	// We need this for unique identification of installations, but we take the hash of it
 	$id = sha1(get_option('baseurl'));
 
-	$data = new DataHandler();
-	$current = $data->load('core-update-check.data');
-	if($current !== null)
-		$current = unserialize($current);
+	$current = get_option('core_update_status', new stdClass);
 
 	$locale = get_option('locale');
 
@@ -46,7 +43,7 @@ function lilina_version_check() {
 
 	if ( !$response->success ) {
 		// Save it anyway
-		$data->save('core-update-check.data', serialize($new_option));
+		update_option('core_update_status', $new_option);
 		return false;
 	}
 
@@ -63,7 +60,7 @@ function lilina_version_check() {
 	if ( isset( $returns[3] ) )
 		$new_option->version = $returns[3];
 
-	$data->save('core-update-check.data', serialize($new_option));
+	update_option('core_update_status', $new_option);
 	return $new_option;
 }
 
@@ -72,14 +69,10 @@ function lilina_version_check() {
  * @author WordPress
  */
 function lilina_footer_version() {
-	$data = new DataHandler();
-	$cur = $data->load('core-update-check.data');
-	if($cur === null)
+	$cur = get_option('core_update_status', null);
+	if ($cur === null || empty($cur->response)) {
 		return false;
-
-	$cur = unserialize($cur);
-	if(empty($cur->response))
-		return false;
+	}
 
 	switch ( $cur->response ) {
 		case 'development' :
@@ -107,15 +100,10 @@ function lilina_footer_version() {
  * @author WordPress
  */
 function update_nag() {
-	$data = new DataHandler();
-	$cur = $data->load('core-update-check.data');
-	if($cur === null)
+	$cur = get_option('core_update_status', null);
+	if ($cur === null || empty($cur->response) || $cur->response !== 'upgrade') {
 		return false;
-
-	$cur = unserialize($cur);
-
-	if ( !isset( $cur->response ) || $cur->response != 'upgrade' )
-		return false;
+	}
 
 	$msg = sprintf(_r('Lilina %1$s is available! <a href="%2$s">Please update now</a>.'), $cur->version, $cur->url);
 

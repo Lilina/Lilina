@@ -63,11 +63,12 @@ class Templates {
 		);
 
 		// Last-Modified and ETag
-		$itemcache = Items::get_instance();
-		$itemcache->init();
+		$itemcache = Lilina_Items::get_instance();
+		$itemcache->query(array(
+			'limit' => 1
+		));
 		$items = $itemcache->get_items();
-		if(is_array($items))
-			$item = reset($items);
+		$item = array_shift($items);
 
 		if($item !== false)
 			$last_modified_timestamp = $item->timestamp;

@@ -33,15 +33,13 @@ class Lilina_Updater_Plugins {
 	 * Don't call this manually.
 	 */
 	public static function admin_init() {
-		$data = new DataHandler();
-		$current = $data->load('plugins.updates.json');
-		if ($current === null) {
+		$current = get_option('plugin_update_status');
+		if (empty($current) || empty($current->last_checked)) {
 			add_action('admin_footer', array('Lilina_Updater_Plugins', 'check_all'));
 			return;
 		}
 
-		$current = json_decode($current);
-		self::$actionable = (array) $current->plugins;
+		self::$actionable = $current->plugins;
 
 		if (self::CHECKINTERVAL > (time() - $current->last_checked)) {
 			return;
@@ -101,8 +99,7 @@ class Lilina_Updater_Plugins {
 			'plugins' => self::$actionable,
 			'last_checked' => time()
 		);
-		$data = new DataHandler();
-		$data->save('plugins.updates.json', json_encode($values));
+		update_option('plugin_update_status', $values);
 	}
 
 	/**

@@ -41,9 +41,10 @@ class Gregarius_Import extends OPML_Import {
 	protected function import_feeds($feeds) {
 		foreach ($feeds as $feed) {
 			try {
-				$result = Feeds::get_instance()->add($feed->url, $feed->title);
-				echo '<li>' . $result['msg'] . '</li>';
-				$this->old[$feed->id] = $result['id'];
+				$real = Lilina_Feed::create($feed->url, $feed->title);
+				Lilina_Feeds::get_instance()->insert($real);
+				echo '<li>' . sprintf(_r('Added feed "%1$s"'), $real->name) . '</li>';
+				$this->old[$feed->id] = $real->id;
 			}
 			catch (Exception $e) {
 				$id = sha1($feed->url);
@@ -54,27 +55,25 @@ class Gregarius_Import extends OPML_Import {
 	}
 	protected function import_item($old) {
 		$new = $this->convert_item($old);
-		return Items::get_instance()->check_item($new);
+		return Lilina_Items::get_instance()->check($new);
 	}
 	protected function convert_item($old) {
-		$new = (object) array(
-			'hash' => sha1($old->guid),
-			'timestamp' => strtotime($old->pubdate),
-			'title' => $old->title,
-			'content' => $old->description,
-			'summary' => $old->description,
-			'permalink' => $old->url,
-			'metadata' => (object) array(
-				'enclosure' => $old->enclosure,
-				'enclosure_data' => false
-			),
-			'author' => array(
-				'name' => $old->author,
-				'url' => false
-			),
-			'feed' => false,
-			'feed_id' => $this->lookup_cid($old->cid)
-		);
+		$new = new Lilina_Item();
+		$new->hash = sha1($old->guid);
+		$new->timestamp = strtotime($old->pubdate);
+		$new->title = $old->title;
+		$new->content = $old->description;
+		$new->summary = $old->description;
+		$new->permalink = $old->url;
+		$new->feed_id = $this->lookup_cid($old->cid);
+
+		$enclosure = new Lilina_Enclosure();
+		$enclosure->url = $old->enclosure;
+		$new->enclosure = $enclosure;
+
+		$author = new Lilina_Author();
+		$author->name = $old->author;
+		$new->author = $author;
 		return $new;
 	}
 	protected function lookup_cid($cid) {
@@ -150,7 +149,6 @@ class Gregarius_Import extends OPML_Import {
 					$count++;
 				}
 			}
-			Items::get_instance()->save_cache();
 			printf('<p>' . _r('Done! Imported %d items.') . '</p>', $count);
 		}
 		catch (Exception $e) {

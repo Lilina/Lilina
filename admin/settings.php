@@ -68,8 +68,7 @@ if(!empty($_GET['template_changed']))
 		</div>
 		<div class="row">
 			<label for="baseurl"><?php _e('Site address (URL)'); ?>:</label>
-			<input type="text" name="baseurl" id="baseurl" value="<?php echo get_option('baseurl'); ?>" disabled="disabled" />
-			<p class="sidenote"><?php _e('This option must be changed in content/system/config/settings.php manually.'); ?></p>
+			<input type="text" name="baseurl" id="baseurl" value="<?php echo get_option('baseurl'); ?>" />
 		</div>
 	</fieldset>
 	<fieldset id="views">
@@ -112,7 +111,7 @@ if(!empty($_GET['template_changed']))
 						echo '<optgroup label="' . $continent . '">';
 						foreach($cities as $city => $tz) {
 							echo '<option';
-							if($tz === get_option('timezone')) {
+							if($tz === get_option('timezone', 'UTC')) {
 								echo ' selected="selected"';
 							}
 							echo ' value="' . $tz . '">' . $city . '</option>';
@@ -141,7 +140,7 @@ if(!empty($_GET['template_changed']))
 <?php
 			foreach ($available as $key => $template) {
 				$class = 'template';
-				if ($template->slug === get_option('template')) {
+				if ($template->slug === get_option('template', 'razor')) {
 					$class .= ' current';
 				}
 ?>
@@ -161,14 +160,14 @@ if(!empty($_GET['template_changed']))
 					}
 
 					$title = sprintf(_r('%1$s %2$s by %3$s'), $template->name, $template->version, $author);
-					if ($template->slug === get_option('template')) {
+					if ($template->slug === get_option('template', 'razor')) {
 						$title .= ' (Current)';
 					}
 ?>
 					<h2><?php echo $title ?></h2>
 					<p><?php echo $template->description ?></p>
 <?php
-					if ($template->slug !== get_option('template')) {
+					if ($template->slug !== get_option('template', 'razor')) {
 ?>
 					<button type="submit" name="activate_template" value="<?php echo $template->slug ?>">Activate</button>
 <?php

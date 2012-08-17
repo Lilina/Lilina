@@ -37,6 +37,23 @@ class Errors {
 		// 110-119 = api.items.
 		self::$codes['api.items.no_method'] = 110;
 
+		// 200-299 = db.
+		// 200-219 = db.general
+		self::$codes['db.general.missingtable'] = 200;
+		self::$codes['db.general.datatypewrong'] = 201;
+		self::$codes['db.general.invalidwhere'] = 202;
+		self::$codes['db.general.adapternotfound'] = 203;
+
+		// 220-239 = db.insert
+		self::$codes['db.insert.duplicate'] = 220;
+		self::$codes['db.insert.missingprimary'] = 221;
+
+		// 240-259 = db.update
+		self::$codes['db.update.missingwhere'] = 240;
+
+		// 260-279 = db.delete
+		self::$codes['db.delete.missingwhere'] = 260;
+
 		// 800-899 = auth.
 		self::$codes['auth.none']                = 800;
 		// 900-999 = update.

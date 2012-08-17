@@ -27,15 +27,17 @@ class SubscribePage {
 
 			if (!empty($discovered))
 				$feed = $discovered[0];
-			$result = Feeds::get_instance()->add( $_POST['url'], $_POST['name'] );
+
+			$real = Lilina_Feed::create($feed, $_POST['name']);
+			Lilina_Feeds::get_instance()->insert($real);
 		}
 		catch( Exception $e ) {
 			return self::sub_page($e->getMessage());
 		}
-		return self::success_page($result);
+		return self::success_page();
 	}
 
-	public static function success_page($result) {
+	public static function success_page() {
 		self::head();
 ?>
 	<div id="message">

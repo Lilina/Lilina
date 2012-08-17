@@ -37,11 +37,11 @@ class UpdaterMethod {
 	public function process($feed) {
 		switch($feed) {
 			case 'all':
-				$this->feeds = Feeds::get_instance()->getAll();
+				$this->feeds = Lilina_Feeds::get_instance()->get_items();
 				break;
 			default:
 				if($this->validate($feed))
-					$this->feeds[] = Feeds::get_instance()->get($feed);
+					$this->feeds[] = Lilina_Feeds::get_instance()->get($feed);
 				else {
 					$this->errors[] = sprintf(_r('Invalid feed ID supplied: %s'), $feed);
 					return;
@@ -52,8 +52,8 @@ class UpdaterMethod {
 		$messages = array();
 		ItemUpdater::set_feeds($this->feeds);
 		foreach(ItemUpdater::process() as $feed => $updated) {
-			$name = Feeds::get_instance()->get($feed);
-			$name = $name['name'];
+			$name = Lilina_Feeds::get_instance()->get($feed);
+			$name = $name->name;
 			$text = Localise::ngettext('Updated feed "%1$s". Added %2$d item.', 'Updated feed "%1$s". Added %2$d items.', $updated);
 			$messages[] = array('msg' => sprintf($text, $name, $updated), 'updated' => $updated);
 		}
@@ -68,7 +68,7 @@ class UpdaterMethod {
 	 * @return boolean True if feed exists, false otherwise, but will throw an exception first
 	 */
 	protected function validate($id) {
-		if(!Feeds::get_instance()->get($id)) {
+		if(!Lilina_Feeds::get_instance()->get($id)) {
 			throw new Exception(_r('Invalid feed ID supplied.'));
 			return false;
 		}
@@ -121,13 +121,13 @@ class UpdaterMethod {
 	
 	protected function cron() {
 		set_time_limit(0);
-		
-		ItemUpdater::set_feeds( Feeds::get_instance()->getAll() );
+
+		Lilina_Feeds::get_instance()->query();
+		ItemUpdater::set_feeds( Feeds::get_instance()->get_items() );
 		ItemUpdater::$fatal = false;
 
 		foreach(ItemUpdater::process() as $feed => $updated) {
-			$name = Feeds::get_instance()->get($feed);
-			$name = $name['name'];
+			$name = Lilina_Feeds::get_instance()->get($feed)->name;
 			if($updated < 0) {
 				$text = 'An error occurred while updating feed "%1$s".';
 			}
@@ -154,9 +154,10 @@ class UpdaterMethod {
 	 */
 	protected function page() {
 		header('Content-Type: text/html; charset=utf-8');
-		$feeds = Feeds::get_instance()->getAll();
+		Lilina_Feeds::get_instance()->query();
+		$feeds = Lilina_Feeds::get_instance()->get_items();
 		foreach($feeds as &$feed) {
-			$feed = $feed['id'];
+			$feed = $feed->id;
 		}
 		$feeds = array_values($feeds);
 ?>

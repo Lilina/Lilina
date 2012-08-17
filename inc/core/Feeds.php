@@ -9,6 +9,7 @@
 /**
  * Feed management class
  *
+ * @deprecated
  * @package Lilina
  * @subpackage Administration
  */
@@ -47,116 +48,18 @@ class Feeds {
 	 * @return bool True if succeeded, false if failed
 	 */
 	public function add($url, $name = '', $cat = 'default') {
-		if(empty($url)) {
-			throw new Exception(_r("Couldn't add feed: No feed URL supplied"), Errors::get_code('admin.feeds.no_url'));
-		}
+		$feed = Lilina_Feed::create($url, $name);
+		$result = Lilina_Feeds::get_instance()->insert($feed);
 
-		if(!preg_match('#https|http|feed#', $url)) {
-			if(strpos($url, '://')) {
-				throw new Exception(_r('Unsupported URL protocol'), Errors::get_code('admin.feeds.protocol_error'));
-			}
-
-			$url = 'http://' . $url;
-		}
-		$reporting = error_reporting();
-		error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR);
-		require_once(LILINA_INCPATH . '/contrib/simplepie.class.php');
-		$feed_info = new SimplePie();
-		$feed_info->set_stupidly_fast(true);
-		$feed_info->set_cache_location(get_option('cachedir'));
-		$feed_info->set_feed_url($url);
-		$feed_info->set_file_class('Lilina_SimplePie_File');
-		$feed_info->init();
-		$feed_error = $feed_info->error();
-		$feed_url = $feed_info->subscribe_url();
-
-		if(!empty($feed_error)) {
-			throw new Exception(
-				sprintf(_r( "Couldn't add feed: %s is not a valid URL or the server could not be accessed. Additionally, no feeds could be found by autodiscovery. (%s)" ), $url, $feed_error ),
-				Errors::get_code('admin.feeds.invalid_url')
-			);
-		}
-
-		if(empty($name)) {
-			//Get it from the feed
-			$name = $feed_info->get_title();
-		}
-
-		$id = sha1($feed_url);
-		// Do a naive check to see if the feed already exists
-		if ($this->get($id) !== false) {
-			throw new Exception(
-				_r("Couldn't add feed: you have already added that feed"),
-				Errors::get_code('admin.feeds.feed_already_exists')
-			);
-		}
-
-		$this->feeds[$id] = array(
-			'feed'	=> $feed_url,
-			'url'	=> $feed_info->get_link(),
-			'id'	=> $id,
-			'name'	=> $name,
-			'cat'	=> $cat,
-			'icon'	=> self::discover_favicon($feed_info, $id),
-		);
-
-		$this->feeds[$id] = apply_filters('feed-create', $this->feeds[$id], $url, $feed_info);
-		$this->save();
-
-		error_reporting($reporting);
-		return array('msg' => sprintf( _r('Added feed "%1$s"'), $name ), 'id' => $id);;
+		return array('msg' => sprintf( _r('Added feed "%1$s"'), $feed->name ), 'id' => $feed->id);;
 	}
 
-	/**
-	 * Find the feed's icon
-	 *
-	 * @param SimplePie $feed SimplePie object to retrieve logo for
-	 * @return string URL to feed icon
-	 */
-	protected static function discover_favicon($feed, $id) {
-		if ($return = $feed->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'icon')) {
-			$favicon = SimplePie_Misc::absolutize_url($return[0]['data'], $feed->get_base($return[0]));
-		}
-		elseif (($url = $feed->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url)) {
-			$filename = $id . '.ico';
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
-		}
-		else {
-			return false;
-		}
-
-		$cache = new DataHandler(get_option('cachedir'));
-		$file = Lilina_HTTP::get($favicon, array('X-Forwarded-For' => $_SERVER['REMOTE_ADDR']));
-
-		if ($file->success && strlen($file->body) > 0) {
-			$sniffer = new $feed->content_type_sniffer_class($file);
-			if (substr($sniffer->get_type(), 0, 6) === 'image/') {
-				$body = array('type' => $sniffer->get_type(), 'body' => $file->body);
-				return $cache->save($filename, serialize($body));
-			}
-			// not an image
-			elseif (($type = $sniffer->unknown()) !== false && substr($type, 0, 6) === 'image/') {
-				$body = array('type' => $type, 'body' => $file->body);
-				return $cache->save($filename, serialize($body));
-			}
-		}
-		return false;
-	}
 	public function get($id) {
-		$feed = false;
-		if(!empty($this->feeds[$id]))
-			$feed = $this->feeds[$id];
-		return apply_filters('feeds-get', $feed, $id);
+		return ailina_Feeds::get_instance()->get($id);
 	}
 
 	public function getAll() {
-		$feeds = $this->feeds;
-		uasort($feeds, array(get_class(), 'sort_feeds'));
-		return apply_filters('feeds-get_all', $feeds);
-	}
-
-	protected static function sort_feeds($a, $b) {
-		return strnatcasecmp($a['name'], $b['name']);
+		return Lilina_Feeds::get_instance()->get_items();
 	}
 
 	/**
@@ -166,20 +69,22 @@ class Feeds {
 	 * @return bool
 	 */
 	public function update($id, $data = array()) {
-		if(empty($data)) {
-			throw new Exception(_r('No change specified'), Errors::get_code('admin.feeds.no_id_or_url'));
-			return false;
+		$feed = Lilina_Feeds::get_instance()->get($id);
+
+		if (!empty($data['name'])) {
+			$feed->name = $data['name'];
 		}
 
-		if(empty($this->feeds[$id])) {
-			throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
+		if (!empty($data['feed'])) {
+			$feed->feed = $data['feed'];
 		}
 
-		$old = $this->feeds[$id];
-		$this->feeds[$id] = array_merge($this->feeds[$id], $data);
-		$this->feeds[$id] = apply_filters('feed-update', $this->feeds[$id], $data, $old);
-		$this->save();
-		return sprintf(_r('Changed "%s" (#%d)'), $this->feeds[$id]['name'], $id);
+		if (!empty($data['url'])) {
+			$feed->url = $data['url'];
+		}
+
+		Lilina_Feeds::get_instance()->update($feed);
+		return sprintf(_r('Changed "%s" (#%d)'), $feed->name, $feed->id);
 	}
 
 	/**
@@ -189,24 +94,12 @@ class Feeds {
 	 * @return bool
 	 */
 	public function delete($id) {
-		if(empty($this->feeds[$id])) {
-			throw new Exception(_r('Feed does not exist'), Errors::get_code('admin.feeds.invalid_id'));
-		}
-
-		//Make a copy for later.
-		$removed = $this->feeds[$id];
-		$removed = apply_filters('feed-delete', $removed);
-		$cache = new DataHandler(get_option('cachedir'));
-		if($cache->load($id . '.ico') !== null) {
-			$cache->delete($id . '.ico');
-		}
-
-		unset($this->feeds[$id]);
-		$this->save();
+		$feed = Lilina_Feeds::get_instance()->get($id);
+		Lilina_Feeds::get_instance()->delete($id);
 		return sprintf(
 			_r('Removed "%1$s" &mdash; <a href="%2$s">Undo</a>?'),
-			$removed['name'],
-			'feeds.php?action=add&amp;add_name=' . urlencode($removed['name']) . '&amp;add_url=' . urlencode($removed['feed']) . '&amp;id=' . urlencode($removed['id'])
+			$feed->name,
+			'feeds.php?action=add&add_name=' . urlencode($feed->name) . '&add_url=' . urlencode($feed->feed) . '&id=' . urlencode($feed->id)
 		);
 	}
 

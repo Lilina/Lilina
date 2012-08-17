@@ -34,15 +34,12 @@ class ItemUpdater {
 
 		foreach(self::$feeds as $feed) {
 			$result = self::process_single($feed);
-			if($result > 0)
+			if ($result > 0)
 				$updated = true;
-			$return[ $feed['id'] ] = $result;
+			$return[ $feed->id ] = $result;
 		}
 
-		Items::get_instance()->sort_all();
-
-		if($updated) {
-			Items::get_instance()->save_cache();
+		if ($updated) {
 			update_option('last_updated', time());
 		}
 
@@ -56,12 +53,15 @@ class ItemUpdater {
 	 * @param array $feed Feed information (required elements are 'name' for error reporting, 'feed' for the feed URL and 'id' for the feed's unique internal ID)
 	 * @return int Number of items added
 	 */
-	public static function process_single($feed) {
+	public static function process_single($feed, $sp = null) {
 		do_action('iu-feed-start', $feed);
 
-		$sp = &self::load_feed($feed);
+		if ($sp === null) {
+			$sp = &self::load_feed($feed);
+		}
+
 		if($error = $sp->error()) {
-			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed['name']), Errors::get_code('api.itemupdater.itemerror'));
+			self::log(sprintf(_r('An error occurred with "%2$s": %1$s'), $error, $feed->name), Errors::get_code('api.itemupdater.itemerror'));
 			do_action('iu-feed-finish', $feed);
 			return -1;
 		}
@@ -69,9 +69,9 @@ class ItemUpdater {
 		$count = 0;
 		$items = $sp->get_items();
 		foreach($items as $item) {
-			$new_item = self::normalise($item, $feed['id']);
+			$new_item = Lilina_Item::from_sp($item, $feed->id);
 			$new_item = apply_filters('item_data_precache', $new_item, $feed);
-			if(Items::get_instance()->check_item($new_item)) {
+			if(Lilina_Items::get_instance()->check($new_item)) {
 				$count++;
 				do_action('iu-item-add', $new_item, $feed);
 			}
@@ -100,7 +100,7 @@ class ItemUpdater {
 		$sp->set_file_class('Lilina_SimplePie_File');
 		$sp = apply_filters('simplepie-config', $sp);
 
-		$sp->set_feed_url($feed['feed']);
+		$sp->set_feed_url($feed->feed);
 		$sp->init();
 
 		/** We need this so we have something to work with. */
@@ -116,79 +116,6 @@ class ItemUpdater {
 
 		Lilina_Plugins::filter_reference('iu-load-feed', array(&$sp, $feed));
 		return $sp;
-	}
-
-	/**
-	 * Normalise a SimplePie_Item into a stdClass
-	 *
-	 * Converts a SimplePie_Item into a new-style stdClass
-	 */
-	public function normalise($item, $feed = '') {
-		if($enclosure = $item->get_enclosure()) {
-			$enclosure_data = (object) array(
-				'type' => $enclosure->get_real_type(),
-				'length' => $enclosure->get_length()
-			);
-			$enclosure = $enclosure->get_link();
-		}
-		else {
-			// SimplePie_Item::get_enclosure() returns null, so we need to change this to false
-			$enclosure = false;
-			$enclosure_data = false;
-		}
-		if($author = $item->get_author()) {
-			$author = array(
-				'name' => $item->get_author()->get_name(),
-				'url' => $item->get_author()->get_link()
-			);
-		}
-		else {
-			$author = array(
-				'name' => false,
-				'url' => false
-			);
-		}
-
-		$date = $item->get_date('U');
-		if ($date === 0 || $date === false || $date === null) {
-			$date = self::default_date($item);
-		}
-
-		$new_item = (object) array(
-			'hash'      => sha1($item->get_id()),
-			'timestamp' => $date,
-			'title'     => $item->get_title(),
-			'content'   => $item->get_content(),
-			'summary'   => $item->get_description(),
-			'permalink' => $item->get_permalink(),
-			'metadata'  => (object) array(
-				'enclosure' => $enclosure,
-				'enclosure_data' => $enclosure_data
-			),
-			'author'    => (object) $author,
-			'feed'      => $item->get_feed()->get_link()
-		);
-		if(!empty($feed))
-			$new_item->feed_id = $feed;
-		return apply_filters('item_data', $new_item, $item);
-	}
-
-	protected static function default_date(&$item) {
-		$date = $item->get_feed()->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'pubDate');
-		$date = strtotime($date[0]['data']);
-
-		if ($date !== 0 && $date !== false && $date !== null) {
-			return $date;
-		}
-
-		$date = $item->get_feed()->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'lastBuildDate');
-		$date = strtotime($date[0]['data']);
-
-		if ($date !== 0 && $date !== false && $date !== null) {
-			return $date;
-		}
-
-		return 0;
 	}
 
 	/**

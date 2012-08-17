@@ -14,38 +14,15 @@
  * @package Lilina
  */
 class Options {
-	/**
-	 * Loaded options
-	 * @var array
-	 */
-	protected static $options;
-
-	/**
-	 * @var DataHandler
-	 */
-	protected static $handler;
-
-	public static function handler() {
-		if (is_null(self::$handler)) {
-			self::$handler = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-		}
-	
-		return self::$handler;
-	}
+	protected static $cache = array();
+	protected static $lazy = array();
 
 	/**
 	 * Load options
 	 */
 	public static function load() {
-		self::$handler = new DataHandler(LILINA_CONTENT_DIR . '/system/config/');
-
-		self::$options = self::handler()->load('options.data');
-		if(self::$options !== null)
-			self::$options = unserialize(self::$options);
-		else
-			self::$options = array();
-		if(!isset(self::$options['cachedir']))
-			self::$options['cachedir'] = LILINA_CACHE_DIR;
+		// Ensure it's loaded up
+		self::get('baseurl');
 	}
 
 	/**
@@ -68,7 +45,7 @@ class Options {
 		global $settings;
 
 		/** Hardcoded settings in settings.php */
-		if($option === 'auth' || $option === 'baseurl' || $option === 'files') {
+		if($option === 'auth' || $option === 'files') {
 			if(!isset($settings[$option]))
 				return false;
 
@@ -80,11 +57,30 @@ class Options {
 			return $settings[$option];
 		}
 
-		/** New-style options in options.data */
-		if(!isset(self::$options[$option]))
-			return $default;
+		if (isset(self::$cache[$option])) {
+			return self::$cache[$option];
+		}
 
-		return maybe_unserialize(self::$options[$option]);
+		$value = Lilina_DB::get_adapter()->retrieve(array(
+			'table' => 'options',
+			'where' => array(array('key', '===', $option)),
+			'limit' => 1,
+			'reindex' => 'key'
+		));
+
+		if (empty($value)) {
+			// Backwards compatibility, this gets upgraded out
+			if ($option === 'baseurl' && !empty($settings['baseurl'])) {
+				return $settings['baseurl'];
+			}
+			return $default;
+		}
+
+		$value = array_shift($value);
+		$value = maybe_unserialize($value['value']);
+
+		self::$cache[$option] = $value;
+		return $value;
 	}
 
 	/**
@@ -104,31 +100,53 @@ class Options {
 	 * @param mixed $new_value New value of <tt>$option</tt>
 	 */
 	public static function update($option_name, $new_value) {
-		self::lazy_update($option_name, $new_value);
-		return self::save();
+		if ($option_name === 'auth' || $option_name === 'files')
+			return false;
+
+		$option = apply_filters("update_option-$option_name", $new_value);
+		$previous = self::get($option_name);
+
+		if ($previous === null) {
+			Lilina_DB::get_adapter()->insert(array('key' => $option_name, 'value' => $new_value), array(
+				'table' => 'options',
+				'primary' => 'key'
+			));
+		}
+		else {
+			Lilina_DB::get_adapter()->update(array('value' => $new_value), array(
+				'table' => 'options',
+				'where' => array(
+					array('key', '==', $option_name)
+				),
+				'limit' => 1
+			));
+		}
+
+		self::$cache[$option_name] = $new_value;
 	}
 
 	/**
 	 * Update the value of an option, but do not save it
 	 *
+	 * @deprecated This was only an implementation detail, and has been removed
 	 * @see Options::update()
 	 * @param string $option Option key to change
 	 * @param mixed $new_value New value of <tt>$option</tt>
 	 */
 	public static function lazy_update($option_name, $new_value) {
-		if($option_name === 'auth' || $option_name === 'baseurl' || $option_name === 'files')
-			return false;
-
-		self::$options[$option_name] = apply_filters("update_option-$option_name", $new_value);
+		self::$lazy[$option_name] = $new_value;
+		self::$cache[$option_name] = $new_value;
+		return true;
 	}
 
 	/**
 	 * Save options to database
-	 *
-	 * Serialize the options and save them using DataHandler
 	 */
 	public static function save() {
-		return self::handler()->save('options.data', serialize(self::$options));
+		foreach (self::$lazy as $key => $value) {
+			self::update($key, $value);
+		}
+		return true;
 	}
 }
 
